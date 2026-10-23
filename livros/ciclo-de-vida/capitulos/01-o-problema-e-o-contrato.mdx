@@ -3,7 +3,13 @@ livro: O ciclo de vida de um agente
 numero: 1
 titulo: O problema e o contrato
 lide: Antes de escrever uma linha de agente, decida o que é um agente certo. Sem isso, não dá para saber se ele melhorou, piorou ou só mudou.
+epigrafe:
+  texto: Apaixone-se pelo problema, não pela solução.
+  autor: Uri Levine, cofundador do Waze
+  obra: Apaixone-se pelo problema, não pela solução
+  ano: 2023
 neste:
+  - entende o que é um agente, e quando não usar um;
   - escreve o contrato do agente, antes de qualquer código de agente;
   - transforma o contrato em 20 perguntas de referência que um teste confere;
   - mede a nota zero, a que todo agente dos próximos capítulos tem que bater.
@@ -18,6 +24,8 @@ import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import Classificador from "../../../src/components/livro/Classificador.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
+import Rastro from "../../../src/components/livro/Rastro.astro";
+import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
 import contrato from "../projeto/contrato.py?raw";
@@ -28,7 +36,31 @@ import politica from "../projeto/dados/politica.md?raw";
 import loja from "../projeto/dados/loja.json?raw";
 import saidas from "../saidas.json";
 
-## 1.1 Um agente começa antes do código
+## 1.1 O que é um agente
+
+"Agente" virou palavra para tudo. Antes de construir um, vale combinar o que ela quer dizer neste livro.
+
+Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve outro. Pergunte a ele quando chega o pedido BT-1003 e ele responde com o que parecer mais provável. Ele não sabe nada do pedido, porque o pedido mora no sistema da loja, e não dentro do modelo. Então ele escreve uma data qualquer, com cara de certa.
+
+O primeiro conserto é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
+
+Com ferramentas na mesa, existem dois jeitos de montar o sistema. No **fluxo fixo**, o seu código decide a ordem: sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. No **agente**, quem decide o próximo passo é o modelo: ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo. Usar outra ferramenta, responder ou parar. Esse ciclo de decidir, agir e olhar o resultado se repete até ele achar que terminou.
+
+Veja os três jeitos com as mesmas duas perguntas. Avance passo a passo e repare em quem decide:
+
+<Rastro dados={tresJeitos} numero="1.1" legenda="Três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido e do produto são os da loja." />
+
+O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
+
+<Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
+
+Essa liberdade é o que torna o agente útil, e é também o que o torna perigoso. Ele resolve perguntas que você não previu, e pelo mesmo motivo pode fazer coisas que você não queria. Quem decide o próximo passo também pode decidir errado.
+
+<PareEPense pergunta="Se o fluxo fixo é mais previsível, por que não fazer o atendimento inteiro assim?">
+Dá para começar assim, e muita coisa deveria ficar assim. Se o caminho é sempre o mesmo, como "recebeu a nota fiscal, extrai os campos, grava", um fluxo fixo é mais barato, mais rápido e mais fácil de testar. Agente é para quando o próximo passo depende do que aparece no meio do caminho. O atendimento é assim: a mesma caixa de mensagens recebe pedido, produto, defeito, desconto e cliente irritado, e cada um pede um caminho diferente. Escrever um ramo de código para cada tipo funciona até a primeira pergunta que ninguém previu.
+</PareEPense>
+
+## 1.2 Um agente começa antes do código
 
 Existe um jeito rápido de fazer um agente de atendimento: abrir o editor, ligar um modelo a uma lista de pedidos e começar a perguntar. Em uma tarde ele responde bem as cinco perguntas que você testou. Parece pronto.
 
@@ -36,9 +68,11 @@ Aí chega a sexta pergunta. Um cliente pergunta do pedido de outra pessoa, e o a
 
 Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que faltou foi alguém dizer, antes, o que é certo. Sem essa definição, não existe erro: existe só "o agente fez isso". E sem erro definido, não dá para medir, comparar uma versão com outra, nem saber se a mudança de ontem melhorou ou piorou.
 
+É o que diz a frase que abre este capítulo. Quem se apaixona pela solução começa pelo agente, abrindo o editor. Quem se apaixona pelo problema começa pelas perguntas que chegam, e pelo que seria uma boa resposta para cada uma.
+
 Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
 
-## 1.2 As perguntas que chegam
+## 1.3 As perguntas que chegam
 
 O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Imagine um dia de mensagens no atendimento dela:
 
@@ -51,7 +85,7 @@ O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para
 
 Olhando de perto, aparece um padrão. Algumas perguntas se respondem com os dados da loja: o pedido, o catálogo. Outras, com a política de atendimento. Algumas pedem uma ação, como abrir um chamado de troca. Outras o agente simplesmente não pode atender. E algumas não são para o agente: são para uma pessoa.
 
-## 1.3 O contrato: quatro decisões
+## 1.4 O contrato: quatro decisões
 
 Esse padrão vira o contrato. Para toda pergunta, o agente toma uma de quatro decisões:
 
@@ -64,13 +98,13 @@ Esse padrão vira o contrato. Para toda pergunta, o agente toma uma de quatro de
 
 Parece simples até você tentar aplicar. Tente: para cada pergunta abaixo, escolha o que o agente deveria fazer, e veja o que o contrato diz.
 
-<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.1" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na seção 1.6." />
+<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na seção 1.7." />
 
 Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
 
 <Nota titulo="passar a vez não é falhar">Um agente que sabe a hora de chamar uma pessoa vale mais que um que tenta responder tudo. Passar a vez é uma decisão do contrato, com regra própria, e não um erro do agente. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
 
-## 1.4 O projeto
+## 1.5 O projeto
 
 Hora de abrir o terminal. O projeto se chama `atendimento-bemtevi` e começa vazio, com o `uv`:
 
@@ -95,11 +129,11 @@ Há um detalhe que salva muito trabalho depois: a loja tem uma data de hoje fixa
 
 Se o agente calcula prazos com a data real do computador, a resposta certa de hoje vira errada daqui a um mês, e os testes começam a falhar sozinhos. Com o "hoje" fixo, um pedido entregue em 20 de outubro está sempre a 21 dias de distância, em qualquer dia em que você rodar o livro.
 
-## 1.5 O contrato em código
+## 1.6 O contrato em código
 
 Agora o contrato vira código, no arquivo `contrato.py`. Primeiro, as quatro decisões e as três fontes de informação de que o agente pode precisar:
 
-<Listagem codigo={contrato} nome="contrato.py" linhas="1-27" notas={{ 12: "as quatro decisões da seção 1.3", 21: "onde está a resposta: pedido, política ou catálogo" }} />
+<Listagem codigo={contrato} nome="contrato.py" linhas="1-27" notas={{ 12: "as quatro decisões da seção 1.4", 21: "onde está a resposta: pedido, política ou catálogo" }} />
 
 Um `StrEnum` é uma lista fechada de valores. Se alguém escrever `"talvez"` como decisão, o erro aparece na hora, em vez de passar despercebido.
 
@@ -121,7 +155,7 @@ Por fim, duas funções para ler os arquivos:
 
 <Listagem codigo={contrato} nome="contrato.py" linhas="47-64" notas={{ 52: "uma pergunta por linha", 58: "o erro diz em que linha está" }} />
 
-## 1.6 As perguntas de referência
+## 1.7 As perguntas de referência
 
 O contrato diz como um caso deve ser. As perguntas de referência são os casos de verdade: um arquivo `referencia.jsonl`, com uma pergunta por linha. As três primeiras:
 
@@ -143,7 +177,7 @@ Cada teste é uma regra da política, escrita de um jeito que a máquina confere
 
 <Nota titulo="teste do teste">Um teste que nunca falha não protege nada. Experimente trocar o e-mail da primeira pergunta para o da Ana e rodar de novo: o teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
 
-## 1.7 A nota zero
+## 1.8 A nota zero
 
 Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe.
 
@@ -168,6 +202,7 @@ Com o contrato escrito, as perguntas de referência no lugar e a nota zero medid
 <PontoDeVolta tag="cap-01/fim" />
 
 <Resumo>
+- Um agente é um modelo que decide os próprios passos, num ciclo, usando ferramentas. Se o caminho é sempre o mesmo, um fluxo fixo resolve melhor.
 - Sem uma definição de certo, não existe erro, e sem erro não dá para medir.
 - O contrato tem quatro decisões: responder, abrir chamado, recusar e passar a vez.
 - Passar a vez é uma decisão com regra própria, não uma falha.
