@@ -27,6 +27,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .topo b { color: var(--ink); font-weight: 600 }
 .topo a { color: inherit; text-decoration: none }
 .topo .esp { flex: 1 }
+/* a marca: "Font" na cor do texto, "Mar" na cor do acento */
+.topo .marca { font: 700 17px/1 var(--f-texto); color: var(--ink); letter-spacing: -.01em; white-space: nowrap }
+.topo .marca span { color: var(--acento) }
+.topo .nome { padding-left: 12px; border-left: 1px solid var(--linha) }
 .progresso { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--acento); width: 0 }
 
 .livro { max-width: 920px; margin: 0 auto; padding-block: 40px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }

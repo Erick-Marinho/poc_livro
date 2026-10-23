@@ -24,7 +24,7 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <header class="topo"><div class="in"><span class="nome"><a href="/"><b>{c.livro}</b></a> · um livro que roda</span><span class="esp"></span><span id="onde">{rotulo}</span></div><div class="progresso" id="progresso"></div></header>
+    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FontMar, início">Font<span>Mar</span></a><span class="nome"><b>{c.livro}</b> · um livro que roda</span><span class="esp"></span><span id="onde">{rotulo}</span></div><div class="progresso" id="progresso"></div></header>
     <main class="livro">
       <section class="abertura">
         <div class="cap">{capitulo_ ? "Capítulo" : c.livro}</div>
