@@ -10,6 +10,8 @@ const c = capitulo.data;
 const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
 const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 const titulos = secoes.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, texto: h.text.replace(/^(\d+\.\d+)\s*/, "$1 ") }));
+const capitulo_ = c.tipo === "capitulo";
+const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -22,21 +24,26 @@ const titulos = secoes.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, te
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <header class="topo"><div class="in"><span class="nome"><a href="/"><b>{c.livro}</b></a> · um livro que roda</span><span class="esp"></span><span id="onde">Capítulo {c.numero} · {c.titulo}</span></div><div class="progresso" id="progresso"></div></header>
+    <header class="topo"><div class="in"><span class="nome"><a href="/"><b>{c.livro}</b></a> · um livro que roda</span><span class="esp"></span><span id="onde">{rotulo}</span></div><div class="progresso" id="progresso"></div></header>
     <main class="livro">
       <section class="abertura">
-        <div class="cap">Capítulo</div>
-        <div class="numero">{c.numero}</div>
+        <div class="cap">{capitulo_ ? "Capítulo" : c.livro}</div>
+        {capitulo_ && <div class="numero">{c.numero}</div>}
         <h1>{c.titulo}</h1>
         <p class="lide">{c.lide}</p>
       </section>
-      <div class="neste"><b>neste capítulo</b><ul>{c.neste.map((n) => <li set:html={md(n)} />)}</ul>
-        <span class="ponto">{c.partida.texto} Perdeu o fio? <code>git checkout {c.partida.tag}</code></span></div>
+      {capitulo_ && c.neste && c.partida && (
+        <div class="neste"><b>neste capítulo</b><ul>{c.neste.map((n) => <li set:html={md(n)} />)}</ul>
+          <span class="ponto">{c.partida.texto} Perdeu o fio? <code>git checkout {c.partida.tag}</code></span></div>
+      )}
       <div class="corpo"><slot /></div>
+      {c.assinatura && (
+        <div class="assinatura"><span>{c.assinatura.autores.join(" e ")}</span><span class="quando">{c.assinatura.quando}</span></div>
+      )}
       {(c.anterior || c.proximo) && <div class="proximo"><span>{c.anterior && `← ${c.anterior}`}</span><span>{c.proximo && `${c.proximo} →`}</span></div>}
       {c.aviso && <p class="ponto" style="margin-top:10px">{c.aviso}</p>}
     </main>
-    <script define:vars={{ titulos, inicio: `Capítulo ${c.numero} · ${c.titulo}` }}>
+    <script define:vars={{ titulos, inicio: rotulo }}>
       const prog = () => {
         const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
         document.getElementById("progresso").style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + "%";

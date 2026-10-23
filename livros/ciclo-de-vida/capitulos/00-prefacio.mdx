@@ -1,0 +1,70 @@
+---
+livro: O ciclo de vida de um agente
+tipo: prefacio
+titulo: Prefácio
+lide: Fazer um agente funcionar uma vez é fácil. Difícil é ele continuar funcionando quando vira produto, com cliente de verdade do outro lado. Este livro é sobre essa segunda parte.
+assinatura:
+  autores: [Erick Marinho, Victor Fontela]
+  quando: outubro de 2026
+proximo: Capítulo 1 · O problema e o contrato
+---
+import Nota from "../../../src/components/livro/Nota.astro";
+
+## Por que este livro existe
+
+Quase todo material sobre agentes termina no mesmo lugar: o agente respondeu uma pergunta, a tela mostrou a resposta, fim. É um bom começo, mas é o ponto em que o trabalho de verdade começa. Depois da primeira resposta vêm as perguntas que ninguém tinha previsto, a conta que cresce sem aviso, o cliente que pede o pedido de outra pessoa, a versão nova do modelo que melhora uma coisa e estraga outra.
+
+Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro que acompanhasse um agente do começo ao fim: antes do código, durante, e depois que ele vai para o ar. Em português, e com código que roda de verdade. Como não achamos, resolvemos escrever.
+
+## Um livro que roda
+
+Este não é um livro para só ler. Ao longo dos capítulos, o código vai se montando na página, as figuras se mexem quando você chega nelas, e o terminal roda quando você aperta o botão.
+
+Por trás disso há uma regra que levamos a sério: o livro não pode mentir. Todo trecho de código que aparece aqui é lido do arquivo real do projeto, e não de uma cópia que alguém esqueceu de atualizar. Toda saída de terminal foi gravada rodando esse código. E antes de cada versão do livro ir para o ar, tudo roda de novo: se alguma saída mudou, a montagem do livro falha, e a gente corrige antes de você ler.
+
+Bibliotecas de inteligência artificial mudam a cada poucos meses. Livro técnico costuma envelhecer em silêncio. Este foi feito para avisar quando envelhece.
+
+## O que você vai construir
+
+Um agente só, do primeiro ao último capítulo: o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa. Ele responde onde está o pedido, explica como trocar um produto, abre chamado quando algo chega com defeito, e sabe a hora de passar a conversa para uma pessoa.
+
+A cada capítulo, o mesmo agente passa por uma fase da vida dele:
+
+1. **O problema e o contrato:** o que ele faz e o que não faz, escrito antes de existir código.
+2. **O primeiro agente:** o ciclo de pensar, agir e responder, em LangGraph.
+3. **As ferramentas:** consultar pedido e abrir chamado.
+4. **Avaliar:** uma nota que diz se ele está melhorando.
+5. **Observar:** o que aconteceu em cada conversa, e quanto custou.
+6. **Quando dá errado:** as falhas que aparecem com o uso, e como achar a causa.
+7. **Governar:** dado pessoal, aprovação humana e registro de quem decidiu.
+8. **Evoluir:** trocar de modelo ou de instrução sem medo de piorar.
+
+<Nota titulo="a loja é inventada">A Casa Bem-te-vi não existe. Os clientes, os CPFs, os e-mails, os pedidos e a transportadora foram criados para o livro, e nenhum deles é de uma pessoa ou empresa real. Os casos difíceis que aparecem aqui são parecidos com os que acontecem em qualquer atendimento, mas não foram tirados de nenhum.</Nota>
+
+## Para quem é
+
+Para quem já programa em Python e quer levar um agente para produção: desenvolvedor que está entrando em engenharia de IA, cientista de dados que precisa entregar algo que fique de pé, ou quem já tem um agente rodando e quer saber se ele está bom de verdade.
+
+Você vai precisar de um terminal, de Git e de Python no básico. Não é preciso saber treinar modelo: este livro não treina nenhum. Ele usa modelos prontos e se concentra no que fica em volta deles, que é onde a maior parte dos problemas mora.
+
+## O que este livro não é
+
+Não é um catálogo de ferramentas. Usamos LangGraph para o fluxo do agente, os modelos Claude, da Anthropic, para pensar, e o Langfuse para observar. São escolhas, não dogmas: as ideias de cada capítulo valem com outras ferramentas, e sempre que uma escolha tiver um custo, vamos dizer qual é.
+
+Também não é um livro de promessas. Agente erra. O que dá para fazer é saber quando ele erra, quanto, e o que fazer com isso. Se em algum capítulo parecer que está fácil demais, desconfie, e procure o "Quando dá errado" mais à frente.
+
+## Como ler
+
+Leia em ordem: cada capítulo parte do projeto como o anterior deixou. Tenha a sua IDE aberta ao lado e digite o código, em vez de só ler. É digitando que a gente percebe o que não entendeu.
+
+Pelo caminho você vai encontrar três tipos de parada:
+
+- **Pare e pense:** uma pergunta antes da resposta. Tente responder antes de abrir.
+- **Ponto de volta:** se o seu código se perder do livro, um comando `git checkout` traz o projeto exatamente como ele está naquele ponto.
+- **Exercício:** uma tarefa parecida com o capítulo, mas não igual, com testes que dizem quando você terminou.
+
+## Um livro em construção
+
+Este livro está sendo escrito em voz alta. Os primeiros capítulos saem antes dos últimos, e o que os leitores fazem pelo caminho, onde param, onde erram, que figura repetem, vai deixando cada capítulo melhor.
+
+Se você chegou até aqui, obrigado. Vamos começar antes do código.

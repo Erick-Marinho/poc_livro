@@ -2,7 +2,7 @@
 import "../styles/livro.css";
 import { getCollection } from "astro:content";
 
-const capitulos = (await getCollection("capitulos")).sort((a, b) => a.data.numero - b.data.numero);
+const capitulos = (await getCollection("capitulos")).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));   /* o prefácio vem antes do capítulo 1 */
 const livros = new Map<string, { titulo: string; caps: typeof capitulos }>();
 for (const c of capitulos) {
   const id = c.id.split("/")[0];
@@ -24,7 +24,7 @@ for (const c of capitulos) {
       {[...livros].map(([id, l]) => (
         <section>
           <h2>{l.titulo}</h2>
-          <ul>{l.caps.map((c) => <li><a href={`/${id}/${c.id.split("/").pop()}/`}>Capítulo {c.data.numero} · {c.data.titulo}</a></li>)}</ul>
+          <ul>{l.caps.map((c) => <li><a href={`/${id}/${c.id.split("/").pop()}/`}>{c.data.tipo === "capitulo" ? `Capítulo ${c.data.numero} · ${c.data.titulo}` : c.data.titulo}</a></li>)}</ul>
         </section>
       ))}
     </main>
