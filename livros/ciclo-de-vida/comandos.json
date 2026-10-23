@@ -1,0 +1,8 @@
+{
+  "pasta_do_leitor": "/home/voce/atendimento-bemtevi",
+  "comandos": {
+    "contar-casos": {"comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\""},
+    "testes": {"comando": "uv run pytest -q"},
+    "nota-zero": {"comando": "uv run python baseline.py"}
+  }
+}

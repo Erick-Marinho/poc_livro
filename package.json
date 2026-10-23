@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "astro build"
+    "test": "astro build && npm run saidas:conferir",
+    "saidas": "python3 scripts/saidas.py ciclo-de-vida",
+    "saidas:conferir": "python3 scripts/saidas.py ciclo-de-vida --conferir"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.2",

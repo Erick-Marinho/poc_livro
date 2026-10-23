@@ -1,0 +1,52 @@
+{
+  "contar-casos": {
+    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "20 perguntas de referência",
+        ""
+      ]
+    ]
+  },
+  "testes": {
+    "comando": "uv run pytest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        ".......                                                                  [100%]",
+        ""
+      ],
+      [
+        "7 passed in 0.08s",
+        "okv"
+      ]
+    ]
+  },
+  "nota-zero": {
+    "comando": "uv run python baseline.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       0 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         0 de  5",
+        ""
+      ],
+      [
+        "passar          5 de  5",
+        ""
+      ],
+      [
+        "nota zero: 5 de 20 (25%)",
+        ""
+      ]
+    ]
+  }
+}

@@ -8,8 +8,11 @@ O capítulo é escrito em MDX (Markdown com componentes); o Astro monta o site.
 ```bash
 npm install
 npm run dev      # http://localhost:4321
-npm test         # monta o site e roda os testes do livro
+npm test         # monta o site e confere as saídas do livro
+npm run saidas   # roda os comandos do livro no projeto e grava as saídas
 ```
+
+Para o projeto do livro (Python): [uv](https://docs.astral.sh/uv/).
 
 Node 22.12 ou mais novo.
 
@@ -19,7 +22,9 @@ Node 22.12 ou mais novo.
 |---|---|
 | `livros/<livro>/capitulos/*.mdx` | o texto de cada capítulo |
 | `livros/<livro>/projeto/` | o código real que o leitor constrói; as listagens leem daqui |
-| `livros/<livro>/saidas.json` | as saídas dos terminais, gravadas do código real |
+| `livros/<livro>/comandos.json` | os comandos que o livro mostra no terminal |
+| `livros/<livro>/saidas.json` | o que esses comandos mostram de verdade (gravado pelo `npm run saidas`) |
+| `scripts/saidas.py` | grava e confere as saídas; a conferência falha se o código mudar e o livro não |
 | `src/components/livro/` | os componentes do livro: `Listagem`, `Terminal`, `Nota`, `Resumo`, `PontoDeVolta` |
 | `testes/` | os testes do livro (montagem, código, saídas) |
 
@@ -37,5 +42,7 @@ Título de seção com número: `## 1.4 As perguntas de referência`.
 
 ## Estado
 
-Formato pronto: fonte em MDX, `Listagem` e `Terminal` (conferidos contra o capítulo de teste, já removido).
-Próximo: o livro *O ciclo de vida de um agente*, começando pelo capítulo 1.
+Formato pronto: fonte em MDX, `Listagem` e `Terminal`.
+Livro em andamento: *O ciclo de vida de um agente*. O projeto do capítulo 1 está em
+`livros/ciclo-de-vida/projeto/` (a loja inventada, o contrato, as perguntas de referência e a nota zero).
+O texto do capítulo 1 ainda não foi escrito.

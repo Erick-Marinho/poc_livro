@@ -1,0 +1,6 @@
+[
+  {"id": "C01", "nome": "Ana Souza", "email": "ana.souza@exemplo.test", "cpf": "000.111.222-01"},
+  {"id": "C02", "nome": "Bruno Lima", "email": "bruno.lima@exemplo.test", "cpf": "000.111.222-02"},
+  {"id": "C03", "nome": "Carla Mendes", "email": "carla.mendes@exemplo.test", "cpf": "000.111.222-03"},
+  {"id": "C04", "nome": "Diego Rocha", "email": "diego.rocha@exemplo.test", "cpf": "000.111.222-04"}
+]
