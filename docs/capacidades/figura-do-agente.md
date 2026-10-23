@@ -26,9 +26,14 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   o grafo mostra a comparação do e-mail com o do dono e a recusa).
 - (etapa 2) "abrir chamado" sai das ferramentas e fica só como decisão (sugestão do planejador; o responsável pode mudar).
 - (etapa 2) As ferramentas são nós separados: pedidos, política, catálogo. O build falha se as ferramentas que o
-  roteiro visita não forem as do `precisa` do caso, ou se a saída (resposta ou pessoa da equipe) não for a da `decisao`.
+  roteiro visita não forem as do `precisa` do caso, ou se a `escolha` do passo `decisao` não for a `decisao` do caso.
+- (etapa 2) Duas saídas, que são canais e não decisões: **resposta** (o agente escreve; vale para responder, recusar
+  e abrir chamado) e **pessoa da equipe** (só passar a vez). O build também falha se a saída não for a do canal da decisão.
 - (etapa 2) O nome de quem pergunta vem do `clientes.json`, pelo e-mail do caso; sem e-mail, "cliente".
 - (etapa 2) Ao entrar na tela, toca R01 e depois R12, uma vez. As abas tocam o cenário escolhido.
+- (etapa 2) O grafo do R09 dura 10 segundos para mostrar as duas consultas; os demais duram 8, com 2 para a pergunta e 2 para a resposta.
+- (etapa 2) Escolher uma aba cancela a sequência automática; as setas esquerda/direita, Home e End também escolhem a aba.
+- (etapa 2) A pílula escolhida e o canal ficam acesos no fim; o andamento final usa o texto do passo do canal de saída.
 
 ## Peças
 
@@ -68,8 +73,8 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 - **Ajustes da revisão da etapa 1:** (a) "e-mail" e "BT-1002" nunca quebram no hífen; (b) espaço inquebrável em
   "capítulo 1" na legenda; (c) a animação começa quando o grafo, e não a figura, estiver 60% à vista; (d) erro claro
   no build para caso inexistente, nó ou trajeto desconhecido e cenário sem o passo `conversa`.
-- **Evidência:** `npm test` passa; o build falha, com mensagem que diz o caso, quando o R12 do roteiro sai por
-  "resposta" em vez de recusar, ou visita "política" (mostrar a saída e desfazer); capturas em 1100 px dos quatro cenários
+- **Evidência:** `npm test` passa; o build falha, com mensagem que diz o caso, quando a `escolha` do R12 vira
+  "responder", ou o R12 visita "política" (mostrar a saída e desfazer); capturas em 1100 px dos quatro cenários
   no meio do grafo e no fim, e em 390 px do R12 no fim, uma delas no modo escuro.
 - **Fora:** pausar, passo a passo, `prefers-reduced-motion`, sem JS para outros cenários além do R01, teste no `npm test`.
 

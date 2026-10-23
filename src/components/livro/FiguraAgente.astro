@@ -1,119 +1,240 @@
 ---
-interface Passo { no: string; texto: string; duracao: number }
-interface Props { roteiro: { caso: string; passos: Passo[] }; referencia: string }
-const { roteiro, referencia } = Astro.props;
-const caso = referencia.split("\n").filter((linha) => linha.trim()).map((linha) => JSON.parse(linha))
-  .find((item) => item.id === roteiro.caso);
-const resposta = roteiro.passos.find((passo) => passo.no === "conversa")!.texto;
-const titulo = `figura-agente-${roteiro.caso}`;
+interface Passo { no: string; trajeto?: string; escolha?: string; texto: string; duracao: number }
+interface Cenario { caso: string; passos: Passo[] }
+interface Caso { id: string; pergunta: string; decisao: string; precisa: string[]; email?: string }
+interface Props {
+  roteiro: { cenarios: Cenario[] };
+  referencia: string;
+  clientes: { nome: string; email: string }[];
+}
+const { roteiro, referencia, clientes } = Astro.props;
+const escolhas: Record<string, string> = { responder: "responder", recusar: "recusar", abrir_chamado: "abrir chamado", passar: "passar a vez" };
+const ferramentas = ["pedidos", "politica", "catalogo"];
+const nos = new Set(["pergunta", "cliente", "agente", ...ferramentas, "decisao", "resposta", "pessoa", "conversa"]);
+const trajetos: Record<string, string> = {
+  "cliente-agente": "M 85 52 L 85 99",
+  "agente-pedidos": "M 140 110 C 172 93 194 93 231 110",
+  "pedidos-agente": "M 231 125 C 194 141 172 141 140 125",
+  "agente-politica": "M 140 114 C 177 114 186 168 231 168",
+  "politica-agente": "M 231 183 C 181 183 171 134 140 130",
+  "agente-catalogo": "M 140 118 C 181 118 176 226 231 226",
+  "catalogo-agente": "M 231 241 C 167 241 169 142 140 134",
+  "agente-decisao": "M 85 143 L 85 300",
+  "decisao-resposta": "M 100 397 L 100 435",
+  "decisao-pessoa": "M 280 397 L 280 435",
+};
+const casos: Caso[] = referencia.split("\n").filter((linha) => linha.trim()).map((linha) => JSON.parse(linha));
+const falhar = (caso: string, motivo: string): never => { throw new Error(`Figura do agente · ${caso}: ${motivo}`); };
+if (!Array.isArray(roteiro.cenarios) || !roteiro.cenarios.length) falhar("roteiro", "nenhum cenário informado.");
+const cenarios = roteiro.cenarios.map((cenario) => {
+  const caso = casos.find((item) => item.id === cenario.caso);
+  if (!caso) falhar(cenario.caso, "caso inexistente no referencia.jsonl.");
+  if (!Array.isArray(cenario.passos) || !cenario.passos.length) falhar(cenario.caso, "cenário sem passos.");
+  const visitadas = new Set<string>();
+  for (const passo of cenario.passos) {
+    if (!nos.has(passo.no)) falhar(cenario.caso, `nó desconhecido: "${passo.no}".`);
+    if (passo.trajeto && !Object.hasOwn(trajetos, passo.trajeto)) falhar(cenario.caso, `trajeto desconhecido: "${passo.trajeto}".`);
+    if (!Number.isFinite(passo.duracao) || passo.duracao <= 0) falhar(cenario.caso, `duração inválida no passo "${passo.no}".`);
+    if (typeof passo.texto !== "string") falhar(cenario.caso, `texto ausente no passo "${passo.no}".`);
+    for (const no of [passo.no, ...(passo.trajeto?.split("-") ?? [])]) {
+      if (ferramentas.includes(no)) visitadas.add(no);
+    }
+  }
+  if (!cenario.passos.some((passo) => passo.no === "conversa")) falhar(cenario.caso, "cenário sem o passo conversa.");
+  const decisoes = cenario.passos.filter((passo) => passo.no === "decisao");
+  if (decisoes.length !== 1) falhar(cenario.caso, "o cenário precisa de exatamente um passo decisao.");
+  if (decisoes[0].escolha !== caso!.decisao) falhar(cenario.caso, `escolha "${decisoes[0].escolha}" diverge da decisão "${caso!.decisao}" no contrato.`);
+  if (!Object.hasOwn(escolhas, caso!.decisao)) falhar(cenario.caso, `decisão desconhecida: "${caso!.decisao}".`);
+  const precisa = new Set(caso!.precisa);
+  if (visitadas.size !== precisa.size || [...visitadas].some((no) => !precisa.has(no))) {
+    falhar(cenario.caso, `ferramentas visitadas [${[...visitadas].join(", ")}] divergem de precisa [${caso!.precisa.join(", ")}].`);
+  }
+  const canal = caso!.decisao === "passar" ? "pessoa" : "resposta";
+  const saidas = cenario.passos.filter((passo) => ["resposta", "pessoa"].includes(passo.no));
+  const canaisDosTrajetos = cenario.passos.filter((passo) => passo.trajeto?.startsWith("decisao-")).map((passo) => passo.trajeto!.slice("decisao-".length));
+  if (saidas.length !== 1 || saidas[0].no !== canal || canaisDosTrajetos.some((saida) => saida !== canal)) {
+    falhar(cenario.caso, `canal de saída incorreto: a decisão "${caso!.decisao}" exige "${canal}".`);
+  }
+  return {
+    ...cenario, pergunta: caso!.pergunta, decisao: caso!.decisao,
+    nome: clientes.find((cliente) => cliente.email === caso!.email)?.nome ?? "cliente",
+    resposta: cenario.passos.find((passo) => passo.no === "conversa")!.texto,
+    andamento: saidas[0].texto,
+    descricao: cenario.passos.filter((passo) => passo.no !== "conversa").map((passo) => passo.texto).join(" "),
+  };
+});
+const titulo = `figura-agente-${cenarios.map((cenario) => cenario.caso).join("-")}`;
+const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
 ---
-<figure class="figura-agente largo" data-figura-agente data-roteiro={JSON.stringify(roteiro.passos)}>
-  <div class="fag-quadro">
-    <section class="fag-conversa" aria-label="Conversa simulada">
-      <h3><span>Por fora</span> A conversa</h3>
-      <div class="fag-mensagens">
-        <div class="fag-mensagem fag-pergunta"><b>Bruno · cliente</b><p>{caso.pergunta}</p></div>
-        <div class="fag-mensagem fag-resposta"><b>Agente</b><p>{resposta}</p></div>
-      </div>
-      <p class="fag-contrato">{caso.id} · decisão no contrato: <strong>{caso.decisao}</strong></p>
-    </section>
-    <section class="fag-interior" aria-label="Grafo do agente">
-      <h3><span>Por dentro</span> O caminho da resposta</h3>
-      <svg viewBox="0 0 360 395" role="img" aria-labelledby={`${titulo}-titulo ${titulo}-descricao`}>
-        <title id={`${titulo}-titulo`}>Da pergunta à resposta</title>
-        <desc id={`${titulo}-descricao`}>O cliente pergunta; o agente consulta pedidos, confere o e-mail e decide {caso.decisao}. Política, catálogo, abrir chamado e passar a vez são outros caminhos do agente.</desc>
-        <defs><marker id={`${titulo}-seta`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker></defs>
-        <rect class="fag-fundo-ferramentas" x="194" y="54" width="151" height="141" rx="12" />
-        <g class="fag-arestas" marker-end={`url(#${titulo}-seta)`}>
-          <path data-trajeto="cliente-agente" d="M 90 49 L 90 95" />
-          <path data-trajeto="agente-pedidos" d="M 145 112 C 168 90 185 90 207 103" />
-          <path data-trajeto="pedidos-agente" d="M 207 124 C 185 143 168 143 145 123" />
-          <path data-trajeto="agente-decisao" d="M 90 141 L 90 217" />
-          <path data-trajeto="decisao-resposta" d="M 90 253 L 90 277 L 90 347" />
-          <path class="fag-alternativa" d="M 263 311 L 263 347" />
-        </g>
-        <g class="fag-no" data-no="cliente"><rect x="35" y="12" width="110" height="37" rx="10" /><text x="90" y="36">cliente</text></g>
-        <g class="fag-no" data-no="agente"><rect x="35" y="95" width="110" height="46" rx="10" /><text x="90" y="115">agente</text><text class="fag-apoio" x="90" y="132">pensa</text></g>
-        <g class="fag-ferramentas">
-          <text class="fag-rotulo" x="269" y="75">ferramentas</text>
-          <g class="fag-no" data-no="pedidos"><rect x="207" y="89" width="125" height="39" rx="8" /><text x="269" y="114">pedidos</text></g>
-          <text class="fag-outros" x="269" y="148">política · catálogo</text>
-          <text class="fag-outros" x="269" y="176">abrir chamado</text>
-        </g>
-        <g class="fag-no fag-decisao" data-no="decisao">
-          <rect x="20" y="217" width="325" height="94" rx="12" />
-          <text x="90" y="243">decisão</text>
-          <rect class="fag-escolha" x="38" y="263" width="104" height="30" rx="15" />
-          <text class="fag-escolha-texto" x="90" y="283">{caso.decisao}</text>
-          <text class="fag-outros" x="263" y="240">abrir chamado</text>
-          <text class="fag-outros" x="263" y="266">recusar</text>
-          <text class="fag-outros" x="263" y="292">passar a vez</text>
-        </g>
-        <g class="fag-no" data-no="resposta"><rect x="35" y="347" width="110" height="37" rx="10" /><text x="90" y="371">resposta</text></g>
-        <g class="fag-no fag-alternativa"><rect x="188" y="347" width="151" height="37" rx="10" /><text x="263" y="371">pessoa da equipe</text></g>
-        <circle class="fag-bolinha" r="5" cx="90" cy="31" hidden />
-      </svg>
-      <p class="fag-andamento">Pedido consultado · e-mail conferido · resposta</p>
-    </section>
+<figure class="figura-agente largo" data-figura-agente data-roteiro={JSON.stringify(cenarios.map(({ caso, passos, andamento }) => ({ caso, passos, andamento })))}>
+  <div class="fag-abas" role="tablist" aria-label="Decisões do agente" hidden>
+    {cenarios.map((cenario, indice) => <button type="button" role="tab" id={`${titulo}-aba-${indice}`} aria-controls={`${titulo}-painel-${indice}`} aria-selected={indice === 0 ? "true" : "false"} tabindex={indice === 0 ? 0 : -1} data-aba={indice}>{escolhas[cenario.decisao]}</button>)}
   </div>
-  <figcaption><b>Figura P.1</b> · Simulação do agente que você vai construir. A pergunta e a decisão vêm do contrato do capítulo 1.</figcaption>
+  {cenarios.map((cenario, indice) => <div class="fag-painel" id={`${titulo}-painel-${indice}`} role="tabpanel" aria-labelledby={`${titulo}-aba-${indice}`} hidden={indice !== 0} data-painel={indice}>
+    <div class="fag-quadro">
+      <section class="fag-conversa" aria-label="Conversa simulada">
+        <h3><span>Por fora</span> A conversa</h3>
+        <div class="fag-mensagens">
+          <div class="fag-mensagem fag-pergunta"><b>{cenario.nome}{cenario.nome !== "cliente" && " · cliente"}</b><p>{semQuebra(cenario.pergunta).map((parte) => /^(e-mail|BT-\d+)$/.test(parte) ? <span class="fag-sem-quebra">{parte}</span> : parte)}</p></div>
+          <div class="fag-mensagem fag-resposta"><b>Agente</b><p>{semQuebra(cenario.resposta).map((parte) => /^(e-mail|BT-\d+)$/.test(parte) ? <span class="fag-sem-quebra">{parte}</span> : parte)}</p></div>
+        </div>
+        <p class="fag-contrato">{cenario.caso} · decisão no contrato: <strong>{escolhas[cenario.decisao]}</strong></p>
+      </section>
+      <section class="fag-interior" aria-label="Grafo do agente">
+        <h3><span>Por dentro</span> O caminho da resposta</h3>
+        <svg viewBox="0 0 380 484" role="img" aria-labelledby={`${titulo}-${indice}-titulo ${titulo}-${indice}-descricao`}>
+          <title id={`${titulo}-${indice}-titulo`}>Da pergunta à {cenario.decisao === "passar" ? "pessoa da equipe" : "resposta"}</title>
+          <desc id={`${titulo}-${indice}-descricao`}>{cenario.descricao}</desc>
+          <defs><marker id={`${titulo}-${indice}-seta`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker></defs>
+          <rect class="fag-fundo-ferramentas" x="219" y="65" width="147" height="199" rx="12" />
+          <g class="fag-arestas" marker-end={`url(#${titulo}-${indice}-seta)`}>
+            {Object.entries(trajetos).map(([nome, caminho]) => <path data-trajeto={nome} d={caminho} />)}
+          </g>
+          <g class="fag-no" data-no="cliente"><rect x="30" y="15" width="110" height="37" rx="10" /><text x="85" y="39">cliente</text></g>
+          <g class="fag-no" data-no="agente"><rect x="30" y="99" width="110" height="44" rx="10" /><text x="85" y="119">agente</text><text class="fag-apoio" x="85" y="136">pensa</text></g>
+          <text class="fag-rotulo" x="292" y="87">ferramentas</text>
+          {ferramentas.map((no, i) => <g class="fag-no" data-no={no}><rect x="231" y={99 + i * 58} width="123" height="38" rx="8" /><text x="292" y={123 + i * 58}>{no === "politica" ? "política" : no === "catalogo" ? "catálogo" : no}</text></g>)}
+          <g class="fag-no fag-decisao" data-no="decisao">
+            <rect x="18" y="300" width="344" height="97" rx="12" />
+            <text x="190" y="321">decisão</text>
+            {Object.entries(escolhas).map(([valor, rotulo], i) => <g class:list={["fag-escolha", { ativa: valor === cenario.decisao }]} data-escolha={valor}>
+              <rect x={31 + i % 2 * 163} y={330 + Math.floor(i / 2) * 32} width="155" height="27" rx="13.5" />
+              <text x={108.5 + i % 2 * 163} y={348 + Math.floor(i / 2) * 32}>{rotulo}</text>
+            </g>)}
+          </g>
+          <g class="fag-no" data-no="resposta"><rect x="30" y="435" width="140" height="37" rx="10" /><text x="100" y="459">resposta</text></g>
+          <g class="fag-no" data-no="pessoa"><rect x="200" y="435" width="160" height="37" rx="10" /><text x="280" y="459">pessoa da equipe</text></g>
+          <circle class="fag-bolinha" r="5" cx="85" cy="33" hidden />
+        </svg>
+        <p class="fag-andamento">{semQuebra(cenario.andamento).map((parte) => /^(e-mail|BT-\d+)$/.test(parte) ? <span class="fag-sem-quebra">{parte}</span> : parte)}</p>
+      </section>
+    </div>
+  </div>)}
+  <figcaption><b>Figura P.1</b> · Simulação do agente que você vai construir. A pergunta e a decisão vêm do contrato do capítulo&#160;1.</figcaption>
 </figure>
 
 <script>
+  interface Passo { no: string; trajeto?: string; escolha?: string; texto: string; duracao: number }
+  interface Cenario { caso: string; passos: Passo[]; andamento: string }
   document.querySelectorAll<HTMLElement>("[data-figura-agente]").forEach((figura) => {
-    const passos: { no: string; texto: string; duracao: number }[] = JSON.parse(figura.dataset.roteiro!);
-    const bolinha = figura.querySelector<SVGCircleElement>(".fag-bolinha")!;
-    const andamento = figura.querySelector<HTMLElement>(".fag-andamento")!;
-    const nos = figura.querySelectorAll<SVGGElement>("[data-no]");
-    const trajetos = [null, null, "cliente-agente", "agente-pedidos", "pedidos-agente", "agente-decisao", "decisao-resposta", null];
+    const cenarios: Cenario[] = JSON.parse(figura.dataset.roteiro!);
+    const abas = [...figura.querySelectorAll<HTMLButtonElement>("[data-aba]")];
+    const paineis = [...figura.querySelectorAll<HTMLElement>("[data-painel]")];
+    let animacao = 0;
+    let automatico = true;
+    let iniciado = false;
+    let observar: IntersectionObserver | undefined;
     figura.dataset.tempo = "pronta";
-    andamento.textContent = "O atendimento começa ao chegar à figura.";
+    figura.dataset.caso = cenarios[0].caso;
+    figura.querySelectorAll(".fag-escolha").forEach((escolha) => escolha.classList.remove("ativa"));
+    figura.querySelector<HTMLElement>(".fag-abas")!.hidden = false;
+    paineis[0].querySelector<HTMLElement>(".fag-andamento")!.textContent = "O atendimento começa ao chegar ao grafo.";
 
-    const tocar = () => {
+    const tocar = (selecionado: number) => {
+      cancelAnimationFrame(animacao);
+      const cenario = cenarios[selecionado];
+      const painel = paineis[selecionado];
+      paineis.forEach((item, i) => { item.hidden = i !== selecionado; });
+      abas.forEach((aba, i) => {
+        aba.setAttribute("aria-selected", String(i === selecionado));
+        aba.tabIndex = i === selecionado ? 0 : -1;
+      });
+      figura.dataset.caso = cenario.caso;
+      figura.dataset.tempo = "pergunta";
+      const bolinha = painel.querySelector<SVGCircleElement>(".fag-bolinha")!;
+      const andamento = painel.querySelector<HTMLElement>(".fag-andamento")!;
+      let textoAndamento: string | undefined;
+      const mostrarAndamento = (texto: string) => {
+        if (texto === textoAndamento) return;
+        textoAndamento = texto;
+        andamento.replaceChildren(...texto.split(/(e-mail|BT-\d+)/g).map((parte) => {
+          if (!/^(e-mail|BT-\d+)$/.test(parte)) return document.createTextNode(parte);
+          const trecho = document.createElement("span");
+          trecho.className = "fag-sem-quebra";
+          trecho.textContent = parte;
+          return trecho;
+        }));
+      };
+      const nos = painel.querySelectorAll<SVGGElement>("[data-no]");
+      const escolhas = painel.querySelectorAll<SVGGElement>("[data-escolha]");
+      const caminhos = painel.querySelectorAll<SVGPathElement>("[data-trajeto]");
+      escolhas.forEach((escolha) => escolha.classList.remove("ativa"));
       let indice = 0;
       let inicio: number | undefined;
       const quadro = (agora: number) => {
         inicio ??= agora;
         let decorrido = agora - inicio;
-        while (decorrido >= passos[indice].duracao && indice < passos.length - 1) {
-          inicio += passos[indice].duracao;
+        while (decorrido >= cenario.passos[indice].duracao && indice < cenario.passos.length - 1) {
+          inicio += cenario.passos[indice].duracao;
           indice++;
           decorrido = agora - inicio;
         }
-        const passo = passos[indice];
-        figura.dataset.tempo = indice === 0 ? "pergunta" : indice === passos.length - 1 ? "resposta" : "grafo";
-        nos.forEach((no) => no.classList.toggle("ativo", no.dataset.no === passo.no));
-        andamento.textContent = passo.no === "conversa" ? "Pedido consultado · e-mail conferido · resposta" : passo.texto;
-        const trajeto = trajetos[indice];
-        bolinha.toggleAttribute("hidden", !trajeto && passo.no !== "cliente");
-        if (trajeto) {
-          const caminho = figura.querySelector<SVGPathElement>(`[data-trajeto="${trajeto}"]`)!;
+        const passo = cenario.passos[indice];
+        figura.dataset.tempo = passo.no === "pergunta" ? "pergunta" : passo.no === "conversa" ? "resposta" : "grafo";
+        if (passo.no !== "conversa") nos.forEach((no) => no.classList.toggle("ativo", no.dataset.no === passo.no));
+        caminhos.forEach((caminho) => caminho.classList.toggle("ativo", caminho.dataset.trajeto === passo.trajeto));
+        if (passo.no === "decisao") escolhas.forEach((escolha) => escolha.classList.toggle("ativa", escolha.dataset.escolha === passo.escolha));
+        mostrarAndamento(passo.no === "conversa" ? cenario.andamento : passo.texto);
+        bolinha.toggleAttribute("hidden", !passo.trajeto && passo.no !== "cliente");
+        if (passo.trajeto) {
+          const caminho = painel.querySelector<SVGPathElement>(`[data-trajeto="${passo.trajeto}"]`)!;
           const ponto = caminho.getPointAtLength(caminho.getTotalLength() * Math.min(decorrido / (passo.duracao * .75), 1));
           bolinha.setAttribute("cx", String(ponto.x));
           bolinha.setAttribute("cy", String(ponto.y));
+        } else if (passo.no === "cliente") {
+          bolinha.setAttribute("cx", "85");
+          bolinha.setAttribute("cy", "33");
         }
-        if (indice < passos.length - 1 || decorrido < passo.duracao) requestAnimationFrame(quadro);
+        if (indice < cenario.passos.length - 1 || decorrido < passo.duracao) animacao = requestAnimationFrame(quadro);
         else {
           figura.dataset.tempo = "concluida";
-          nos.forEach((no) => no.classList.remove("ativo"));
+          nos.forEach((no) => no.classList.toggle("ativo", no.dataset.no === (cenario.passos.find((item) => item.no === "resposta" || item.no === "pessoa")?.no)));
+          caminhos.forEach((caminho) => caminho.classList.remove("ativo"));
+          bolinha.setAttribute("hidden", "");
+          if (automatico && selecionado === 0 && cenarios.length > 1) tocar(1);
         }
       };
-      requestAnimationFrame(quadro);
+      animacao = requestAnimationFrame(quadro);
     };
+    const escolher = (indice: number) => {
+      automatico = false;
+      iniciado = true;
+      observar?.disconnect();
+      tocar(indice);
+    };
+    abas.forEach((aba, indice) => {
+      aba.addEventListener("click", () => escolher(indice));
+      aba.addEventListener("keydown", (evento) => {
+        let proxima = indice;
+        if (evento.key === "ArrowRight") proxima = (indice + 1) % abas.length;
+        else if (evento.key === "ArrowLeft") proxima = (indice + abas.length - 1) % abas.length;
+        else if (evento.key === "Home") proxima = 0;
+        else if (evento.key === "End") proxima = abas.length - 1;
+        else return;
+        evento.preventDefault();
+        abas[proxima].focus();
+        escolher(proxima);
+      });
+    });
     if ("IntersectionObserver" in window) {
-      const observar = new IntersectionObserver((entradas) => {
-        if (entradas.some((entrada) => entrada.isIntersecting)) {
-          observar.disconnect();
-          tocar();
+      observar = new IntersectionObserver((entradas) => {
+        if (!iniciado && entradas.some((entrada) => entrada.isIntersecting && entrada.intersectionRatio >= .6)) {
+          iniciado = true;
+          observar!.disconnect();
+          tocar(0);
         }
-      }, { threshold: .2 });
-      observar.observe(figura);
-    } else tocar();
+      }, { threshold: .6 });
+      observar.observe(paineis[0].querySelector("svg")!);
+    } else tocar(0);
   });
 </script>
 
 <style>
   .figura-agente { margin-block: 1.8em 2em }
+  [hidden] { display: none !important }
+  .fag-abas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px }
+  .fag-abas button { border: 1px solid var(--linha); border-radius: 18px; padding: 7px 13px; background: var(--papel); font: 14px/1.3 var(--f-ui); cursor: pointer }
+  .fag-abas button[aria-selected="true"] { background: var(--papel-2); border-color: var(--acento); color: var(--acento) }
   .fag-quadro { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--linha); border-radius: 12px; background: var(--papel-2); overflow: hidden }
   .fag-conversa, .fag-interior { padding: 18px; min-width: 0 }
   .fag-interior { border-left: 1px solid var(--linha) }
@@ -123,6 +244,7 @@ const titulo = `figura-agente-${roteiro.caso}`;
   .fag-mensagem { padding: 14px; border: 1px solid var(--linha); border-radius: 12px; background: var(--papel); font: 16px/1.55 var(--f-ui); overflow-wrap: anywhere }
   .fag-mensagem b { display: block; color: var(--ink-2); margin-bottom: 7px; font-size: 12px; font-weight: 500 }
   .fag-mensagem p { margin: 0; hyphens: none }
+  .figura-agente :global(.fag-sem-quebra) { white-space: nowrap }
   .fag-pergunta { margin-right: 20px }
   .fag-resposta { margin-left: 20px; border-color: var(--ok) }
   .fag-resposta b { color: var(--ok) }
@@ -131,18 +253,18 @@ const titulo = `figura-agente-${roteiro.caso}`;
   svg { display: block; width: 100%; height: auto; overflow: visible; font: 16px var(--f-ui) }
   svg text { fill: var(--ink); text-anchor: middle }
   .fag-arestas path { fill: none; stroke: var(--linha); stroke-width: 2 }
+  .fag-arestas path.ativo { stroke: var(--acento); stroke-width: 2.5 }
   marker path { fill: var(--ink-2) }
   .fag-no > rect, .fag-fundo-ferramentas { fill: var(--papel); stroke: var(--linha); stroke-width: 1.5 }
   .fag-apoio { font-size: 12px; fill: var(--ink-2) }
   .fag-rotulo { font-size: 13px; fill: var(--ink-2) }
-  .fag-outros { font-size: 14px; fill: var(--ink-2) }
-  .fag-alternativa { opacity: .65 }
-  .fag-no > .fag-escolha { fill: var(--papel-2); stroke: var(--ok) }
-  .fag-escolha-texto { fill: var(--ok); font-size: 14px }
+  .fag-escolha rect { fill: var(--papel-2); stroke: var(--linha) }
+  .fag-escolha text { fill: var(--ink-2); font-size: 14px }
+  .fag-escolha.ativa rect { stroke: var(--ok); stroke-width: 2 }
+  .fag-escolha.ativa text { fill: var(--ok); font-weight: 600 }
   .fag-no.ativo > rect { stroke: var(--acento); stroke-width: 2.5 }
-  .fag-no.ativo > text:not(.fag-outros) { fill: var(--acento) }
+  .fag-no.ativo > text { fill: var(--acento) }
   .fag-bolinha { fill: var(--acento); stroke: var(--papel); stroke-width: 2 }
-  .fag-bolinha[hidden] { display: none }
   .fag-andamento { min-height: 3em; margin: 12px 0 0; font: 13px/1.5 var(--f-ui); color: var(--ink-2) }
   figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
   figcaption b { color: var(--ink); font-weight: 600 }
@@ -153,10 +275,12 @@ const titulo = `figura-agente-${roteiro.caso}`;
     .fag-quadro { grid-template-columns: 1fr }
     .fag-conversa, .fag-interior { padding: 14px }
     .fag-interior { border-left: 0; border-top: 1px solid var(--linha) }
+    .fag-abas { gap: 5px }
+    .fag-abas button { padding: 6px 10px; font-size: 13px }
     h3 { margin-bottom: 14px; font-size: 16px }
     .fag-mensagens { gap: 12px }
     .fag-mensagem { padding: 12px; font-size: 14px; line-height: 1.45 }
     .fag-contrato { margin-top: 12px }
-    .fag-andamento { min-height: 3em; margin-top: 6px }
+    .fag-andamento { margin-top: 6px }
   }
 </style>

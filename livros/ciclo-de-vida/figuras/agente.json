@@ -1,13 +1,56 @@
 {
-  "caso": "R01",
-  "passos": [
-    { "no": "pergunta", "texto": "Bruno pergunta pelo pedido.", "duracao": 2000 },
-    { "no": "cliente", "texto": "A pergunta chega ao agente.", "duracao": 900 },
-    { "no": "agente", "texto": "O agente precisa consultar os dados da loja.", "duracao": 900 },
-    { "no": "pedidos", "texto": "Consulta o pedido BT-1002.", "duracao": 1500 },
-    { "no": "agente", "texto": "Confere que o pedido pertence ao e-mail informado.", "duracao": 1300 },
-    { "no": "decisao", "texto": "O contrato permite responder.", "duracao": 1300 },
-    { "no": "resposta", "texto": "O agente prepara a resposta com os dados do pedido.", "duracao": 2100 },
-    { "no": "conversa", "texto": "Bruno, o status do seu pedido BT-1002 é “preparando”. A previsão de envio é 11/11/2026.", "duracao": 2000 }
+  "cenarios": [
+    {
+      "caso": "R01",
+      "passos": [
+        { "no": "pergunta", "texto": "A pergunta aparece na conversa.", "duracao": 2000 },
+        { "no": "cliente", "texto": "O cliente pergunta pelo pedido.", "duracao": 900 },
+        { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente recebe a pergunta e precisa consultar os dados da loja.", "duracao": 900 },
+        { "no": "pedidos", "trajeto": "agente-pedidos", "texto": "Consulta o pedido BT-1002.", "duracao": 1500 },
+        { "no": "agente", "trajeto": "pedidos-agente", "texto": "Confere que o pedido pertence ao e-mail informado.", "duracao": 1300 },
+        { "no": "decisao", "trajeto": "agente-decisao", "escolha": "responder", "texto": "Pedido e e-mail conferidos: decide responder.", "duracao": 1300 },
+        { "no": "resposta", "trajeto": "decisao-resposta", "texto": "Pedido consultado · e-mail conferido · resposta", "duracao": 2100 },
+        { "no": "conversa", "texto": "Bruno, o status do seu pedido BT-1002 é “preparando”. A previsão de envio é 11/11/2026.", "duracao": 2000 }
+      ]
+    },
+    {
+      "caso": "R12",
+      "passos": [
+        { "no": "pergunta", "texto": "A pergunta aparece na conversa.", "duracao": 2000 },
+        { "no": "cliente", "texto": "O cliente pergunta pelo pedido.", "duracao": 900 },
+        { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente recebe a pergunta e precisa conferir o pedido e o e-mail.", "duracao": 900 },
+        { "no": "pedidos", "trajeto": "agente-pedidos", "texto": "Consulta o pedido BT-1001.", "duracao": 1500 },
+        { "no": "agente", "trajeto": "pedidos-agente", "texto": "Compara o e-mail informado com o do dono do pedido: eles não batem.", "duracao": 1700 },
+        { "no": "decisao", "trajeto": "agente-decisao", "escolha": "recusar", "texto": "O e-mail não é o da compra: decide recusar sem revelar dados do pedido.", "duracao": 1300 },
+        { "no": "resposta", "trajeto": "decisao-resposta", "texto": "Pedido consultado · e-mail diferente do da compra · recusa", "duracao": 1700 },
+        { "no": "conversa", "texto": "Não consigo passar informações desse pedido: o e-mail informado não é o da compra. Se o pedido for seu, me diga o e-mail que você usou ao comprar.", "duracao": 2000 }
+      ]
+    },
+    {
+      "caso": "R09",
+      "passos": [
+        { "no": "pergunta", "texto": "A pergunta aparece na conversa.", "duracao": 2000 },
+        { "no": "cliente", "texto": "A cliente conta que a tampa veio rachada.", "duracao": 700 },
+        { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente recebe a pergunta e precisa consultar o pedido.", "duracao": 900 },
+        { "no": "pedidos", "trajeto": "agente-pedidos", "texto": "Consulta o pedido BT-1004 e a data de entrega.", "duracao": 1500 },
+        { "no": "agente", "trajeto": "pedidos-agente", "texto": "Confere o e-mail da compra e a entrega em 07/11/2026.", "duracao": 1300 },
+        { "no": "politica", "trajeto": "agente-politica", "texto": "Consulta a política: defeito tem prazo de 90 dias e troca com etiqueta de envio.", "duracao": 1800 },
+        { "no": "agente", "trajeto": "politica-agente", "texto": "O defeito está dentro do prazo e os dados da compra batem.", "duracao": 1300 },
+        { "no": "decisao", "trajeto": "agente-decisao", "escolha": "abrir_chamado", "texto": "Decide abrir um chamado de troca, conforme a política.", "duracao": 1300 },
+        { "no": "resposta", "trajeto": "decisao-resposta", "texto": "Pedido e política consultados · chamado de troca", "duracao": 1200 },
+        { "no": "conversa", "texto": "Ana, sinto muito pela tampa. O pedido BT-1004 foi entregue em 07/11/2026, dentro dos 90 dias para defeito. Abri um chamado de troca e vou mandar uma etiqueta de envio.", "duracao": 2000 }
+      ]
+    },
+    {
+      "caso": "R16",
+      "passos": [
+        { "no": "pergunta", "texto": "A pergunta aparece na conversa.", "duracao": 2000 },
+        { "no": "cliente", "texto": "O cliente pede para falar com uma pessoa.", "duracao": 1300 },
+        { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente reconhece o pedido de atendimento por uma pessoa.", "duracao": 2200 },
+        { "no": "decisao", "trajeto": "agente-decisao", "escolha": "passar", "texto": "Decide passar a vez, sem consultar ferramentas.", "duracao": 2300 },
+        { "no": "pessoa", "trajeto": "decisao-pessoa", "texto": "Conversa encaminhada para uma pessoa da equipe", "duracao": 2200 },
+        { "no": "conversa", "texto": "Claro. Vou passar a conversa para uma pessoa da equipe.", "duracao": 2000 }
+      ]
+    }
   ]
 }
