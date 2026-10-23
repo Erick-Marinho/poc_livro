@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "astro build && npm run saidas:conferir",
+    "test": "astro build && npm run saidas:conferir && node --test \"testes/*.test.mjs\"",
     "saidas": "python3 scripts/saidas.py ciclo-de-vida",
     "saidas:conferir": "python3 scripts/saidas.py ciclo-de-vida --conferir"
   },

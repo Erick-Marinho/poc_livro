@@ -2,16 +2,25 @@
 import { getCollection, render } from "astro:content";
 import Capitulo from "../../layouts/Capitulo.astro";
 
+/** Um texto do livro por página. Anterior e próximo saem da ordem dos textos, não de um campo escrito à mão. */
 export async function getStaticPaths() {
-  const capitulos = await getCollection("capitulos");
-  return capitulos.map((entrada) => {
-    const partes = entrada.id.split("/");
-    return { params: { livro: partes[0], capitulo: partes[partes.length - 1] }, props: { entrada } };
+  const todos = await getCollection("capitulos");
+  const livroDe = (e: (typeof todos)[number]) => e.id.split("/")[0];
+  const endereco = (e: (typeof todos)[number]) => `/${livroDe(e)}/${e.id.split("/").pop()}/`;
+  const rotulo = (e: (typeof todos)[number]) => (e.data.tipo === "capitulo" ? `Capítulo ${e.data.numero} · ${e.data.titulo}` : e.data.titulo);
+  return todos.map((entrada) => {
+    const doLivro = todos.filter((e) => livroDe(e) === livroDe(entrada)).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
+    const i = doLivro.indexOf(entrada);
+    const vizinho = (e?: (typeof todos)[number]) => (e ? { href: endereco(e), rotulo: rotulo(e) } : undefined);
+    return {
+      params: { livro: livroDe(entrada), capitulo: entrada.id.split("/").pop()! },
+      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]) },
+    };
   });
 }
-const { entrada } = Astro.props;
+const { entrada, anterior, proximo } = Astro.props;
 const { Content, headings } = await render(entrada);
 ---
-<Capitulo capitulo={entrada} secoes={headings}>
+<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo}>
   <Content />
 </Capitulo>

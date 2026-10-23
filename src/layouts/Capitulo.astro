@@ -3,8 +3,9 @@ import "../styles/livro.css";
 import type { CollectionEntry } from "astro:content";
 import type { MarkdownHeading } from "astro";
 
-interface Props { capitulo: CollectionEntry<"capitulos">; secoes: MarkdownHeading[] }
-const { capitulo, secoes } = Astro.props;
+type Vizinho = { href: string; rotulo: string };
+interface Props { capitulo: CollectionEntry<"capitulos">; secoes: MarkdownHeading[]; anterior?: Vizinho; proximo?: Vizinho }
+const { capitulo, secoes, anterior, proximo } = Astro.props;
 const c = capitulo.data;
 /* texto curto do cabeçalho: `assim` vira código, o resto é escapado */
 const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
@@ -40,7 +41,12 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
       {c.assinatura && (
         <div class="assinatura"><span>{c.assinatura.autores.join(" e ")}</span><span class="quando">{c.assinatura.quando}</span></div>
       )}
-      {(c.anterior || c.proximo) && <div class="proximo"><span>{c.anterior && `← ${c.anterior}`}</span><span>{c.proximo && `${c.proximo} →`}</span></div>}
+      {(anterior || proximo || c.em_breve) && (
+        <nav class="proximo" aria-label="Navegação entre capítulos">
+          {anterior ? <a href={anterior.href} rel="prev">← {anterior.rotulo}</a> : <span />}
+          {proximo ? <a href={proximo.href} rel="next">{proximo.rotulo} →</a> : c.em_breve ? <span class="em-breve">{c.em_breve} · em breve</span> : <span />}
+        </nav>
+      )}
       {c.aviso && <p class="ponto" style="margin-top:10px">{c.aviso}</p>}
     </main>
     <script define:vars={{ titulos, inicio: rotulo }}>

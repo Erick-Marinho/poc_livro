@@ -19,8 +19,7 @@ const capitulos = defineCollection({
       neste: z.array(z.string()).min(1).optional(),
       partida: z.object({ texto: z.string(), tag: z.string() }).optional(),
       assinatura: z.object({ autores: z.array(z.string()).min(1), quando: z.string() }).optional(),
-      anterior: z.string().optional(),
-      proximo: z.string().optional(),
+      em_breve: z.string().optional(),   /* o próximo texto, enquanto ele ainda não existe */
       aviso: z.string().optional(),
     })
     .superRefine((d, ctx) => {
