@@ -1,0 +1,114 @@
+---
+/**
+ * Figura interativa: o caminho de uma pergunta, passo a passo, em jeitos diferentes de montar o sistema.
+ * O leitor escolhe o jeito (abas) e a pergunta, e avança um passo por vez.
+ * Os dados vêm de um JSON do livro: { perguntas: [{id, texto}], modos: [{id, nome, quem_decide, passos: {pergunta: [passo]}}] }.
+ * Um passo: { quem, texto, decide?, erro?, certo? }.
+ */
+type Passo = { quem: string; texto: string; decide?: boolean; erro?: string; certo?: boolean };
+type Modo = { id: string; nome: string; quem_decide: string; passos: Record<string, Passo[]> };
+interface Props { dados: { perguntas: { id: string; texto: string }[]; modos: Modo[] }; numero: string; legenda: string; inicio?: string }
+const { dados, numero, legenda, inicio } = Astro.props;
+for (const m of dados.modos) for (const p of dados.perguntas)
+  if (!m.passos[p.id]?.length) throw new Error(`Rastro: o modo "${m.id}" não tem passos para a pergunta "${p.id}"`);
+const modo0 = inicio ?? dados.modos[0].id;
+const classe = (q: string) => "q-" + q.normalize("NFD").replace(/[^\w]/g, "");
+---
+<figure class="rastro largo" data-rastro data-modo={modo0} data-pergunta={dados.perguntas[0].id}>
+  <div class="rs-quadro">
+    <div class="rs-abas" role="tablist" aria-label="Jeito de montar">
+      {dados.modos.map((m) => <button type="button" role="tab" data-modo-btn={m.id} aria-selected={m.id === modo0 ? "true" : "false"}>{m.nome}</button>)}
+    </div>
+    <div class="rs-perguntas" aria-label="Pergunta">
+      {dados.perguntas.map((p, i) => <button type="button" data-pergunta-btn={p.id} aria-pressed={i === 0 ? "true" : "false"}>“{p.texto}”</button>)}
+    </div>
+    {dados.modos.map((m) => dados.perguntas.map((p) => (
+      <div class="rs-caminho" data-caminho={`${m.id}/${p.id}`} hidden>
+        <p class="rs-decide">quem decide o próximo passo: <b>{m.quem_decide}</b></p>
+        <ol>
+          {m.passos[p.id].map((s) => (
+            <li class:list={[classe(s.quem), { decide: s.decide, erro: s.erro, certo: s.certo }]}>
+              <span class="rs-quem">{s.quem}</span>
+              <span class="rs-texto">{s.texto}{s.decide && <span class="rs-marca">decide</span>}
+                {s.erro && <span class="rs-nota">✗ {s.erro}</span>}
+                {s.certo && <span class="rs-nota">✓ veio dos dados da loja</span>}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )))}
+    <div class="rs-controles">
+      <button type="button" data-avancar>próximo passo →</button>
+      <button type="button" data-tudo>ver tudo</button>
+      <button type="button" data-voltar>do começo</button>
+      <span class="rs-conta" data-conta></span>
+    </div>
+  </div>
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-rastro]").forEach((fig) => {
+    let mostrados = 1;
+    const atual = () => fig.querySelector<HTMLElement>(`[data-caminho="${fig.dataset.modo}/${fig.dataset.pergunta}"]`)!;
+    const desenhar = () => {
+      fig.querySelectorAll<HTMLElement>("[data-caminho]").forEach((c) => (c.hidden = c !== atual()));
+      const itens = atual().querySelectorAll("li");
+      itens.forEach((li, i) => li.classList.toggle("visto", i < mostrados));
+      fig.querySelector("[data-conta]")!.textContent = `passo ${Math.min(mostrados, itens.length)} de ${itens.length}`;
+      (fig.querySelector("[data-avancar]") as HTMLButtonElement).disabled = mostrados >= itens.length;
+      (fig.querySelector("[data-tudo]") as HTMLButtonElement).disabled = mostrados >= itens.length;
+    };
+    const escolher = (campo: "modo" | "pergunta", v: string) => {
+      fig.dataset[campo] = v; mostrados = 1;
+      fig.querySelectorAll<HTMLButtonElement>("[data-modo-btn]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.modoBtn === fig.dataset.modo)));
+      fig.querySelectorAll<HTMLButtonElement>("[data-pergunta-btn]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.perguntaBtn === fig.dataset.pergunta)));
+      desenhar();
+    };
+    fig.querySelectorAll<HTMLButtonElement>("[data-modo-btn]").forEach((b) => b.addEventListener("click", () => escolher("modo", b.dataset.modoBtn!)));
+    fig.querySelectorAll<HTMLButtonElement>("[data-pergunta-btn]").forEach((b) => b.addEventListener("click", () => escolher("pergunta", b.dataset.perguntaBtn!)));
+    fig.querySelector("[data-avancar]")!.addEventListener("click", () => { mostrados++; desenhar(); });
+    fig.querySelector("[data-tudo]")!.addEventListener("click", () => { mostrados = 99; desenhar(); });
+    fig.querySelector("[data-voltar]")!.addEventListener("click", () => { mostrados = 1; desenhar(); });
+    desenhar();
+  });
+</script>
+
+<style is:global>
+  .rastro { margin: 1.8em auto 2em }
+  .rs-quadro { background: var(--papel-2); border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui) }
+  .rs-abas { display: flex; gap: 4px; border-bottom: 1px solid var(--linha); overflow-x: auto }
+  .rs-abas button { border: 0; background: none; padding: 6px 12px; cursor: pointer; font: 600 14px var(--f-ui); color: var(--ink-2); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap }
+  .rs-abas button[aria-selected="true"] { color: var(--acento); border-bottom-color: var(--acento) }
+  .rs-perguntas { display: flex; flex-wrap: wrap; gap: 6px }
+  .rs-perguntas button { border: 1px solid var(--linha); background: var(--papel); border-radius: 8px; padding: 5px 10px; cursor: pointer; font: italic 14.5px/1.4 var(--f-texto); text-align: left; min-width: 0 }
+  .rs-perguntas button[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .rs-decide { margin: 0 0 8px; font-size: 13.5px; color: var(--ink-2) }
+  .rs-decide b { color: var(--ink) }
+  .rastro ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; position: relative }
+  .rastro li { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: start; padding: 8px 0; border-top: 1px dashed var(--linha); opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; visibility: hidden }
+  .rastro li:first-child { border-top: 0 }
+  .rastro li.visto { opacity: 1; transform: none; visibility: visible }
+  @media (prefers-reduced-motion: reduce) { .rastro li { transition: none; transform: none } }
+  .rs-quem { font: 600 11px/1.9 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); text-align: right; white-space: nowrap }
+  .rs-texto { min-width: 0; overflow-wrap: anywhere }
+  .rastro .q-modelo .rs-quem { color: var(--acento) }
+  .rastro .q-codigo .rs-quem { color: var(--ink) }
+  .rastro .q-ferramenta .rs-quem { color: var(--ok) }
+  .rastro .q-ferramenta .rs-texto { font: 13.5px/1.6 var(--f-mono) }
+  .rastro .q-resposta .rs-texto { font: italic 16px/1.5 var(--f-texto) }
+  .rs-marca { display: inline-block; margin-left: 8px; font: 600 10.5px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--papel); background: var(--acento); border-radius: 4px; padding: 3px 5px; vertical-align: 2px }
+  .rastro .q-codigo .rs-marca { background: var(--ink) }
+  .rs-nota { display: block; margin-top: 3px; font: 600 13px var(--f-ui); font-style: normal }
+  .rastro li.erro .rs-nota { color: var(--aviso) }
+  .rastro li.certo .rs-nota { color: var(--ok) }
+  .rs-controles { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+  .rs-controles button { border: 1px solid var(--linha); background: var(--papel); border-radius: 6px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .rs-controles [data-avancar] { border-color: var(--acento); color: var(--acento) }
+  .rs-controles button:disabled { opacity: .45; cursor: default }
+  .rs-conta { margin-left: auto; font: 12px var(--f-mono); color: var(--ink-2) }
+  @media (max-width: 520px) {
+    .rastro li { grid-template-columns: 1fr; gap: 2px }
+    .rs-quem { text-align: left }
+  }
+</style>

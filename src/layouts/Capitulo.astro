@@ -32,6 +32,12 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
         {capitulo_ && <div class="numero">{c.numero}</div>}
         <h1>{c.titulo}</h1>
         <p class="lide">{c.lide}</p>
+        {c.epigrafe && (
+          <figure class="epigrafe">
+            <blockquote>{c.epigrafe.texto}</blockquote>
+            <figcaption>{c.epigrafe.autor}, em <cite>{c.epigrafe.obra}</cite> ({c.epigrafe.ano})</figcaption>
+          </figure>
+        )}
       </section>
       {capitulo_ && c.neste && c.partida && (
         <div class="neste"><b>neste capítulo</b><ul>{c.neste.map((n) => <li set:html={md(n)} />)}</ul>
