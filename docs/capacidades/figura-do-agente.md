@@ -19,7 +19,9 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   a pergunta aparece → a conversa para e o grafo anima → o grafo para e a resposta aparece.
   No computador, a conversa fica à esquerda e o grafo à direita; abaixo de 640 px, a conversa fica em cima.
 - (etapa 1) Lugar: prefácio, seção "O que você vai construir", logo depois da lista dos 8 capítulos
-  (sugestão do planejador; o responsável ainda não confirmou).
+  (confirmado pelo responsável).
+- (etapa 1) O roteiro toca uma vez: 2 segundos para a pergunta, 8 para o grafo e 2 para a resposta;
+  depois permanece parado com a conversa inteira.
 - (etapa 2) Ordem dos cenários: R01 primeiro (o fluxo simples), R12 em seguida (o pedido de outra pessoa:
   o grafo mostra a comparação do e-mail com o do dono e a recusa).
 

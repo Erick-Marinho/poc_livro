@@ -1,0 +1,13 @@
+{
+  "caso": "R01",
+  "passos": [
+    { "no": "pergunta", "texto": "Bruno pergunta pelo pedido.", "duracao": 2000 },
+    { "no": "cliente", "texto": "A pergunta chega ao agente.", "duracao": 900 },
+    { "no": "agente", "texto": "O agente precisa consultar os dados da loja.", "duracao": 900 },
+    { "no": "pedidos", "texto": "Consulta o pedido BT-1002.", "duracao": 1500 },
+    { "no": "agente", "texto": "Confere que o pedido pertence ao e-mail informado.", "duracao": 1300 },
+    { "no": "decisao", "texto": "O contrato permite responder.", "duracao": 1300 },
+    { "no": "resposta", "texto": "O agente prepara a resposta com os dados do pedido.", "duracao": 2100 },
+    { "no": "conversa", "texto": "Bruno, o status do seu pedido BT-1002 é “preparando”. A previsão de envio é 11/11/2026.", "duracao": 2000 }
+  ]
+}
