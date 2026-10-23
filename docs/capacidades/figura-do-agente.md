@@ -34,6 +34,10 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
 - (etapa 2) O grafo do R09 dura 10 segundos para mostrar as duas consultas; os demais duram 8, com 2 para a pergunta e 2 para a resposta.
 - (etapa 2) Escolher uma aba cancela a sequência automática; as setas esquerda/direita, Home e End também escolhem a aba.
 - (etapa 2) A pílula escolhida e o canal ficam acesos no fim; o andamento final usa o texto do passo do canal de saída.
+- (etapa 3) Um painel estático do R01 mantém o estado final sem JS e na impressão, independente da aba ou do passo em tela.
+- (etapa 3) Avançar e voltar pausam no início do passo; tocar retoma o progresso, e tocar de novo reinicia o cenário (pausado em movimento reduzido).
+- (etapa 3) O anúncio acessível fica numa região separada do andamento visual; só ações do leitor atualizam essa região.
+- (etapa 3) As pílulas usam texto `--ink` sobre `--papel-2`, borda `--ok` na escolha e fonte SVG de 20 px para compensar a escala.
 
 ## Peças
 

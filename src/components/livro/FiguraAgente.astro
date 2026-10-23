@@ -1,5 +1,5 @@
 ---
-interface Passo { no: string; trajeto?: string; escolha?: string; texto: string; duracao: number }
+interface Passo { no: string; trajeto?: string; escolha?: string; marca?: string; texto: string; duracao: number }
 interface Cenario { caso: string; passos: Passo[] }
 interface Caso { id: string; pergunta: string; decisao: string; precisa: string[]; email?: string }
 interface Props {
@@ -36,6 +36,7 @@ const cenarios = roteiro.cenarios.map((cenario) => {
     if (passo.trajeto && !Object.hasOwn(trajetos, passo.trajeto)) falhar(cenario.caso, `trajeto desconhecido: "${passo.trajeto}".`);
     if (!Number.isFinite(passo.duracao) || passo.duracao <= 0) falhar(cenario.caso, `duração inválida no passo "${passo.no}".`);
     if (typeof passo.texto !== "string") falhar(cenario.caso, `texto ausente no passo "${passo.no}".`);
+    if (passo.marca !== undefined && (typeof passo.marca !== "string" || [...passo.marca].length > 20)) falhar(cenario.caso, `marca do passo "${passo.no}" deve ter no máximo 20 caracteres.`);
     for (const no of [passo.no, ...(passo.trajeto?.split("-") ?? [])]) {
       if (ferramentas.includes(no)) visitadas.add(no);
     }
@@ -64,13 +65,25 @@ const cenarios = roteiro.cenarios.map((cenario) => {
   };
 });
 const titulo = `figura-agente-${cenarios.map((cenario) => cenario.caso).join("-")}`;
+const posicoesMarca: Record<string, [number, number]> = {
+  pergunta: [85, 70], cliente: [85, 70], agente: [85, 169], pedidos: [292, 150],
+  politica: [292, 208], catalogo: [292, 266], decisao: [190, 415], resposta: [100, 478], pessoa: [280, 478], conversa: [190, 478],
+};
+const paineis = [{ cenario: cenarios[0], indice: "estatica", estatica: true }, ...cenarios.map((cenario, indice) => ({ cenario, indice, estatica: false }))];
 const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
 ---
 <figure class="figura-agente largo" data-figura-agente data-roteiro={JSON.stringify(cenarios.map(({ caso, passos, andamento }) => ({ caso, passos, andamento })))}>
   <div class="fag-abas" role="tablist" aria-label="Decisões do agente" hidden>
     {cenarios.map((cenario, indice) => <button type="button" role="tab" id={`${titulo}-aba-${indice}`} aria-controls={`${titulo}-painel-${indice}`} aria-selected={indice === 0 ? "true" : "false"} tabindex={indice === 0 ? 0 : -1} data-aba={indice}>{escolhas[cenario.decisao]}</button>)}
   </div>
-  {cenarios.map((cenario, indice) => <div class="fag-painel" id={`${titulo}-painel-${indice}`} role="tabpanel" aria-labelledby={`${titulo}-aba-${indice}`} hidden={indice !== 0} data-painel={indice}>
+  <div class="fag-controles" aria-label="Reprodução da figura" hidden>
+    <button type="button" data-acao="alternar" aria-label="Tocar">Tocar</button>
+    <button type="button" data-acao="anterior" aria-label="Passo anterior">Passo anterior</button>
+    <button type="button" data-acao="proximo" aria-label="Próximo passo">Próximo passo</button>
+    <button type="button" data-acao="repetir" aria-label="Tocar de novo">Tocar de novo</button>
+  </div>
+  <p class="fag-anuncio" aria-live="polite" aria-atomic="true"></p>
+  {paineis.map(({ cenario, indice, estatica }) => <div class:list={["fag-painel", { "fag-estatica": estatica }]} id={`${titulo}-painel-${indice}`} role={estatica ? undefined : "tabpanel"} aria-labelledby={estatica ? undefined : `${titulo}-aba-${indice}`} hidden={!estatica} data-painel={estatica ? undefined : indice}>
     <div class="fag-quadro">
       <section class="fag-conversa" aria-label="Conversa simulada">
         <h3><span>Por fora</span> A conversa</h3>
@@ -88,12 +101,12 @@ const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
           <defs><marker id={`${titulo}-${indice}-seta`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" /></marker></defs>
           <rect class="fag-fundo-ferramentas" x="219" y="65" width="147" height="199" rx="12" />
           <g class="fag-arestas" marker-end={`url(#${titulo}-${indice}-seta)`}>
-            {Object.entries(trajetos).map(([nome, caminho]) => <path data-trajeto={nome} d={caminho} />)}
+            {Object.entries(trajetos).filter(([nome]) => cenario.passos.some((passo) => passo.trajeto === nome)).map(([nome, caminho]) => <path data-trajeto={nome} d={caminho} />)}
           </g>
           <g class="fag-no" data-no="cliente"><rect x="30" y="15" width="110" height="37" rx="10" /><text x="85" y="39">cliente</text></g>
           <g class="fag-no" data-no="agente"><rect x="30" y="99" width="110" height="44" rx="10" /><text x="85" y="119">agente</text><text class="fag-apoio" x="85" y="136">pensa</text></g>
           <text class="fag-rotulo" x="292" y="87">ferramentas</text>
-          {ferramentas.map((no, i) => <g class="fag-no" data-no={no}><rect x="231" y={99 + i * 58} width="123" height="38" rx="8" /><text x="292" y={123 + i * 58}>{no === "politica" ? "política" : no === "catalogo" ? "catálogo" : no}</text></g>)}
+          {ferramentas.map((no, i) => <g class:list={["fag-no", { ativo: estatica && cenario.passos.some((passo) => passo.no === no) }]} data-no={no}><rect x="231" y={99 + i * 58} width="123" height="38" rx="8" /><text x="292" y={123 + i * 58}>{no === "politica" ? "política" : no === "catalogo" ? "catálogo" : no}</text></g>)}
           <g class="fag-no fag-decisao" data-no="decisao">
             <rect x="18" y="300" width="344" height="97" rx="12" />
             <text x="190" y="321">decisão</text>
@@ -102,8 +115,11 @@ const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
               <text x={108.5 + i % 2 * 163} y={348 + Math.floor(i / 2) * 32}>{rotulo}</text>
             </g>)}
           </g>
-          <g class="fag-no" data-no="resposta"><rect x="30" y="435" width="140" height="37" rx="10" /><text x="100" y="459">resposta</text></g>
+          <g class:list={["fag-no", { ativo: estatica && cenario.decisao !== "passar" }]} data-no="resposta"><rect x="30" y="435" width="140" height="37" rx="10" /><text x="100" y="459">resposta</text></g>
           <g class="fag-no" data-no="pessoa"><rect x="200" y="435" width="160" height="37" rx="10" /><text x="280" y="459">pessoa da equipe</text></g>
+          {cenario.passos.map((passo, i) => passo.marca && <g class="fag-marca" data-marca-passo={i} hidden={!estatica} transform={`translate(${posicoesMarca[passo.no][0]}, ${posicoesMarca[passo.no][1]})`}>
+            <rect x="-80" y="-16" width="160" height="24" rx="5" /><text y="1">{passo.marca}</text>
+          </g>)}
           <circle class="fag-bolinha" r="5" cx="85" cy="33" hidden />
         </svg>
         <p class="fag-andamento">{semQuebra(cenario.andamento).map((parte) => /^(e-mail|BT-\d+)$/.test(parte) ? <span class="fag-sem-quebra">{parte}</span> : parte)}</p>
@@ -114,93 +130,127 @@ const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
 </figure>
 
 <script>
-  interface Passo { no: string; trajeto?: string; escolha?: string; texto: string; duracao: number }
+  interface Passo { no: string; trajeto?: string; escolha?: string; marca?: string; texto: string; duracao: number }
   interface Cenario { caso: string; passos: Passo[]; andamento: string }
   document.querySelectorAll<HTMLElement>("[data-figura-agente]").forEach((figura) => {
     const cenarios: Cenario[] = JSON.parse(figura.dataset.roteiro!);
     const abas = [...figura.querySelectorAll<HTMLButtonElement>("[data-aba]")];
     const paineis = [...figura.querySelectorAll<HTMLElement>("[data-painel]")];
+    const botao = (acao: string) => figura.querySelector<HTMLButtonElement>(`[data-acao="${acao}"]`)!;
+    const anuncio = figura.querySelector<HTMLElement>(".fag-anuncio")!;
+    const movimento = matchMedia("(prefers-reduced-motion: reduce)");
+    const estado = { cenario: 0, passo: 0, progresso: 0 };
+    let tocando = false;
+    let automatico = !movimento.matches;
+    let iniciado = movimento.matches;
     let animacao = 0;
-    let automatico = true;
-    let iniciado = false;
+    let anterior: number | undefined;
     let observar: IntersectionObserver | undefined;
-    figura.dataset.tempo = "pronta";
-    figura.dataset.caso = cenarios[0].caso;
-    figura.querySelectorAll(".fag-escolha").forEach((escolha) => escolha.classList.remove("ativa"));
-    figura.querySelector<HTMLElement>(".fag-abas")!.hidden = false;
-    paineis[0].querySelector<HTMLElement>(".fag-andamento")!.textContent = "O atendimento começa ao chegar ao grafo.";
 
-    const tocar = (selecionado: number) => {
-      cancelAnimationFrame(animacao);
+    const renderizar = () => {
+      const { cenario: selecionado, passo: indice, progresso } = estado;
       const cenario = cenarios[selecionado];
       const painel = paineis[selecionado];
+      const passo = cenario.passos[indice];
+      const percorridos = cenario.passos.slice(0, indice + 1);
+      const concluida = indice === cenario.passos.length - 1 && progresso === 1;
+      const escolha = percorridos.findLast((item) => item.no === "decisao")?.escolha;
+      const canal = percorridos.findLast((item) => item.no === "resposta" || item.no === "pessoa")?.no;
       paineis.forEach((item, i) => { item.hidden = i !== selecionado; });
       abas.forEach((aba, i) => {
         aba.setAttribute("aria-selected", String(i === selecionado));
         aba.tabIndex = i === selecionado ? 0 : -1;
       });
       figura.dataset.caso = cenario.caso;
-      figura.dataset.tempo = "pergunta";
+      figura.dataset.passo = String(indice);
+      figura.dataset.progresso = String(progresso);
+      figura.dataset.tempo = concluida ? "concluida" : passo.no === "pergunta" ? "pergunta" : passo.no === "conversa" ? "resposta" : "grafo";
+      painel.querySelector<HTMLElement>(".fag-pergunta")!.hidden = false;
+      painel.querySelector<HTMLElement>(".fag-resposta")!.hidden = passo.no !== "conversa";
+      painel.querySelectorAll<SVGGElement>("[data-no]").forEach((no) => {
+        const ferramentaVisitada = ["pedidos", "politica", "catalogo"].includes(no.dataset.no!) && percorridos.some((item) => item.no === no.dataset.no);
+        no.classList.toggle("ativo", ferramentaVisitada || no.dataset.no === (passo.no === "conversa" ? canal : passo.no));
+      });
+      painel.querySelectorAll<SVGGElement>("[data-escolha]").forEach((item) => item.classList.toggle("ativa", item.dataset.escolha === escolha));
+      painel.querySelectorAll<SVGGElement>("[data-marca-passo]").forEach((item) => item.toggleAttribute("hidden", Number(item.dataset.marcaPasso) > indice));
+      painel.querySelectorAll<SVGPathElement>("[data-trajeto]").forEach((item) => item.classList.toggle("ativo", !concluida && item.dataset.trajeto === passo.trajeto));
       const bolinha = painel.querySelector<SVGCircleElement>(".fag-bolinha")!;
-      const andamento = painel.querySelector<HTMLElement>(".fag-andamento")!;
-      let textoAndamento: string | undefined;
-      const mostrarAndamento = (texto: string) => {
-        if (texto === textoAndamento) return;
-        textoAndamento = texto;
-        andamento.replaceChildren(...texto.split(/(e-mail|BT-\d+)/g).map((parte) => {
-          if (!/^(e-mail|BT-\d+)$/.test(parte)) return document.createTextNode(parte);
-          const trecho = document.createElement("span");
-          trecho.className = "fag-sem-quebra";
-          trecho.textContent = parte;
-          return trecho;
-        }));
-      };
-      const nos = painel.querySelectorAll<SVGGElement>("[data-no]");
-      const escolhas = painel.querySelectorAll<SVGGElement>("[data-escolha]");
-      const caminhos = painel.querySelectorAll<SVGPathElement>("[data-trajeto]");
-      escolhas.forEach((escolha) => escolha.classList.remove("ativa"));
-      let indice = 0;
-      let inicio: number | undefined;
-      const quadro = (agora: number) => {
-        inicio ??= agora;
-        let decorrido = agora - inicio;
-        while (decorrido >= cenario.passos[indice].duracao && indice < cenario.passos.length - 1) {
-          inicio += cenario.passos[indice].duracao;
-          indice++;
-          decorrido = agora - inicio;
-        }
-        const passo = cenario.passos[indice];
-        figura.dataset.tempo = passo.no === "pergunta" ? "pergunta" : passo.no === "conversa" ? "resposta" : "grafo";
-        if (passo.no !== "conversa") nos.forEach((no) => no.classList.toggle("ativo", no.dataset.no === passo.no));
-        caminhos.forEach((caminho) => caminho.classList.toggle("ativo", caminho.dataset.trajeto === passo.trajeto));
-        if (passo.no === "decisao") escolhas.forEach((escolha) => escolha.classList.toggle("ativa", escolha.dataset.escolha === passo.escolha));
-        mostrarAndamento(passo.no === "conversa" ? cenario.andamento : passo.texto);
-        bolinha.toggleAttribute("hidden", !passo.trajeto && passo.no !== "cliente");
-        if (passo.trajeto) {
-          const caminho = painel.querySelector<SVGPathElement>(`[data-trajeto="${passo.trajeto}"]`)!;
-          const ponto = caminho.getPointAtLength(caminho.getTotalLength() * Math.min(decorrido / (passo.duracao * .75), 1));
-          bolinha.setAttribute("cx", String(ponto.x));
-          bolinha.setAttribute("cy", String(ponto.y));
-        } else if (passo.no === "cliente") {
-          bolinha.setAttribute("cx", "85");
-          bolinha.setAttribute("cy", "33");
-        }
-        if (indice < cenario.passos.length - 1 || decorrido < passo.duracao) animacao = requestAnimationFrame(quadro);
-        else {
-          figura.dataset.tempo = "concluida";
-          nos.forEach((no) => no.classList.toggle("ativo", no.dataset.no === (cenario.passos.find((item) => item.no === "resposta" || item.no === "pessoa")?.no)));
-          caminhos.forEach((caminho) => caminho.classList.remove("ativo"));
-          bolinha.setAttribute("hidden", "");
-          if (automatico && selecionado === 0 && cenarios.length > 1) tocar(1);
-        }
-      };
-      animacao = requestAnimationFrame(quadro);
+      bolinha.toggleAttribute("hidden", movimento.matches || concluida || (!passo.trajeto && passo.no !== "cliente"));
+      if (passo.trajeto) {
+        const caminho = painel.querySelector<SVGPathElement>(`[data-trajeto="${passo.trajeto}"]`)!;
+        const ponto = caminho.getPointAtLength(caminho.getTotalLength() * Math.min(progresso / .75, 1));
+        bolinha.setAttribute("cx", String(ponto.x));
+        bolinha.setAttribute("cy", String(ponto.y));
+      } else {
+        bolinha.setAttribute("cx", "85");
+        bolinha.setAttribute("cy", "33");
+      }
+      painel.querySelector<HTMLElement>(".fag-andamento")!.replaceChildren(...(passo.no === "conversa" ? cenario.andamento : passo.texto).split(/(e-mail|BT-\d+)/g).map((parte) => {
+        if (!/^(e-mail|BT-\d+)$/.test(parte)) return document.createTextNode(parte);
+        const trecho = document.createElement("span");
+        trecho.className = "fag-sem-quebra";
+        trecho.textContent = parte;
+        return trecho;
+      }));
+      botao("alternar").textContent = tocando ? "Pausar" : "Tocar";
+      botao("alternar").setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
+      botao("anterior").disabled = indice === 0;
+      botao("proximo").disabled = indice === cenario.passos.length - 1;
     };
-    const escolher = (indice: number) => {
+    const anunciar = () => {
+      const cenario = cenarios[estado.cenario];
+      const passo = cenario.passos[estado.passo];
+      anuncio.textContent = `${cenario.caso} · passo ${estado.passo + 1} de ${cenario.passos.length}: ${passo.no === "conversa" ? cenario.andamento : passo.texto}`;
+    };
+    const parar = () => {
+      cancelAnimationFrame(animacao);
+      tocando = false;
+      anterior = undefined;
+    };
+    const assumirControle = () => {
       automatico = false;
       iniciado = true;
       observar?.disconnect();
-      tocar(indice);
+    };
+    const quadro = (agora: number) => {
+      if (!tocando) return;
+      const cenario = cenarios[estado.cenario];
+      let decorrido = estado.progresso * cenario.passos[estado.passo].duracao + (anterior === undefined ? 0 : agora - anterior);
+      anterior = agora;
+      while (decorrido >= cenario.passos[estado.passo].duracao && estado.passo < cenario.passos.length - 1) {
+        decorrido -= cenario.passos[estado.passo].duracao;
+        estado.passo++;
+      }
+      estado.progresso = Math.min(decorrido / cenario.passos[estado.passo].duracao, 1);
+      if (estado.passo === cenario.passos.length - 1 && estado.progresso === 1) {
+        if (automatico && estado.cenario === 0 && cenarios.length > 1) {
+          estado.cenario = 1;
+          estado.passo = 0;
+          estado.progresso = 0;
+        } else parar();
+      }
+      renderizar();
+      if (tocando) animacao = requestAnimationFrame(quadro);
+    };
+    const tocar = () => {
+      if (estado.passo === cenarios[estado.cenario].passos.length - 1 && estado.progresso === 1) {
+        estado.passo = 0;
+        estado.progresso = 0;
+      }
+      tocando = true;
+      anterior = undefined;
+      renderizar();
+      animacao = requestAnimationFrame(quadro);
+    };
+    const escolher = (indice: number) => {
+      assumirControle();
+      parar();
+      estado.cenario = indice;
+      estado.passo = 0;
+      estado.progresso = 0;
+      if (!movimento.matches) tocar();
+      else renderizar();
+      anunciar();
     };
     abas.forEach((aba, indice) => {
       aba.addEventListener("click", () => escolher(indice));
@@ -216,22 +266,60 @@ const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
         escolher(proxima);
       });
     });
-    if ("IntersectionObserver" in window) {
-      observar = new IntersectionObserver((entradas) => {
-        if (!iniciado && entradas.some((entrada) => entrada.isIntersecting && entrada.intersectionRatio >= .6)) {
-          iniciado = true;
-          observar!.disconnect();
-          tocar(0);
-        }
-      }, { threshold: .6 });
-      observar.observe(paineis[0].querySelector("svg")!);
-    } else tocar(0);
+    botao("alternar").addEventListener("click", () => {
+      assumirControle();
+      if (tocando) { parar(); renderizar(); }
+      else tocar();
+      anunciar();
+    });
+    ["anterior", "proximo"].forEach((acao) => botao(acao).addEventListener("click", () => {
+      assumirControle();
+      parar();
+      estado.passo = Math.max(0, Math.min(cenarios[estado.cenario].passos.length - 1, estado.passo + (acao === "proximo" ? 1 : -1)));
+      estado.progresso = 0;
+      renderizar();
+      anunciar();
+    }));
+    botao("repetir").addEventListener("click", () => {
+      assumirControle();
+      parar();
+      estado.passo = 0;
+      estado.progresso = 0;
+      if (!movimento.matches) tocar();
+      else renderizar();
+      anunciar();
+    });
+    movimento.addEventListener("change", () => {
+      if (movimento.matches) { assumirControle(); parar(); }
+      renderizar();
+    });
+    figura.dataset.aprimorada = "";
+    figura.querySelector<HTMLElement>(".fag-abas")!.hidden = false;
+    figura.querySelector<HTMLElement>(".fag-controles")!.hidden = false;
+    renderizar();
+    if (!movimento.matches) {
+      if ("IntersectionObserver" in window) {
+        observar = new IntersectionObserver((entradas) => {
+          if (!iniciado && entradas.some((entrada) => entrada.isIntersecting && entrada.intersectionRatio >= .6)) {
+            iniciado = true;
+            observar!.disconnect();
+            tocar();
+          }
+        }, { threshold: .6 });
+        observar.observe(paineis[0].querySelector("svg")!);
+      } else { iniciado = true; tocar(); }
+    }
   });
 </script>
 
 <style>
   .figura-agente { margin-block: 1.8em 2em }
   [hidden] { display: none !important }
+  [data-aprimorada] .fag-estatica { display: none }
+  .fag-anuncio { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap }
+  .fag-controles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px }
+  .fag-controles button { border: 1px solid var(--linha); border-radius: 6px; padding: 7px 10px; background: var(--papel); font: 14px/1.3 var(--f-ui); cursor: pointer }
+  .fag-controles button:disabled { color: var(--ink-2); cursor: default }
   .fag-abas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px }
   .fag-abas button { border: 1px solid var(--linha); border-radius: 18px; padding: 7px 13px; background: var(--papel); font: 14px/1.3 var(--f-ui); cursor: pointer }
   .fag-abas button[aria-selected="true"] { background: var(--papel-2); border-color: var(--acento); color: var(--acento) }
@@ -259,23 +347,26 @@ const semQuebra = (texto: string) => texto.split(/(e-mail|BT-\d+)/g);
   .fag-apoio { font-size: 12px; fill: var(--ink-2) }
   .fag-rotulo { font-size: 13px; fill: var(--ink-2) }
   .fag-escolha rect { fill: var(--papel-2); stroke: var(--linha) }
-  .fag-escolha text { fill: var(--ink-2); font-size: 14px }
+  .fag-escolha text { fill: var(--ink); font-size: 20px }
   .fag-escolha.ativa rect { stroke: var(--ok); stroke-width: 2 }
-  .fag-escolha.ativa text { fill: var(--ok); font-weight: 600 }
+  .fag-escolha.ativa text { fill: var(--ink); font-weight: 600 }
   .fag-no.ativo > rect { stroke: var(--acento); stroke-width: 2.5 }
   .fag-no.ativo > text { fill: var(--acento) }
+  .fag-marca rect { fill: var(--papel); stroke: var(--acento) }
+  .fag-marca text { font-size: 15px; fill: var(--ink) }
   .fag-bolinha { fill: var(--acento); stroke: var(--papel); stroke-width: 2 }
   .fag-andamento { min-height: 3em; margin: 12px 0 0; font: 13px/1.5 var(--f-ui); color: var(--ink-2) }
   figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
   figcaption b { color: var(--ink); font-weight: 600 }
-  [data-tempo="pronta"] .fag-mensagem, [data-tempo="pergunta"] .fag-resposta, [data-tempo="grafo"] .fag-resposta { visibility: hidden }
-  [data-tempo="pergunta"] .fag-pergunta, [data-tempo="resposta"] .fag-resposta { animation: fag-entra .35s ease-out both }
-  @keyframes fag-entra { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+  @media print {
+    .figura-agente .fag-abas, .figura-agente .fag-controles, .figura-agente .fag-anuncio, .figura-agente [data-painel] { display: none !important }
+    .figura-agente .fag-estatica { display: block !important }
+  }
   @media (max-width: 639px) {
     .fag-quadro { grid-template-columns: 1fr }
     .fag-conversa, .fag-interior { padding: 14px }
     .fag-interior { border-left: 0; border-top: 1px solid var(--linha) }
-    .fag-abas { gap: 5px }
+    .fag-abas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px }
     .fag-abas button { padding: 6px 10px; font-size: 13px }
     h3 { margin-bottom: 14px; font-size: 16px }
     .fag-mensagens { gap: 12px }
