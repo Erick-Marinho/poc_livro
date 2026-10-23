@@ -90,5 +90,6 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 |---|---|---|---|
 | 1 | `4acf2d2` | `npm test`; capturas dos três tempos em 1100/390 px, claro e escuro | Erick, 23/10/2026 |
 | 2 | `9d5899c` | `npm test`; o build falha com a escolha do R12 trocada e com o R12 visitando "política"; capturas dos 4 cenários | Erick, 23/10/2026 |
+| 3 | `94ea90d` + correção `1d22089` | `npm test`; capturas do selo R12, abas 2×2, movimento reduzido, sem JS e impressão; contraste das pílulas; build rejeita marca de 21 caracteres; selo corrigido por palavras conferido em 1100 px | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)
