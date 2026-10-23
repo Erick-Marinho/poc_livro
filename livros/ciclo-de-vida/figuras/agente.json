@@ -7,7 +7,7 @@
         { "no": "cliente", "texto": "O cliente pergunta pelo pedido.", "duracao": 900 },
         { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente recebe a pergunta e precisa consultar os dados da loja.", "duracao": 900 },
         { "no": "pedidos", "trajeto": "agente-pedidos", "texto": "Consulta o pedido BT-1002.", "duracao": 1500 },
-        { "no": "agente", "trajeto": "pedidos-agente", "marca": "e-mail = dono", "texto": "Confere que o pedido pertence ao e-mail informado.", "duracao": 1300 },
+        { "no": "agente", "trajeto": "pedidos-agente", "marca": "e-mail é do dono", "texto": "Confere que o pedido pertence ao e-mail informado.", "duracao": 1300 },
         { "no": "decisao", "trajeto": "agente-decisao", "escolha": "responder", "texto": "Pedido e e-mail conferidos: decide responder.", "duracao": 1300 },
         { "no": "resposta", "trajeto": "decisao-resposta", "texto": "Pedido consultado · e-mail conferido · resposta", "duracao": 2100 },
         { "no": "conversa", "texto": "Bruno, o status do seu pedido BT-1002 é “preparando”. A previsão de envio é 11/11/2026.", "duracao": 2000 }
@@ -20,7 +20,7 @@
         { "no": "cliente", "texto": "O cliente pergunta pelo pedido.", "duracao": 900 },
         { "no": "agente", "trajeto": "cliente-agente", "texto": "O agente recebe a pergunta e precisa conferir o pedido e o e-mail.", "duracao": 900 },
         { "no": "pedidos", "trajeto": "agente-pedidos", "texto": "Consulta o pedido BT-1001.", "duracao": 1500 },
-        { "no": "agente", "trajeto": "pedidos-agente", "marca": "e-mail ≠ dono", "texto": "Compara o e-mail informado com o do dono do pedido: eles não batem.", "duracao": 1700 },
+        { "no": "agente", "trajeto": "pedidos-agente", "marca": "e-mail não é do dono", "texto": "Compara o e-mail informado com o do dono do pedido: eles não batem.", "duracao": 1700 },
         { "no": "decisao", "trajeto": "agente-decisao", "escolha": "recusar", "texto": "O e-mail não é o da compra: decide recusar sem revelar dados do pedido.", "duracao": 1300 },
         { "no": "resposta", "trajeto": "decisao-resposta", "texto": "Pedido consultado · e-mail diferente do da compra · recusa", "duracao": 1700 },
         { "no": "conversa", "texto": "Não consigo passar informações desse pedido: o e-mail informado não é o da compra. Se o pedido for seu, me diga o e-mail que você usou ao comprar.", "duracao": 2000 }
