@@ -1,0 +1,17 @@
+---
+import { getCollection, render } from "astro:content";
+import Capitulo from "../../layouts/Capitulo.astro";
+
+export async function getStaticPaths() {
+  const capitulos = await getCollection("capitulos");
+  return capitulos.map((entrada) => {
+    const partes = entrada.id.split("/");
+    return { params: { livro: partes[0], capitulo: partes[partes.length - 1] }, props: { entrada } };
+  });
+}
+const { entrada } = Astro.props;
+const { Content, headings } = await render(entrada);
+---
+<Capitulo capitulo={entrada} secoes={headings}>
+  <Content />
+</Capitulo>

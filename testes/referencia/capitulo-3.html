@@ -1,0 +1,491 @@
+<title>Agente do Clima: o Livro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: uma coluna de leitura, como página de livro. Figuras, código e terminal entram no fluxo do texto
+   (um pouco mais largos que ele) e ganham vida quando o leitor chega neles. Nada fica fixo ao lado. */
+:root {
+  --papel: #f6f2ea; --papel-2: #ede7db; --ink: #24201a; --ink-2: #6b6357; --linha: #ddd4c4; --acento: #2a4fb5; --acento-2: #e8edf9;
+  --ok: #1f7a4c; --aviso: #9a5b00; --nota: #fbf8f2;
+  --f-texto: "Literata", Georgia, "Times New Roman", serif; --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ide-bg: #1e1e1e; --ide-tabs: #2d2d2d; --ide-ink: #d4d4d4; --ide-term: #181818; --ide-new: rgba(0, 122, 204, .18);
+  --fig: #101722; --fig-ink: #e8eef5; --fig-ink-2: #93a1b2; --fig-linha: #2a3644;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff; --acento-2: #1f2740;
+  --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff; --acento-2: #1f2740;
+  --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 70px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
+body { margin: 0; background: var(--papel); color: var(--ink); font: 19px/1.7 var(--f-texto); font-optical-sizing: auto }
+button { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
+
+/* barra do livro e progresso de leitura */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--papel); z-index: 20 }
+.topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 15; background: color-mix(in srgb, var(--papel) 92%, transparent); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--linha); font: 500 13px var(--f-ui); color: var(--ink-2) }
+.topo .in { max-width: 920px; margin: 0 auto; display: flex; align-items: center; gap: 12px; height: 50px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.topo b { color: var(--ink); font-weight: 600 }
+.topo .esp { flex: 1 }
+.topo .btn-s { border: 1px solid var(--linha); background: var(--papel); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: 500 13px var(--f-ui) }
+.progresso { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--acento); width: 0 }
+.sumario { position: fixed; z-index: 30; top: calc(56px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); width: min(340px, calc(100vw - 32px));
+  background: var(--papel); border: 1px solid var(--linha); border-radius: 10px; padding: 14px 16px; box-shadow: 0 18px 40px rgba(30, 20, 5, .18); font: 14px/1.5 var(--f-ui) }
+.sumario h4 { margin: 0 0 6px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.sumario ol { margin: 0 0 12px; padding-left: 20px; display: grid; gap: 3px }
+.sumario a { color: var(--ink); text-decoration: none } .sumario a:hover { color: var(--acento) }
+.sumario .off { color: var(--ink-2) } .sumario .aqui { color: var(--acento); font-weight: 600 }
+
+/* a página */
+.livro { max-width: 920px; margin: 0 auto; padding-block: 40px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.livro > * { max-width: 680px; margin-left: auto; margin-right: auto; min-width: 0 }
+.livro > .largo { max-width: 920px }
+p { margin: 0 0 1.05em; hyphens: auto }
+h2 { font: 700 30px/1.2 var(--f-texto); letter-spacing: -.01em; margin: 2.2em auto .6em; text-wrap: balance }
+h2 .num { font: 600 15px var(--f-mono); color: var(--acento); display: block; letter-spacing: .04em; margin-bottom: 4px }
+code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35em; border-radius: 4px }
+em { font-style: italic }
+.abertura { text-align: left; margin-bottom: 2.4em }
+.abertura .cap { font: 600 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--acento) }
+.abertura .numero { font: 700 120px/1 var(--f-texto); color: var(--acento); opacity: .9; margin: 6px 0 0 }
+.abertura h1 { font: 700 48px/1.08 var(--f-texto); letter-spacing: -.02em; margin: 6px 0 18px; text-wrap: balance }
+.abertura .lide { font-size: 22px; line-height: 1.55; color: var(--ink-2); font-style: italic }
+.neste { border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); padding: 14px 0; margin: 1.6em auto 2em; font: 15px/1.6 var(--f-ui); display: grid; gap: 8px }
+.neste b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.neste ul { margin: 0; padding-left: 20px }
+.ponto { font: 14px var(--f-ui); color: var(--ink-2) }
+.ponto code { user-select: all }
+
+/* nota de margem, no fluxo */
+.nota { border-left: 3px solid var(--ok); background: var(--nota); padding: 10px 14px; margin: 0 auto 1.3em; font: 15.5px/1.6 var(--f-ui); border-radius: 0 6px 6px 0 }
+.nota b { display: block; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ok); margin-bottom: 2px }
+.pense { border: 1px solid var(--linha); border-left: 3px solid var(--aviso); background: var(--nota); padding: 12px 14px; margin: 0 auto 1.4em; font: 16px/1.6 var(--f-ui); border-radius: 0 8px 8px 0 }
+.pense > b { display: flex; gap: 8px; align-items: center; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--aviso) }
+.pense .q { margin: 4px 0 8px; font-size: 17px; font-weight: 500 }
+.pense button.rev { border: 1px solid var(--linha); background: var(--papel); border-radius: 6px; padding: 4px 12px; cursor: pointer; font: 500 14px var(--f-ui) }
+.pense .r { margin-top: 8px }
+.escolha { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 }
+.escolha button { border: 1px solid var(--linha); background: var(--papel); border-radius: 8px; padding: 6px 14px; cursor: pointer; font: 500 15px var(--f-ui) }
+.escolha button.certo { border-color: var(--ok); color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent) }
+.escolha button.errado { border-color: #c23b3b; color: #c23b3b }
+
+/* listagem: o arquivo como está neste ponto do livro */
+.listagem { margin: 1.2em auto 1.6em; border-radius: 10px; overflow: hidden; background: var(--ide-bg); color: var(--ide-ink); box-shadow: 0 10px 30px rgba(30, 20, 5, .16) }
+.listagem .aba { display: flex; align-items: center; gap: 8px; background: var(--ide-tabs); font: 12.5px var(--f-ui); color: #ddd; padding: 7px 14px }
+.listagem .aba .ic { font: 700 8.5px var(--f-mono); color: #4b9cd3 }
+.listagem .aba .info { margin-left: auto; color: #8b8b8b; font-size: 11.5px }
+.listagem .aba .info b { color: #9cdcfe; font-weight: 500 }
+.listagem pre { margin: 0; padding: 10px 0 12px; overflow-x: auto; font: 13.5px/21px var(--f-mono) }
+.listagem .ln { display: grid; grid-template-columns: 48px max-content; white-space: pre; min-height: 21px }
+.listagem .ln .no { color: #6e7681; text-align: right; padding-right: 16px; user-select: none }
+.listagem .ln.velho { opacity: .45 }
+.listagem .ln.novo { background: var(--ide-new) }
+.listagem .ln.novo .no { color: #cfcfcf }
+.listagem.toca .ln.novo { animation: digita .4s ease-out both; animation-delay: calc(var(--d) * 45ms) }
+@keyframes digita { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: none } }
+.listagem .rodape { display: flex; gap: 10px; padding: 6px 14px; background: #252526; font: 12px var(--f-ui); color: #9d9d9d }
+.listagem .rodape button { background: none; border: 0; color: #9cdcfe; cursor: pointer; padding: 0; font: inherit }
+.chave { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #3794ff; color: #fff; font: 700 11px var(--f-ui); margin-left: 10px; vertical-align: 1px }
+
+/* terminal: roda quando o leitor pede */
+.terminal { margin: 1em auto 1.6em; border-radius: 10px; overflow: hidden; background: var(--ide-term); color: #ccc; box-shadow: 0 10px 30px rgba(30, 20, 5, .16) }
+.terminal .barra { display: flex; align-items: center; gap: 10px; padding: 7px 12px; background: #252526; font: 11px var(--f-ui); letter-spacing: .05em; color: #9d9d9d }
+.terminal .barra .esp { flex: 1 }
+.terminal .barra button { border: 1px solid #3794ff; background: #0e2a47; color: #e6f1fb; border-radius: 6px; padding: 3px 12px; cursor: pointer; font: 600 12px var(--f-ui); letter-spacing: 0 }
+.terminal .barra button.sec { border-color: #454545; background: #2d2d2d; color: #ddd; font-weight: 500 }
+.terminal .barra button[aria-pressed="true"] { border-color: #3794ff; color: #fff; background: #0e2a47 }
+.terminal pre { margin: 0; padding: 10px 14px 12px; font: 13px/20px var(--f-mono); white-space: pre-wrap; word-break: break-word; min-height: 52px; max-height: 360px; overflow: auto }
+.terminal .pr { color: #23d18b } .terminal .cwd { color: #3b8eea } .terminal .err { color: #f14c4c } .terminal .okv { color: #23d18b } .terminal .dim { color: #8b8b8b; font-style: italic }
+.terminal .cursor { display: inline-block; width: 7px; height: 14px; background: #ccc; vertical-align: -2px; animation: pisca 1s steps(1) infinite }
+@keyframes pisca { 50% { opacity: 0 } }
+
+/* figuras */
+figure { margin: 1.8em auto 2em }
+.quadro { background: var(--fig); color: var(--fig-ink); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 14px 36px rgba(30, 20, 5, .2) }
+.quadro svg { display: block; width: 100%; height: auto }
+.quadro text { font-family: var(--f-ui); fill: var(--fig-ink) }
+.quadro .mono { font-family: var(--f-mono) }
+.quadro .dim { fill: var(--fig-ink-2) }
+.quadro .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--fig-linha); font: 14px var(--f-ui) }
+.quadro .ctl .fala { flex: 1 1 260px; color: var(--fig-ink); min-width: 0 }
+.quadro .ctl button { border: 1px solid #3b4a5c; background: #18222e; color: var(--fig-ink); border-radius: 6px; padding: 4px 12px; cursor: pointer; font: 500 13px var(--f-ui) }
+.quadro .ctl button[aria-pressed="true"] { border-color: #7ef0c2; color: #7ef0c2 }
+.quadro .pts { display: flex; gap: 4px } .quadro .pts i { width: 8px; height: 8px; border-radius: 50%; background: #3b4a5c } .quadro .pts i.on { background: #7ef0c2 }
+figcaption { font: 14px/1.5 var(--f-ui); color: var(--ink-2); margin-top: 10px }
+figcaption b { color: var(--ink); font-weight: 600 }
+.surge { opacity: 0; transition: opacity .45s ease-out, transform .45s ease-out; transform: translateY(6px) }
+.surge.on { opacity: 1; transform: none }
+.traco { stroke-dasharray: var(--L, 400); stroke-dashoffset: var(--L, 400); transition: stroke-dashoffset .8s ease-in-out }
+.traco.on { stroke-dashoffset: 0 }
+@media (prefers-reduced-motion: reduce) { .surge, .traco { transition: none } .listagem.toca .ln.novo { animation: none } }
+
+/* a ferramenta vista pelo modelo */
+.vista { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; position: relative }
+.vista > div { padding: 14px 16px; min-width: 0 }
+.vista .lado-a { border-right: 1px solid var(--fig-linha) }
+.vista h5 { margin: 0 0 8px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--fig-ink-2) }
+.vista pre { margin: 0; font: 12.5px/20px var(--f-mono); white-space: pre-wrap; word-break: break-word; color: #d4d4d4 }
+.vista .m { border-radius: 3px; transition: background .35s, box-shadow .35s }
+.vista .m.on { background: rgba(126, 240, 194, .16); box-shadow: 0 0 0 1px rgba(126, 240, 194, .55) }
+.vista .m.on2 { background: rgba(240, 178, 74, .16); box-shadow: 0 0 0 1px rgba(240, 178, 74, .6) }
+.vista .m.on3 { background: rgba(197, 140, 255, .18); box-shadow: 0 0 0 1px rgba(197, 140, 255, .6) }
+
+.exercicio { border: 1px solid var(--linha); border-radius: 12px; padding: 18px 20px; background: var(--nota); margin: 1.4em auto }
+.exercicio > b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+.exercicio h3 { margin: 4px 0 10px; font: 700 22px/1.3 var(--f-texto) }
+.exercicio ol { margin: 0 0 12px; padding-left: 22px; font: 16px/1.6 var(--f-ui) }
+details.sol { font: 15px var(--f-ui); margin-top: 10px }
+details.sol summary { cursor: pointer; font-weight: 600 }
+.resumo { border-top: 2px solid var(--ink); padding-top: 12px; margin-top: 2.4em }
+.resumo b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.resumo ul { margin: 6px 0 0; padding-left: 22px }
+.proximo { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); margin-top: 2.4em; padding-top: 16px; font: 15px var(--f-ui) }
+.proximo span { color: var(--ink-2) }
+.token.comment { color: #6a9955 } .token.string, .token.triple-quoted-string { color: #ce9178 } .token.keyword { color: #569cd6 } .token.function { color: #dcdcaa }
+.token.class-name, .token.builtin { color: #4ec9b0 } .token.number, .token.boolean { color: #b5cea8 } .token.decorator { color: #dcdcaa } .token.operator, .token.punctuation { color: #d4d4d4 }
+.token.property { color: #9cdcfe } .token.string-interpolation .token.interpolation { color: #9cdcfe }
+
+@media (max-width: 640px) {
+  body { font-size: 17.5px }
+  .abertura .numero { font-size: 84px } .abertura h1 { font-size: 36px } .abertura .lide { font-size: 19px }
+  h2 { font-size: 25px }
+  .vista { grid-template-columns: 1fr } .vista .lado-a { border-right: 0; border-bottom: 1px solid var(--fig-linha) }
+  .topo .nome { display: none }
+}
+</style>
+
+<header class="topo"><div class="in"><span class="nome"><b>Agente do Clima</b> · um livro que roda</span><span class="esp"></span><span id="onde">Capítulo 3 · A ferramenta</span>
+  <button class="btn-s" id="bsum" type="button" aria-expanded="false">Sumário</button></div><div class="progresso" id="progresso"></div></header>
+<nav class="sumario" id="sumario" hidden aria-label="Sumário"></nav>
+
+<main class="livro" id="livro">
+  <section class="abertura">
+    <div class="cap">Capítulo</div>
+    <div class="numero">3</div>
+    <h1>A ferramenta</h1>
+    <p class="lide">O modelo sabe muita coisa, mas não sabe a temperatura de agora em Recife. Neste capítulo você escreve o código que vai buscar esse número, e descobre que quem roda esse código não é o modelo.</p>
+  </section>
+  <div class="neste"><b>neste capítulo</b><ul><li>você cria o <code>clima.py</code>, com duas funções e nenhum modelo;</li><li>transforma uma função comum em ferramenta com uma linha;</li><li>vê, letra por letra, o que o modelo recebe dela.</li></ul>
+    <span class="ponto">Ponto de partida: o projeto do capítulo 2. Perdeu o fio? <code>git checkout aula-2/bloco-3</code></span></div>
+
+  <h2 id="s1"><span class="num">3.1</span>O modelo pede, o seu código roda</h2>
+  <p>Comece por uma pergunta simples: como um modelo de linguagem responderia "como está a temperatura em Recife agora?". Ele foi treinado com textos até uma certa data. Não tem relógio, não tem termômetro e não abre páginas na internet. Se responder só com o que sabe, ele <em>inventa</em> um número com cara de certo.</p>
+  <p>A saída é dar a ele uma ferramenta. E aqui está a ideia que organiza o livro inteiro: o modelo não usa a ferramenta. Ele <em>pede</em> para usá-la. Quem faz o trabalho é um pedaço de código seu. A figura mostra a viagem de um pedido, passo a passo.</p>
+  <figure class="largo anima" id="fig1" data-anima="fig1"><div class="quadro"><svg viewBox="0 0 900 300" id="svg1" role="img" aria-label="A viagem de um pedido de ferramenta"></svg>
+    <div class="ctl"><span class="fala" id="fala1"></span><span class="pts" id="pts1"></span><button type="button" id="ant1" aria-label="Passo anterior">←</button><button type="button" id="prox1">Próximo →</button></div></div>
+    <figcaption><b>Figura 3.1</b> · A viagem de um pedido. O modelo devolve um pedido; o seu código chama o serviço do tempo; o resultado volta ao modelo como mais uma mensagem.</figcaption></figure>
+  <div class="pense"><b>◆ teste rápido</b><div class="q">Na figura, quem roda a função <code>temperatura_agora</code>?</div>
+    <div class="escolha" data-certo="codigo"><button type="button" data-v="modelo">o modelo</button><button type="button" data-v="codigo">o seu código</button><button type="button" data-v="meteo">o Open-Meteo</button></div>
+    <div class="r" hidden>O seu código. O modelo só escreve o pedido; o Open-Meteo só responde o que o seu código perguntou. É por isso que dá para testar a ferramenta sem modelo nenhum, como você vai fazer daqui a pouco.</div></div>
+
+  <h2 id="s2"><span class="num">3.2</span>Um arquivo só para a ferramenta</h2>
+  <p>Crie um arquivo novo na raiz do projeto, <code>clima.py</code>. Ele começa com uma frase dizendo o que faz e dois imports: <code>httpx</code>, que faz as chamadas pela internet, e <code>tool</code>, que no fim do capítulo vai transformar uma função comum em ferramenta.</p>
+  <div class="listagem anima" data-pedaco="0"></div>
+  <div class="nota"><b>por que assim</b>A ferramenta fica num arquivo só dela. Você testa sem o modelo, e troca de serviço do tempo sem mexer no agente. Quem lê o projeto acha a parte que sai para a internet num lugar só.</div>
+
+  <h2 id="s3"><span class="num">3.3</span>Com quem o código conversa</h2>
+  <p>O serviço do tempo é o Open-Meteo: público, gratuito e sem chave. Só que ele não entende "Recife". Ele quer latitude e longitude. Então o caminho tem duas paradas: um endereço que acha a cidade pelo nome, e outro que dá o tempo de um ponto do mapa. Escolha uma cidade na figura e acompanhe.</p>
+  <figure class="largo anima" id="fig2" data-anima="fig2"><div class="quadro"><svg viewBox="0 0 900 250" id="svg2" role="img" aria-label="De um nome de cidade até a temperatura"></svg>
+    <div class="ctl"><span class="fala" id="fala2"></span><button type="button" data-cid="Recife" aria-pressed="true">Recife</button><button type="button" data-cid="Xyzópolis" aria-pressed="false">Xyzópolis</button></div></div>
+    <figcaption><b>Figura 3.2</b> · Duas chamadas por pergunta. Xyzópolis é inventada: o caminho para na primeira parada, e o código responde "não achei" em vez de quebrar. A temperatura de Recife é um exemplo.</figcaption></figure>
+  <p>No código, as duas paradas viram duas constantes no topo do arquivo.</p>
+  <div class="listagem anima" data-pedaco="1"></div>
+  <div class="nota"><b>por que assim</b>Constante no topo deixa à vista com quem o arquivo conversa. Quem abre o <code>clima.py</code> sabe na hora que ele sai para a internet, e para onde.</div>
+
+  <h2 id="s4"><span class="num">3.4</span>Do nome às coordenadas</h2>
+  <p>A primeira função faz a primeira parada da figura: recebe o nome e devolve latitude, longitude e o nome oficial, como "Recife, Brasil". Se o serviço não achar nada, ela devolve <code>None</code>.</p>
+  <div class="listagem anima" data-pedaco="2"></div>
+  <p>Repare na diferença entre as duas saídas ruins. "Não achei a cidade" é uma resposta normal: qualquer pessoa digita um nome errado. Já o serviço fora do ar é erro de verdade, e esse para no <code>raise_for_status()</code>, com uma exceção que alguém vai ler.</p>
+  <p>Hora de rodar. O comando abaixo chama o serviço de verdade, então na sua máquina os números podem variar na última casa.</p>
+  <div class="terminal" data-term="coord"></div>
+  <div class="pense"><b>◆ pare e pense</b><div class="q">Por que o código pede <code>count: 1</code>?</div><button class="rev" type="button">Ver a resposta</button>
+    <div class="r" hidden>Para pegar só o resultado mais provável. Há várias "São José" no Brasil; um agente mais cuidadoso pediria algumas opções e perguntaria ao usuário qual delas. É uma escolha consciente de simplicidade, não um esquecimento.</div></div>
+
+  <h2 id="s5"><span class="num">3.5</span>Uma linha, e a função vira ferramenta</h2>
+  <p>Agora a função que o modelo vai pedir. Ela usa a <code>coordenadas</code>, faz a segunda chamada e devolve uma frase pronta. A linha que muda tudo é a primeira: <code>@tool</code>.</p>
+  <div class="listagem anima" data-pedaco="3"></div>
+  <p>O <code>@tool</code> lê a função e monta o cartão que o modelo vai receber: o nome, uma descrição e os argumentos com seus tipos. A docstring deixa de ser comentário para programador. Ela vira instrução para o modelo. Na figura, à esquerda está o que você escreveu; à direita, o que vai para o modelo, exatamente como o LangChain monta. Troque a forma do <code>@tool</code> e veja o cartão mudar.</p>
+  <figure class="largo anima" id="fig3" data-anima="fig3"><div class="quadro"><div class="vista"><div class="lado-a"><h5>o que você escreveu</h5><pre id="v-fonte"></pre></div><div><h5 id="v-tit">o que o modelo recebe</h5><pre id="v-json"></pre></div></div>
+    <div class="ctl"><span class="fala" id="fala3"></span><button type="button" data-forma="padrao" aria-pressed="true">@tool</button><button type="button" data-forma="parse" aria-pressed="false">@tool(parse_docstring=True)</button></div></div>
+    <figcaption><b>Figura 3.3</b> · O cartão da ferramenta. Com <code>@tool</code>, a docstring inteira vira a descrição. Com <code>parse_docstring=True</code>, a explicação do argumento muda de lugar e vai para dentro do esquema, junto do <code>cidade</code>. As duas funcionam; a segunda é mais organizada para o modelo.</figcaption></figure>
+  <p>A frase "como o usuário escreveu" não está ali por enfeite. Sem ela, o modelo às vezes corrige ou traduz o nome antes de pedir, e o serviço não acha a cidade. Para conferir o argumento no seu terminal:</p>
+  <div class="terminal" data-term="args"></div>
+  <div class="pense"><b>◆ pare e pense</b><div class="q">Depois do <code>@tool</code>, o modelo passa a rodar esta função?</div><button class="rev" type="button">Ver a resposta</button>
+    <div class="r" hidden>Não. Ele continua só devolvendo um pedido, um <code>tool_call</code> com o nome e os argumentos. Quem roda é o nó <code>usar_ferramenta</code>, que você escreve no próximo capítulo. O <code>@tool</code> só descreve a função; não dá poder nenhum ao modelo.</div></div>
+  <p class="ponto">Ponto de volta: <code>git checkout aula-3/bloco-4</code> traz o projeto exatamente como está agora.</p>
+
+  <div class="resumo"><b>resumo do capítulo</b><ul>
+    <li>O modelo não busca nada: ele pede, e o seu código roda.</li>
+    <li>O <code>clima.py</code> faz duas chamadas por pergunta: uma acha a cidade, outra dá o tempo.</li>
+    <li>"Não achei" é resposta; serviço fora do ar é erro.</li>
+    <li>O <code>@tool</code> transforma a assinatura e a docstring no cartão que o modelo lê. A docstring é instrução.</li></ul></div>
+
+  <div class="exercicio"><b>exercício</b><h3>Uma segunda ferramenta: o vento</h3>
+    <ol><li>No <code>clima.py</code>, escreva <code>vento_agora(cidade)</code>, igual à de temperatura, mas pedindo <code>wind_speed_10m</code> ao Open-Meteo.</li>
+      <li>A resposta deve ser <code>"Recife, Brasil: vento de 14.4 km/h agora."</code>, e a docstring precisa dizer a unidade.</li>
+      <li>Copie o <code>test_vento.py</code> abaixo para a raiz do projeto e rode os testes até ficarem verdes. Eles usam um serviço falso: não saem para a internet.</li></ol>
+    <div class="listagem anima" data-arq="test_vento.py"></div>
+    <div class="terminal" data-term="testes"></div>
+    <details class="sol"><summary>Uma solução (abra depois de tentar)</summary><div class="listagem" data-arq="solucao"></div></details></div>
+
+  <div class="proximo"><span>← Capítulo 2 · As peças de fora e a chave</span><span>Capítulo 4 · O estado e os nós →</span></div>
+  <p class="ponto" style="margin-top:10px">Amostra: só o capítulo 3 está escrito. Os outros saem das mesmas peças do caderno do Agente do Clima.</p>
+</main>
+
+<script>window.Prism = { manual: true };</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const espera = ms => new Promise(r => setTimeout(r, calmo ? 0 : ms));
+
+/* ============ os arquivos de verdade ============ */
+const D = {"clima": "\"\"\"A ferramenta: a temperatura atual de uma cidade, pelo Open-Meteo (não precisa de chave).\"\"\"\nimport httpx\nfrom langchain.tools import tool\n\nACHAR_CIDADE = \"https://geocoding-api.open-meteo.com/v1/search\"\nPREVISAO = \"https://api.open-meteo.com/v1/forecast\"\n\n\ndef coordenadas(cidade: str) -> tuple[float, float, str] | None:\n    \"\"\"Latitude, longitude e nome oficial da cidade; None se não achar.\"\"\"\n    r = httpx.get(ACHAR_CIDADE, params={\"name\": cidade, \"count\": 1, \"language\": \"pt\"}, timeout=10)\n    r.raise_for_status()\n    achados = r.json().get(\"results\")\n    if not achados:\n        return None\n    c = achados[0]\n    return c[\"latitude\"], c[\"longitude\"], f\"{c['name']}, {c.get('country', '')}\"\n\n\n@tool\ndef temperatura_agora(cidade: str) -> str:\n    \"\"\"Temperatura atual de uma cidade, em graus Celsius.\n\n    Args:\n        cidade: o nome da cidade, como o usuário escreveu (ex.: \"Recife\").\n    \"\"\"\n    lugar = coordenadas(cidade)\n    if lugar is None:\n        return f\"Não achei a cidade {cidade!r}.\"\n    lat, lon, nome = lugar\n    r = httpx.get(PREVISAO, params={\"latitude\": lat, \"longitude\": lon, \"current\": \"temperature_2m\"}, timeout=10)\n    r.raise_for_status()\n    graus = r.json()[\"current\"][\"temperature_2m\"]\n    return f\"{nome}: {graus} °C agora.\"", "teste": "import clima\nfrom clima import vento_agora\n\n\nclass Resposta:\n    \"\"\"Uma resposta HTTP falsa: o teste não sai para a internet.\"\"\"\n\n    def __init__(self, dados):\n        self.dados = dados\n\n    def raise_for_status(self):\n        pass\n\n    def json(self):\n        return self.dados\n\n\ndef servico_falso(url, params, timeout):\n    if url == clima.ACHAR_CIDADE:\n        if params[\"name\"] == \"Xyzópolis\":\n            return Resposta({})\n        return Resposta({\"results\": [{\"latitude\": -8.05, \"longitude\": -34.88, \"name\": \"Recife\", \"country\": \"Brasil\"}]})\n    assert params[\"current\"] == \"wind_speed_10m\", \"peça o vento, não a temperatura\"\n    return Resposta({\"current\": {\"wind_speed_10m\": 14.4}})\n\n\ndef test_vento_de_recife(monkeypatch):\n    monkeypatch.setattr(clima.httpx, \"get\", servico_falso)\n    assert vento_agora.invoke({\"cidade\": \"Recife\"}) == \"Recife, Brasil: vento de 14.4 km/h agora.\"\n\n\ndef test_cidade_que_nao_existe(monkeypatch):\n    monkeypatch.setattr(clima.httpx, \"get\", servico_falso)\n    assert vento_agora.invoke({\"cidade\": \"Xyzópolis\"}) == \"Não achei a cidade 'Xyzópolis'.\"\n\n\ndef test_a_descricao_diz_a_unidade():\n    assert \"km/h\" in vento_agora.description", "solucao": "@tool\ndef vento_agora(cidade: str) -> str:\n    \"\"\"Velocidade do vento agora numa cidade, em km/h.\n\n    Args:\n        cidade: o nome da cidade, como o usuário escreveu (ex.: \"Recife\").\n    \"\"\"\n    lugar = coordenadas(cidade)\n    if lugar is None:\n        return f\"Não achei a cidade {cidade!r}.\"\n    lat, lon, nome = lugar\n    r = httpx.get(PREVISAO, params={\"latitude\": lat, \"longitude\": lon, \"current\": \"wind_speed_10m\"}, timeout=10)\n    r.raise_for_status()\n    kmh = r.json()[\"current\"][\"wind_speed_10m\"]\n    return f\"{nome}: vento de {kmh} km/h agora.\"", "antes": ["", "==================================== ERRORS ====================================", "________________________ ERROR collecting test_vento.py ________________________", "ImportError while importing test module '/home/voce/clima-agente/test_vento.py'.", "Hint: make sure your test modules/packages have valid Python names.", "Traceback:", "/usr/lib/python3.13/importlib/__init__.py:88: in import_module", "    return _bootstrap._gcd_import(name[level:], package, level)", "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", "test_vento.py:2: in <module>", "    from clima import vento_agora", "E   ImportError: cannot import name 'vento_agora' from 'clima' (/home/voce/clima-agente/clima.py)", "=========================== short test summary info ============================", "ERROR test_vento.py", "!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!", "1 error in 0.37s"], "schemaPadrao": {"name": "temperatura_agora", "input_schema": {"properties": {"cidade": {"type": "string"}}, "required": ["cidade"], "type": "object"}, "description": "Temperatura atual de uma cidade, em graus Celsius.\n\nArgs:\n    cidade: o nome da cidade, como o usuário escreveu (ex.: \"Recife\")."}, "schemaParse": {"name": "temperatura_agora", "input_schema": {"properties": {"cidade": {"description": "o nome da cidade, como o usuário escreveu (ex.: \"Recife\").", "type": "string"}}, "required": ["cidade"], "type": "object"}, "description": "Temperatura atual de uma cidade, em graus Celsius."}};
+const corte = (t, inicios) => { const L = t.split("\n"); return inicios.map((a, i) => L.slice(a, inicios[i + 1]).join("\n")); };
+const PED = corte(D.clima, [0, 3, 6, 17]);
+const MARCAS = [
+  [[2, "httpx: as chamadas pela internet"], [3, "tool: vira ferramenta no 3.5"]],
+  [[5, "acha a cidade pelo nome"], [6, "dá o tempo de um ponto do mapa"]],
+  [[11, "a primeira parada da figura 3.2"], [12, "serviço fora do ar: para aqui"], [14, "não achou: devolve None"]],
+  [[20, "a linha que faz a ferramenta"], [22, "vira a descrição"], [25, "a explicação do argumento"], [34, "a frase que o modelo lê de volta"]]
+];
+
+/* ============ realce e listagens ============ */
+function linhasHtml(texto) {
+  const html = window.Prism && Prism.languages && Prism.languages.python ? Prism.highlight(texto, Prism.languages.python, "python") : esc(texto);
+  const out = [], pilha = []; let atual = "";
+  const re = /(<[^>]+>)|([^<]+)/g; let m;
+  while ((m = re.exec(html))) {
+    if (m[1]) { atual += m[1]; if (m[1].startsWith("</")) pilha.pop(); else pilha.push(m[1]); }
+    else m[2].split("\n").forEach((p, i) => { if (i) { out.push(atual + "</span>".repeat(pilha.length)); atual = pilha.join(""); } atual += p; });
+  }
+  out.push(atual + "</span>".repeat(pilha.length));
+  return out;
+}
+function montarListagem(el) {
+  let texto, de = 1, nome, info = "", marcas = [];
+  if (el.dataset.pedaco != null) {
+    const k = +el.dataset.pedaco, antes = PED.slice(0, k).join("\n"), tudo = PED.slice(0, k + 1).join("\n");
+    texto = tudo; nome = "clima.py"; marcas = MARCAS[k];
+    de = k === 0 ? 1 : antes.split("\n").length + 1;
+    while (de <= texto.split("\n").length && !texto.split("\n")[de - 1].trim()) de++;
+    const novas = texto.split("\n").length - de + 1;
+    info = k === 0 ? "arquivo novo" : `<b>+${novas} linhas</b> · as de cima você já escreveu`;
+    el._mostrarTudo = false; el._k = k;
+  } else if (el.dataset.arq === "test_vento.py") { texto = D.teste; nome = "test_vento.py"; info = "copie como está"; de = 999; }
+  else { texto = D.solucao; nome = "clima.py · o trecho novo"; de = 999; }
+  const L = linhasHtml(texto), mapa = Object.fromEntries(marcas.map(([n, t], i) => [n, [i + 1, t]]));
+  const corteVelho = el.dataset.pedaco != null && +el.dataset.pedaco >= 2 ? Math.max(0, de - 4) : 0;   /* o começo já escrito fica recolhido */
+  let d = 0;
+  const linhas = L.map((h, i) => { const n = i + 1, novo = n >= de, mk = mapa[n];
+    if (n <= corteVelho && !el._aberto) return "";
+    return `<div class="ln${novo ? " novo" : " velho"}" style="--d:${novo ? d++ : 0}"><span class="no">${n}</span><span class="tx">${h || " "}${mk ? `<span class="chave" title="${esc(mk[1])}">${mk[0]}</span>` : ""}</span></div>`; }).join("");
+  const legenda = marcas.length ? `<div class="rodape">${marcas.map(([n, t], i) => `<span><span class="chave" style="margin:0 4px 0 0">${i + 1}</span>${esc(t)}</span>`).join("")}</div>` : "";
+  const abrir = corteVelho && !el._aberto ? `<div class="rodape"><button type="button" class="abrir">mostrar as ${corteVelho} linhas de cima</button></div>` : "";
+  el.innerHTML = `<div class="aba"><span class="ic">PY</span>${esc(nome)}<span class="info">${info}</span></div>${abrir}<pre>${linhas}</pre>${legenda}`;
+  const b = $(".abrir", el); if (b) b.addEventListener("click", () => { el._aberto = true; montarListagem(el); });
+}
+
+/* ============ terminais ============ */
+const TERMS = {
+  coord: { cmd: `uv run python -c "from clima import coordenadas; print(coordenadas('Recife'))"`, saida: [["(-8.05389, -34.88111, 'Recife, Brasil')", ""]] },
+  args: { cmd: `uv run python -c "from clima import temperatura_agora; print(temperatura_agora.args)"`, saida: [["{'cidade': {'title': 'Cidade', 'type': 'string'}}", ""]] },
+  testes: { cmd: "uv run pytest test_vento.py -q", variantes: {
+    antes: D.antes.map(l => [l, /^E |ERROR|Interrupted|error in/.test(l) ? "err" : ""]),
+    depois: [["...                                                                      [100%]", ""], ["3 passed in 0.34s", "okv"]] } }
+};
+function montarTerminal(el) {
+  const t = TERMS[el.dataset.term];
+  const vars = t.variantes ? `<button type="button" class="sec" data-v="antes" aria-pressed="true">antes da solução</button><button type="button" class="sec" data-v="depois" aria-pressed="false">depois</button>` : "";
+  el.innerHTML = `<div class="barra"><span>TERMINAL</span><span class="esp"></span>${vars}<button type="button" class="rodar">▶ Rodar</button></div><pre></pre>`;
+  el._var = "antes";
+  const pre = $("pre", el), prompt = '<span class="pr">voce@maquina</span>:<span class="cwd">~/clima-agente</span>$ ';
+  const parado = () => { pre.innerHTML = prompt + esc(t.cmd) + '\n<span class="dim">aperte ▶ Rodar</span>'; };
+  parado();
+  let vez = 0;
+  $(".rodar", el).addEventListener("click", async () => {
+    const v = ++vez, saida = t.variantes ? t.variantes[el._var] : t.saida;
+    let txt = ""; const passo = t.cmd.length > 60 ? 2 : 1;
+    for (let i = 0; i < t.cmd.length; i += passo) { if (v !== vez) return; txt = t.cmd.slice(0, i + passo); pre.innerHTML = prompt + esc(txt) + '<span class="cursor"></span>'; await espera(16); }
+    let html = prompt + esc(t.cmd);
+    await espera(250);
+    for (const [l, c] of saida) { if (v !== vez) return; html += "\n" + `<span class="${c}">${esc(l)}</span>`; pre.innerHTML = html; await espera(saida.length > 4 ? 25 : 90); }
+    pre.innerHTML = html + "\n" + prompt + '<span class="cursor"></span>'; pre.scrollTop = pre.scrollHeight;
+  });
+  $$("[data-v]", el).forEach(b => b.addEventListener("click", () => { el._var = b.dataset.v; vez++; $$("[data-v]", el).forEach(x => x.setAttribute("aria-pressed", x === b)); parado(); }));
+}
+
+/* ============ figura 3.1: a viagem do pedido ============ */
+const F1 = [
+  "O usuário pergunta. A pergunta chega ao modelo como uma mensagem.",
+  "O modelo não responde: devolve um pedido, com o nome da ferramenta e o argumento.",
+  "O seu código lê o pedido e roda a função temperatura_agora.",
+  "A função chama o Open-Meteo duas vezes: a cidade, depois o tempo.",
+  "O resultado volta como mais uma mensagem. Agora o modelo responde com um número de verdade."
+];
+let f1 = 0, f1auto = null;
+const estreito = el => el.getBoundingClientRect().width < 560;
+function desenharF1() {
+  if (estreito($("#svg1"))) return desenharF1Pe();
+  $("#svg1").setAttribute("viewBox", "0 0 900 300");
+  const nos = [["usuário", 80, "#c586c0"], ["modelo", 300, "#5b8cff"], ["seu código", 560, "#f0b24a"], ["Open-Meteo", 800, "#c58cff"]];
+  let s = `<defs><marker id="f1p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7ef0c2"/></marker>
+    <marker id="f1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3b4a5c"/></marker></defs>`;
+  nos.forEach(([n, x, c], i) => { const vivo = (f1 === 0 && i <= 1) || (f1 === 1 && i === 1) || (f1 === 2 && i === 2) || (f1 === 3 && i >= 2) || (f1 === 4 && i <= 1);
+    s += `<g><rect x="${x - 70}" y="112" width="140" height="56" rx="10" fill="${vivo ? c : "#18222e"}" stroke="${c}" stroke-width="2" opacity="${vivo ? 1 : .55}"/>` +
+      `<text x="${x}" y="146" text-anchor="middle" font-size="17" style="fill:${vivo ? "#0b1118" : "#e8eef5"};font-weight:600">${n}</text></g>`; });
+  const seta = (x1, x2, y, viva, rot, cima) => `<path class="${viva ? "traco on" : ""}" style="--L:${Math.abs(x2 - x1)}" d="M${x1} ${y} L${x2} ${y}" stroke="${viva ? "#7ef0c2" : "#3b4a5c"}" stroke-width="2.5" marker-end="url(#${viva ? "f1p" : "f1g"})" fill="none"/>` +
+    (rot && viva ? `<text class="mono surge on" x="${(x1 + x2) / 2}" y="${cima ? y - 14 : y + 26}" text-anchor="middle" font-size="13" style="fill:#7ef0c2">${rot}</text>` : "");
+  s += seta(152, 228, 128, f1 === 0, "pergunta", true);
+  s += seta(372, 488, 128, f1 === 1 || f1 === 2, f1 === 1 ? "tool_call: temperatura_agora(cidade=\"Recife\")" : "", true);
+  s += seta(632, 728, 128, f1 === 3, "2 chamadas", true);
+  s += seta(728, 632, 156, f1 === 3, "", false);
+  s += seta(488, 372, 156, f1 === 4, "ToolMessage: Recife, Brasil: 29.1 °C agora.", false);
+  s += seta(228, 152, 156, f1 === 4, "", false);
+  if (f1 === 4) s += `<text class="surge on" x="80" y="215" text-anchor="middle" font-size="14" style="fill:#93a1b2">resposta com número de verdade</text>`;
+  s += `<text x="450" y="268" text-anchor="middle" font-size="13" class="dim">o modelo nunca toca no Open-Meteo: quem chama é o seu código</text>`;
+  $("#svg1").innerHTML = s;
+  $("#fala1").textContent = `${f1 + 1}/${F1.length} · ${F1[f1]}`;
+  $("#pts1").innerHTML = F1.map((_, i) => `<i class="${i === f1 ? "on" : ""}"></i>`).join("");
+  $("#prox1").textContent = f1 === F1.length - 1 ? "Ver de novo ↺" : "Próximo →";
+  $("#ant1").disabled = f1 === 0;
+}
+function desenharF1Pe() {
+  const svg = $("#svg1"); svg.setAttribute("viewBox", "0 0 360 430");
+  const nos = [["usuário", 40, "#c586c0"], ["modelo", 150, "#5b8cff"], ["seu código", 260, "#f0b24a"], ["Open-Meteo", 370, "#c58cff"]];
+  const vivoN = i => (f1 === 0 && i <= 1) || (f1 === 1 && i === 1) || (f1 === 2 && i === 2) || (f1 === 3 && i >= 2) || (f1 === 4 && i <= 1);
+  let s = `<defs><marker id="f1pp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7ef0c2"/></marker>
+    <marker id="f1gp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3b4a5c"/></marker></defs>`;
+  nos.forEach(([n, y, c], i) => { const v = vivoN(i);
+    s += `<rect x="30" y="${y - 24}" width="180" height="48" rx="10" fill="${v ? c : "#18222e"}" stroke="${c}" stroke-width="2" opacity="${v ? 1 : .55}"/><text x="120" y="${y + 6}" text-anchor="middle" font-size="17" style="fill:${v ? "#0b1118" : "#e8eef5"};font-weight:600">${n}</text>`; });
+  const seta = (x, y1, y2, viva, rot) => `<path class="${viva ? "traco on" : ""}" style="--L:${Math.abs(y2 - y1)}" d="M${x} ${y1} L${x} ${y2}" stroke="${viva ? "#7ef0c2" : "#3b4a5c"}" stroke-width="2.5" marker-end="url(#${viva ? "f1pp" : "f1gp"})" fill="none"/>` +
+    (rot && viva ? `<text class="mono surge on" x="225" y="${(y1 + y2) / 2 + 5}" font-size="13" style="fill:#7ef0c2">${rot}</text>` : "");
+  s += seta(90, 66, 124, f1 === 0, "pergunta") + seta(90, 176, 234, f1 === 1 || f1 === 2, f1 === 1 ? "tool_call" : "") + seta(90, 286, 344, f1 === 3, "2 chamadas");
+  s += seta(150, 344, 286, f1 === 3, "") + seta(150, 234, 176, f1 === 4, "ToolMessage") + seta(150, 124, 66, f1 === 4, "");
+  s += `<text x="180" y="420" text-anchor="middle" font-size="12.5" class="dim">quem chama o Open-Meteo é o seu código</text>`;
+  svg.innerHTML = s;
+  $("#fala1").textContent = `${f1 + 1}/${F1.length} · ${F1[f1]}`;
+  $("#pts1").innerHTML = F1.map((_, i) => `<i class="${i === f1 ? "on" : ""}"></i>`).join("");
+  $("#prox1").textContent = f1 === F1.length - 1 ? "Ver de novo ↺" : "Próximo →";
+  $("#ant1").disabled = f1 === 0;
+}
+function tocarF1() { clearInterval(f1auto); f1 = 0; desenharF1(); if (calmo) return; f1auto = setInterval(() => { if (f1 >= F1.length - 1) return clearInterval(f1auto); f1++; desenharF1(); }, 2600); }
+$("#prox1").addEventListener("click", () => { clearInterval(f1auto); f1 = f1 === F1.length - 1 ? 0 : f1 + 1; desenharF1(); });
+$("#ant1").addEventListener("click", () => { clearInterval(f1auto); f1 = Math.max(0, f1 - 1); desenharF1(); });
+
+/* ============ figura 3.2: duas paradas ============ */
+let cid = "Recife", f2vez = 0, f2n = -1, f2redesenha = null;
+async function tocarF2() {
+  const v = ++f2vez, existe = cid === "Recife";
+  const caixas = [[`"${cid}"`, 85, "#c586c0"], ["acha a cidade", 270, "#5b8cff"], [existe ? "-8.05, -34.88" : "None", 455, existe ? "#5b8cff" : "#ff8a65"], ["dá o tempo", 640, "#f0b24a"], ["29,1 °C", 815, "#7ef0c2"]];
+  const falas = existe ? ["O nome sai do seu código…", "…e vai para o endereço que acha cidades.", "Volta latitude e longitude.", "Com elas, a segunda chamada pede o tempo daquele ponto.", "E volta a temperatura (o valor aqui é exemplo)."]
+    : ["Um nome que não existe…", "…vai para o endereço que acha cidades.", "Nada encontrado: a função devolve None.", "", "A ferramenta responde \"Não achei a cidade 'Xyzópolis'.\" e não quebra."];
+  const desenha = n => {
+    f2n = n; f2redesenha = () => desenha(f2n);
+    if (estreito($("#svg2"))) {
+      $("#svg2").setAttribute("viewBox", "0 0 360 500");
+      let s = `<defs><marker id="f2pp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7ef0c2"/></marker></defs>`;
+      caixas.forEach(([t, , c], i) => { const ver = i <= n && !(i >= 3 && !existe), y = 40 + i * 92;
+        s += `<g class="surge${ver ? " on" : ""}"><rect x="60" y="${y - 24}" width="240" height="48" rx="10" fill="#18222e" stroke="${c}" stroke-width="2"/><text x="180" y="${y + 6}" text-anchor="middle" font-size="17" class="${i % 2 === 0 ? "mono" : ""}" style="font-weight:600">${esc(t)}</text></g>`;
+        if (i > 0) s += `<path class="${ver ? "traco on" : ""}" style="--L:40;opacity:${ver ? 1 : 0}" d="M180 ${y - 92 + 26} L180 ${y - 28}" stroke="#7ef0c2" stroke-width="2.4" marker-end="url(#f2pp)" fill="none"/>`; });
+      if (!existe && n >= 4) s += `<text class="surge on" x="180" y="330" text-anchor="middle" font-size="15" style="fill:#ff8a65">→ "Não achei a cidade 'Xyzópolis'."</text>`;
+      $("#svg2").innerHTML = s; $("#fala2").textContent = falas[Math.min(n, 4)] || falas[2]; return;
+    }
+    $("#svg2").setAttribute("viewBox", "0 0 900 250");
+    let s = `<defs><marker id="f2p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7ef0c2"/></marker></defs>`;
+    s += `<text x="270" y="60" text-anchor="middle" font-size="12.5" class="mono dim">geocoding-api.open-meteo.com</text><text x="640" y="60" text-anchor="middle" font-size="12.5" class="mono dim">api.open-meteo.com</text>`;
+    caixas.forEach(([t, x, c], i) => { const ver = i <= n && !(i >= 3 && !existe);
+      const w = i === 0 || i === 4 ? 140 : 150;
+      s += `<g class="surge${ver ? " on" : ""}"><rect x="${x - w / 2}" y="90" width="${w}" height="56" rx="10" fill="#18222e" stroke="${c}" stroke-width="2"/><text x="${x}" y="124" text-anchor="middle" font-size="16" class="${i === 0 || i === 2 || i === 4 ? "mono" : ""}" style="font-weight:600">${esc(t)}</text></g>`;
+      if (i > 0) { const viva = ver, x1 = caixas[i - 1][1] + (i - 1 === 0 || i - 1 === 4 ? 70 : 75), x2 = x - w / 2;
+        s += `<path class="traco${viva ? " on" : ""}" style="--L:${x2 - x1}" d="M${x1} 118 L${x2 - 4} 118" stroke="#7ef0c2" stroke-width="2.4" marker-end="url(#f2p)" fill="none"/>`; } });
+    if (!existe && n >= 4) s += `<text class="surge on" x="455" y="200" text-anchor="middle" font-size="16" style="fill:#ff8a65">→ "Não achei a cidade 'Xyzópolis'."</text>`;
+    if (existe && n >= 4) s += `<text class="surge on" x="560" y="200" text-anchor="middle" font-size="15" class="dim">2 chamadas ao Open-Meteo por pergunta</text>`;
+    $("#svg2").innerHTML = s; $("#fala2").textContent = falas[Math.min(n, 4)] || falas[2];
+  };
+  for (let n = 0; n <= 4; n++) { if (v !== f2vez) return; if (!existe && n === 3) continue; desenha(n); await espera(900); }
+  desenha(4);
+}
+$$("#fig2 [data-cid]").forEach(b => b.addEventListener("click", () => { cid = b.dataset.cid; $$("#fig2 [data-cid]").forEach(x => x.setAttribute("aria-pressed", x === b)); tocarF2(); }));
+
+/* ============ figura 3.3: o cartão que o modelo recebe ============ */
+let forma = "padrao", f3vez = 0;
+const FONTE = (p) => `<span class="m" data-m="n">${p ? "@tool(parse_docstring=True)" : "@tool"}
+def temperatura_agora</span>(<span class="m" data-m="a">cidade: str</span>) -> str:
+    """<span class="m" data-m="d">Temperatura atual de uma cidade, em graus Celsius.</span>
+
+    <span class="m" data-m="x">Args:
+        cidade: o nome da cidade, como o usuário escreveu (ex.: "Recife").</span>
+    """`;
+function jsonVisto(p) {
+  const j = p ? D.schemaParse : D.schemaPadrao;
+  let t = esc(JSON.stringify(j, null, 2));
+  t = t.replace(/(&quot;name&quot;: &quot;temperatura_agora&quot;)/, '<span class="m" data-m="n">$1</span>');
+  t = t.replace(/(&quot;cidade&quot;: \{[\s\S]*?\})/, '<span class="m" data-m="a">$1</span>');
+  t = t.replace(/(&quot;description&quot;: &quot;Temperatura atual[^\n]*)/, p ? '<span class="m" data-m="d">$1</span>' : '<span class="m" data-m="dx">$1</span>');
+  if (p) t = t.replace(/(&quot;description&quot;: &quot;o nome da cidade[^\n]*)/, '<span class="m" data-m="x">$1</span>');
+  return t;
+}
+async function tocarF3() {
+  const v = ++f3vez, p = forma === "parse";
+  $("#v-fonte").innerHTML = FONTE(p); $("#v-json").innerHTML = jsonVisto(p);
+  const passos = [["n", "on", "O nome da função vira o nome da ferramenta."], ["a", "on3", "O argumento e o tipo viram o esquema: cidade, texto, obrigatório."],
+    [p ? "d" : "dx", "on2", p ? "Só a primeira frase da docstring vira a descrição." : "A docstring inteira, com o Args junto, vira a descrição."],
+    ["x", "on2", p ? "E a explicação do argumento vai para dentro do esquema, ao lado de cidade." : "A explicação do argumento chega ao modelo, mas misturada na descrição."]];
+  for (const [m, c, t] of passos) {
+    if (v !== f3vez) return;
+    $$("#fig3 .m").forEach(e => e.classList.remove("on", "on2", "on3"));
+    $$(`#fig3 [data-m="${m}"]` + (m === "dx" ? ', #fig3 [data-m="d"], #fig3 [data-m="x"]' : m === "x" && !p ? ', #fig3 [data-m="dx"]' : "")).forEach(e => e.classList.add(c));
+    $("#fala3").textContent = t;
+    await espera(2200);
+  }
+  if (v !== f3vez) return;
+  $$("#fig3 .m").forEach(e => e.classList.remove("on", "on2", "on3"));
+  $("#fala3").textContent = p ? "Mais organizado: cada coisa no seu campo." : "Funciona. Troque para parse_docstring=True e compare.";
+}
+$$("#fig3 [data-forma]").forEach(b => b.addEventListener("click", () => { forma = b.dataset.forma; $$("#fig3 [data-forma]").forEach(x => x.setAttribute("aria-pressed", x === b)); tocarF3(); }));
+
+/* ============ testes rápidos e pare e pense ============ */
+$$(".escolha").forEach(g => g.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  $$("button", g).forEach(x => x.classList.toggle("certo", x.dataset.v === g.dataset.certo)); if (b.dataset.v !== g.dataset.certo) b.classList.add("errado");
+  g.parentElement.querySelector(".r").hidden = false; }));
+$$(".pense .rev").forEach(b => b.addEventListener("click", () => { const r = b.parentElement.querySelector(".r"); r.hidden = !r.hidden; b.textContent = r.hidden ? "Ver a resposta" : "Esconder"; }));
+
+/* ============ ganham vida quando o leitor chega ============ */
+$$(".listagem").forEach(montarListagem);
+$$(".terminal").forEach(montarTerminal);
+desenharF1(); $("#v-fonte").innerHTML = FONTE(false); $("#v-json").innerHTML = jsonVisto(false); $("#fala3").textContent = "Desça até aqui e o cartão se monta.";
+$("#fala2").textContent = "Escolha uma cidade."; (() => { cid = "Recife"; })();
+const TOCA = { fig1: tocarF1, fig2: tocarF2, fig3: tocarF3 };
+const obs = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; const el = e.target; obs.unobserve(el);
+  if (el.classList.contains("listagem")) { el.classList.add("toca"); }
+  else if (TOCA[el.dataset.anima]) TOCA[el.dataset.anima]();
+}), { threshold: .35 }) : null;
+$$(".anima").forEach(el => obs ? obs.observe(el) : (el.classList.add("toca"), TOCA[el.dataset.anima] && TOCA[el.dataset.anima]()));
+
+/* progresso e sumário */
+const SECS = [["s1", "3.1 O modelo pede, o seu código roda"], ["s2", "3.2 Um arquivo só para a ferramenta"], ["s3", "3.3 Com quem o código conversa"], ["s4", "3.4 Do nome às coordenadas"], ["s5", "3.5 Uma linha, e a função vira ferramenta"]];
+$("#sumario").innerHTML = `<h4>neste capítulo</h4><ol>${SECS.map(([id, t]) => `<li><a href="#${id}">${esc(t)}</a></li>`).join("")}</ol>
+  <h4>o livro</h4><ol><li class="off">O que vamos construir</li><li class="off">As peças de fora e a chave</li><li class="aqui">A ferramenta</li><li class="off">O estado e os nós</li><li class="off">O grafo e a primeira resposta</li></ol>
+  <span class="ponto">Amostra: só o capítulo 3 está escrito.</span>`;
+$("#bsum").addEventListener("click", () => { const s = $("#sumario"); s.hidden = !s.hidden; $("#bsum").setAttribute("aria-expanded", !s.hidden); });
+$("#sumario").addEventListener("click", e => { if (e.target.closest("a")) { $("#sumario").hidden = true; $("#bsum").setAttribute("aria-expanded", "false"); } });
+document.addEventListener("click", e => { if (!e.target.closest("#sumario, #bsum")) { $("#sumario").hidden = true; $("#bsum").setAttribute("aria-expanded", "false"); } });
+const prog = () => { const h = document.documentElement, max = h.scrollHeight - h.clientHeight; $("#progresso").style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + "%";
+  let atual = "Capítulo 3 · A ferramenta"; SECS.forEach(([id, t]) => { if ($("#" + id).getBoundingClientRect().top < 120) atual = t; }); $("#onde").textContent = atual; };
+addEventListener("scroll", prog, { passive: true }); prog();
+let redim = null;
+addEventListener("resize", () => { clearTimeout(redim); redim = setTimeout(() => { desenharF1(); if (f2redesenha) f2redesenha(); }, 120); });
+</script>

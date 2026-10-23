@@ -1,0 +1,96 @@
+---
+/**
+ * O arquivo como está neste ponto do livro.
+ * `codigo` vem de um import ?raw do arquivo real do projeto, nunca de uma cópia.
+ * `linhas="4-6"`: mostra o arquivo até a linha 6 e marca 4 a 6 como novas
+ * (linhas em branco no começo do trecho não contam como novas).
+ * Sem `linhas`: mostra o arquivo inteiro, sem marcar nada.
+ */
+import { Code } from "astro:components";
+import type { ShikiTransformer } from "shiki";
+
+interface Props {
+  codigo: string;
+  nome: string;
+  linhas?: string;
+  notas?: Record<number, string>;
+  info?: string;
+}
+const { codigo, nome, linhas, notas = {}, info } = Astro.props;
+
+const todas = codigo.replace(/\n$/, "").split("\n");
+let ate = todas.length, de = Infinity;
+if (linhas) {
+  const m = linhas.match(/^(\d+)-(\d+)$/);
+  if (!m) throw new Error(`Listagem ${nome}: linhas="${linhas}" não está no formato "de-ate"`);
+  de = Number(m[1]); ate = Number(m[2]);
+  if (de < 1 || ate > todas.length || de > ate) throw new Error(`Listagem ${nome}: linhas="${linhas}" fora do arquivo (${todas.length} linhas)`);
+  while (de <= ate && !todas[de - 1].trim()) de++;
+}
+for (const n of Object.keys(notas)) if (+n < 1 || +n > ate) throw new Error(`Listagem ${nome}: nota na linha ${n}, fora do trecho mostrado`);
+
+const texto = todas.slice(0, ate).join("\n");
+const novas = de === Infinity ? 0 : ate - de + 1;
+const velhas = de === Infinity ? 0 : de - 1;
+const recolher = velhas >= 6 ? velhas - 3 : 0;   /* muito código já escrito: só as 3 linhas antes do trecho novo ficam à vista */
+const ordem = Object.keys(notas).map(Number).sort((a, b) => a - b);
+const rotulo = info ?? (de === Infinity ? "" : de === 1 ? "arquivo novo" : `+${novas} linhas · as de cima você já escreveu`);
+
+const marcar: ShikiTransformer = {
+  code(no) { no.children = no.children.filter((c) => c.type === "element"); },
+  line(no, n) {
+    no.properties["data-n"] = String(n);
+    if (n >= de) this.addClassToHast(no, "novo");
+    else if (de !== Infinity) this.addClassToHast(no, "velho");
+    if (n <= recolher) this.addClassToHast(no, "recolhida");
+    const i = ordem.indexOf(n);
+    if (i >= 0) no.children.push({ type: "element", tagName: "span", properties: { class: "chave", title: notas[n] }, children: [{ type: "text", value: String(i + 1) }] });
+    if (n >= de) no.properties.style = `--d:${n - de}`;
+  },
+};
+---
+<div class="listagem" data-listagem data-recolhidas={recolher || undefined}>
+  <div class="aba"><span class="ic">{nome.endsWith(".py") ? "PY" : "TXT"}</span>{nome}{rotulo && <span class="info" set:html={rotulo.replace(/^(\+\d+ linhas)/, "<b>$1</b>")} />}</div>
+  {recolher > 0 && <div class="rodape"><button type="button" class="abrir">mostrar as {recolher} linhas de cima</button></div>}
+  <Code code={texto} lang="python" theme="dark-plus" transformers={[marcar]} />
+  {ordem.length > 0 && (
+    <div class="rodape">{ordem.map((n, i) => <span><span class="chave">{i + 1}</span>{notas[n]}</span>)}</div>
+  )}
+</div>
+
+<script>
+  /* as linhas novas entram quando o leitor chega na listagem; o botão mostra o código já escrito */
+  const ver = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add("toca"); ver?.unobserve(e.target); }
+  }), { threshold: 0.35 }) : null;
+  document.querySelectorAll<HTMLElement>("[data-listagem]").forEach((el) => {
+    ver ? ver.observe(el) : el.classList.add("toca");
+    el.querySelector(".abrir")?.addEventListener("click", (ev) => {
+      el.classList.add("aberta"); (ev.currentTarget as HTMLElement).parentElement?.remove();
+    });
+  });
+</script>
+
+<style is:global>
+  .listagem { margin: 1.2em auto 1.6em; border-radius: 10px; overflow: hidden; background: var(--ide-bg); color: var(--ide-ink); box-shadow: 0 10px 30px rgba(30, 20, 5, .16) }
+  .listagem .aba { display: flex; align-items: center; gap: 8px; background: var(--ide-tabs); font: 12.5px var(--f-ui); color: #ddd; padding: 7px 14px }
+  .listagem .aba .ic { font: 700 8.5px var(--f-mono); color: #4b9cd3 }
+  .listagem .aba .info { margin-left: auto; color: #8b8b8b; font-size: 11.5px }
+  .listagem .aba .info b { color: #9cdcfe; font-weight: 500 }
+  .listagem pre.astro-code { margin: 0; padding: 10px 0 12px; overflow-x: auto; font: 13.5px/21px var(--f-mono); background: var(--ide-bg) !important }
+  .listagem pre.astro-code code { display: block; min-width: max-content }
+  .listagem .line { display: block; min-height: 21px; white-space: pre; padding-right: 16px }
+  .listagem .line::before { content: attr(data-n); display: inline-block; width: 48px; padding-right: 16px; text-align: right; color: #6e7681; user-select: none }
+  .listagem .line.velho { opacity: .45 }
+  .listagem .line.recolhida { display: none }
+  .listagem.aberta .line.recolhida { display: block }
+  .listagem .line.novo { background: var(--ide-new) }
+  .listagem .line.novo::before { color: #cfcfcf }
+  .listagem.toca .line.novo { animation: digita .4s ease-out both; animation-delay: calc(var(--d) * 45ms) }
+  @keyframes digita { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: reduce) { .listagem.toca .line.novo { animation: none } }
+  .listagem .rodape { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 14px; background: #252526; font: 12px var(--f-ui); color: #9d9d9d }
+  .listagem .rodape button { background: none; border: 0; color: #9cdcfe; cursor: pointer; padding: 0; font: inherit }
+  .listagem .chave { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #3794ff; color: #fff; font: 700 11px var(--f-ui); margin: 0 4px 0 10px; vertical-align: 1px }
+  .listagem .rodape .chave { margin-left: 0 }
+</style>

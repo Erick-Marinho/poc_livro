@@ -1,0 +1,15 @@
+---
+/** Lugar guardado para um componente que ainda vai ser construído. Some quando o componente existir. */
+interface Props { o: string; parte: string; largo?: boolean }
+const { o, parte, largo = false } = Astro.props;
+---
+<div class:list={["pendente", { largo }]} data-pendente={o}>
+  <b>{o}</b><span>entra na parte {parte}</span>
+</div>
+
+<style is:global>
+  .pendente { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin: 1.2em auto 1.6em; padding: 14px 16px; border-radius: 10px;
+    background: var(--papel-2); border: 1px solid var(--linha); font: 14px var(--f-ui); color: var(--ink-2) }
+  .pendente b { color: var(--ink); font-weight: 600 }
+  .pendente span { font: 12px var(--f-mono) }
+</style>

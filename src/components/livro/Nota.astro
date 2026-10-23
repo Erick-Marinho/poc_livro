@@ -1,0 +1,12 @@
+---
+/** Nota de margem, no fluxo do texto: o "por que este passo é assim". */
+interface Props { titulo?: string }
+const { titulo = "por que assim" } = Astro.props;
+---
+<div class="nota"><b>{titulo}</b><slot /></div>
+
+<style is:global>
+  .nota { border-left: 3px solid var(--ok); background: var(--nota); padding: 10px 14px; margin: 0 auto 1.3em; font: 15.5px/1.6 var(--f-ui); border-radius: 0 6px 6px 0 }
+  .nota b { display: block; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ok); margin-bottom: 2px }
+  .nota p { margin: 0 }
+</style>

@@ -1,0 +1,66 @@
+---
+/**
+ * Um terminal que roda quando o leitor pede.
+ * A saída vem do saidas.json do livro, gravado a partir do código real (na 1c, pelo verificador).
+ * Formato de uma saída: { "comando": "...", "saida": [["linha", "classe"], ...] }
+ * ou, com variantes: { "comando": "...", "variantes": { "antes": [...], "depois": [...] } }.
+ */
+type Linha = [string, string?];
+interface Saida { comando: string; saida?: Linha[]; variantes?: Record<string, Linha[]> }
+interface Props { saida: Saida; pasta?: string; rotulos?: Record<string, string> }
+const { saida, pasta = "~/projeto", rotulos = {} } = Astro.props;
+if (!saida || !saida.comando || !(saida.saida || saida.variantes)) throw new Error("Terminal: saída sem comando ou sem linhas; confira o saidas.json");
+const variantes = saida.variantes ? Object.keys(saida.variantes) : [];
+const dados = JSON.stringify({ comando: saida.comando, saida: saida.saida, variantes: saida.variantes, pasta });
+---
+<div class="terminal" data-terminal={dados}>
+  <div class="barra">
+    <span>TERMINAL</span><span class="esp"></span>
+    {variantes.map((v, i) => <button type="button" class="sec" data-v={v} aria-pressed={i === 0 ? "true" : "false"}>{rotulos[v] ?? v}</button>)}
+    <button type="button" class="rodar">▶ Rodar</button>
+  </div>
+  <pre><span class="pr">voce@maquina</span>:<span class="cwd">{pasta}</span>$ {saida.comando}
+<span class="dim">aperte ▶ Rodar</span></pre>
+</div>
+
+<script>
+  type Linha = [string, string?];
+  const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const espera = (ms: number) => new Promise((r) => setTimeout(r, calmo ? 0 : ms));
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+  document.querySelectorAll<HTMLElement>("[data-terminal]").forEach((el) => {
+    const t = JSON.parse(el.dataset.terminal!) as { comando: string; saida?: Linha[]; variantes?: Record<string, Linha[]>; pasta: string };
+    const pre = el.querySelector("pre")!;
+    const prompt = `<span class="pr">voce@maquina</span>:<span class="cwd">${esc(t.pasta)}</span>$ `;
+    let variante = t.variantes ? Object.keys(t.variantes)[0] : "", vez = 0;
+    const parado = () => { pre.innerHTML = prompt + esc(t.comando) + '\n<span class="dim">aperte ▶ Rodar</span>'; };
+    el.querySelector(".rodar")!.addEventListener("click", async () => {
+      const v = ++vez, linhas = t.variantes ? t.variantes[variante] : t.saida!;
+      const passo = t.comando.length > 60 ? 2 : 1;
+      for (let i = 0; i < t.comando.length; i += passo) {
+        if (v !== vez) return;
+        pre.innerHTML = prompt + esc(t.comando.slice(0, i + passo)) + '<span class="cursor"></span>'; await espera(16);
+      }
+      let html = prompt + esc(t.comando); await espera(250);
+      for (const [l, c] of linhas) { if (v !== vez) return; html += "\n" + `<span class="${c ?? ""}">${esc(l)}</span>`; pre.innerHTML = html; await espera(linhas.length > 4 ? 25 : 90); }
+      pre.innerHTML = html + "\n" + prompt + '<span class="cursor"></span>'; pre.scrollTop = pre.scrollHeight;
+    });
+    el.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((b) => b.addEventListener("click", () => {
+      variante = b.dataset.v!; vez++;
+      el.querySelectorAll("[data-v]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); parado();
+    }));
+  });
+</script>
+
+<style is:global>
+  .terminal { margin: 1em auto 1.6em; border-radius: 10px; overflow: hidden; background: var(--ide-term); color: #ccc; box-shadow: 0 10px 30px rgba(30, 20, 5, .16) }
+  .terminal .barra { display: flex; align-items: center; gap: 10px; padding: 7px 12px; background: #252526; font: 11px var(--f-ui); letter-spacing: .05em; color: #9d9d9d }
+  .terminal .barra .esp { flex: 1 }
+  .terminal .barra button { border: 1px solid #3794ff; background: #0e2a47; color: #e6f1fb; border-radius: 6px; padding: 3px 12px; cursor: pointer; font: 600 12px var(--f-ui); letter-spacing: 0 }
+  .terminal .barra button.sec { border-color: #454545; background: #2d2d2d; color: #ddd; font-weight: 500 }
+  .terminal .barra button[aria-pressed="true"] { border-color: #3794ff; color: #fff; background: #0e2a47 }
+  .terminal pre { margin: 0; padding: 10px 14px 12px; font: 13px/20px var(--f-mono); white-space: pre-wrap; word-break: break-word; min-height: 52px; max-height: 360px; overflow: auto }
+  .terminal .pr { color: #23d18b } .terminal .cwd { color: #3b8eea } .terminal .err { color: #f14c4c } .terminal .okv { color: #23d18b } .terminal .dim { color: #8b8b8b; font-style: italic }
+  .terminal .cursor { display: inline-block; width: 7px; height: 14px; background: #ccc; vertical-align: -2px; animation: pisca 1s steps(1) infinite }
+  @keyframes pisca { 50% { opacity: 0 } }
+</style>

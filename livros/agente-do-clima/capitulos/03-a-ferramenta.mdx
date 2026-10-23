@@ -1,0 +1,95 @@
+---
+livro: Agente do Clima
+numero: 3
+titulo: A ferramenta
+lide: O modelo sabe muita coisa, mas não sabe a temperatura de agora em Recife. Neste capítulo você escreve o código que vai buscar esse número, e descobre que quem roda esse código não é o modelo.
+neste:
+  - você cria o `clima.py`, com duas funções e nenhum modelo;
+  - transforma uma função comum em ferramenta com uma linha;
+  - vê, letra por letra, o que o modelo recebe dela.
+partida:
+  texto: "Ponto de partida: o projeto do capítulo 2."
+  tag: aula-2/bloco-3
+anterior: Capítulo 2 · As peças de fora e a chave
+proximo: Capítulo 4 · O estado e os nós
+aviso: "Teste do formato: este capítulo é do Agente do Clima e não entra no livro do ciclo de vida."
+---
+import Listagem from "../../../src/components/livro/Listagem.astro";
+import Terminal from "../../../src/components/livro/Terminal.astro";
+import Nota from "../../../src/components/livro/Nota.astro";
+import Resumo from "../../../src/components/livro/Resumo.astro";
+import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
+import Pendente from "../../../src/components/livro/Pendente.astro";
+import clima from "../projeto/clima.py?raw";
+import saidas from "../saidas.json";
+
+## 3.1 O modelo pede, o seu código roda
+
+Comece por uma pergunta simples: como um modelo de linguagem responderia "como está a temperatura em Recife agora?". Ele foi treinado com textos até uma certa data. Não tem relógio, não tem termômetro e não abre páginas na internet. Se responder só com o que sabe, ele *inventa* um número com cara de certo.
+
+A saída é dar a ele uma ferramenta. E aqui está a ideia que organiza o livro inteiro: o modelo não usa a ferramenta. Ele *pede* para usá-la. Quem faz o trabalho é um pedaço de código seu. A figura mostra a viagem de um pedido, passo a passo.
+
+<Pendente o="Figura 3.1 · A viagem de um pedido" parte="1b" largo />
+
+<Pendente o="Teste rápido · quem roda a função?" parte="1b" />
+
+## 3.2 Um arquivo só para a ferramenta
+
+Crie um arquivo novo na raiz do projeto, `clima.py`. Ele começa com uma frase dizendo o que faz e dois imports: `httpx`, que faz as chamadas pela internet, e `tool`, que no fim do capítulo vai transformar uma função comum em ferramenta.
+
+<Listagem codigo={clima} nome="clima.py" linhas="1-3" notas={{ 2: "httpx: as chamadas pela internet", 3: "tool: vira ferramenta no 3.5" }} />
+
+<Nota>A ferramenta fica num arquivo só dela. Você testa sem o modelo, e troca de serviço do tempo sem mexer no agente. Quem lê o projeto acha a parte que sai para a internet num lugar só.</Nota>
+
+## 3.3 Com quem o código conversa
+
+O serviço do tempo é o Open-Meteo: público, gratuito e sem chave. Só que ele não entende "Recife". Ele quer latitude e longitude. Então o caminho tem duas paradas: um endereço que acha a cidade pelo nome, e outro que dá o tempo de um ponto do mapa. Escolha uma cidade na figura e acompanhe.
+
+<Pendente o="Figura 3.2 · Duas chamadas por pergunta" parte="1b" largo />
+
+No código, as duas paradas viram duas constantes no topo do arquivo.
+
+<Listagem codigo={clima} nome="clima.py" linhas="4-6" notas={{ 5: "acha a cidade pelo nome", 6: "dá o tempo de um ponto do mapa" }} />
+
+<Nota>Constante no topo deixa à vista com quem o arquivo conversa. Quem abre o `clima.py` sabe na hora que ele sai para a internet, e para onde.</Nota>
+
+## 3.4 Do nome às coordenadas
+
+A primeira função faz a primeira parada da figura: recebe o nome e devolve latitude, longitude e o nome oficial, como "Recife, Brasil". Se o serviço não achar nada, ela devolve `None`.
+
+<Listagem codigo={clima} nome="clima.py" linhas="7-17" notas={{ 11: "a primeira parada da figura 3.2", 12: "serviço fora do ar: para aqui", 14: "não achou: devolve None" }} />
+
+Repare na diferença entre as duas saídas ruins. "Não achei a cidade" é uma resposta normal: qualquer pessoa digita um nome errado. Já o serviço fora do ar é erro de verdade, e esse para no `raise_for_status()`, com uma exceção que alguém vai ler.
+
+Hora de rodar. O comando abaixo chama o serviço de verdade, então na sua máquina os números podem variar na última casa.
+
+<Terminal saida={saidas.coord} pasta="~/clima-agente" />
+
+<Pendente o="Pare e pense · por que count: 1?" parte="1b" />
+
+## 3.5 Uma linha, e a função vira ferramenta
+
+Agora a função que o modelo vai pedir. Ela usa a `coordenadas`, faz a segunda chamada e devolve uma frase pronta. A linha que muda tudo é a primeira: `@tool`.
+
+<Listagem codigo={clima} nome="clima.py" linhas="18-34" notas={{ 20: "a linha que faz a ferramenta", 22: "vira a descrição", 25: "a explicação do argumento", 34: "a frase que o modelo lê de volta" }} />
+
+O `@tool` lê a função e monta o cartão que o modelo vai receber: o nome, uma descrição e os argumentos com seus tipos. A docstring deixa de ser comentário para programador. Ela vira instrução para o modelo. Na figura, à esquerda está o que você escreveu; à direita, o que vai para o modelo, exatamente como o LangChain monta. Troque a forma do `@tool` e veja o cartão mudar.
+
+<Pendente o="Figura 3.3 · O cartão da ferramenta" parte="1b" largo />
+
+A frase "como o usuário escreveu" não está ali por enfeite. Sem ela, o modelo às vezes corrige ou traduz o nome antes de pedir, e o serviço não acha a cidade. Para conferir o argumento no seu terminal:
+
+<Terminal saida={saidas.args} pasta="~/clima-agente" />
+
+<Pendente o="Pare e pense · o modelo passa a rodar esta função?" parte="1b" />
+
+<PontoDeVolta tag="aula-3/bloco-4" />
+
+<Resumo>
+- O modelo não busca nada: ele pede, e o seu código roda.
+- O `clima.py` faz duas chamadas por pergunta: uma acha a cidade, outra dá o tempo.
+- "Não achei" é resposta; serviço fora do ar é erro.
+- O `@tool` transforma a assinatura e a docstring no cartão que o modelo lê. A docstring é instrução.
+</Resumo>
+
+<Pendente o="Exercício · uma segunda ferramenta: o vento" parte="1b" />

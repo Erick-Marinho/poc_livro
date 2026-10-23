@@ -1,0 +1,32 @@
+---
+import "../styles/livro.css";
+import { getCollection } from "astro:content";
+
+const capitulos = (await getCollection("capitulos")).sort((a, b) => a.data.numero - b.data.numero);
+const livros = new Map<string, { titulo: string; caps: typeof capitulos }>();
+for (const c of capitulos) {
+  const id = c.id.split("/")[0];
+  if (!livros.has(id)) livros.set(id, { titulo: c.data.livro, caps: [] });
+  livros.get(id)!.caps.push(c);
+}
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Livros que Rodam</title>
+  </head>
+  <body>
+    <main class="livro">
+      <section class="abertura"><div class="cap">poc</div><h1>Livros que Rodam</h1>
+        <p class="lide">Livros técnicos em que o código se monta e o terminal roda no meio do texto.</p></section>
+      {[...livros].map(([id, l]) => (
+        <section>
+          <h2>{l.titulo}</h2>
+          <ul>{l.caps.map((c) => <li><a href={`/${id}/${c.id.split("/").pop()}/`}>Capítulo {c.data.numero} · {c.data.titulo}</a></li>)}</ul>
+        </section>
+      ))}
+    </main>
+  </body>
+</html>

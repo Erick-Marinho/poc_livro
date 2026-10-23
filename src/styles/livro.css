@@ -1,0 +1,62 @@
+/* A página do livro: uma coluna de leitura; figuras, código e terminal entram no fluxo, um pouco mais largos que o texto. */
+:root {
+  --papel: #f6f2ea; --papel-2: #ede7db; --ink: #24201a; --ink-2: #6b6357; --linha: #ddd4c4; --acento: #2a4fb5;
+  --ok: #1f7a4c; --aviso: #9a5b00; --nota: #fbf8f2;
+  --f-texto: "Literata", Georgia, "Times New Roman", serif; --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --ide-bg: #1e1e1e; --ide-tabs: #2d2d2d; --ide-ink: #d4d4d4; --ide-term: #181818; --ide-new: rgba(0, 122, 204, .18);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff;
+  --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff;
+  --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 70px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
+body { margin: 0; background: var(--papel); color: var(--ink); font: 19px/1.7 var(--f-texto) }
+button { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--papel); z-index: 20 }
+.topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 15; background: color-mix(in srgb, var(--papel) 92%, transparent); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--linha); font: 500 13px var(--f-ui); color: var(--ink-2) }
+.topo .in { max-width: 920px; margin: 0 auto; display: flex; align-items: center; gap: 12px; height: 50px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.topo b { color: var(--ink); font-weight: 600 }
+.topo a { color: inherit; text-decoration: none }
+.topo .esp { flex: 1 }
+.progresso { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--acento); width: 0 }
+
+.livro { max-width: 920px; margin: 0 auto; padding-block: 40px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.livro > *, .corpo > * { max-width: 680px; margin-left: auto; margin-right: auto; min-width: 0 }
+.corpo > .largo, .corpo > figure { max-width: 920px }
+.corpo { display: block }
+p { margin: 0 0 1.05em; hyphens: auto }
+h2 { font: 700 30px/1.2 var(--f-texto); letter-spacing: -.01em; margin: 2.2em auto .6em; text-wrap: balance }
+h2 .num { font: 600 15px var(--f-mono); color: var(--acento); display: block; letter-spacing: .04em; margin-bottom: 4px }
+code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35em; border-radius: 4px }
+.listagem code, .terminal code { background: none; padding: 0; font-size: inherit }
+.abertura { margin-bottom: 2.4em }
+.abertura .cap { font: 600 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--acento) }
+.abertura .numero { font: 700 120px/1 var(--f-texto); color: var(--acento); opacity: .9; margin: 6px 0 0 }
+.abertura h1 { font: 700 48px/1.08 var(--f-texto); letter-spacing: -.02em; margin: 6px 0 18px; text-wrap: balance }
+.abertura .lide { font-size: 22px; line-height: 1.55; color: var(--ink-2); font-style: italic }
+.neste { border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); padding: 14px 0; margin: 1.6em auto 2em; font: 15px/1.6 var(--f-ui); display: grid; gap: 8px }
+.neste b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.neste ul { margin: 0; padding-left: 20px }
+.ponto { font: 14px var(--f-ui); color: var(--ink-2) }
+.ponto code { user-select: all }
+.resumo { border-top: 2px solid var(--ink); padding-top: 12px; margin-top: 2.4em }
+.resumo b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.resumo ul { margin: 6px 0 0; padding-left: 22px }
+.proximo { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linha); margin-top: 2.4em; padding-top: 16px; font: 15px var(--f-ui) }
+.proximo span { color: var(--ink-2) }
+
+@media (max-width: 640px) {
+  body { font-size: 17.5px }
+  .abertura .numero { font-size: 84px } .abertura h1 { font-size: 36px } .abertura .lide { font-size: 19px }
+  h2 { font-size: 25px }
+  .topo .nome { display: none }
+}

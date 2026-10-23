@@ -1,0 +1,50 @@
+---
+import "../styles/livro.css";
+import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+
+interface Props { capitulo: CollectionEntry<"capitulos">; secoes: MarkdownHeading[] }
+const { capitulo, secoes } = Astro.props;
+const c = capitulo.data;
+/* texto curto do cabeçalho: `assim` vira código, o resto é escapado */
+const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
+const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const titulos = secoes.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, texto: h.text.replace(/^(\d+\.\d+)\s*/, "$1 ") }));
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{c.titulo} · {c.livro}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  </head>
+  <body>
+    <header class="topo"><div class="in"><span class="nome"><a href="/"><b>{c.livro}</b></a> · um livro que roda</span><span class="esp"></span><span id="onde">Capítulo {c.numero} · {c.titulo}</span></div><div class="progresso" id="progresso"></div></header>
+    <main class="livro">
+      <section class="abertura">
+        <div class="cap">Capítulo</div>
+        <div class="numero">{c.numero}</div>
+        <h1>{c.titulo}</h1>
+        <p class="lide">{c.lide}</p>
+      </section>
+      <div class="neste"><b>neste capítulo</b><ul>{c.neste.map((n) => <li set:html={md(n)} />)}</ul>
+        <span class="ponto">{c.partida.texto} Perdeu o fio? <code>git checkout {c.partida.tag}</code></span></div>
+      <div class="corpo"><slot /></div>
+      {(c.anterior || c.proximo) && <div class="proximo"><span>{c.anterior && `← ${c.anterior}`}</span><span>{c.proximo && `${c.proximo} →`}</span></div>}
+      {c.aviso && <p class="ponto" style="margin-top:10px">{c.aviso}</p>}
+    </main>
+    <script define:vars={{ titulos, inicio: `Capítulo ${c.numero} · ${c.titulo}` }}>
+      const prog = () => {
+        const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+        document.getElementById("progresso").style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + "%";
+        let atual = inicio;
+        for (const t of titulos) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top < 120) atual = t.texto; }
+        document.getElementById("onde").textContent = atual;
+      };
+      addEventListener("scroll", prog, { passive: true }); prog();
+    </script>
+  </body>
+</html>
