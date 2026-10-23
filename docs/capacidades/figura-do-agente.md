@@ -53,35 +53,38 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 
 1. Conversa e grafo em SVG, sincronizados, com um cenário (R01, responder) no prefácio.
 2. Os quatro cenários (R01, R12, R09, R16: um por decisão, nesta ordem) em abas, e a conferência do roteiro no build.
-3. Controles e acesso: pausar, passo a passo, `prefers-reduced-motion`, leitura sem JS.
+3. Controles, acesso e acabamento: pausar, passo a passo, `prefers-reduced-motion`, leitura sem JS, e os 4 ajustes da revisão da etapa 2.
 4. A figura entra no `npm test`: um teste que falha se o roteiro divergir do contrato.
 
-## Etapa 2, detalhada
+## Etapa 3, detalhada
 
-- **Arquivos:** `FiguraAgente.astro`, `figuras/agente.json` (vira `{ "cenarios": [...] }`), `00-prefacio.mdx` (só as props).
-- **Roteiro:** cada passo tem `no`, `trajeto` opcional (ex.: `"agente-politica"`), `texto` e `duracao`. Nada no componente
-  fica preso a um caso: nome, caminho da bolinha, andamento final e `<desc>` do SVG saem do roteiro e dos dados.
-- **Cenários e respostas** (simulação; conferir contra `pedidos.json` e `politica.md`):
-  - R01 · pedidos → responder: a resposta da etapa 1.
-  - R12 · pedidos, o agente compara o e-mail com o do dono → recusar: "Não consigo passar informações desse pedido:
-    o e-mail informado não é o da compra. Se o pedido for seu, me diga o e-mail que você usou ao comprar."
-    A resposta não diz de quem é o pedido.
-  - R09 · pedidos → política → abrir chamado: "Ana, sinto muito pela tampa. O pedido BT-1004 foi entregue em 07/11/2026,
-    dentro dos 90 dias para defeito. Abri um chamado de troca e vou mandar uma etiqueta de envio."
-  - R16 · nenhuma ferramenta → passar a vez → pessoa da equipe: "Claro. Vou passar a conversa para uma pessoa da equipe."
-- **Abas:** uma por cenário, rotuladas pela decisão ("responder", "recusar", "abrir chamado", "passar a vez").
-- **Ajustes da revisão da etapa 1:** (a) "e-mail" e "BT-1002" nunca quebram no hífen; (b) espaço inquebrável em
-  "capítulo 1" na legenda; (c) a animação começa quando o grafo, e não a figura, estiver 60% à vista; (d) erro claro
-  no build para caso inexistente, nó ou trajeto desconhecido e cenário sem o passo `conversa`.
-- **Evidência:** `npm test` passa; o build falha, com mensagem que diz o caso, quando a `escolha` do R12 vira
-  "responder", ou o R12 visita "política" (mostrar a saída e desfazer); capturas em 1100 px dos quatro cenários
-  no meio do grafo e no fim, e em 390 px do R12 no fim, uma delas no modo escuro.
-- **Fora:** pausar, passo a passo, `prefers-reduced-motion`, sem JS para outros cenários além do R01, teste no `npm test`.
+- **Arquivos:** `FiguraAgente.astro` e `figuras/agente.json`.
+- **Estado por passo:** o que a figura mostra é função de (cenário, passo, progresso). Pausar, avançar e voltar só
+  mudam o passo; não há segundo caminho de animação.
+- **Controles,** numa barra abaixo das abas: tocar/pausar, passo anterior, próximo passo, tocar de novo. São botões de
+  verdade, com rótulo acessível. O andamento vira `aria-live="polite"`, mas só anuncia o passo que o leitor pediu,
+  não os da reprodução automática.
+- **Movimento reduzido** (`prefers-reduced-motion: reduce`): nada toca sozinho e a bolinha não anda. A figura abre no
+  primeiro passo do R01, e o leitor avança com "próximo passo"; nó e aresta mudam sem transição.
+- **Sem JS e na impressão:** o R01 no estado final, com a pergunta, a resposta, "pedidos" marcado, a pílula
+  "responder" e o canal "resposta" acesos. Abas e controles ficam escondidos.
+- **Acabamento (revisão da etapa 2):**
+  (1) só as arestas do cenário atual aparecem; as outras somem, e com elas as pontas amontoadas no nó "agente";
+  (2) pílulas de decisão com no mínimo 13 px e texto com contraste de 4,5:1 contra o fundo, nos dois modos;
+  (3) campo opcional `marca` no passo: um selo curto (até 20 caracteres) junto ao nó do passo, que fica até o fim
+  do cenário. R01: "e-mail = dono"; R12: "e-mail ≠ dono"; R09: "dentro dos 90 dias". A conferência rejeita marca longa;
+  (4) abaixo de 640 px, as abas viram uma grade 2×2 de mesma largura.
+- **Evidência:** `npm test` passa. Capturas: R12 em 1100 px no passo da comparação, com o selo "e-mail ≠ dono";
+  390 px com as abas em 2×2, no claro e no escuro; com `--force-prefers-reduced-motion`, a figura parada no primeiro
+  passo e depois de dois "próximo passo"; sem JS (`--blink-settings=scriptEnabled=false`), o estado final do R01.
+  A conta de contraste das pílulas nos dois modos. O build falhando com uma marca de 21 caracteres.
+- **Fora:** o teste no `npm test` (etapa 4), o mapa do livro, o roteiro gravado de um trace real.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `4acf2d2` | `npm test`; capturas dos três tempos em 1100/390 px, claro e escuro | Erick, 23/10/2026 |
+| 2 | `9d5899c` | `npm test`; o build falha com a escolha do R12 trocada e com o R12 visitando "política"; capturas dos 4 cenários | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)
