@@ -1,0 +1,187 @@
+---
+livro: O ciclo de vida de um agente
+numero: 1
+titulo: O problema e o contrato
+lide: Antes de escrever uma linha de agente, decida o que é um agente certo. Sem isso, não dá para saber se ele melhorou, piorou ou só mudou.
+neste:
+  - escreve o contrato do agente, antes de qualquer código de agente;
+  - transforma o contrato em 20 perguntas de referência que um teste confere;
+  - mede a nota zero, a que todo agente dos próximos capítulos tem que bater.
+partida:
+  texto: "Ponto de partida: uma pasta vazia."
+  tag: cap-01/inicio
+anterior: Prefácio
+proximo: Capítulo 2 · O primeiro agente
+---
+import Listagem from "../../../src/components/livro/Listagem.astro";
+import Terminal from "../../../src/components/livro/Terminal.astro";
+import Nota from "../../../src/components/livro/Nota.astro";
+import PareEPense from "../../../src/components/livro/PareEPense.astro";
+import Classificador from "../../../src/components/livro/Classificador.astro";
+import Exercicio from "../../../src/components/livro/Exercicio.astro";
+import Resumo from "../../../src/components/livro/Resumo.astro";
+import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
+import contrato from "../projeto/contrato.py?raw";
+import referencia from "../projeto/referencia.jsonl?raw";
+import teste from "../projeto/test_referencia.py?raw";
+import baseline from "../projeto/baseline.py?raw";
+import politica from "../projeto/dados/politica.md?raw";
+import loja from "../projeto/dados/loja.json?raw";
+import saidas from "../saidas.json";
+
+## 1.1 Um agente começa antes do código
+
+Existe um jeito rápido de fazer um agente de atendimento: abrir o editor, ligar um modelo a uma lista de pedidos e começar a perguntar. Em uma tarde ele responde bem as cinco perguntas que você testou. Parece pronto.
+
+Aí chega a sexta pergunta. Um cliente pergunta do pedido de outra pessoa, e o agente responde, porque o pedido estava ali e ninguém disse que não podia. Outro cliente pede um desconto, e o agente promete dez por cento, porque soava educado. Um terceiro pergunta quando chega a encomenda, e o agente inventa uma data com cara de certa.
+
+Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que faltou foi alguém dizer, antes, o que é certo. Sem essa definição, não existe erro: existe só "o agente fez isso". E sem erro definido, não dá para medir, comparar uma versão com outra, nem saber se a mudança de ontem melhorou ou piorou.
+
+Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
+
+## 1.2 As perguntas que chegam
+
+O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Imagine um dia de mensagens no atendimento dela:
+
+- "Onde está o meu pedido BT-1002?"
+- "Posso devolver uma panela que recebi há 3 dias? Não gostei da cor."
+- "A frigideira de 24 cm vai ao forno?"
+- "A tampa da panela veio rachada."
+- "Me dá 10% de desconto que eu fecho a compra agora."
+- "Quero falar com um atendente de verdade."
+
+Olhando de perto, aparece um padrão. Algumas perguntas se respondem com os dados da loja: o pedido, o catálogo. Outras, com a política de atendimento. Algumas pedem uma ação, como abrir um chamado de troca. Outras o agente simplesmente não pode atender. E algumas não são para o agente: são para uma pessoa.
+
+## 1.3 O contrato: quatro decisões
+
+Esse padrão vira o contrato. Para toda pergunta, o agente toma uma de quatro decisões:
+
+| Decisão | Quando | Exemplo |
+|---|---|---|
+| **responder** | a resposta está nos dados ou na política | "onde está o meu pedido?" |
+| **abrir chamado** | um produto chegou com defeito, dentro do prazo | "a tampa veio rachada" |
+| **recusar** | a loja não permite, e o agente diz por quê | "me dá um desconto" |
+| **passar a vez** | o caso é de uma pessoa da equipe | "quero falar com um atendente" |
+
+Parece simples até você tentar aplicar. Tente: para cada pergunta abaixo, escolha o que o agente deveria fazer, e veja o que o contrato diz.
+
+<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.1" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na seção 1.6." />
+
+Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
+
+<Nota titulo="passar a vez não é falhar">Um agente que sabe a hora de chamar uma pessoa vale mais que um que tenta responder tudo. Passar a vez é uma decisão do contrato, com regra própria, e não um erro do agente. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
+
+## 1.4 O projeto
+
+Hora de abrir o terminal. O projeto se chama `atendimento-bemtevi` e começa vazio, com o `uv`:
+
+```bash
+uv init atendimento-bemtevi
+cd atendimento-bemtevi
+uv add pydantic
+uv add --dev pytest
+```
+
+O `pydantic` vai dar forma ao contrato; o `pytest` vai conferir se ele está sendo cumprido. Por enquanto, nada de modelo de linguagem: o modelo só entra no capítulo 2.
+
+A loja precisa existir em algum lugar. Ela mora na pasta `dados/`, em cinco arquivos: `loja.json`, `clientes.json`, `pedidos.json`, `catalogo.json` e `politica.md`. Os três do meio são listas de dados inventados; copie-os do repositório do livro, porque digitar CPF falso não ensina nada. Os outros dois valem a leitura. A política é o texto que decide o que o agente pode e não pode fazer:
+
+<Listagem codigo={politica} nome="dados/politica.md" />
+
+Os prazos de devolução não são invenção: os 7 dias de arrependimento e os 90 dias para reclamar de defeito em produto durável vêm do Código de Defesa do Consumidor. O resto é regra da loja.
+
+Há um detalhe que salva muito trabalho depois: a loja tem uma data de hoje fixa.
+
+<Listagem codigo={loja} nome="dados/loja.json" />
+
+Se o agente calcula prazos com a data real do computador, a resposta certa de hoje vira errada daqui a um mês, e os testes começam a falhar sozinhos. Com o "hoje" fixo, um pedido entregue em 20 de outubro está sempre a 21 dias de distância, em qualquer dia em que você rodar o livro.
+
+## 1.5 O contrato em código
+
+Agora o contrato vira código, no arquivo `contrato.py`. Primeiro, as quatro decisões e as três fontes de informação de que o agente pode precisar:
+
+<Listagem codigo={contrato} nome="contrato.py" linhas="1-27" notas={{ 12: "as quatro decisões da seção 1.3", 21: "onde está a resposta: pedido, política ou catálogo" }} />
+
+Um `StrEnum` é uma lista fechada de valores. Se alguém escrever `"talvez"` como decisão, o erro aparece na hora, em vez de passar despercebido.
+
+Depois, o formato de um caso: uma pergunta, a decisão que o contrato espera e o motivo, em uma frase.
+
+<Listagem codigo={contrato} nome="contrato.py" linhas="28-46" notas={{ 35: "o motivo é para quem lê o caso depois", 40: "regras que valem para todo caso" }} />
+
+As duas regras no fim são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Veja o que acontece quando alguém esquece:
+
+<Terminal saida={saidas["caso-sem-pedido"]} pasta="~/atendimento-bemtevi" />
+
+A linha que começa com `Value error` diz exatamente o que faltou. O resto é o caminho do erro, que o Python sempre mostra.
+
+<PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
+Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
+</PareEPense>
+
+Por fim, duas funções para ler os arquivos:
+
+<Listagem codigo={contrato} nome="contrato.py" linhas="47-64" notas={{ 52: "uma pergunta por linha", 58: "o erro diz em que linha está" }} />
+
+## 1.6 As perguntas de referência
+
+O contrato diz como um caso deve ser. As perguntas de referência são os casos de verdade: um arquivo `referencia.jsonl`, com uma pergunta por linha. As três primeiras:
+
+<Listagem codigo={referencia} nome="referencia.jsonl" linhas="1-3" />
+
+São 20 ao todo: 8 de responder, 2 de abrir chamado, 5 de recusar e 5 de passar a vez. Entre elas está a do pedido da Ana perguntado pelo Bruno, que vai voltar no capítulo 6, quando a gente tentar quebrar o agente de propósito. Confira que o arquivo carrega:
+
+<Terminal saida={saidas["contar-casos"]} pasta="~/atendimento-bemtevi" />
+
+Carregar sem erro só prova que cada linha tem o formato certo. Não prova que as perguntas fazem sentido com os dados da loja. Para isso serve o teste:
+
+<Listagem codigo={teste} nome="test_referencia.py" linhas="1-16" notas={{ 8: "as 20 perguntas", 11: "o \"hoje\" fixo da loja" }} />
+
+<Listagem codigo={teste} nome="test_referencia.py" linhas="17-53" notas={{ 30: "só fala de pedido com quem é dono", 36: "o caso do capítulo 6 tem que existir", 41: "chamado só dentro dos 90 dias" }} />
+
+Cada teste é uma regra da política, escrita de um jeito que a máquina confere. Rode:
+
+<Terminal saida={saidas.testes} pasta="~/atendimento-bemtevi" />
+
+<Nota titulo="teste do teste">Um teste que nunca falha não protege nada. Experimente trocar o e-mail da primeira pergunta para o da Ana e rodar de novo: o teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
+
+## 1.7 A nota zero
+
+Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe.
+
+<Listagem codigo={baseline} nome="baseline.py" notas={{ 11: "o agente mais simples: passa tudo", 15: "conta acertos por decisão" }} />
+
+Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Rode e veja a nota dele:
+
+<Terminal saida={saidas["nota-zero"]} pasta="~/atendimento-bemtevi" />
+
+Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente.
+
+<PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota zero?">
+Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
+
+<Terminal saida={saidas["sempre-responder"]} pasta="~/atendimento-bemtevi" />
+
+Mas esse agente também "respondeu" a pergunta do Bruno sobre o pedido da Ana. Pela nota, foi só um erro entre doze. Na vida real, é o pior erro possível. A lição: uma nota que conta todo erro igual engana. No capítulo 4, os erros passam a ter peso.
+</PareEPense>
+
+Com o contrato escrito, as perguntas de referência no lugar e a nota zero medida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
+
+<PontoDeVolta tag="cap-01/fim" />
+
+<Resumo>
+- Sem uma definição de certo, não existe erro, e sem erro não dá para medir.
+- O contrato tem quatro decisões: responder, abrir chamado, recusar e passar a vez.
+- Passar a vez é uma decisão com regra própria, não uma falha.
+- As perguntas de referência são o contrato em casos; um teste confere se elas batem com os dados da loja.
+- A nota zero (passar tudo para a equipe) é 25%. Todo agente tem que bater esse número.
+</Resumo>
+
+<Exercicio titulo="Cinco perguntas novas">
+
+1. Acrescente 5 perguntas ao `referencia.jsonl`, de R21 a R25: uma de cada decisão e mais uma de pedido de outra pessoa, usando um par de pedido e cliente diferente do Bruno e da Ana.
+2. Antes de rodar, escreva num papel qual vai ser a nova nota zero.
+3. Rode `uv run pytest -q` até os testes ficarem verdes, e depois `uv run python baseline.py`. A nota bateu com a sua previsão?
+
+Dica: a nota zero só acerta as perguntas de passar a vez. Conte quantas você acrescentou.
+
+</Exercicio>

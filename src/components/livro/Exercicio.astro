@@ -1,0 +1,14 @@
+---
+/** O exercício do capítulo: parecido com o que foi feito, mas não igual. O enunciado vai dentro. */
+interface Props { titulo: string }
+const { titulo } = Astro.props;
+---
+<div class="exercicio"><b>exercício</b><h3>{titulo}</h3><slot /></div>
+
+<style is:global>
+  .exercicio { border: 1px solid var(--linha); border-radius: 12px; padding: 18px 20px; background: var(--nota); margin: 2em auto 1.4em; font: 16px/1.6 var(--f-ui) }
+  .exercicio > b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .exercicio h3 { margin: 4px 0 10px; font: 700 22px/1.3 var(--f-texto) }
+  .exercicio ol, .exercicio ul { margin: 0 0 12px; padding-left: 22px }
+  .exercicio p { margin: 0 0 .8em }
+</style>

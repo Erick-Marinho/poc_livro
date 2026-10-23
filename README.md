@@ -25,7 +25,7 @@ Node 22.12 ou mais novo.
 | `livros/<livro>/comandos.json` | os comandos que o livro mostra no terminal |
 | `livros/<livro>/saidas.json` | o que esses comandos mostram de verdade (gravado pelo `npm run saidas`) |
 | `scripts/saidas.py` | grava e confere as saídas; a conferência falha se o código mudar e o livro não |
-| `src/components/livro/` | os componentes do livro: `Listagem`, `Terminal`, `Nota`, `Resumo`, `PontoDeVolta` |
+| `src/components/livro/` | os componentes do livro: `Listagem`, `Terminal`, `Nota`, `PareEPense`, `Classificador`, `Exercicio`, `Resumo`, `PontoDeVolta` |
 | `testes/` | os testes do livro (montagem, código, saídas) |
 
 ## Escrever um trecho
@@ -45,4 +45,4 @@ Título de seção com número: `## 1.4 As perguntas de referência`.
 Formato pronto: fonte em MDX, `Listagem` e `Terminal`.
 Livro em andamento: *O ciclo de vida de um agente*. O projeto do capítulo 1 está em
 `livros/ciclo-de-vida/projeto/` (a loja inventada, o contrato, as perguntas de referência e a nota zero).
-O texto do capítulo 1 ainda não foi escrito.
+Escritos: prefácio e capítulo 1 (rascunhos para revisão).

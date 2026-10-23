@@ -11,12 +11,16 @@ import type { ShikiTransformer } from "shiki";
 
 interface Props {
   codigo: string;
+  lang?: "python" | "json" | "toml" | "markdown" | "bash";
   nome: string;
   linhas?: string;
   notas?: Record<number, string>;
   info?: string;
 }
 const { codigo, nome, linhas, notas = {}, info } = Astro.props;
+const EXT: Record<string, Props["lang"]> = { py: "python", json: "json", jsonl: "json", toml: "toml", md: "markdown", sh: "bash" };
+const lang = Astro.props.lang ?? EXT[nome.split(".").pop() ?? ""] ?? "python";
+const icone = { python: "PY", json: "JSON", toml: "TOML", markdown: "MD", bash: "SH" }[lang!];
 
 const todas = codigo.replace(/\n$/, "").split("\n");
 let ate = todas.length, de = Infinity;
@@ -50,9 +54,9 @@ const marcar: ShikiTransformer = {
 };
 ---
 <div class="listagem" data-listagem data-recolhidas={recolher || undefined}>
-  <div class="aba"><span class="ic">{nome.endsWith(".py") ? "PY" : "TXT"}</span>{nome}{rotulo && <span class="info" set:html={rotulo.replace(/^(\+\d+ linhas)/, "<b>$1</b>")} />}</div>
+  <div class="aba"><span class="ic">{icone}</span>{nome}{rotulo && <span class="info" set:html={rotulo.replace(/^(\+\d+ linhas)/, "<b>$1</b>")} />}</div>
   {recolher > 0 && <div class="rodape"><button type="button" class="abrir">mostrar as {recolher} linhas de cima</button></div>}
-  <Code code={texto} lang="python" theme="dark-plus" transformers={[marcar]} />
+  <Code code={texto} lang={lang} theme="dark-plus" transformers={[marcar]} />
   {ordem.length > 0 && (
     <div class="rodape">{ordem.map((n, i) => <span><span class="chave">{i + 1}</span>{notas[n]}</span>)}</div>
   )}

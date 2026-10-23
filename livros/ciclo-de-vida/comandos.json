@@ -1,8 +1,21 @@
 {
   "pasta_do_leitor": "/home/voce/atendimento-bemtevi",
   "comandos": {
-    "contar-casos": {"comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\""},
-    "testes": {"comando": "uv run pytest -q"},
-    "nota-zero": {"comando": "uv run python baseline.py"}
+    "contar-casos": {
+      "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\""
+    },
+    "testes": {
+      "comando": "uv run pytest -q"
+    },
+    "nota-zero": {
+      "comando": "uv run python baseline.py"
+    },
+    "caso-sem-pedido": {
+      "comando": "uv run python -c \"from contrato import Caso; Caso(id='R99', pergunta='Cadê o meu pedido?', decisao='responder', motivo='tem pedido no meio', precisa=['pedidos'])\"",
+      "saiu_com": 1
+    },
+    "sempre-responder": {
+      "comando": "uv run python -c \"from baseline import avaliar; from contrato import Decisao, carregar_referencia; p = avaliar(lambda q: Decisao.RESPONDER, carregar_referencia()); [print(f'{d:<14} {c:>2} de {t:>2}') for d, (c, t) in p.items()]\""
+    }
   }
 }

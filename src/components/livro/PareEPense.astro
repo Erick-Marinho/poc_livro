@@ -1,0 +1,22 @@
+---
+/** Uma pergunta antes da resposta. A resposta (o conteúdo de dentro) só abre quando o leitor pede. */
+interface Props { pergunta: string; titulo?: string }
+const { pergunta, titulo = "pare e pense" } = Astro.props;
+const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
+const q = esc(pergunta).replace(/`([^`]+)`/g, "<code>$1</code>");
+---
+<div class="pense">
+  <b>◆ {titulo}</b>
+  <div class="q" set:html={q} />
+  <details><summary>Ver a resposta</summary><div class="r"><slot /></div></details>
+</div>
+
+<style is:global>
+  .pense { border: 1px solid var(--linha); border-left: 3px solid var(--aviso); background: var(--nota); padding: 12px 14px; margin: 0 auto 1.4em; font: 16px/1.6 var(--f-ui); border-radius: 0 8px 8px 0 }
+  .pense > b { display: block; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--aviso) }
+  .pense .q { margin: 4px 0 8px; font-size: 17px; font-weight: 500 }
+  .pense summary { cursor: pointer; display: inline-block; border: 1px solid var(--linha); background: var(--papel); border-radius: 6px; padding: 3px 12px; font-size: 14px; list-style: none }
+  .pense summary::-webkit-details-marker { display: none }
+  .pense details[open] summary { margin-bottom: 8px }
+  .pense .r p { margin: 0 0 .6em } .pense .r p:last-child { margin: 0 }
+</style>

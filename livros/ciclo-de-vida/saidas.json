@@ -18,7 +18,7 @@
         ""
       ],
       [
-        "7 passed in 0.08s",
+        "7 passed in 0.09s",
         "okv"
       ]
     ]
@@ -45,6 +45,70 @@
       ],
       [
         "nota zero: 5 de 20 (25%)",
+        ""
+      ]
+    ]
+  },
+  "caso-sem-pedido": {
+    "comando": "uv run python -c \"from contrato import Caso; Caso(id='R99', pergunta='Cadê o meu pedido?', decisao='responder', motivo='tem pedido no meio', precisa=['pedidos'])\"",
+    "saiu_com": 1,
+    "saida": [
+      [
+        "Traceback (most recent call last):",
+        "err"
+      ],
+      [
+        "  File \"<string>\", line 1, in <module>",
+        ""
+      ],
+      [
+        "    from contrato import Caso; Caso(id='R99', pergunta='Cadê o meu pedido?', decisao='responder', motivo='tem pedido no meio', precisa=['pedidos'])",
+        ""
+      ],
+      [
+        "                               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        ""
+      ],
+      [
+        "  File \"/home/voce/atendimento-bemtevi/.venv/lib/python3.13/site-packages/pydantic/main.py\", line 280, in __init__",
+        ""
+      ],
+      [
+        "    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)",
+        ""
+      ],
+      [
+        "pydantic_core._pydantic_core.ValidationError: 1 validation error for Caso",
+        ""
+      ],
+      [
+        "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R99', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
+        ""
+      ],
+      [
+        "    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        ""
+      ]
+    ]
+  },
+  "sempre-responder": {
+    "comando": "uv run python -c \"from baseline import avaliar; from contrato import Decisao, carregar_referencia; p = avaliar(lambda q: Decisao.RESPONDER, carregar_referencia()); [print(f'{d:<14} {c:>2} de {t:>2}') for d, (c, t) in p.items()]\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       8 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         0 de  5",
+        ""
+      ],
+      [
+        "passar          0 de  5",
         ""
       ]
     ]

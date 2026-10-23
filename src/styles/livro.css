@@ -40,7 +40,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 p { margin: 0 0 1.05em; hyphens: auto }
 h2 { font: 700 30px/1.2 var(--f-texto); letter-spacing: -.01em; margin: 2.2em auto .6em; text-wrap: balance }
 h2 .num { font: 600 15px var(--f-mono); color: var(--acento); display: block; letter-spacing: .04em; margin-bottom: 4px }
-code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35em; border-radius: 4px }
+code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35em; border-radius: 4px; overflow-wrap: anywhere }
 .listagem code, .terminal code { background: none; padding: 0; font-size: inherit }
 .abertura { margin-bottom: 2.4em }
 .abertura .cap { font: 600 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--acento) }
@@ -68,3 +68,8 @@ code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35
 /* assinatura do prefácio */
 .assinatura { display: grid; gap: 2px; justify-items: end; margin: 2em auto 0; font: italic 18px/1.5 var(--f-texto) }
 .assinatura .quando { font: 14px var(--f-ui); font-style: normal; color: var(--ink-2) }
+
+/* tabelas do texto: rolam dentro da própria caixa no celular */
+.corpo table { display: block; overflow-x: auto; border-collapse: collapse; margin: 1.2em auto 1.6em; font: 15px/1.5 var(--f-ui); max-width: 680px }
+.corpo th, .corpo td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--linha); vertical-align: top }
+.corpo th { font: 600 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2) }
