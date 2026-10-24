@@ -1,7 +1,7 @@
 ---
 /**
- * A figura "o que vamos construir" de um guia de busca nas notas (cerebro/CaminhoDaPergunta.tsx): o caminho de uma
- * pergunta pelo cérebro, com os números do rastro gravado e as notas da régua, saídas reais do projeto do guia.
+ * A figura "o que vamos construir" de um experimento de busca nas notas (cerebro/CaminhoDaPergunta.tsx): o caminho de uma
+ * pergunta pelo cérebro, com os números do rastro gravado e as notas da régua, saídas reais do projeto do experimento.
  */
 import CaminhoDaPergunta from "./cerebro/CaminhoDaPergunta";
 
@@ -9,7 +9,7 @@ type Saida = { comando: string; saida: [string, string][] };
 interface Props { saidas: Record<string, Saida>; rastro: string; regua: [string, string] | [string, string, string]; numero: string; legenda: string }
 const { saidas, rastro, regua, numero, legenda } = Astro.props;
 const linha = (id: string, padrao: RegExp) => saidas[id]?.saida.map(([l]) => l).find((l) => padrao.test(l))
-  ?? (() => { throw new Error(`FiguraCaminho: a saída ${id} não tem ${padrao}; rode a gravação do guia`); })();
+  ?? (() => { throw new Error(`FiguraCaminho: a saída ${id} não tem ${padrao}; rode a gravação do experimento`); })();
 const bruto = linha(rastro, /^\{/);
 ---
 <figure class="figura-cerebro largo">

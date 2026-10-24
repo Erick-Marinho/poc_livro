@@ -1,12 +1,12 @@
-/** O guia do segundo cérebro: as figuras dizem o que as notas e o rastro gravado dizem. Rode depois de `astro build`. */
+/** O experimento do segundo cérebro: as figuras dizem o que as notas e o rastro gravado dizem. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { parse } from "node-html-parser";
 
-const html = parse(readFileSync(new URL("../dist/guias/segundo-cerebro-local/index.html", import.meta.url), "utf8"));
+const html = parse(readFileSync(new URL("../dist/experimentos/segundo-cerebro-local/index.html", import.meta.url), "utf8"));
 const ilha = (nome) => html.querySelectorAll("astro-island").find((i) => (i.getAttribute("component-url") ?? "").includes(nome))?.getAttribute("props") ?? "";
-const saidas = JSON.parse(readFileSync(new URL("../guias/segundo-cerebro-local/saidas.json", import.meta.url), "utf8"));
+const saidas = JSON.parse(readFileSync(new URL("../experimentos/segundo-cerebro-local/saidas.json", import.meta.url), "utf8"));
 
 test("o cofre no tempo: três notas dizem que a entrega é 14/11 e uma diz 21/11; entregar as telas não conta", () => {
   const props = ilha("CofreNoTempo");

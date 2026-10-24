@@ -1,10 +1,10 @@
 ---
 import "../styles/livro.css";
-import "../styles/guias.css";
-import { dataLonga } from "../lib/guias";
+import "../styles/experimentos.css";
+import { dataLonga } from "../lib/datas";
 import TopoSite from "../components/TopoSite.astro";
 
-/** A página de um guia: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta. */
+/** A página de um experimento: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta. */
 interface Props { titulo: string; lide: string; data: string; etiqueta: string }
 const { titulo, lide, data, etiqueta } = Astro.props;
 ---
@@ -15,22 +15,22 @@ const { titulo, lide, data, etiqueta } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- antes de pintar: as escolhas do leitor guardadas no navegador, as mesmas do livro (comandos/Comandos.tsx) -->
     <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;if(localStorage.getItem("fontmar:direto")==="sim")document.documentElement.setAttribute("data-direto","");var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
-    <title>{titulo} · Guias</title>
+    <title>{titulo} · Experimentos</title>
     <meta name="description" content={lide} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <TopoSite atual="guias" nome="Guias" nomeHref="/guias/"> · um tutorial que roda</TopoSite>
+    <TopoSite atual="experimentos" nome="Experimentos" nomeHref="/experimentos/"> · um experimento que roda</TopoSite>
     <main class="livro">
-      <section class="abertura-guia">
+      <section class="abertura-experimento">
         <div class="linha"><span class="etiqueta">{etiqueta}</span><time class="quando" datetime={data}>{dataLonga(data)}</time></div>
         <h1>{titulo}</h1>
         <p class="lide">{lide}</p>
       </section>
       <div class="corpo"><slot /></div>
-      <nav class="proximo" aria-label="Navegação entre guias"><a href="/guias/">← Todos os guias</a><span /></nav>
+      <nav class="proximo" aria-label="Navegação entre experimentos"><a href="/experimentos/">← Todos os experimentos</a><span /></nav>
     </main>
   </body>
 </html>

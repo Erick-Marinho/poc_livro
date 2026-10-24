@@ -14,9 +14,9 @@ test("/livros/index.json tem os livros da estante, na mesma ordem", () => {
   for (const l of livros) { abre(l.href); assert.ok(l.escritos <= l.planejados); }
 });
 
-test("/guias/index.json tem os guias da lista, o mais novo em cima", () => {
-  const { guias } = JSON.parse(ler("/guias/index.json"));
-  assert.deepEqual(guias.map((g) => g.href), parse(ler("/guias/index.html")).querySelectorAll(".guias h2 a").map((a) => a.getAttribute("href")));
-  assert.deepEqual(guias.map((g) => g.data), guias.map((g) => g.data).toSorted().reverse());
-  for (const g of guias) abre(g.href);
+test("/experimentos/index.json tem os experimentos da lista, o mais novo em cima", () => {
+  const { experimentos } = JSON.parse(ler("/experimentos/index.json"));
+  assert.deepEqual(experimentos.map((g) => g.href), parse(ler("/experimentos/index.html")).querySelectorAll(".experimentos-lista h2 a").map((a) => a.getAttribute("href")));
+  assert.deepEqual(experimentos.map((g) => g.data), experimentos.map((g) => g.data).toSorted().reverse());
+  for (const g of experimentos) abre(g.href);
 });

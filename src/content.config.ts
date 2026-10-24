@@ -32,11 +32,11 @@ const capitulos = defineCollection({
 });
 
 /**
- * Cada guia é guias/<guia>/guia.mdx, com o projeto real ao lado (projeto/, comandos.json, saidas.json).
+ * Cada experimento é experimentos/<experimento>/experimento.mdx, com o projeto real ao lado (projeto/, comandos.json, saidas.json).
  * Tutorial curto do dia: título, lide, a data em que sai e a etiqueta do assunto. Sem um deles, não monta.
  */
-const guias = defineCollection({
-  loader: glob({ pattern: "*/guia.mdx", base: "./guias", generateId: ({ entry }) => entry.split("/")[0] }),
+const experimentos = defineCollection({
+  loader: glob({ pattern: "*/experimento.mdx", base: "./experimentos", generateId: ({ entry }) => entry.split("/")[0] }),
   schema: z.object({
     titulo: z.string(),
     lide: z.string(),
@@ -45,4 +45,4 @@ const guias = defineCollection({
   }),
 });
 
-export const collections = { capitulos, guias };
+export const collections = { capitulos, experimentos };

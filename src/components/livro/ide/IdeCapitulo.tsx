@@ -60,8 +60,8 @@ const AUTOR = "você";
 /* as falas de passagem (etapa 2): quatro jeitos de dizer o mesmo, para a conversa não soar como um botão apertado */
 const FIZ = ["Fiz na minha IDE.", "Feito aqui também.", "Pronto, fiz.", "Fiz. Pode seguir."];
 const SEGUE = ["E agora?", "Pode seguir.", "Certo, e depois?", "Entendi. Próximo?"];
-/* onde a IDE está: num livro ou num guia; os textos dela dizem um ou outro */
-type Obra = "livro" | "guia";
+/* onde a IDE está: num livro ou num experimento; os textos dela dizem um ou outro */
+type Obra = "livro" | "experimento";
 const lugares = (obra: Obra): { id: Onde; nome: string }[] => [{ id: "ide", nome: "na minha IDE" }, { id: "livro", nome: `aqui no ${obra}` }];
 const junta = (s: string) => s.trim().replace(/\s+/g, " ");
 
@@ -90,7 +90,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   abreCom?: string | null;
   /** a pasta do projeto do livro, como o leitor a vê (~/<projeto>) */
   pasta: string;
-  /** "guia" numa página de guia: os textos da IDE dizem guia onde diriam livro */
+  /** "experimento" numa página de experimento: os textos da IDE dizem experimento onde diriam livro */
   obra?: Obra }) {
   const LUGARES = lugares(obra);
   const direto = useDireto();
@@ -558,7 +558,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     setVisiveis(falasAgora.length);
     setDuvidasFeitas((v) => ({ ...v, [quadro.k]: [...(v[quadro.k] ?? []), n] }));
   };
-  const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? `Fim do ${obra === "guia" ? "guia" : "capítulo"}.` : `Mensagem para o ${aba}`);
+  const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? `Fim do ${obra === "experimento" ? "experimento" : "capítulo"}.` : `Mensagem para o ${aba}`);
   /* a conversa até aqui: o que já passou leva a fala com que o leitor saiu de cada ação */
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
     const f = i === q ? falasAgora.slice(0, visiveis) : [...falas(x, i), ...(x.tipo === "acao" ? [pessoa("passa", <p>{passagem(x, i)}</p>)] : [])];
@@ -595,9 +595,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     : pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
 
   return <div ref={raiz} className={`ide ic${foco ? " ic-foco" : ""}`} data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}
-    role={foco ? "dialog" : undefined} aria-modal={foco || undefined} aria-label={foco ? `IDE do ${obra === "guia" ? "guia" : "capítulo"}, em tela cheia` : undefined}>
+    role={foco ? "dialog" : undefined} aria-modal={foco || undefined} aria-label={foco ? `IDE do ${obra === "experimento" ? "experimento" : "capítulo"}, em tela cheia` : undefined}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
-    <nav className="ic-trilha" aria-label={`Passos do ${obra === "guia" ? "guia" : "capítulo"}`}>
+    <nav className="ic-trilha" aria-label={`Passos do ${obra === "experimento" ? "experimento" : "capítulo"}`}>
       {secoes.map((s) => <div key={s} className="ic-secao">
         <span className="ic-secao-nome"><b>{s}</b> {passos.find((p) => p.secao === s)!.nomeSecao}</span>
         <span className="ic-pontos">{passos.filter((p) => p.secao === s).map((p) => (
@@ -735,7 +735,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     </div>
 
     {/* os controles, fora da janela: são do livro, como a trilha em cima */}
-    <nav className="ic-guia" aria-label={`Avançar no ${obra === "guia" ? "guia" : "capítulo"}`}>
+    <nav className="ic-guia" aria-label={`Avançar no ${obra === "experimento" ? "experimento" : "capítulo"}`}>
       {/* as perguntas do livro (onde fazer, continuar de onde parou) são da conversa (etapa 3); aqui, as setas e o passo */}
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>

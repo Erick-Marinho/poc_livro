@@ -1,0 +1,12 @@
+---
+import { getCollection, render } from "astro:content";
+import Experimento from "../../layouts/Experimento.astro";
+
+/** Um experimento por página, em /experimentos/<experimento>/: o nome da pasta do experimento é o endereço. */
+export async function getStaticPaths() {
+  return (await getCollection("experimentos")).map((experimento) => ({ params: { experimento: experimento.id }, props: { experimento } }));
+}
+const { experimento } = Astro.props;
+const { Content } = await render(experimento);
+---
+<Experimento {...experimento.data}><Content /></Experimento>

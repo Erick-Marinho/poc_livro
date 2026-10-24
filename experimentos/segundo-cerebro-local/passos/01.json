@@ -1,5 +1,5 @@
 {
-  "sobre": "Os passos da construção do guia, na ordem; cada um é um trecho do roteiro (de, ate). `pedido` é a mensagem do leitor ao chat que abre o passo.",
+  "sobre": "Os passos da construção do experimento, na ordem; cada um é um trecho do roteiro (de, ate). `pedido` é a mensagem do leitor ao chat que abre o passo.",
   "autores": [
     "Erick Marinho",
     "Victor Fontela"
@@ -84,7 +84,7 @@
       "temos": "a nota de partida (7 de 10) e a do conserto (9 de 10).",
       "pedido": "Como eu sei se ele presta? Mede com umas perguntas de referência.",
       "depois": [
-        "A que sobrou errada é a próxima parte do guia: um modelo rodando na sua máquina, medido com esta mesma régua."
+        "A que sobrou errada é a próxima parte do experimento: um modelo rodando na sua máquina, medido com esta mesma régua."
       ]
     },
     {

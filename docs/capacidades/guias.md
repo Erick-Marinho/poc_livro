@@ -11,6 +11,8 @@ conferidos pelo `saidas.py`, e o build falha se divergirem. Exemplo escrito à m
 
 - (24/10/2026, Erick) O nome é **Guias**: tutoriais diários, enviados e publicados. Livros são o aprofundamento, que o leitor compra.
 - (24/10/2026, Erick) Os guias moram no poc_livro e reaproveitam `Listagem`, `Terminal`, `PareEPense` e o `saidas.py`; o FontMar.ai ganha o card com o link.
+- (24/10/2026, Erick) Os guias passam a se chamar **Experimentos** (`/experimentos/`, com os endereços antigos
+  redirecionando): a capacidade segue em `docs/capacidades/experimentos.md`.
 - (24/10/2026, Erick) O guia de exemplo `validar-a-resposta` ("Confira a resposta do modelo antes de agir") saiu: era só
   para testar a estrutura. O primeiro guia publicado é o do segundo cérebro (`guias/segundo-cerebro-local/`).
 - (1) Um guia é uma pasta `guias/<guia>/`: `guia.mdx`, `projeto/`, `comandos.json` e `saidas.json`, como um livro de um capítulo só.

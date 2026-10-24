@@ -1,23 +1,23 @@
 ---
 /**
- * A figura "o cofre no tempo" (cerebro/CofreNoTempo.tsx): as notas do cofre de um guia, lidas dos arquivos dele, com a
+ * A figura "o cofre no tempo" (cerebro/CofreNoTempo.tsx): as notas do cofre de um experimento, lidas dos arquivos dele, com a
  * data das propriedades, os [[links]] e a data de entrega que cada uma diz (a frase com a palavra "entrega", inteira,
  * e uma data: "entregar as telas até 14/11" é outra coisa, e não conta).
  */
 import CofreNoTempo from "./cerebro/CofreNoTempo";
 import type { NotaCofre } from "./cerebro/CofreNoTempo";
 
-interface Props { guia: string; narracoes: Record<string, string>; numero: string; legenda: string }
-const { guia, narracoes, numero, legenda } = Astro.props;
-const arquivos = import.meta.glob<string>("../../../guias/*/projeto/cofre/**/*.md", { eager: true, query: "?raw", import: "default" });
-const notas: NotaCofre[] = Object.entries(arquivos).filter(([c]) => c.includes(`/guias/${guia}/`)).map(([caminho, texto]) => {
+interface Props { experimento: string; narracoes: Record<string, string>; numero: string; legenda: string }
+const { experimento, narracoes, numero, legenda } = Astro.props;
+const arquivos = import.meta.glob<string>("../../../experimentos/*/projeto/cofre/**/*.md", { eager: true, query: "?raw", import: "default" });
+const notas: NotaCofre[] = Object.entries(arquivos).filter(([c]) => c.includes(`/experimentos/${experimento}/`)).map(([caminho, texto]) => {
   const arquivo = caminho.split("/cofre/")[1];
   const data = texto.match(/^data: (\S+)$/m)?.[1] ?? (() => { throw new Error(`FiguraCofre: ${arquivo} sem a propriedade data`); })();
   const corpo = texto.split(/^---$/m).slice(2).join("---");
   return { arquivo, data, pasta: arquivo.split("/")[0], titulo: corpo.match(/^# (.+)$/m)?.[1] ?? arquivo,
     links: [...corpo.matchAll(/\[\[([^\]]+)\]\]/g)].map((m) => m[1]), prazo: corpo.match(/\bentrega\b[^.\n]*?(\d{2}\/\d{2})/i)?.[1] };
 });
-if (!notas.length) throw new Error(`FiguraCofre: o guia ${guia} não tem notas em projeto/cofre`);
+if (!notas.length) throw new Error(`FiguraCofre: o experimento ${experimento} não tem notas em projeto/cofre`);
 ---
 <figure class="figura-cerebro largo">
   <CofreNoTempo client:visible notas={notas} narracoes={narracoes} />

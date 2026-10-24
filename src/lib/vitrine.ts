@@ -1,6 +1,6 @@
 /**
- * O que o site tem para mostrar, montado do próprio conteúdo: a estante (um item por livro) e a lista dos guias.
- * As páginas (/livros/, /guias/) e os JSON que a landing lê (/livros/index.json, /guias/index.json) saem daqui,
+ * O que o site tem para mostrar, montado do próprio conteúdo: a estante (um item por livro) e a lista dos experimentos.
+ * As páginas (/livros/, /experimentos/) e os JSON que a landing lê (/livros/index.json, /experimentos/index.json) saem daqui,
  * então a landing nunca mostra algo diferente do site.
  */
 import { getCollection } from "astro:content";
@@ -9,7 +9,7 @@ export type Livro = {
   id: string; titulo: string; lide: string; autores: string[];
   href: string; comeca: string; escritos: number; planejados: number;
 };
-export type Guia = { id: string; titulo: string; lide: string; data: string; etiqueta: string; href: string };
+export type Experimento = { id: string; titulo: string; lide: string; data: string; etiqueta: string; href: string };
 
 const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../livros/*/sumario.json", { eager: true, import: "default" });
 
@@ -30,8 +30,8 @@ export async function estante(): Promise<Livro[]> {
 }
 
 /* o mais novo em cima; no mesmo dia, a ordem do título */
-export async function guias(): Promise<Guia[]> {
-  return (await getCollection("guias"))
+export async function experimentos(): Promise<Experimento[]> {
+  return (await getCollection("experimentos"))
     .sort((a, b) => b.data.data.localeCompare(a.data.data) || a.data.titulo.localeCompare(b.data.titulo))
-    .map((g) => ({ id: g.id, ...g.data, href: `/guias/${g.id}/` }));
+    .map((g) => ({ id: g.id, ...g.data, href: `/experimentos/${g.id}/` }));
 }

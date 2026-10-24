@@ -15,11 +15,11 @@ test("/ciclo-de-vida/ abre o livro pelo prefácio, uma página que existe", () =
   assert.ok(existsSync(new URL(`dist${href}index.html`, raiz)));
 });
 
-test("o que não existe mostra a página em construção, com o caminho para os livros e os guias", () => {
+test("o que não existe mostra a página em construção, com o caminho para os livros e os experimentos", () => {
   const html = ler("/404.html");
   assert.match(html, /em construção/);
   assert.match(html, /href="\/livros\/"/);
-  assert.match(html, /href="\/guias\/"/);
+  assert.match(html, /href="\/experimentos\/"/);
 });
 
 test("em toda página a marca leva à home, e as páginas do site têm o Início no mesmo endereço", async () => {

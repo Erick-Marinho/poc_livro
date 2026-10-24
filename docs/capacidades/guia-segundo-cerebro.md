@@ -21,6 +21,9 @@ compara a nota antes e depois.
 
 ## Decisões
 
+- (24/10/2026, Erick) Os guias viraram experimentos: este agora mora em `experimentos/segundo-cerebro-local/`
+  (`docs/capacidades/experimentos.md`).
+
 - (Erick, 24/10/2026) Notas de uma pessoa qualquer, inventada; nada de dado real.
 - (Erick, 24/10/2026) O guia ensina a subir o Ollama; o guia de modelos locais, mais fundo, vem depois.
 - (Erick, 24/10/2026) As notas moram num cofre do Obsidian; o leitor instala o Obsidian e cria o cofre.

@@ -1,12 +1,12 @@
 ---
 import "../../styles/livro.css";
-import "../../styles/guias.css";
-import { guias as listar } from "../../lib/vitrine";
+import "../../styles/experimentos.css";
+import { experimentos as listar } from "../../lib/vitrine";
 import TopoSite from "../../components/TopoSite.astro";
-import { dataCurta } from "../../lib/guias";
+import { dataCurta } from "../../lib/datas";
 
 /* o mais novo em cima (lib/vitrine.ts) */
-const guias = await listar();
+const experimentos = await listar();
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -14,21 +14,21 @@ const guias = await listar();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
-    <title>Guias · FonteMar.ai</title>
-    <meta name="description" content="Tutoriais curtos de engenharia de IA, um por dia, com código que roda de verdade." />
+    <title>Experimentos · FonteMar.ai</title>
+    <meta name="description" content="Experimentos de engenharia de IA: uma afirmação testada com código que roda, medida, com o resultado gravado." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <TopoSite atual="guias" nome="Guias" />
+    <TopoSite atual="experimentos" nome="Experimentos" />
     <main class="livro">
-      <section class="guias-topo">
-        <h1>Guias</h1>
-        <p>Um problema por dia, resolvido de ponta a ponta, com o código e a saída de verdade.</p>
+      <section class="vitrine-topo">
+        <h1>Experimentos</h1>
+        <p>Uma afirmação que circula, testada com código que roda e medida, com o resultado gravado, mesmo quando contraria o esperado.</p>
       </section>
-      <ul class="guias">
-        {guias.map((g) => (
+      <ul class="experimentos-lista">
+        {experimentos.map((g) => (
           <li>
             <span class="etiqueta">{g.etiqueta}</span>
             <h2><a href={g.href}>{g.titulo}</a></h2>

@@ -1,6 +1,6 @@
 ---
 import "../../styles/livro.css";
-import "../../styles/guias.css";
+import "../../styles/experimentos.css";
 import { estante } from "../../lib/vitrine";
 import TopoSite from "../../components/TopoSite.astro";
 
@@ -22,7 +22,7 @@ const livros = await estante();
   <body>
     <TopoSite atual="livros" nome="Livros" />
     <main class="livro">
-      <section class="guias-topo">
+      <section class="vitrine-topo">
         <h1>Livros</h1>
         <p>O aprofundamento: um projeto real construído do começo ao fim, capítulo a capítulo.</p>
       </section>

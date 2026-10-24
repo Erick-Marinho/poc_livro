@@ -1,4 +1,4 @@
-/** As datas dos guias ("2026-10-24") como a página mostra: "24 OUT" na lista, "24 de outubro de 2026" no guia. */
+/** As datas dos experimentos ("2026-10-24") como a página mostra: "24 OUT" na lista, "24 de outubro de 2026" no experimento. */
 const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 
 const partes = (data: string) => data.split("-").map(Number) as [number, number, number];

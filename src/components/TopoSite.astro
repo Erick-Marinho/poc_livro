@@ -1,10 +1,10 @@
 ---
-/** O cabeçalho das páginas do site (estante, guias, em construção): a marca e o "Início" levam à home do FontMar.ai. */
+/** O cabeçalho das páginas do site (estante, experimentos, em construção): a marca e o "Início" levam à home do FontMar.ai. */
 import { INICIO } from "../lib/site";
 
-interface Props { atual?: "livros" | "guias"; nome?: string; nomeHref?: string }
+interface Props { atual?: "livros" | "experimentos"; nome?: string; nomeHref?: string }
 const { atual, nome, nomeHref } = Astro.props;
-const secoes = [{ id: "livros", rotulo: "Livros", href: "/livros/" }, { id: "guias", rotulo: "Guias", href: "/guias/" }] as const;
+const secoes = [{ id: "livros", rotulo: "Livros", href: "/livros/" }, { id: "experimentos", rotulo: "Experimentos", href: "/experimentos/" }] as const;
 ---
 <header class="topo"><div class="in">
   <a class="marca" href={INICIO} aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a>

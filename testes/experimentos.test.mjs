@@ -1,0 +1,36 @@
+/** Os experimentos: a lista leva a páginas que existem, e cada experimento mostra a saída gravada do projeto dele. Rode depois de `astro build`. */
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { parse } from "node-html-parser";
+
+const raiz = new URL("../", import.meta.url);
+const pagina = (p) => parse(readFileSync(new URL(`dist${p}index.html`, raiz), "utf8"));
+const experimentos = readdirSync(new URL("experimentos/", raiz), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+
+test("a lista tem um link para cada experimento, e cada link abre uma página montada", () => {
+  const links = pagina("/experimentos/").querySelectorAll(".experimentos-lista h2 a").map((a) => a.getAttribute("href"));
+  assert.deepEqual(links.toSorted(), experimentos.map((g) => `/experimentos/${g}/`).toSorted());
+  for (const href of links) assert.ok(existsSync(new URL(`dist${href}index.html`, raiz)), href);
+});
+
+test("cada saída gravada do experimento aparece na página, linha por linha: no terminal, ou nos dados da IDE e das figuras", () => {
+  for (const g of experimentos) {
+    const html = pagina(`/experimentos/${g}/`);
+    const texto = html.querySelector("main").text;
+    /* a IDE e as figuras são ilhas React: o que elas mostram vai nos dados da ilha, como texto JSON */
+    const ide = html.querySelectorAll("astro-island").map((i) => i.getAttribute("props") ?? "").join("");
+    const esta = (t) => texto.includes(t) || ide.includes(JSON.stringify(t).slice(1, -1));
+    const saidas = JSON.parse(readFileSync(new URL(`experimentos/${g}/saidas.json`, raiz), "utf8"));
+    for (const [id, s] of Object.entries(saidas)) {
+      assert.ok(esta(s.comando), `${g}/${id}: o comando não está na página`);
+      for (const [linha] of s.saida) assert.ok(esta(linha), `${g}/${id}: falta "${linha}"`);
+    }
+  }
+});
+
+test("os endereços antigos dos guias levam aos experimentos", () => {
+  const velho = readFileSync(new URL("dist/guias/segundo-cerebro-local/index.html", raiz), "utf8");
+  assert.match(velho, /url=\/experimentos\/segundo-cerebro-local\/?"/);
+  assert.match(readFileSync(new URL("dist/guias/index.html", raiz), "utf8"), /url=\/experimentos\/?"/);
+});

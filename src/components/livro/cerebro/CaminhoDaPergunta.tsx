@@ -1,5 +1,5 @@
 /**
- * "O que vamos construir": a pergunta do prazo atravessando o cérebro do guia, etapa por etapa, com os números do
+ * "O que vamos construir": a pergunta do prazo atravessando o cérebro do experimento, etapa por etapa, com os números do
  * rastro gravado (figuras/rastro.py, conferido contra o cerebro.py). Responde: o que acontece entre a pergunta e a
  * resposta? Em cima, o fluxo; embaixo, o que cada etapa fez com a pergunta.
  */
@@ -103,7 +103,7 @@ export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: st
         <Controles tocando={p.tocando} fim={p.fim} passo={p.passo} total={passos.length} alternar={p.alternar} ir={p.ir} />
         <LinhaDoTempo passos={passos} passo={p.passo} fracao={p.fracao} ir={p.ir} />
       </div>
-      {/* de onde vêm os números: o comando que gravou o rastro, rodado no projeto do guia */}
+      {/* de onde vêm os números: o comando que gravou o rastro, rodado no projeto do experimento */}
       <p className="cdp-fonte">os números vêm de <code>{comando}</code></p>
     </div>
   </MotionConfig>;

@@ -1,7 +1,7 @@
 {
-  "guia": "segundo-cerebro-local",
+  "experimento": "segundo-cerebro-local",
   "versoes_ate": "2026-10-16T00:00:00Z",
-  "sobre": "O caminho do projeto do guia, da pasta vazia à nota, na ordem em que se pensa. O scripts/saidas.py aplica numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
+  "sobre": "O caminho do projeto do experimento, da pasta vazia à nota, na ordem em que se pensa. O scripts/saidas.py aplica numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
   "passos": [
     {
       "acao": "rodar",
@@ -43,7 +43,7 @@
         "cofre/Reuniões/2026-11-10 Conversa com o Otávio.md"
       ],
       "nota": "O cofre do Obsidian é só uma pasta de Markdown. Vieram onze notas de uma gerente de produto inventada: o kickoff de um piloto, e-mails, reuniões, as pessoas e o resumo do projeto. Três delas dizem que a entrega é em 14/11.",
-      "suavez": "Instale o Obsidian (obsidian.md, gratuito) e crie um cofre novo chamado `cofre`, dentro da pasta do projeto. Copie para ele as notas do repositório do guia, mantendo as pastas (E-mails, Notas, Pessoas, Projetos, Reuniões). O Obsidian cria uma pasta `.obsidian/` com as configurações dele; o cérebro só lê os `.md`."
+      "suavez": "Instale o Obsidian (obsidian.md, gratuito) e crie um cofre novo chamado `cofre`, dentro da pasta do projeto. Copie para ele as notas do repositório do experimento, mantendo as pastas (E-mails, Notas, Pessoas, Projetos, Reuniões). O Obsidian cria uma pasta `.obsidian/` com as configurações dele; o cérebro só lê os `.md`."
     },
     {
       "acao": "escrever",
@@ -380,7 +380,7 @@
         "arquivo": "cerebro.py",
         "trecho": "PARECIDA = 1.0",
         "original": "1.0",
-        "convite": "Mexa no limite: toque em `1.0` no editor e veja a nota mudar. Quando você seguir, o `cerebro.py` volta a ser o do guia.",
+        "convite": "Mexa no limite: toque em `1.0` no editor e veja a nota mudar. Quando você seguir, o `cerebro.py` volta a ser o do experimento.",
         "opcoes": [
           {
             "id": "sc-nota-parecida-06",
@@ -444,7 +444,7 @@
         {
           "linhas": "37-39",
           "titulo": "as notas, numeradas",
-          "texto": "Cada nota vai com um número, o arquivo e a data. O modelo devolve o número, e o código sabe qual arquivo é: montando este guia, o modelo, copiando o nome, escreveu Reunióes no lugar de Reuniões."
+          "texto": "Cada nota vai com um número, o arquivo e a data. O modelo devolve o número, e o código sabe qual arquivo é: montando este experimento, o modelo, copiando o nome, escreveu Reunióes no lugar de Reuniões."
         },
         {
           "linhas": "41-42",
@@ -533,7 +533,7 @@
       "duvidas": [
         {
           "pergunta": "Então é só usar o modelo?",
-          "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 7 segundos por pergunta na CPU; e, montando o guia, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
+          "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 7 segundos por pergunta na CPU; e, montando o experimento, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
         }
       ]
     },

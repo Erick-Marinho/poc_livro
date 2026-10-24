@@ -4,7 +4,7 @@
     python3 scripts/saidas.py <livro> --conferir   roda de novo e falha se a saída mudou
     python3 scripts/saidas.py <livro> --leitor DIR  gera em DIR o repositório do leitor (uma tag por passo); com
                                                    --conferir junto (o npm run leitor), confere em vez de gravar
-    python3 scripts/saidas.py guias/<guia>         o mesmo para um guia: a pasta dele no lugar de livros/<livro>
+    python3 scripts/saidas.py experimentos/<experimento>         o mesmo para um experimento: a pasta dele no lugar de livros/<livro>
 
 Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto (ou da pasta
 em "em", como marcos/cap-01 para um comando do capítulo 1), depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
@@ -45,7 +45,7 @@ ENDERECO = re.compile(r"\bat 0x[0-9a-f]+\b")   # endereço de memória que o Pyt
 
 
 def pasta_de(livro: str) -> Path:
-    """Um livro (livros/<livro>) ou um guia (guias/<guia>): o mesmo motor, a mesma conferência."""
+    """Um livro (livros/<livro>) ou um experimento (experimentos/<experimento>): o mesmo motor, a mesma conferência."""
     return RAIZ / livro if "/" in livro else RAIZ / "livros" / livro
 
 
