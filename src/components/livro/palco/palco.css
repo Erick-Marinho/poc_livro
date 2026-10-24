@@ -1,0 +1,89 @@
+/* O palco: o padrão das figuras que rodam. Escuro como o terminal do livro, com abas em cima e,
+   embaixo, os controles e a linha do tempo. Cada figura usa estas peças e desenha só o miolo. */
+.palco {
+  --palco-fundo: #111318; --palco-chao: #15181e; --palco-cartao: #1c2028; --palco-cartao-2: #232833; --palco-linha: #2c323d;
+  --palco-texto: #e7e9ee; --palco-fraco: #8e95a3; --palco-apagado: #5b6270; --palco-pontos: #262b35;
+  --palco-acento: #5aa9ff; --palco-acento-fundo: rgba(90, 169, 255, .14);
+  --palco-verde: #2fd394; --palco-ambar: #ffb547; --palco-ciano: #5fd3e6; --palco-lilas: #c6a2ff;
+  background: var(--palco-fundo); color: var(--palco-texto); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 18px 50px rgba(20, 14, 4, .22); font: 14px/1.45 var(--f-ui); position: relative;
+}
+.palco button { font: inherit; color: inherit; cursor: pointer }
+.palco :focus-visible { outline: 2px solid var(--palco-acento); outline-offset: 2px }
+.palco .cor-verde { --palco-cor: var(--palco-verde) } .palco .cor-ambar { --palco-cor: var(--palco-ambar) }
+.palco .cor-ciano { --palco-cor: var(--palco-ciano) } .palco .cor-lilas { --palco-cor: var(--palco-lilas) }
+.palco .cor-acento { --palco-cor: var(--palco-acento) }
+
+/* barra de cima: abas, e um selo dizendo o que a figura é */
+.palco-barra { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--palco-linha); flex-wrap: wrap }
+.palco-abas { display: flex; gap: 6px; flex-wrap: wrap; flex: 1 }
+.palco-abas button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--palco-linha);
+  background: transparent; color: var(--palco-fraco); font-weight: 500; transition: background .2s, color .2s, border-color .2s }
+.palco-abas button i { width: 8px; height: 8px; border-radius: 50%; background: var(--palco-cor, var(--palco-acento)); opacity: .55 }
+.palco-abas button:hover { color: var(--palco-texto) }
+.palco-abas button[aria-selected="true"], .palco-abas button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--palco-cor, var(--palco-acento)) 16%, transparent);
+  border-color: color-mix(in srgb, var(--palco-cor, var(--palco-acento)) 60%, transparent); color: var(--palco-texto) }
+.palco-abas button[aria-selected="true"] i, .palco-abas button[aria-pressed="true"] i { opacity: 1; box-shadow: 0 0 10px var(--palco-cor, var(--palco-acento)) }
+.palco-selo { font: 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--palco-apagado); white-space: nowrap }
+
+/* a conversa: como o cliente vê */
+.palco-chat { display: flex; flex-direction: column; min-height: 100%; background: linear-gradient(180deg, #171a21, #13161b) }
+.palco-chat header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--palco-linha) }
+.palco-chat header b { display: block; font-weight: 600; font-size: 14px }
+.palco-chat header small { display: flex; align-items: center; gap: 6px; color: var(--palco-fraco); font-size: 12px }
+.palco-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #2fd394, #1a8f6a); color: #08120d; font: 700 13px var(--f-ui) }
+.palco-online { width: 7px; height: 7px; border-radius: 50%; background: var(--palco-verde); display: inline-block }
+.palco-mensagens { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 16px 14px; overflow: hidden }
+.palco-msg { max-width: 90%; padding: 9px 12px 10px; border-radius: 14px; font-size: 15px; line-height: 1.45 }
+.palco-msg small { display: block; font-size: 11px; color: var(--palco-fraco); margin-bottom: 2px }
+.palco-msg p { margin: 0; overflow-wrap: break-word }
+.palco-dele { align-self: flex-end; background: #24426e; border-bottom-right-radius: 4px }
+.palco-dele small { color: #a9c2e6 }
+.palco-resp { align-self: flex-start; background: var(--palco-cartao-2); border-bottom-left-radius: 4px; border-left: 3px solid var(--palco-cor, var(--palco-linha)) }
+.palco-resp small { color: var(--palco-cor, var(--palco-fraco)) }
+.palco-digitando { display: flex; gap: 4px; padding: 13px 14px; border-left-color: var(--palco-linha) }
+.palco-digitando i { width: 6px; height: 6px; border-radius: 50%; background: var(--palco-fraco); animation: palco-pula 1.1s infinite ease-in-out }
+.palco-digitando i:nth-child(2) { animation-delay: .15s } .palco-digitando i:nth-child(3) { animation-delay: .3s }
+@keyframes palco-pula { 0%, 60%, 100% { transform: none; opacity: .5 } 30% { transform: translateY(-4px); opacity: 1 } }
+.palco-sistema { align-self: center; font: 11px var(--f-mono); color: var(--palco-lilas); border: 1px dashed color-mix(in srgb, var(--palco-lilas) 50%, transparent); padding: 4px 10px; border-radius: 999px }
+.palco-chat footer { display: flex; align-items: center; justify-content: space-between; margin: 0 12px 12px; padding: 9px 12px; border-radius: 999px; background: var(--palco-cartao); color: var(--palco-apagado); font-size: 13px }
+
+.palco-junto { white-space: nowrap }
+.palco-veredito { display: flex; align-items: center; gap: 6px; margin-top: 6px; font: 600 12.5px var(--f-ui); color: var(--palco-cor) }
+
+/* rodapé: controles e linha do tempo */
+.palco-rodape { display: flex; align-items: center; gap: 14px; padding: 12px 14px 14px; border-top: 1px solid var(--palco-linha) }
+.palco-controles { display: flex; gap: 6px }
+.palco-controles button { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--palco-linha); background: var(--palco-cartao) }
+.palco-controles button:first-child { background: var(--palco-acento); border-color: var(--palco-acento); color: #06111f }
+.palco-controles button:disabled { opacity: .35; cursor: default }
+.palco-linha { flex: 1; min-width: 0 }
+.palco-segmentos { display: flex; gap: 4px; height: 14px; align-items: center }
+.palco-segmentos button { flex-basis: 0; height: 4px; padding: 0; border: 0; border-radius: 2px; background: var(--palco-linha); overflow: hidden; position: relative }
+.palco-segmentos button:hover { background: #3a4150 }
+.palco-segmentos span { position: absolute; inset: 0; background: var(--palco-acento); transform-origin: left; transform: scaleX(0) }
+.palco-narra { margin: 6px 0 0; font-size: 15px; color: #cfd4dc; min-height: 2.9em }
+.palco-narra > span { font: 11px var(--f-mono); color: var(--palco-apagado); margin-right: 6px }
+.palco-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0 }
+/* sem JS (a ilha ainda não hidratou), os botões não fazem nada: ficam escondidos */
+astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibility: hidden }
+
+/* React Flow dentro do palco: só desenha, ninguém arrasta */
+.palco .react-flow { background: transparent }
+.palco .react-flow__handle { width: 2px; height: 2px; min-width: 0; min-height: 0; border: 0; background: transparent; opacity: 0 }
+.palco .react-flow__node { cursor: default }
+.palco .react-flow__attribution { background: transparent; font-size: 9px; opacity: .45 }
+.palco .react-flow__attribution a { color: var(--palco-apagado) }
+
+@media (prefers-reduced-motion: reduce) { .palco-digitando i { animation: none } }
+@media (max-width: 639px) {
+  .palco-barra { padding: 10px }
+  .palco-abas { display: grid; grid-template-columns: 1fr 1fr }
+  .palco-abas button { justify-content: center }
+  .palco-selo { order: -1; width: 100% }
+  .palco-rodape { padding: 10px; flex-wrap: wrap; gap: 8px }
+  .palco-linha { order: -1; flex-basis: 100% }
+  .palco-chat footer { display: none }
+  .palco-mensagens { padding: 12px 10px }
+}

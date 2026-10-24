@@ -1,0 +1,51 @@
+/* Figura 1.1: o miolo do palco (palco/palco.css). A cor de cada jeito acende quem decide. */
+.rs-perguntas { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex-basis: 100% }
+.rs-perguntas > span { font: 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--palco-apagado); margin-right: 4px }
+.rs-perguntas button { border: 1px solid var(--palco-linha); background: var(--palco-cartao); color: var(--palco-fraco); border-radius: 8px; padding: 5px 10px;
+  font: italic 14px/1.35 var(--f-texto); text-align: left; transition: color .2s, border-color .2s }
+.rs-perguntas button:hover { color: var(--palco-texto) }
+.rs-perguntas button[aria-pressed="true"] { color: var(--palco-texto); border-color: var(--palco-acento); box-shadow: inset 0 0 0 1px var(--palco-acento) }
+
+.rs-palco { display: grid; grid-template-columns: minmax(250px, 300px) 1fr; background: var(--palco-chao) }
+.rs-dentro { position: relative; min-width: 0; border-left: 1px solid var(--palco-linha) }
+.rs-grafo { width: 100% }
+.rs-quem-decide { position: absolute; z-index: 5; top: 12px; left: 14px; right: 14px; margin: 0; font: 12.5px var(--f-ui); color: var(--palco-fraco); pointer-events: none }
+.rs-quem-decide b { color: var(--palco-cor); font-weight: 600 }
+
+.rs-no { width: 100%; height: 100%; display: flex; align-items: center; gap: 9px; padding: 0 12px; border-radius: 12px; background: var(--palco-cartao); position: relative;
+  border: 1px solid var(--palco-linha); color: var(--palco-texto); transition: border-color .25s, box-shadow .25s, opacity .25s; box-sizing: border-box }
+.rs-no b { font-weight: 600; font-size: 15.5px }
+.rs-ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--palco-cartao-2); color: var(--palco-fraco); flex: none; transition: color .25s, background .25s }
+.rs-fora { opacity: .28 }
+.rs-espera { opacity: .8 }
+.rs-ativo { border-color: var(--palco-acento); box-shadow: 0 0 0 4px var(--palco-acento-fundo), 0 0 28px rgba(90, 169, 255, .25) }
+.rs-ativo .rs-ic { color: var(--palco-acento); background: var(--palco-acento-fundo) }
+.rs-feito .rs-ic { color: var(--palco-texto) }
+.rs-decide { position: absolute; top: -11px; right: 10px; font: 600 11px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px;
+  color: #06111f; background: var(--palco-cor, var(--palco-acento)); box-shadow: 0 0 16px color-mix(in srgb, var(--palco-cor, var(--palco-acento)) 50%, transparent) }
+.rs-ferramenta { flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; padding: 10px 12px }
+.rs-ferramenta .rs-topo { display: flex; align-items: center; gap: 8px }
+.rs-ferramenta b { font: 600 13px var(--f-mono); min-width: 0 }
+.rs-ferramenta small { font: 12.5px/1.35 var(--f-ui); color: #cfd4dc }
+.rs-resposta.rs-certo, .rs-resposta.rs-erro { border-color: var(--palco-cor); box-shadow: 0 0 0 4px color-mix(in srgb, var(--palco-cor) 14%, transparent) }
+.rs-resposta.rs-certo .rs-ic, .rs-resposta.rs-erro .rs-ic { color: var(--palco-cor); background: color-mix(in srgb, var(--palco-cor) 14%, transparent) }
+.rs-resposta.rs-certo b, .rs-resposta.rs-erro b { color: var(--palco-cor) }
+
+.rs-aresta path { fill: none; stroke-linecap: round; stroke-linejoin: round }
+.rs-trilho { stroke: var(--palco-linha); stroke-width: 1.6; stroke-dasharray: 4 5 }
+.rs-cheio { stroke: var(--palco-acento); stroke-width: 2.4 }
+.rs-a-feito .rs-cheio { stroke: color-mix(in srgb, var(--palco-acento) 55%, var(--palco-linha)) }
+.rs-seta { fill: var(--palco-linha) !important; stroke: none }
+.rs-a-feito .rs-seta { fill: color-mix(in srgb, var(--palco-acento) 55%, var(--palco-linha)) !important }
+.rs-a-ativo .rs-seta { fill: var(--palco-acento) !important }
+.rs-bolinha { fill: #fff; stroke: var(--palco-acento); stroke-width: 3; filter: drop-shadow(0 0 6px var(--palco-acento)) }
+
+.rs-quem { font: 600 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; margin-right: 6px }
+.rs-q-modelo { color: var(--palco-acento) } .rs-q-codigo { color: var(--palco-texto) } .rs-q-ferramenta { color: var(--palco-verde) }
+.rs-q-cliente, .rs-q-resposta { color: var(--palco-fraco) }
+.rs-decide-mini { font: 600 10px var(--f-mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: #06111f; background: var(--palco-acento); border-radius: 4px; padding: 2px 5px; margin-right: 6px; vertical-align: 1px }
+
+@media (max-width: 639px) {
+  .rs-palco { grid-template-columns: 1fr }
+  .rs-dentro { border-left: 0; border-top: 1px solid var(--palco-linha) }
+}

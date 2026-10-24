@@ -9,6 +9,8 @@ import { Background, BackgroundVariant, Handle, Position, ReactFlow, ReactFlowPr
 import type { Edge, EdgeProps, Node, NodeProps } from "@xyflow/react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import "@xyflow/react/dist/base.css";
+import { Abas, Controles, Conversa, IC, Icone, LinhaDoTempo } from "../palco/Palco";
+import type { Mensagem } from "../palco/Palco";
 import "./agente.css";
 import { ARESTAS, DECISOES, avancar, conversa, estadoAresta, estadoNo, final, memoria, selo, ultimo } from "./cena";
 import type { Cenario, Escolha, Estado, EstadoNo } from "./cena";
@@ -109,26 +111,8 @@ function Pontas({ id }: { id: Id }) {
   ))}</>;
 }
 
-/* ---------- ícones ---------- */
-
-const Icone = ({ d, tam = 16 }: { d: string; tam?: number }) => (
-  <svg viewBox="0 0 24 24" width={tam} height={tam} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={d} /></svg>
-);
-const IC = {
-  pessoa: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0",
-  agente: "M12 3v3m-6 3h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Zm3 4h.01M15 13h.01M9 17h6",
-  pedidos: "M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Zm0 0 8 4.5m0 0 8-4.5M12 12v9",
-  politica: "M7 3h7l5 5v13H7V3Zm7 0v5h5M10 13h6m-6 4h6",
-  catalogo: "M3 12V4h8l10 10-8 8L3 12Zm5-4h.01",
-  resposta: "M4 5h16v11H9l-5 4V5Z",
-  equipe: "M4 14v-2a8 8 0 0 1 16 0v2m-16 0h3v5H4v-5Zm13 0h3v5h-3v-5Z",
-  tocar: "M7 4v16l13-8L7 4Z",
-  pausar: "M7 4h3v16H7V4Zm7 0h3v16h-3V4Z",
-  antes: "M6 5v14M19 5 9 12l10 7V5Z",
-  depois: "M18 5v14M5 5l10 7-10 7V5Z",
-  denovo: "M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4",
-  certo: "M5 12.5 10 17 19 7",
-};
+/* a cor de cada decisão, nas abas e nos nós */
+const COR: Record<Escolha, string> = { responder: "verde", recusar: "ambar", abrir_chamado: "ciano", passar: "lilas" };
 
 /* ---------- nós ---------- */
 
@@ -288,38 +272,26 @@ function Grafo() {
       nodesDraggable={false} nodesConnectable={false} elementsSelectable={false} nodesFocusable={false} edgesFocusable={false}
       panOnDrag={false} panOnScroll={false} zoomOnScroll={false} zoomOnPinch={false} zoomOnDoubleClick={false}
       preventScrolling={false} disableKeyboardA11y minZoom={0.3} maxZoom={2}>
-      <Background variant={BackgroundVariant.Dots} gap={18} size={1.2} color="var(--aav-pontos)" />
+      <Background variant={BackgroundVariant.Dots} gap={18} size={1.2} color="var(--palco-pontos)" />
     </ReactFlow>
   </div>;
 }
 
 /* ---------- por fora: a conversa ---------- */
 
-function Conversa() {
+function ConversaDoAgente() {
   const cen = useRelogio((s) => s.cen);
   const r = useContext(Ctx)!;
   const c = r.cenarios[cen];
   const digitando = useRelogio((s, cc) => conversa(cc, s.passo).digitando);
   const respondeu = useRelogio((s, cc) => conversa(cc, s.passo).respondeu);
-  const passou = c.decisao === "passar";
-  return <section className="aav-chat" aria-label="A conversa, como o cliente vê">
-    <header><span className="aav-avatar">Bt</span><span><b>Casa Bem-te-vi</b><small><i className="aav-online" />atendimento</small></span></header>
-    <div className="aav-mensagens">
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div key={`${c.caso}-p`} className="aav-msg aav-dele" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35 }}>
-          <small>{c.nome}</small><p>{c.pergunta}</p>
-        </motion.div>
-        {digitando && <motion.div key={`${c.caso}-d`} className="aav-msg aav-agente-msg aav-digitando" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          aria-label="o agente está escrevendo"><i /><i /><i /></motion.div>}
-        {respondeu && <motion.div key={`${c.caso}-r`} className={`aav-msg aav-agente-msg aav-d-${c.decisao}`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35 }}>
-          <small>agente</small><p>{c.resposta}</p>
-        </motion.div>}
-        {respondeu && passou && <motion.div key={`${c.caso}-s`} className="aav-sistema" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .3 }}>
-          conversa transferida para a equipe</motion.div>}
-      </AnimatePresence>
-    </div>
-    <footer aria-hidden="true"><span>Escreva uma mensagem…</span><Icone d="M4 12 20 4l-6 16-2-7-8-1Z" /></footer>
-  </section>;
+  const mensagens: Mensagem[] = [
+    { chave: `${c.caso}-p`, tipo: "cliente", autor: c.nome, texto: c.pergunta },
+    ...(digitando ? [{ chave: `${c.caso}-d`, tipo: "digitando" as const }] : []),
+    ...(respondeu ? [{ chave: `${c.caso}-r`, tipo: "agente" as const, autor: "agente", texto: c.resposta, cor: COR[c.decisao] }] : []),
+    ...(respondeu && c.decisao === "passar" ? [{ chave: `${c.caso}-s`, tipo: "sistema" as const, texto: "conversa transferida para a equipe" }] : []),
+  ];
+  return <Conversa mensagens={mensagens} />;
 }
 
 /* ---------- linha do tempo e controles ---------- */
@@ -327,19 +299,9 @@ function Conversa() {
 function Linha({ ir }: { ir: (i: number) => void }) {
   const r = useContext(Ctx)!;
   const cen = useRelogio((s) => s.cen);
-  const c = r.cenarios[cen];
   const passo = useRelogio((s) => s.passo);
   const fracao = useRelogio((s, cc) => Math.min(s.t / cc.passos[s.passo].duracao, 1));
-  return <div className="aav-linha">
-    <div className="aav-segmentos">
-      {c.passos.map((p, i) => (
-        <button key={i} type="button" style={{ flexGrow: p.duracao }} onClick={() => ir(i)} aria-label={`ir ao passo ${i + 1}: ${p.texto}`}>
-          <span style={{ transform: `scaleX(${i < passo ? 1 : i === passo ? fracao : 0})` }} />
-        </button>
-      ))}
-    </div>
-    <p className="aav-narra"><span>{passo + 1}/{c.passos.length}</span> {c.passos[passo].texto}</p>
-  </div>;
+  return <LinhaDoTempo passos={r.cenarios[cen].passos} passo={passo} fracao={fracao} ir={ir} />;
 }
 
 /* ---------- a figura ---------- */
@@ -399,43 +361,27 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
     if (s.tocando) { r.definir({ tocando: false, sequencia: false }); return; }
     r.definir(fim ? { passo: 0, t: 0, tocando: true, sequencia: false } : { tocando: true, sequencia: false });
   };
-  const abas = useRef<(HTMLButtonElement | null)[]>([]);
-  const teclaAba = (ev: React.KeyboardEvent, i: number) => {
-    const n = cenarios.length, mapa: Record<string, number> = { ArrowRight: (i + 1) % n, ArrowLeft: (i - 1 + n) % n, Home: 0, End: n - 1 };
-    if (!(ev.key in mapa)) return;
-    ev.preventDefault(); escolher(mapa[ev.key]); abas.current[mapa[ev.key]]?.focus();
-  };
 
   return <Ctx.Provider value={r}>
     <MotionConfig reducedMotion="user">
-      <div className="aav" ref={raiz}>
-        <div className="aav-barra">
-          <div className="aav-abas" role="tablist" aria-label="O que o agente decide">
-            {cenarios.map((k, i) => (
-              <button key={k.caso} ref={(el) => { abas.current[i] = el; }} type="button" role="tab" aria-selected={i === s.cen} tabIndex={i === s.cen ? 0 : -1}
-                className={`aav-d-${k.decisao}`} onClick={() => escolher(i)} onKeyDown={(ev) => teclaAba(ev, i)} title={k.pergunta}>
-                <i />{DECISOES[k.decisao]}
-              </button>
-            ))}
-          </div>
-          <span className="aav-simulacao">simulação · {c.caso}</span>
+      <div className="palco aav" ref={raiz}>
+        <div className="palco-barra">
+          <Abas rotulo="O que o agente decide" atual={s.cen} escolher={escolher}
+            itens={cenarios.map((k) => ({ chave: k.caso, texto: DECISOES[k.decisao], cor: COR[k.decisao], titulo: k.pergunta }))} />
+          <span className="palco-selo">simulação · {c.caso}</span>
         </div>
         <div className="aav-palco">
-          <Conversa />
+          <ConversaDoAgente />
           <section className="aav-dentro" aria-label="Por dentro: o caminho da resposta">
             <ReactFlowProvider initialNodes={inicio.nodes} initialEdges={inicio.edges} initialWidth={599} initialHeight={Math.round(599 * PAISAGEM.altura / PAISAGEM.largura)} fitView>
               <DesenhoCtx.Provider value={desenho}><Grafo /></DesenhoCtx.Provider></ReactFlowProvider>
           </section>
         </div>
-        <div className="aav-rodape">
-          <div className="aav-controles">
-            <button type="button" onClick={alternar} aria-label={s.tocando ? "Pausar" : fim ? "Tocar de novo" : "Tocar"}><Icone d={s.tocando ? IC.pausar : fim ? IC.denovo : IC.tocar} /></button>
-            <button type="button" onClick={() => ir(Math.max(s.passo - 1, 0))} disabled={s.passo === 0} aria-label="Passo anterior"><Icone d={IC.antes} /></button>
-            <button type="button" onClick={() => ir(Math.min(s.passo + 1, ultimo(c)))} disabled={s.passo === ultimo(c)} aria-label="Próximo passo"><Icone d={IC.depois} /></button>
-          </div>
+        <div className="palco-rodape">
+          <Controles tocando={s.tocando} fim={fim} passo={s.passo} total={c.passos.length} alternar={alternar} ir={ir} />
           <Linha ir={ir} />
         </div>
-        <p className="aav-anuncio" aria-live="polite">{anuncio}</p>
+        <p className="palco-anuncio" aria-live="polite">{anuncio}</p>
       </div>
     </MotionConfig>
   </Ctx.Provider>;
