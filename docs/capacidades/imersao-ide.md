@@ -44,6 +44,6 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 | 2 | `812f432` | percurso do capítulo 1 inteiro: de 95 para 78 cliques; as 40 pausas "sua vez" continuam | Erick, 24/10/2026 |
 | 3 | `8135191` | duas visitas no mesmo navegador: oferece continuar do passo 4 depois de fechar o 3, e a trilha mantém os feitos | Erick, 24/10/2026 |
 | 4 | `26ddea9` | a IDE cobre 1440×813, a página não rola, a pílula e o cabeçalho ficam por baixo, Esc volta; capturas no computador e no celular | Erick, 24/10/2026 |
-| 5 | `62d03d7`, revisão `5d7d580` | percurso do capítulo 1: sem resposta, a pergunta no lugar do seguir, e responder já avança; "na minha IDE": 78 cliques, 40 "sua vez", nenhum comando digitado, como antes; "aqui no livro": 78 cliques, 15 comandos (14 digitados, 1 "roda pra mim"), nenhum "sua vez", as 7 apostas depois do Enter; modo direto: 58 cliques, sem pergunta. Capturas da pergunta no computador e no celular, e das configurações | pendente |
+| 5 | `62d03d7`, revisão `5d7d580` | percurso do capítulo 1: sem resposta, a pergunta no lugar do seguir, e responder já avança; "na minha IDE": 78 cliques, 40 "sua vez", nenhum comando digitado, como antes; "aqui no livro": 78 cliques, 15 comandos (14 digitados, 1 "roda pra mim"), nenhum "sua vez", as 7 apostas depois do Enter; modo direto: 58 cliques, sem pergunta. Capturas da pergunta no computador e no celular, e das configurações | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
