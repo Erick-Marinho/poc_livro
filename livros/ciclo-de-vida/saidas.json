@@ -70,11 +70,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 8ms",
+        "Resolved 6 packages in 10ms",
         ""
       ],
       [
-        "Installed 5 packages in 4ms",
+        "Installed 5 packages in 140ms",
         ""
       ],
       [
@@ -104,11 +104,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 10ms",
+        "Resolved 12 packages in 9ms",
         ""
       ],
       [
-        "Installed 5 packages in 6ms",
+        "Installed 5 packages in 402ms",
         ""
       ],
       [
@@ -348,7 +348,7 @@
         ""
       ],
       [
-        "4 passed in 0.09s",
+        "4 passed in 0.10s",
         "okv"
       ]
     ]
@@ -442,7 +442,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fc400cfc660>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f13a5bdc660>)",
         "err"
       ],
       [
@@ -480,7 +480,7 @@
         ""
       ],
       [
-        "7 passed in 0.12s",
+        "7 passed in 0.09s",
         "okv"
       ]
     ]

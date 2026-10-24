@@ -27,7 +27,7 @@ RUIDO = re.compile(r"^warning: The `UV_\w+` environment variable is deprecated")
 TEMPO = re.compile(r"\bin \d+(\.\d+)?m?s\b")
 # linhas do uv que dependem do que a máquina já tem (o Python instalado, o que já foi baixado): gravadas como saíram,
 # mas fora da conferência, para o livro não falhar só porque o cache de quem roda é outro
-VARIA = re.compile(r"^(Using CPython .* interpreter at: |Creating virtual environment at: |Downloading |\s*Downloaded |Prepared \d+ packages? in )")
+VARIA = re.compile(r"^(Using CPython |Creating virtual environment at: |Downloading |\s*Downloaded |Prepared \d+ packages? in )")
 ENDERECO = re.compile(r"\bat 0x[0-9a-f]+\b")   # endereço de memória que o Python imprime: muda a cada execução
 
 
@@ -86,7 +86,9 @@ def alteradas(antes: str, depois: str) -> list[int]:
 def ambiente(versoes_ate: str | None) -> dict:
     """`versoes_ate`: o uv só enxerga versões publicadas até essa data, e o `uv add` dá sempre o mesmo resultado.
     Vale também para o `uv sync` do projeto/, senão ele reescreve o uv.lock sem a data."""
-    return {**os.environ, **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
+    # UV_LINK_MODE=copy: a pasta do roteiro fica em /tmp, muitas vezes noutro disco que o cache do uv, e o aviso de
+    # "Failed to hardlink" entraria na saída de quem grava; o leitor, na pasta dele, não vê esse aviso
+    return {**os.environ, "UV_LINK_MODE": "copy", **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
 
 
 def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = None) -> tuple[dict, list]:
