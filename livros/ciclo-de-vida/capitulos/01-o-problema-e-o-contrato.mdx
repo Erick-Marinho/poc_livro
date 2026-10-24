@@ -87,7 +87,15 @@ Olhando de perto, aparece um padrão. Algumas perguntas se respondem com os dado
 
 ## 1.4 O contrato: quatro decisões
 
-Esse padrão vira o contrato. Para toda pergunta, o agente toma uma de quatro decisões:
+A palavra vem do direito, e a ideia é a mesma: um acordo escrito antes, que diz o que cada lado pode esperar do outro. Em software, ela tem até autor. Nos anos 1980, Bertrand Meyer propôs que cada rotina declarasse o que exige de quem a chama e o que garante de volta, e chamou isso de projeto por contrato. A rotina deixa de ser "um código que parece funcionar" e passa a ter uma promessa que dá para conferir.
+
+Um agente precisa disso mais do que uma rotina comum. Numa função escrita à mão, o caminho está no código, e quem lê o código sabe o que ela faz. Num agente, quem escolhe o caminho é o modelo, a cada pergunta, e o texto da resposta muda de uma vez para outra. Se a promessa ficar implícita, ninguém consegue dizer se o agente cumpriu. Por isso o contrato deste livro não fala de frases. Ele fala de decisões: a frase pode variar à vontade, a decisão não.
+
+O contrato também não é o prompt, e vale separar os dois desde já. O prompt é como você pede ao modelo que se comporte; o contrato é como você confere o que ele fez. Você vai trocar de prompt muitas vezes ao longo do livro, e de modelo também. O contrato fica, e é justamente por ficar que ele serve de régua.
+
+<Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
+
+As saídas saem do padrão da seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
 
 | Decisão | Quando | Exemplo |
 |---|---|---|
