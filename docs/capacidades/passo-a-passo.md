@@ -17,6 +17,10 @@ o caminho aparece na página.
   real: a do id contra o padrão do `contrato.py`, a do pedido contra as saídas gravadas do roteiro.
 - (5a) No modo direto, todos os blocos aparecem abertos, sem apagar o código e sem perguntas.
 - (5b) Cada passo mostra no máximo cerca de 12 linhas novas; se o roteiro pede mais, o passo se divide.
+- (5b1) Comando com erro que passa pela biblioteca padrão do Python (o caminho e as linhas mudam de máquina para
+  máquina) mostra só a última linha do erro, com `2>&1 | tail -1`; o comando aparece inteiro, então o leitor vê o truque.
+- (5b1) Linha que começa com `NomeError:` passa a ser marcada como erro nas saídas gravadas.
+- (5b1) A conferência do fim do roteiro ignora `.ruff_cache`, como já ignorava `.venv` e `__pycache__`.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -32,10 +36,16 @@ o caminho aparece na página.
 ## Etapas
 
 - **5a.** Passador e glossário, num trecho só: a classe `Caso`, na seção 1.6.
-- **5b.** O passo de construção, lido do roteiro, aplicado ao `contrato.py`.
+- **5b.** O passo de construção, lido do roteiro, aplicado ao `contrato.py`. Dividida em duas partes:
+  - **5b1.** O roteiro reparte o `contrato.py` em pedaços de até ~13 linhas novas, na ordem em que se pensa
+    (as listas fechadas; o formato de um caso, voltando ao topo para o import; a leitura do arquivo; a regra),
+    e cada pedaço termina num comando real gravado. Evidência: a contagem de linhas novas por passo e as saídas novas.
+  - **5b2.** O componente `Passo` (objetivo, mapa pequeno, código novo, rodar com aposta, "agora você tem") na seção
+    1.6, no lugar da IDE dela; o passador da 5a entra como o código do passo do formato de um caso.
 - **5c.** A trilha clicável e as seções 1.6 a 1.8 reescritas em passos; a IDE vira botão; saem as listagens repetidas.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 5a | `43782da` | `npm test` (10 testes, 4 novos); passador no ngrok, no computador e no celular; perguntas conferidas no projeto real | Erick, 23/10/2026 |

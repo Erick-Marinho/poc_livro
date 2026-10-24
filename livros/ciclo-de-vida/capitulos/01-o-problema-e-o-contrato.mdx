@@ -154,13 +154,13 @@ O contrato vira código no arquivo `contrato.py`. O coração dele é o formato 
 
 O arquivo não nasce inteiro, e o caminho importa: a primeira versão é a mais simples que funciona, e a segunda nasce de um erro. Avance você mesmo e, antes de cada comando, aposte no que vai acontecer.
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={9} numero="1.4" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={16} numero="1.4" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
 
-O passo 6 é o que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
+O passo 12 é o que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
 
 <Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
-As duas regras do passo 8 são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Com elas, o mesmo arquivo para no passo 9, e o erro diz a linha. O `StrEnum` das decisões faz o mesmo papel desde o começo: é uma lista fechada, e uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida.
+As duas regras do passo 14 são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Com elas, o mesmo arquivo para no passo 15, e o erro diz a linha. O `StrEnum` das decisões faz o mesmo papel desde o começo: é uma lista fechada, e uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida.
 
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
@@ -172,7 +172,7 @@ O contrato diz como um caso deve ser. As perguntas de referência são os casos 
 
 Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={10} ate={17} numero="1.5" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={17} ate={26} numero="1.5" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
 
 Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
 
@@ -182,7 +182,7 @@ Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o 
 
 Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={18} ate={19} numero="1.6" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={27} ate={28} numero="1.6" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
 
 Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
 

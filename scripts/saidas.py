@@ -30,7 +30,7 @@ ENDERECO = re.compile(r"\bat 0x[0-9a-f]+\b")   # endereço de memória que o Pyt
 def classe(linha: str) -> str:
     if re.search(r"\b\d+ passed\b", linha) and not re.search(r"\b(failed|error)\b", linha):
         return "okv"
-    if re.match(r"^(FAILED|ERROR|E  |Traceback)|\b\d+ (failed|errors?)\b", linha):
+    if re.match(r"^(FAILED|ERROR|E  |Traceback|([\w.]+\.)?\w*Error\b)|\b\d+ (failed|errors?)\b", linha):
         return "err"
     return ""
 
@@ -64,7 +64,7 @@ def montar_partes(partes: list, final: Path, onde: str) -> str:
 
 
 def arquivos(pasta: Path) -> dict[str, bytes]:
-    fora = {".venv", "__pycache__", ".pytest_cache"}
+    fora = {".venv", "__pycache__", ".pytest_cache", ".ruff_cache"}
     return {str(p.relative_to(pasta)): p.read_bytes() for p in sorted(pasta.rglob("*"))
             if p.is_file() and not fora & set(p.relative_to(pasta).parts)}
 

@@ -47,6 +47,62 @@
       ]
     ]
   },
+  "r01-decisao-talvez": {
+    "comando": "uv run python -c \"from contrato import Decisao; print(Decisao('talvez'))\" 2>&1 | tail -1",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "ValueError: 'talvez' is not a valid Decisao",
+        "err"
+      ]
+    ]
+  },
+  "r01-caso-id-torto": {
+    "comando": "uv run python -c \"from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))\"",
+    "saiu_com": 1,
+    "saida": [
+      [
+        "Traceback (most recent call last):",
+        "err"
+      ],
+      [
+        "  File \"<string>\", line 1, in <module>",
+        ""
+      ],
+      [
+        "    from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))",
+        ""
+      ],
+      [
+        "                                     ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        ""
+      ],
+      [
+        "  File \"/home/voce/atendimento-bemtevi/.venv/lib/python3.13/site-packages/pydantic/main.py\", line 280, in __init__",
+        ""
+      ],
+      [
+        "    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)",
+        ""
+      ],
+      [
+        "pydantic_core._pydantic_core.ValidationError: 1 validation error for Caso",
+        "err"
+      ],
+      [
+        "id",
+        ""
+      ],
+      [
+        "  String should match pattern '^R\\d{2}$' [type=string_pattern_mismatch, input_value='R7', input_type=str]",
+        ""
+      ],
+      [
+        "    For further information visit https://errors.pydantic.dev/2.14/v/string_pattern_mismatch",
+        ""
+      ]
+    ]
+  },
   "r01-tres-casos": {
     "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
     "saiu_com": 0,
@@ -76,7 +132,7 @@
         "err"
       ],
       [
-        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 56, in carregar_referencia",
+        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 54, in carregar_referencia",
         ""
       ],
       [
@@ -117,7 +173,7 @@
       ],
       [
         "pydantic_core._pydantic_core.ValidationError: 1 validation error for Caso",
-        ""
+        "err"
       ],
       [
         "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R04', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
@@ -156,7 +212,7 @@
         ""
       ],
       [
-        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 58, in carregar_referencia",
+        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 56, in carregar_referencia",
         ""
       ],
       [
@@ -165,7 +221,7 @@
       ],
       [
         "ValueError: referencia.jsonl, linha 4: 1 validation error for Caso",
-        ""
+        "err"
       ],
       [
         "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R04', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
@@ -276,7 +332,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fa6d39c4040>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f6c271402e0>)",
         "err"
       ],
       [
@@ -300,7 +356,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.06s",
+        "2 failed, 5 passed in 0.09s",
         "err"
       ]
     ]
@@ -314,7 +370,7 @@
         ""
       ],
       [
-        "7 passed in 0.04s",
+        "7 passed in 0.08s",
         "okv"
       ]
     ]

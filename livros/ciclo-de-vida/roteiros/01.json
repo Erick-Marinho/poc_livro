@@ -22,19 +22,99 @@
       "arquivo": "contrato.py",
       "partes": [
         {
-          "linhas": "1-5"
+          "linhas": "1-1"
+        },
+        {
+          "linhas": "3-3"
+        },
+        {
+          "linhas": "10-27"
+        }
+      ],
+      "nota": "Primeiro, as duas listas fechadas: as quatro decisões e as três fontes. Nada de pydantic ainda."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-decisao-talvez",
+      "comando": "uv run python -c \"from contrato import Decisao; print(Decisao('talvez'))\" 2>&1 | tail -1",
+      "espera": 0,
+      "aposta": {
+        "pergunta": "E se alguém escrever \"talvez\" como decisão?",
+        "opcoes": [
+          "Sai talvez, como qualquer texto",
+          "Dá erro: talvez não é uma das quatro"
+        ],
+        "certa": 1
+      },
+      "nota": "Lista fechada é isto: o que não está nela não entra. O tail -1 mostra só a última linha do erro, a que diz o que houve."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "contrato.py",
+      "de": "from enum import StrEnum\n",
+      "para": [
+        {
+          "linhas": "3-3"
+        },
+        {
+          "linhas": "5-5"
         },
         {
           "texto": "from pydantic import BaseModel, Field\n"
-        },
+        }
+      ],
+      "nota": "De volta ao topo: o formato de um caso vai usar o pydantic."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "contrato.py",
+      "no_fim": true,
+      "partes": [
         {
-          "linhas": "7-38"
-        },
+          "linhas": "28-38"
+        }
+      ],
+      "nota": "O formato de um caso: cada campo com o seu tipo e as suas regras."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-caso-id-torto",
+      "comando": "uv run python -c \"from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))\"",
+      "espera": 1,
+      "nota": "O id R7 não segue o padrão, e o pydantic diz qual campo e qual regra."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "contrato.py",
+      "de": "from enum import StrEnum\n",
+      "para": [
+        {
+          "linhas": "3-4"
+        }
+      ],
+      "nota": "De volta ao topo, de novo: ler arquivo pede o Path."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "contrato.py",
+      "depois": "from pydantic import BaseModel, Field\n",
+      "partes": [
+        {
+          "linhas": "7-8"
+        }
+      ],
+      "nota": "AQUI é a pasta do projeto, de onde quer que você rode."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "contrato.py",
+      "no_fim": true,
+      "partes": [
         {
           "linhas": "47-59"
         }
       ],
-      "nota": "Primeiro o mínimo: as quatro decisões, as fontes, o formato de um caso e a função que lê o arquivo."
+      "nota": "A função que lê as perguntas de referência, uma por linha, e diz em que linha está o erro."
     },
     {
       "acao": "escrever",
@@ -160,13 +240,35 @@
     {
       "acao": "inserir",
       "arquivo": "contrato.py",
+      "depois": "\"\"\"O contrato do agente: o que ele faz com cada pergunta, escrito antes de existir agente.\"\"\"\n",
+      "partes": [
+        {
+          "linhas": "2-2"
+        }
+      ],
+      "nota": "Os testes vão precisar ler os dados da loja, que estão em JSON."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "contrato.py",
+      "depois": "AQUI = Path(__file__).parent\n",
+      "partes": [
+        {
+          "linhas": "9-9"
+        }
+      ],
+      "nota": "DADOS é a pasta da loja inventada."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "contrato.py",
       "no_fim": true,
       "partes": [
         {
           "linhas": "60-64"
         }
       ],
-      "nota": "Os testes vão precisar ler os dados da loja."
+      "nota": "E a função que abre um arquivo de dados pelo nome."
     },
     {
       "acao": "escrever",
