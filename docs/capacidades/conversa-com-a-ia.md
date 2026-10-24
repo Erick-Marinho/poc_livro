@@ -23,6 +23,8 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 - (etapa 2) O caminho é o compositor: toda passagem é uma fala do leitor, e a barra de baixo fica só com as setas, o
   nome do passo e as perguntas do livro. As falas de passagem variam em quatro jeitos de dizer o mesmo, para não soar
   como botão.
+- (etapa 3) O começo também é conversa: a IA pergunta onde o leitor vai fazer o projeto e se continua de onde parou;
+  a resposta de onde fazer vai junto com o primeiro pedido, numa fala só.
 
 ## Etapas
 
@@ -31,18 +33,18 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 3. A IA pergunta no chat o que hoje a barra pergunta (onde você faz o projeto; continuar de onde parou).
 4. Perguntas sugeridas por ação, escritas pelos autores, ao lado da fala que avança.
 
-## Etapa 2 (detalhe)
+## Etapa 3 (detalhe)
 
 - **Arquivos:** `src/components/livro/ide/IdeCapitulo.tsx` e `ide-capitulo.css`.
-- **Muda:** cada passagem é uma fala que o leitor envia pelo compositor, e ela fica na conversa depois de enviada. Entre
-  blocos de código, "E o próximo?"; depois de uma ação, quem faz na própria IDE diz que fez ("Fiz na minha IDE." e
-  variações), quem faz aqui no livro diz para seguir ("E agora?" e variações); no fecho, o pedido do passo seguinte
-  (etapa 1). Quando o terminal ou o chat pedem algo (digitar, apostar, responder), a caixa diz o quê, sem envio. A
-  barra de baixo perde o botão "seguir": ficam as setas de voltar e avançar (para reler e para o teclado), o nome do
-  passo e as perguntas de onde fazer e de continuar (etapa 3).
-- **Evidência:** percurso do capítulo 1 só pelo compositor, nos três modos: o mesmo número de cliques (78, 78 e 58),
-  nenhum "seguir"; as falas de passagem na conversa como "você"; captura no computador e no celular.
-- **Fica fora:** a pergunta de onde fazer e o continuar no chat (etapa 3), perguntas novas (etapa 4).
+- **Muda:** as duas perguntas do livro saem da barra e viram falas da IA no começo da conversa, com as respostas como
+  sugestões rápidas no compositor. "Você parou no passo N. Continuo de lá?" (continuar, ou começar do início). "Onde
+  você vai fazer o projeto?" (na minha IDE, ou aqui no livro; a sugestão em destaque é a do aparelho). A resposta de
+  onde fazer já leva o primeiro pedido junto ("Na minha IDE, ao lado do livro. Vamos começar…"), e o leitor novo volta
+  aos mesmos cliques de quem já respondeu. A barra fica só com as setas e o nome do passo.
+- **Evidência:** percurso do capítulo 1 só pelo compositor: leitor novo com 78 cliques (era 79), a resposta e o
+  pedido na mesma fala; quem volta ao livro continua do passo em que parou pelo chat; nenhuma pergunta na barra;
+  captura no computador e no celular.
+- **Fica fora:** perguntas novas por ação (etapa 4).
 
 ## Registro
 

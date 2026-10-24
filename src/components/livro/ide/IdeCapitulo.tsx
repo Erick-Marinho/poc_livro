@@ -388,12 +388,29 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const [comecou, setComecou] = useState(false);
   const esperaPedido = q === 0 && !comecou && !direto;
   const enviou = useRef(false);
+  /* o começo também é conversa (etapa 3): a IA pergunta se continua de onde o leitor parou e onde ele vai fazer o
+     projeto; as respostas dele ficam na conversa (a de onde fazer, junto com o primeiro pedido) */
+  const [inicio, setInicio] = useState<{ retomou?: { de: number; continuar: boolean }; onde?: Onde }>({});
+  const perguntaRetomar = q === 0 && retomar !== null;
+  const perguntandoOnde = q === 0 && perguntaOnde && !perguntaRetomar;
+  const ondeNome = (o: Onde) => (o === "ide" ? "Na minha IDE, ao lado do livro." : "Aqui no livro mesmo.");
+  const falasDoInicio = (ps: PassoCap): Fala[] => {
+    const fs: Fala[] = [{ chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> }];
+    const r = inicio.retomou ?? (perguntaRetomar ? { de: retomar!, continuar: undefined } : null);
+    if (r) {
+      fs.push(ia("rq", <p>Você parou no passo {r.de + 1}, <b>{passos[r.de].titulo}</b>. Continuo de lá?</p>));
+      if (r.continuar === undefined) return fs;
+      fs.push(pessoa("rr", <p>{r.continuar ? `Continua do passo ${r.de + 1}.` : "Começa do início."}</p>));
+    }
+    if (inicio.onde || perguntandoOnde) fs.push(ia("oq", <p>Antes de começar: você vai fazer o projeto na sua IDE, ao lado do livro, ou aqui mesmo? Na sua IDE, eu rodo os comandos aqui e você repete na sua máquina. Aqui, você digita os comandos no terminal da IDE.</p>));
+    if (esperaPedido || perguntandoOnde) return fs;
+    return [...fs, pessoa("p", <p>{inicio.onde && `${ondeNome(inicio.onde)} `}{ps.pedido}</p>)];
+  };
   const falas = (x: Quadro, i: number): Fala[] => {
     const atual = i === q, ps = passos[x.p];
-    if (x.tipo === "abre" && i === 0 && esperaPedido) return [{ chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> }];
+    if (x.tipo === "abre" && i === 0 && (esperaPedido || perguntandoOnde || perguntaRetomar)) return falasDoInicio(ps);
     if (x.tipo === "abre") return [
-      { chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> },
-      pessoa("p", <p>{ps.pedido}</p>),
+      ...(i === 0 ? falasDoInicio(ps) : [{ chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> } as Fala, pessoa("p", <p>{ps.pedido}</p>)]),
       ia("i", <>{ps.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={ps.objetivo} /></p></>),
     ];
     if (x.tipo === "fecha") return [ia("f", <><p className="ic-temos">✓ <b>Pronto. Agora você tem:</b> <Md t={ps.temos} /></p>{ps.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</>)];
@@ -402,7 +419,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       const comAposta = a.tipo === "rodar" && !!a.aposta && !direto, aposta = comAposta ? apostas[x.k] : undefined;
       /* no terminal interativo, o leitor roda: o chat pede o comando, e a aposta vem depois do Enter, antes da saída */
       const doLeitor = a.tipo === "rodar" && interativo, quem = rodou[x.k];
-      const vez = doLeitor ? [ia("c", <p>Agora é você: digite no terminal aqui embaixo <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando}</code> e aperte Enter.</p>),
+      const vez = doLeitor ? [ia("c", <p>Agora é você: digite no terminal da IDE <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando}</code> e aperte Enter.</p>),
         ...(quem === "pediu" ? [pessoa("rp", <p>Roda pra mim.</p>)] : [])] : [];
       if (doLeitor && quem === undefined) return vez;
       const pede = comAposta ? [ia("e", doLeitor ? <p>Antes de ver a saída: o que você acha que vai acontecer? Aposta comigo no terminal.</p>
@@ -483,7 +500,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     return () => relogios.forEach(clearTimeout);
   }, [q, tipos, direto, quadros]);
   /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
-  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !apostandoTroca && !(perguntaOnde && q === 0);
+  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !apostandoTroca && !esperaPedido && !perguntandoOnde && !perguntaRetomar;
   /* o que o leitor diz para sair de um quadro: entre blocos, pede o próximo; depois de uma ação, quem faz na própria IDE
      diz que fez, quem faz aqui pede para seguir; no fecho, o pedido do passo seguinte (que entra na abertura dele) */
   const passagem = (x: Quadro, i: number): string | null => {
@@ -496,10 +513,20 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   /* o compositor: a fala sugerida, que o leitor envia; quando o terminal ou o chat pedem outra coisa, a caixa diz o quê */
   const aguardando = aDigitar ? "Digite o comando no terminal." : esperando || apostandoTroca ? "Aposte no terminal antes de ver a saída."
     : perguntando ? "Responda a pergunta acima." : null;
-  const sugestao: { texto: string; pronto: boolean; enviar: () => void } | null = esperaPedido
-    ? { texto: passos[0].pedido, pronto: !perguntaOnde, enviar: () => { enviou.current = true; setVisiveis(1); setComecou(true); } }
-    : aguardando || q === quadros.length - 1 ? null : { texto: passagem(quadro, q)!, pronto: true, enviar: () => setQ(q + 1) };
-  const vazia = aguardando ?? (q === quadros.length - 1 ? "Fim do capítulo." : `Mensagem para o ${aba}`);
+  /* enviar o primeiro pedido: a conversa do começo segue dali, e a abertura emenda na primeira ação */
+  const comecar = () => { enviou.current = true; setVisiveis(falasAgora.length); setComecou(true); };
+  const sugestao: { texto: string; enviar: () => void } | null = perguntandoOnde || perguntaRetomar ? null
+    : esperaPedido ? { texto: passos[0].pedido, enviar: comecar }
+    : aguardando || q === quadros.length - 1 ? null : { texto: passagem(quadro, q)!, enviar: () => setQ(q + 1) };
+  /* as respostas rápidas das perguntas do começo; a que o aparelho sugere vem em destaque */
+  const rapidas: { rotulo: string; texto: string; destaque: boolean; enviar: () => void }[] = perguntaRetomar ? [
+    { rotulo: `Continuar do passo ${retomar! + 1}`, texto: `Continua do passo ${retomar! + 1}.`, destaque: true,
+      enviar: () => { setInicio((v) => ({ ...v, retomou: { de: retomar!, continuar: true } })); setComecou(true); continuar(); } },
+    { rotulo: "Começar do início", texto: "Começa do início.", destaque: false,
+      enviar: () => { setVisiveis(falasAgora.length); setInicio((v) => ({ ...v, retomou: { de: retomar!, continuar: false } })); doInicio(); } },
+  ] : perguntandoOnde ? LUGARES.map((l) => ({ rotulo: l.nome[0].toUpperCase() + l.nome.slice(1), texto: `${ondeNome(l.id)} ${passos[0].pedido}`, destaque: l.id === sugestaoOnde(),
+    enviar: () => { setInicio((v) => ({ ...v, onde: l.id })); definirOnde(l.id); comecar(); } })) : [];
+  const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? "Fim do capítulo." : `Mensagem para o ${aba}`);
   /* a conversa até aqui: o que já passou leva a fala com que o leitor saiu de cada ação */
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
     const f = i === q ? falasAgora.slice(0, visiveis) : [...falas(x, i), ...(x.tipo === "acao" ? [pessoa("passa", <p>{passagem(x, i)}</p>)] : [])];
@@ -650,11 +677,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         </div>
         <div className="ic-compositor">
           {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
+          {rapidas.length > 0 && <div className="ic-respostas" role="group" aria-label="Respostas">
+            {rapidas.map((r) => <button key={r.rotulo} type="button" data-destaque={r.destaque || undefined} onClick={r.enviar} aria-label={`Enviar: ${r.texto}`}>{r.rotulo}</button>)}
+          </div>}
           {sugestao
-            ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} disabled={!sugestao.pronto} aria-label={`Enviar: ${sugestao.texto}`}>
+            ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} aria-label={`Enviar: ${sugestao.texto}`}>
                 <span>{sugestao.texto}</span><i className="ic-enviar"><ArrowUp size={15} /></i></button>
             : <div className="ic-caixa ic-caixa-vazia" aria-hidden="true"><span>{vazia}</span><i className="ic-enviar"><ArrowUp size={15} /></i></div>}
-          {sugestao && !sugestao.pronto && <p className="ic-caixa-dica">Antes, diga abaixo onde você vai fazer o projeto.</p>}
           <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
         </div>
       </aside>
@@ -673,22 +702,11 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
 
     {/* os controles, fora da janela: são do livro, como a trilha em cima */}
     <nav className="ic-guia" aria-label="Avançar no capítulo">
-      {perguntaOnde && q === 0 ? <>
-        {/* uma pergunta só, uma vez: decide se o leitor digita os comandos aqui ou na máquina dele (palco/onde.ts) */}
-        <span className="ic-pergunta-onde"><b>Onde você vai fazer o projeto?</b>
-          <small>Na sua IDE, os comandos rodam sozinhos aqui e você os repete na sua máquina. Aqui no livro, você os digita no terminal acima.</small></span>
-        {LUGARES.map((l) => <button key={l.id} type="button" className={l.id === sugestaoOnde() ? "ic-seguir" : "ic-do-inicio"}
-          onClick={() => definirOnde(l.id)}>{l.nome}</button>)}
-      </> : retomar !== null && q === 0 ? <>
-        <span className="ic-onde ic-retomar">Você parou no <b>passo {retomar + 1}</b> · {passos[retomar].titulo}</span>
-        <button type="button" className="ic-do-inicio" onClick={doInicio}>começar do início</button>
-        <button type="button" className="ic-seguir" onClick={continuar}>continuar do passo {retomar + 1}<ChevronRight size={16} /></button>
-      </> : <>
+      {/* as perguntas do livro (onde fazer, continuar de onde parou) são da conversa (etapa 3); aqui, as setas e o passo */}
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
       {/* seguir é uma fala no chat (etapa 2); aqui fica só a seta, para reler e para o teclado */}
       <button type="button" className="ic-avancar" onClick={() => setQ(q + 1)} disabled={!podeSeguir} aria-label="Avançar"><ChevronRight size={18} /></button>
-      </>}
     </nav>
   </div>;
 }
