@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "site": "astro build && astro preview --port 4321",
+    "local": "bash scripts/local.sh",
     "test": "astro build && npm run saidas:conferir && npm run guias:conferir && node --test \"testes/*.test.mjs\" && npm run gravacao:testar",
     "saidas": "for l in livros/*/; do python3 scripts/saidas.py \"$(basename \"$l\")\" || { echo \"falhou no livro $(basename \"$l\")\" >&2; exit 1; }; done",
     "saidas:conferir": "for l in livros/*/; do python3 scripts/saidas.py \"$(basename \"$l\")\" --conferir || { echo \"falhou no livro $(basename \"$l\")\" >&2; exit 1; }; done",
