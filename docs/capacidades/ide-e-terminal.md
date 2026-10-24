@@ -41,6 +41,6 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | (este commit) | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
+| 1 | `fb7a34d` | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)

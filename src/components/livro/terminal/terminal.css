@@ -1,0 +1,29 @@
+/* O terminal do livro: uma janela de terminal de verdade (barra com as três luzes, título com a pasta). */
+.tm { margin: 1em auto 1.6em; border-radius: 12px; overflow: hidden; background: #15171c; color: #d6d9df; box-shadow: 0 12px 34px rgba(20, 14, 4, .2);
+  border: 1px solid #262a32; font: 13.5px/1.55 var(--f-mono) }
+.tm button { font: inherit; cursor: pointer }
+.tm-barra { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 10px 0 12px; background: #1f2229; border-bottom: 1px solid #2a2e37 }
+.tm-luzes { display: flex; gap: 7px }
+.tm-luzes i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57 } .tm-luzes i:nth-child(2) { background: #febc2e } .tm-luzes i:nth-child(3) { background: #28c840 }
+.tm-titulo { flex: 1; min-width: 0; text-align: center; font: 12px var(--f-ui); color: #9097a3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.tm-modos { display: flex; padding: 2px; border-radius: 8px; background: #15171c; border: 1px solid #2a2e37 }
+.tm-modos button { border: 0; background: none; color: #8e95a3; padding: 3px 9px; border-radius: 6px; font: 500 11.5px var(--f-ui) }
+.tm-modos button[aria-checked="true"] { background: #2b3040; color: #fff }
+.tm-acoes { display: flex; align-items: center; gap: 6px; padding: 7px 10px; background: #1a1d23; border-bottom: 1px solid #23272f }
+.tm-esp { flex: 1 }
+.tm-sec { border: 1px solid #3a3f4b; background: #22262e; color: #cfd3da; border-radius: 6px; padding: 3px 10px; font: 500 12px var(--f-ui) !important }
+.tm-sec[aria-pressed="true"] { border-color: #5aa9ff; color: #fff; background: #13304f }
+.tm-rodar { border: 1px solid #5aa9ff; background: #0e2a47; color: #e6f1fb; border-radius: 6px; padding: 3px 12px; font: 600 12px var(--f-ui) !important }
+.tm-corpo { padding: 10px 14px 12px; min-height: 64px; max-height: 380px; overflow: auto; cursor: text; white-space: pre-wrap; word-break: break-word }
+.tm[data-modo="guiado"] .tm-corpo { cursor: default }
+.tm-l { min-height: 1.55em }
+.tm-pr { color: #3fd68b } .tm-cwd { color: #5aa9ff }
+.tm .okv { color: #3fd68b } .tm .err { color: #ff6b6b }
+.tm-livro { color: #8e95a3; font-style: italic; font-family: var(--f-ui); font-size: 12.5px }
+.tm-entrada { display: block; position: relative }
+.tm-entrada input { position: absolute; inset: 0; opacity: 0; width: 100%; border: 0; padding: 0; font: inherit; color: transparent; background: transparent }
+.tm-cursor { display: inline-block; width: 7px; height: 15px; background: #d6d9df; vertical-align: -2px; margin-left: 1px; animation: tm-pisca 1s steps(1) infinite }
+.tm[data-modo="interativo"] .tm-corpo:not(:focus-within) .tm-entrada .tm-cursor { background: transparent; outline: 1px solid #d6d9df; animation: none }
+@keyframes tm-pisca { 50% { opacity: 0 } }
+@media (prefers-reduced-motion: reduce) { .tm-cursor { animation: none } }
+@media (max-width: 520px) { .tm-titulo { display: none } .tm { font-size: 12.5px } }
