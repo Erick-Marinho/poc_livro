@@ -22,6 +22,7 @@ Node 22.12 ou mais novo.
 |---|---|
 | `livros/<livro>/capitulos/*.mdx` | o texto de cada capítulo |
 | `livros/<livro>/projeto/` | o código real que o leitor constrói; as listagens leem daqui |
+| `livros/<livro>/marcos/cap-NN/` | o projeto congelado no fim do capítulo NN; o capítulo NN lê daqui |
 | `livros/<livro>/comandos.json` | os comandos que o livro mostra no terminal |
 | `livros/<livro>/saidas.json` | o que esses comandos mostram de verdade (gravado pelo `npm run saidas`) |
 | `scripts/saidas.py` | grava e confere as saídas; a conferência falha se o código mudar e o livro não |
@@ -43,6 +44,7 @@ Título de seção com número: `## 1.4 As perguntas de referência`.
 ## Estado
 
 Formato pronto: fonte em MDX, `Listagem` e `Terminal`.
-Livro em andamento: *O ciclo de vida de um agente*. O projeto do capítulo 1 está em
-`livros/ciclo-de-vida/projeto/` (a loja inventada, o contrato, as perguntas de referência e a nota de partida).
+Livro em andamento: *O ciclo de vida de um agente*. O projeto do capítulo 1 está congelado em
+`livros/ciclo-de-vida/marcos/cap-01/` (a loja inventada, o contrato, as perguntas de referência e a nota de partida);
+o `projeto/` é sempre o capítulo mais novo.
 Escritos: prefácio e capítulo 1 (rascunhos para revisão).

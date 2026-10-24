@@ -17,7 +17,7 @@ const capitulos = defineCollection({
       titulo: z.string(),
       lide: z.string(),
       neste: z.array(z.string()).min(1).optional(),
-      partida: z.object({ texto: z.string(), tag: z.string() }).optional(),
+      partida: z.object({ texto: z.string(), tag: z.string().optional() }).optional(),
       assinatura: z.object({ autores: z.array(z.string()).min(1), quando: z.string() }).optional(),
       /* a frase que abre o texto; a fonte é obrigatória: citação sem origem não entra */
       epigrafe: z.object({ texto: z.string(), autor: z.string(), obra: z.string(), ano: z.number().int() }).optional(),

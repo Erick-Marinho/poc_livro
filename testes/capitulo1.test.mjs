@@ -6,8 +6,8 @@ import { readFileSync } from "node:fs";
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const html = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html");
 const figura = JSON.parse(ler("livros/ciclo-de-vida/figuras/tres-jeitos.json"));
-const pedidos = JSON.parse(ler("livros/ciclo-de-vida/projeto/dados/pedidos.json"));
-const catalogo = JSON.parse(ler("livros/ciclo-de-vida/projeto/dados/catalogo.json"));
+const pedidos = JSON.parse(ler("livros/ciclo-de-vida/marcos/cap-01/dados/pedidos.json"));
+const catalogo = JSON.parse(ler("livros/ciclo-de-vida/marcos/cap-01/dados/catalogo.json"));
 
 test("a epígrafe sai com autor, obra e ano", () => {
   assert.match(html, /<figure class="epigrafe"[^>]*>\s*<blockquote[^>]*>Apaixone-se pelo problema, não pela solução\.<\/blockquote>/);

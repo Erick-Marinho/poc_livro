@@ -26,7 +26,9 @@ export function conferir(texto) {
   const neste = cabeca.match(/^neste:\n((?: {2}- .+\n?)+)/m)?.[1].trim().split("\n").length ?? 0;
   if (neste < 3 || neste > 4) erros.push(`"neste capítulo" tem ${neste} itens, e o formato pede 3 ou 4`);
   const partida = cabeca.match(/^partida:\n(?: {2}.+\n)*? {2}tag: (.+)$/m)?.[1].trim();
-  if (partida !== `cap-${n}/inicio`) erros.push(`o ponto de partida é "${partida}", e devia ser cap-${n}/inicio`);
+  /* o capítulo 1 começa numa pasta vazia, que não tem tag; os outros, no fim do anterior (cap-NN/inicio) */
+  const esperada = numero === 1 ? undefined : `cap-${n}/inicio`;
+  if (partida !== esperada) erros.push(`o ponto de partida é "${partida ?? "sem tag"}", e devia ser ${esperada ?? "sem tag (pasta vazia)"}`);
 
   /* as seções: N.1, N.2... sem buraco; a penúltima é a mão na massa, a última é o que ficou de pé */
   secoes.forEach((s, i) => { if (s.cap !== numero || s.k !== i + 1) erros.push(`a seção "${s.cap}.${s.k} ${s.titulo}" devia ser ${numero}.${i + 1}`); });

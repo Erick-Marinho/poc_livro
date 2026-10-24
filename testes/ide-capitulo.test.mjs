@@ -66,7 +66,7 @@ test("o código entra por blocos lógicos, e cada bloco cai nas linhas certas do
 });
 
 test("a pergunta do id: só a resposta certa segue o padrão do contrato real", () => {
-  const contrato = ler("livros/ciclo-de-vida/projeto/contrato.py");
+  const contrato = ler("livros/ciclo-de-vida/marcos/cap-01/contrato.py");
   const padrao = new RegExp(contrato.match(/id: str = Field\(pattern=r"([^"]+)"\)/)[1]);
   const q = acoes.flatMap((a) => a.tipo === "editar" ? a.blocos : []).find((b) => b.pergunta?.texto.includes("ids")).pergunta;
   q.opcoes.forEach((o, i) => assert.equal(padrao.test(o), i === q.certa, o));

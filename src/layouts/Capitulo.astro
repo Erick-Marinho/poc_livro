@@ -46,7 +46,7 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
       </section>
       {capitulo_ && c.neste && c.partida && (
         <div class="neste"><b>neste capítulo</b><ul>{c.neste.map((n) => <li set:html={md(n)} />)}</ul>
-          <span class="ponto">{c.partida.texto} Perdeu o fio? <code>git checkout {c.partida.tag}</code></span></div>
+          <span class="ponto">{c.partida.texto}{c.partida.tag && <> Perdeu o fio? <code>git checkout {c.partida.tag}</code></>}</span></div>
       )}
       <div class="corpo"><slot /></div>
       {c.assinatura && (

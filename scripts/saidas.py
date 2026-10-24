@@ -4,14 +4,18 @@
     python3 scripts/saidas.py <livro> --conferir   roda de novo e falha se a saída mudou
     python3 scripts/saidas.py <livro> --leitor DIR  grava, e gera em DIR o repositório do leitor (uma tag por passo)
 
-Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto,
-depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
+Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto (ou da pasta
+em "em", como marcos/cap-01 para um comando do capítulo 1), depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
 "in 0.63s") e os endereços de memória (como "at 0x7f3a…") não contam na conferência. Saída 0: tudo certo. 1: alguma saída mudou. 2: uso errado.
 
 Os roteiros de construção (livros/<livro>/roteiros/*.json) contam o caminho do código na ordem em que se
 pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, escrever, inserir, trocar, apagar e
-rodar (com `"onde": "acima"`, o comando roda na pasta de cima, como o `uv init`). Cada `rodar` grava a saída no estado em que o código está naquele passo, e no fim a pasta tem que
-ser igual ao projeto/, arquivo por arquivo. Um roteiro que não chega ao projeto real não monta o livro.
+rodar (com `"onde": "acima"`, o comando roda na pasta de cima, como o `uv init`). Cada `rodar` grava a saída no estado em que o código está naquele passo.
+
+Os roteiros se encadeiam: o 01 parte da pasta vazia, e cada um dos seguintes parte de onde o anterior terminou.
+No fim, a pasta do roteiro NN tem que ser igual a marcos/cap-NN/ (o projeto congelado no fim do capítulo NN) ou,
+enquanto o capítulo não fechou, ao projeto/. E o projeto/ tem que ser igual ao fim do último roteiro: nada no
+projeto real fica sem um roteiro que o construa. Um roteiro que não chega ao projeto real não monta o livro.
 """
 import difflib
 import json
@@ -92,122 +96,149 @@ def ambiente(versoes_ate: str | None) -> dict:
     return {**os.environ, "UV_LINK_MODE": "copy", **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
 
 
-def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = None, repositorio: Path | None = None) -> tuple[dict, list]:
-    """Aplica um roteiro numa pasta vazia; devolve a saída de cada `rodar` e o estado do código depois de cada passo.
+IGNORAR = shutil.ignore_patterns(".venv", "__pycache__", ".pytest_cache", ".ruff_cache")
+
+
+def fim_do_capitulo(livro: str, roteiro: Path) -> Path:
+    """Onde o roteiro NN tem que chegar: o marco do capítulo, se ele já fechou; senão, o projeto/."""
+    marco = RAIZ / "livros" / livro / "marcos" / f"cap-{roteiro.stem}"
+    return marco if marco.is_dir() else RAIZ / "livros" / livro / "projeto"
+
+
+def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Path | None = None,
+              versoes_ate: str | None = None, repositorio: bool = False) -> tuple[dict, list, Path]:
+    """Aplica um roteiro em `trabalho`: numa pasta vazia, ou numa cópia de `inicio` (onde o roteiro anterior terminou).
+    Devolve a saída de cada `rodar`, o estado do código depois de cada passo e a pasta em que o roteiro terminou.
     Com `repositorio`: no fim de cada passo do capítulo (livros/<livro>/passos/<n>.json), faz um commit e uma tag na
-    pasta (que é um repositório git desde o `uv init`), e no fim copia esse repositório para `repositorio`."""
-    projeto = RAIZ / "livros" / livro / "projeto"
+    pasta (que é um repositório git desde o `uv init`); marca também o início (a partir do 2) e o fim do capítulo."""
+    projeto = fim_do_capitulo(livro, roteiro)
     dados_roteiro = json.loads(roteiro.read_text(encoding="utf-8"))
     passos = dados_roteiro["passos"]
     saidas, estados = {}, []
     env = ambiente(dados_roteiro.get("versoes_ate", versoes_ate))
-    marcos = {}
+    marcos, num = {}, roteiro.stem
     if repositorio:
         cap = json.loads((RAIZ / "livros" / livro / "passos" / roteiro.name).read_text(encoding="utf-8"))
-        num = roteiro.stem
         marcos = {p["ate"]: (f"cap-{num}/passo-{i:02d}", f"capítulo {int(num)}, passo {i}: {p['titulo']}") for i, p in enumerate(cap["passos"], start=1)}
-    with tempfile.TemporaryDirectory(prefix="roteiro-") as tmp:
-        pasta = Path(tmp) / Path(leitor).name   # só passa a existir quando o roteiro cria (o `uv init`, ou o primeiro arquivo)
-        for n, passo in enumerate(passos, start=1):
-            if n - 1 in marcos:
-                marcar(pasta, *marcos[n - 1], n - 1)
-            onde, acao = f"{roteiro.name}, passo {n} ({passo['acao']})", passo["acao"]
-            if acao == "copiar":
-                pasta.mkdir(exist_ok=True)
-                for nome in passo["arquivos"]:
-                    (pasta / nome).parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copyfile(projeto / nome, pasta / nome)
-                # arquivo grande copiado (o uv.lock) entra só pelo nome: a IDE mostra na árvore, não abre
-                estados.append({"passo": n, "arquivos": {nome: (texto if len(texto := (pasta / nome).read_text(encoding="utf-8")) < 16000 else None)
-                                                        for nome in passo["arquivos"]}})
-                continue
-            if acao == "rodar":
-                cwd = pasta.parent if passo.get("onde") == "acima" else pasta
-                # comando do uv cuida do ambiente sozinho, e o leitor vê ele nascer; os outros precisam do ambiente pronto
-                if cwd == pasta and not passo["comando"].startswith("uv ") and (pasta / "pyproject.toml").exists() and not (pasta / ".venv").exists():
-                    subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True, env=env)
-                antes_de_rodar = arquivos(pasta) if pasta.exists() else {}
-                codigo, linhas = executar(passo["comando"], pasta, leitor, env, cwd)
-                if codigo != passo.get("espera", 0):
-                    raise RoteiroErrado(f"{onde}: {passo['id']} saiu com {codigo}, o roteiro espera {passo.get('espera', 0)}\n"
-                                        + "\n".join(f"    {l}" for l, _ in linhas))
-                saidas[passo["id"]] = {"comando": passo["comando"], "saiu_com": codigo, "saida": linhas}
-                # o que o comando criou ou mudou no projeto (o `uv init`, o `uv add`): a página mostra como qualquer edição
-                depois_de_rodar = arquivos(pasta) if pasta.exists() else {}
-                gerados = {k: (v.decode("utf-8") if len(v) < 16000 else None) for k, v in depois_de_rodar.items() if antes_de_rodar.get(k) != v}
-                estado = {"passo": n, "rodou": passo["id"]}
-                if gerados:
-                    estado["gerados"] = gerados
-                if apagados := sorted(set(antes_de_rodar) - set(depois_de_rodar)):
-                    estado["apagados"] = apagados
-                estados.append(estado)
-                continue
-            if acao == "apagar":
-                alvo = pasta / passo["arquivo"]
-                if not alvo.exists():
-                    raise RoteiroErrado(f"{onde}: {passo['arquivo']} não existe para apagar")
-                alvo.unlink()
-                estados.append({"passo": n, "apagado": passo["arquivo"]})
-                continue
-            pasta.mkdir(exist_ok=True)
-            alvo = pasta / passo["arquivo"]
-            final = projeto / passo["arquivo"]
-            atual = alvo.read_text(encoding="utf-8") if alvo.exists() else ""
-            if acao == "escrever":
-                alvo.parent.mkdir(parents=True, exist_ok=True)
-                alvo.write_text(montar_partes(passo["partes"], final, onde), encoding="utf-8")
-            elif acao == "inserir":
-                novo = montar_partes(passo["partes"], final, onde)
-                if passo.get("no_fim"):
-                    alvo.write_text(atual + novo, encoding="utf-8")
-                else:
-                    ancora = passo["depois"]
-                    if atual.count(ancora) != 1:
-                        raise RoteiroErrado(f"{onde}: a âncora aparece {atual.count(ancora)} vezes em {passo['arquivo']}: {ancora!r}")
-                    alvo.write_text(atual.replace(ancora, ancora + novo), encoding="utf-8")
-            elif acao == "trocar":
-                de = passo["de"]
-                if atual.count(de) != 1:
-                    raise RoteiroErrado(f"{onde}: o trecho a trocar aparece {atual.count(de)} vezes em {passo['arquivo']}: {de!r}")
-                alvo.write_text(atual.replace(de, montar_partes(passo["para"], final, onde)), encoding="utf-8")
-            else:
-                raise RoteiroErrado(f"{onde}: ação desconhecida")
-            depois = alvo.read_text(encoding="utf-8")
-            estados.append({"passo": n, "arquivo": passo["arquivo"], "conteudo": depois, "alteradas": alteradas(atual, depois)})
-        if len(passos) in marcos:
-            marcar(pasta, *marcos[len(passos)], len(passos))
-        feito, real = arquivos(pasta), arquivos(projeto)
-        diferentes = sorted(set(feito) ^ set(real)) + [k for k in feito if k in real and feito[k] != real[k]]
-        if diferentes:
-            raise RoteiroErrado(f"{roteiro.name}: no fim, a pasta não é igual ao projeto real: {', '.join(diferentes)}")
+    pasta = trabalho / Path(leitor).name   # só passa a existir quando o roteiro cria (o `uv init`, ou o primeiro arquivo)
+    if inicio:
+        shutil.copytree(inicio, pasta, ignore=IGNORAR, symlinks=True)
+        # o leitor chega com o .venv do capítulo anterior pronto: refazer em silêncio, senão o primeiro `uv run` do
+        # capítulo mostraria "Creating virtual environment", que o leitor não vê
+        if (pasta / "pyproject.toml").exists():
+            subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True, env=env)
         if repositorio:
-            if repositorio.exists():
-                shutil.rmtree(repositorio)
-            subprocess.run(["git", "clone", "--quiet", str(pasta), str(repositorio)], check=True)
-            subprocess.run(["git", "-C", str(repositorio), "remote", "remove", "origin"], check=True)
-            tags = subprocess.run(["git", "-C", str(repositorio), "tag", "--list"], check=True, capture_output=True, text=True).stdout.split()
-            if len(tags) != len(marcos):
-                raise RoteiroErrado(f"{roteiro.name}: o repositório do leitor tem {len(tags)} tags, e o capítulo tem {len(marcos)} passos")
-    return saidas, estados
+            etiquetar(pasta, f"cap-{num}/inicio", f"capítulo {int(num)}: o ponto de partida", int(num), 0)
+    for n, passo in enumerate(passos, start=1):
+        if n - 1 in marcos:
+            marcar(pasta, *marcos[n - 1], int(num), n - 1)
+        onde, acao = f"{roteiro.name}, passo {n} ({passo['acao']})", passo["acao"]
+        if acao == "copiar":
+            pasta.mkdir(exist_ok=True)
+            for nome in passo["arquivos"]:
+                (pasta / nome).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(projeto / nome, pasta / nome)
+            # arquivo grande copiado (o uv.lock) entra só pelo nome: a IDE mostra na árvore, não abre
+            estados.append({"passo": n, "arquivos": {nome: (texto if len(texto := (pasta / nome).read_text(encoding="utf-8")) < 16000 else None)
+                                                    for nome in passo["arquivos"]}})
+            continue
+        if acao == "rodar":
+            cwd = pasta.parent if passo.get("onde") == "acima" else pasta
+            # comando do uv cuida do ambiente sozinho, e o leitor vê ele nascer; os outros precisam do ambiente pronto
+            if cwd == pasta and not passo["comando"].startswith("uv ") and (pasta / "pyproject.toml").exists() and not (pasta / ".venv").exists():
+                subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True, env=env)
+            antes_de_rodar = arquivos(pasta) if pasta.exists() else {}
+            codigo, linhas = executar(passo["comando"], pasta, leitor, env, cwd)
+            if codigo != passo.get("espera", 0):
+                raise RoteiroErrado(f"{onde}: {passo['id']} saiu com {codigo}, o roteiro espera {passo.get('espera', 0)}\n"
+                                    + "\n".join(f"    {l}" for l, _ in linhas))
+            saidas[passo["id"]] = {"comando": passo["comando"], "saiu_com": codigo, "saida": linhas}
+            # o que o comando criou ou mudou no projeto (o `uv init`, o `uv add`): a página mostra como qualquer edição
+            depois_de_rodar = arquivos(pasta) if pasta.exists() else {}
+            gerados = {k: (v.decode("utf-8") if len(v) < 16000 else None) for k, v in depois_de_rodar.items() if antes_de_rodar.get(k) != v}
+            estado = {"passo": n, "rodou": passo["id"]}
+            if gerados:
+                estado["gerados"] = gerados
+            if apagados := sorted(set(antes_de_rodar) - set(depois_de_rodar)):
+                estado["apagados"] = apagados
+            estados.append(estado)
+            continue
+        if acao == "apagar":
+            alvo = pasta / passo["arquivo"]
+            if not alvo.exists():
+                raise RoteiroErrado(f"{onde}: {passo['arquivo']} não existe para apagar")
+            alvo.unlink()
+            estados.append({"passo": n, "apagado": passo["arquivo"]})
+            continue
+        pasta.mkdir(exist_ok=True)
+        alvo = pasta / passo["arquivo"]
+        final = projeto / passo["arquivo"]
+        atual = alvo.read_text(encoding="utf-8") if alvo.exists() else ""
+        if acao == "escrever":
+            alvo.parent.mkdir(parents=True, exist_ok=True)
+            alvo.write_text(montar_partes(passo["partes"], final, onde), encoding="utf-8")
+        elif acao == "inserir":
+            novo = montar_partes(passo["partes"], final, onde)
+            if passo.get("no_fim"):
+                alvo.write_text(atual + novo, encoding="utf-8")
+            else:
+                ancora = passo["depois"]
+                if atual.count(ancora) != 1:
+                    raise RoteiroErrado(f"{onde}: a âncora aparece {atual.count(ancora)} vezes em {passo['arquivo']}: {ancora!r}")
+                alvo.write_text(atual.replace(ancora, ancora + novo), encoding="utf-8")
+        elif acao == "trocar":
+            de = passo["de"]
+            if atual.count(de) != 1:
+                raise RoteiroErrado(f"{onde}: o trecho a trocar aparece {atual.count(de)} vezes em {passo['arquivo']}: {de!r}")
+            alvo.write_text(atual.replace(de, montar_partes(passo["para"], final, onde)), encoding="utf-8")
+        else:
+            raise RoteiroErrado(f"{onde}: ação desconhecida")
+        depois = alvo.read_text(encoding="utf-8")
+        estados.append({"passo": n, "arquivo": passo["arquivo"], "conteudo": depois, "alteradas": alteradas(atual, depois)})
+    if len(passos) in marcos:
+        marcar(pasta, *marcos[len(passos)], int(num), len(passos))
+    if repositorio:
+        etiquetar(pasta, f"cap-{num}/fim", f"capítulo {int(num)}: o fim", int(num), len(passos))
+    diferentes = diferenca(pasta, projeto)
+    if diferentes:
+        raise RoteiroErrado(f"{roteiro.name}: no fim, a pasta não é igual a {projeto.relative_to(RAIZ)}: {', '.join(diferentes)}")
+    return saidas, estados, pasta
+
+
+def diferenca(a: Path, b: Path) -> list[str]:
+    """Os arquivos que faltam de um lado ou que mudaram, entre duas pastas do projeto."""
+    feito, real = arquivos(a), arquivos(b)
+    return sorted(set(feito) ^ set(real)) + [k for k in feito if k in real and feito[k] != real[k]]
 
 
 GIT_LIVRO = {"GIT_AUTHOR_NAME": "O ciclo de vida de um agente", "GIT_AUTHOR_EMAIL": "livro@fontmar.invalid",
              "GIT_COMMITTER_NAME": "O ciclo de vida de um agente", "GIT_COMMITTER_EMAIL": "livro@fontmar.invalid"}
 
 
-def marcar(pasta: Path, tag: str, mensagem: str, n: int) -> None:
-    """Um ponto de volta: commit de tudo o que o leitor tem até aqui (o .gitignore do uv deixa o .venv de fora) e a tag.
-    A data é fixa e anda um minuto por passo, para o repositório sair igual toda vez que for gerado."""
+def _git(pasta: Path, tag: str, cap: int, n: int):
+    """O git do repositório do leitor, com data fixa: uma hora por capítulo (o 1 às 12h) e um minuto por passo, para o
+    repositório sair igual toda vez que for gerado."""
     if not (pasta / ".git").exists():
         raise RoteiroErrado(f"{tag}: a pasta ainda não é um repositório git (o `uv init` cria um)")
-    env = {**os.environ, **GIT_LIVRO, "GIT_AUTHOR_DATE": f"2026-10-16T12:{n % 60:02d}:00Z", "GIT_COMMITTER_DATE": f"2026-10-16T12:{n % 60:02d}:00Z"}
+    quando = f"2026-10-16T{11 + cap:02d}:{n % 60:02d}:00Z"
+    env = {**os.environ, **GIT_LIVRO, "GIT_AUTHOR_DATE": quando, "GIT_COMMITTER_DATE": quando}
     # sem assinatura: a máquina de quem gera pode assinar commits sozinha, e aí o repositório sairia diferente em cada uma
-    git = lambda *a: subprocess.run(["git", "-C", str(pasta), "-c", "commit.gpgsign=false", "-c", "tag.gpgsign=false", *a],
-                                    check=True, capture_output=True, text=True, env=env)
+    return lambda *a: subprocess.run(["git", "-C", str(pasta), "-c", "commit.gpgsign=false", "-c", "tag.gpgsign=false", *a],
+                                     check=True, capture_output=True, text=True, env=env)
+
+
+def marcar(pasta: Path, tag: str, mensagem: str, cap: int, n: int) -> None:
+    """Um ponto de volta: commit de tudo o que o leitor tem até aqui (o .gitignore do uv deixa o .venv de fora) e a tag."""
+    git = _git(pasta, tag, cap, n)
     git("checkout", "-q", "-B", "main")
     git("add", "-A")
     git("commit", "-q", "--allow-empty", "-m", mensagem)
     git("tag", "-a", tag, "-m", mensagem)
+
+
+def etiquetar(pasta: Path, tag: str, mensagem: str, cap: int, n: int) -> None:
+    """Uma tag no commit em que o projeto está, sem commit novo: o início e o fim de um capítulo."""
+    _git(pasta, tag, cap, n)("tag", "-a", tag, "-m", mensagem)
 
 
 def rodar(livro: str, repositorio: Path | None = None) -> tuple[dict, dict]:
@@ -215,21 +246,53 @@ def rodar(livro: str, repositorio: Path | None = None) -> tuple[dict, dict]:
     conf = json.loads((base / "comandos.json").read_text(encoding="utf-8"))
     projeto = base / "projeto"
     env = ambiente(conf.get("versoes_ate"))
-    subprocess.run(["uv", "sync", "--quiet"], cwd=projeto, check=True, env=env)
-    saidas = {}
+    saidas, sincronizadas = {}, set()
     for chave, c in conf["comandos"].items():
-        codigo, linhas = executar(c["comando"], projeto, conf["pasta_do_leitor"], env)
+        onde = base / c.get("em", "projeto")
+        if onde not in sincronizadas:
+            subprocess.run(["uv", "sync", "--quiet"], cwd=onde, check=True, env=env)
+            sincronizadas.add(onde)
+        codigo, linhas = executar(c["comando"], onde, conf["pasta_do_leitor"], env)
         saidas[chave] = {"comando": c["comando"], "saiu_com": codigo, "saida": linhas}
         esperado = c.get("saiu_com", 0)
         if codigo != esperado:
             print(f"aviso: {chave} saiu com {codigo}, o esperado era {esperado}", file=sys.stderr)
     estados = {}
-    for roteiro in sorted(p for p in (base / "roteiros").glob("*.json") if not p.name.endswith(".estados.json")):
-        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"], conf.get("versoes_ate"), repositorio)
-        if repetidas := set(do_roteiro) & set(saidas):
-            raise RoteiroErrado(f"{roteiro.name}: ids que já existem: {', '.join(sorted(repetidas))}")
-        saidas.update(do_roteiro)
+    roteiros = sorted(p for p in (base / "roteiros").glob("*.json") if not p.name.endswith(".estados.json"))
+    with tempfile.TemporaryDirectory(prefix="roteiros-") as tmp:
+        fim = None
+        for roteiro in roteiros:
+            trabalho = Path(tmp) / roteiro.stem
+            trabalho.mkdir()
+            do_roteiro, estados[roteiro], fim = construir(livro, roteiro, conf["pasta_do_leitor"], trabalho, fim,
+                                                          conf.get("versoes_ate"), repositorio is not None)
+            if repetidas := set(do_roteiro) & set(saidas):
+                raise RoteiroErrado(f"{roteiro.name}: ids que já existem: {', '.join(sorted(repetidas))}")
+            saidas.update(do_roteiro)
+        # o projeto real é o fim do último roteiro: nada nele fica sem um roteiro que o construa
+        if fim and (diferentes := diferenca(fim, projeto)):
+            raise RoteiroErrado(f"o projeto/ não é igual ao fim do último roteiro ({roteiros[-1].name}): {', '.join(diferentes)}")
+        if repositorio and fim:
+            esperadas = tags_esperadas(livro, roteiros)
+            if repositorio.exists():
+                shutil.rmtree(repositorio)
+            subprocess.run(["git", "clone", "--quiet", str(fim), str(repositorio)], check=True)
+            subprocess.run(["git", "-C", str(repositorio), "remote", "remove", "origin"], check=True)
+            tags = set(subprocess.run(["git", "-C", str(repositorio), "tag", "--list"], check=True, capture_output=True, text=True).stdout.split())
+            if tags != esperadas:
+                raise RoteiroErrado(f"o repositório do leitor tem as tags erradas: sobram {sorted(tags - esperadas)}, faltam {sorted(esperadas - tags)}")
     return saidas, estados
+
+
+def tags_esperadas(livro: str, roteiros: list[Path]) -> set[str]:
+    """As tags que o livro promete: uma por passo, o fim de cada capítulo e o início de cada um a partir do 2."""
+    tags = set()
+    for i, roteiro in enumerate(roteiros):
+        cap = json.loads((RAIZ / "livros" / livro / "passos" / roteiro.name).read_text(encoding="utf-8"))
+        tags |= {f"cap-{roteiro.stem}/passo-{j:02d}" for j in range(1, len(cap["passos"]) + 1)} | {f"cap-{roteiro.stem}/fim"}
+        if i:
+            tags.add(f"cap-{roteiro.stem}/inicio")
+    return tags
 
 
 def sem_tempo(saidas: dict) -> dict:

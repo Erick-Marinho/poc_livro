@@ -4,7 +4,7 @@ Tirado do capítulo 1. O `testes/formato.test.mjs` confere o que está marcado c
 
 | Parte | O que tem | Regra |
 |---|---|---|
-| Abertura | número, título, lide (a ideia em uma frase), epígrafe se houver, "neste capítulo" e o ponto de partida | ✓ 3 ou 4 itens no "neste capítulo"; ✓ partida em `cap-NN/inicio` |
+| Abertura | número, título, lide (a ideia em uma frase), epígrafe se houver, "neste capítulo" e o ponto de partida | ✓ 3 ou 4 itens no "neste capítulo"; ✓ partida em `cap-NN/inicio` (o 1 parte da pasta vazia, sem tag) |
 | N.1 | o conceito do capítulo: a definição numa caixa "a definição deste livro", uma figura interativa e um pare e pense | sem código |
 | N.2 em diante | o conceito na Casa Bem-te-vi, com uma figura em que o leitor decide, e os `Pendente` da voz dos autores | sem código; ✓ sem saída de terminal |
 | N.x Mão na massa | um parágrafo e a IDE do capítulo | ✓ a penúltima seção; ✓ uma IDE só, e só aqui; ✓ as partes dela são N.xa, N.xb… |

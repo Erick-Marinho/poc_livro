@@ -75,7 +75,7 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     return versoes.length - 1;
   }
 
-  /* o fim de cada arquivo (é igual ao projeto/, o saidas.py garante): os blocos apontam linhas dele, como as partes do roteiro */
+  /* o fim de cada arquivo (é igual ao fim do capítulo, o saidas.py garante): os blocos apontam linhas dele, como as partes do roteiro */
   const finais: Record<string, string> = {};
   for (const e of estados) { if (e.arquivo) finais[e.arquivo] = e.conteudo!; for (const [n, t] of Object.entries({ ...(e.arquivos ?? {}), ...(e.gerados ?? {}) })) if (t !== null) finais[n] = t; }
   /* um bloco: acha as linhas dele no arquivo daquele momento, pelo texto, e confere as palavras e a pergunta */

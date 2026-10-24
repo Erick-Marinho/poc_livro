@@ -3,9 +3,11 @@
   "pasta_do_leitor": "/home/voce/atendimento-bemtevi",
   "comandos": {
     "nota-de-partida": {
+      "em": "marcos/cap-01",
       "comando": "uv run python baseline.py"
     },
     "sempre-responder": {
+      "em": "marcos/cap-01",
       "comando": "uv run python -c \"from baseline import avaliar; from contrato import Decisao, carregar_referencia; p = avaliar(lambda q: Decisao.RESPONDER, carregar_referencia()); [print(f'{d:<14} {c:>2} de {t:>2}') for d, (c, t) in p.items()]\""
     }
   }

@@ -20,14 +20,21 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (0) O agente do capítulo 2 não tem ferramentas.
 - (0) Cada capítulo fecha numa pasta congelada (`marcos/cap-NN/`); o `projeto/` é sempre o capítulo mais novo.
 - (0a) As partes da IDE são subpartes da mão na massa (1.5a, 1.5b…): o texto e a IDE não repetem número.
+- (0b) O repositório do leitor tem `cap-NN/fim` e, do 2 em diante, `cap-NN/inicio` (o mesmo commit do fim anterior).
+  O capítulo 1 começa numa pasta vazia: o livro não mostra `git checkout` para ele.
+- (0b) O capítulo seguinte herda o `.venv` do anterior, recriado em silêncio: o leitor não vê o uv criar de novo.
 
-## Etapa atual: 0a
+## Etapa atual: 0b
 
-Arquivos: `docs/FORMATO.md`, `testes/formato.test.mjs`, `passos/01.json` e o capítulo 1 (as partes 1.5a a 1.5d),
-o cabeçalho do chat ("parte 1.5c"). Evidência: o teste falha no capítulo 1 como estava (as partes repetiam 1.6) e
-passa depois da troca. Fica fora: o marco e qualquer código do capítulo 2.
+Arquivos: `marcos/cap-01/` (a cópia do `projeto/`), `scripts/saidas.py`, o capítulo 1 e os testes que leem o projeto.
+O que muda: o roteiro NN confere contra `marcos/cap-NN/` (ou contra o `projeto/`, enquanto o capítulo não fechou);
+o roteiro seguinte parte do fim do anterior; no fim, o `projeto/` tem que ser igual ao fim do último roteiro. O
+repositório do leitor ganha `cap-NN/fim` e, a partir do 2, `cap-NN/inicio`. Evidência: a conferência verde; o
+gravador recusando um arquivo no `projeto/` que nenhum roteiro construiu; um roteiro 02 de teste, numa cópia, que
+parte do fim do 01 e gera `cap-02/inicio`. Fica fora: qualquer código do capítulo 2.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 0a | `1a38db6` | o teste do formato falha no capítulo 1 (partes repetiam 1.6) e passa depois | 24/10 |
