@@ -124,3 +124,6 @@ o caminho aparece na página.
 | 6a | `e3c87a3`, `f9930ee` | `npm test` (22 testes) no computador e na máquina do Erick; a 1.5 da pasta vazia ao `uv add` no ngrok | Erick, 23/10/2026 |
 | 7a | `63e936f` | `npm test` (15 testes) no computador e na máquina do Erick; a IDE do capítulo no ngrok | Erick, 23/10/2026 |
 | 7b | `d1514b1` | `npm test` (16 testes) no computador e na máquina do Erick; 30 blocos no ngrok; o build barrou bloco fora do arquivo e palavra fora do glossário | Erick, 24/10/2026 |
+| 7c | `1a86408` | `npm test` (16 testes) no computador e na máquina do Erick; celular, modo direto e teclado conferidos no navegador | Erick, 24/10/2026 |
+
+**Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.
