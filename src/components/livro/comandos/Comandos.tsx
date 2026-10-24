@@ -38,11 +38,23 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   /* a pílula dá licença: enquanto os controles de uma figura (a barra da IDE do capítulo) estão à vista, ela vira o
      círculo, para não ficar por cima deles; quando eles saem da tela, ela volta. Não fica guardado. */
   const [licenca, setLicenca] = useState(false);
+  /* e o canto (círculo e engrenagem) sobe quando a barra passa por baixo dele, como um botão flutuante que abre espaço
+     para um aviso: o botão de seguir da IDE nunca fica coberto */
+  const canto = useRef<HTMLDivElement>(null);
+  const [sobe, setSobe] = useState(0);
   useEffect(() => {
     const alvos = [...document.querySelectorAll<HTMLElement>(".ic-guia")];
     if (!alvos.length) return;
     /* pela rolagem, como o sumário e o placar: a barra está na faixa de baixo da tela, onde a pílula fica */
-    const ver = () => setLicenca(alvos.some((a) => { const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }));
+    const ver = () => {
+      setLicenca(alvos.some((a) => { const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }));
+      const c = canto.current;
+      if (!c) return;
+      /* onde o canto fica sem subir: a 14px do pé e da direita (o padding de segurança do celular é pequeno, cabe na folga) */
+      const base = innerHeight - 14, topo = base - c.offsetHeight, esquerda = innerWidth - 14 - c.offsetWidth;
+      const cobre = alvos.find((a) => { const r = a.getBoundingClientRect(); return r.top < base && r.bottom > topo && r.right > esquerda; });
+      setSobe(cobre ? Math.max(0, base - cobre.getBoundingClientRect().top + 10) : 0);
+    };
     addEventListener("scroll", ver, { passive: true }); addEventListener("resize", ver); ver();
     return () => { removeEventListener("scroll", ver); removeEventListener("resize", ver); };
   }, []);
@@ -223,7 +235,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
       </AnimatePresence>
     </div>
 
-    <div className="cm-canto">
+    <div className="cm-canto" ref={canto} style={sobe ? { transform: `translateY(${-sobe}px)` } : undefined}>
       <AnimatePresence initial={false}>
         {(recolhida || licenca) && (
           <motion.button key="circulo" layoutId="cm-pilula" type="button" className="cm-circulo" onClick={() => { setLicenca(false); recolher(false); }}
