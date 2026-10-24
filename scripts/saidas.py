@@ -201,7 +201,9 @@ def marcar(pasta: Path, tag: str, mensagem: str, n: int) -> None:
     if not (pasta / ".git").exists():
         raise RoteiroErrado(f"{tag}: a pasta ainda não é um repositório git (o `uv init` cria um)")
     env = {**os.environ, **GIT_LIVRO, "GIT_AUTHOR_DATE": f"2026-10-16T12:{n % 60:02d}:00Z", "GIT_COMMITTER_DATE": f"2026-10-16T12:{n % 60:02d}:00Z"}
-    git = lambda *a: subprocess.run(["git", "-C", str(pasta), *a], check=True, capture_output=True, text=True, env=env)
+    # sem assinatura: a máquina de quem gera pode assinar commits sozinha, e aí o repositório sairia diferente em cada uma
+    git = lambda *a: subprocess.run(["git", "-C", str(pasta), "-c", "commit.gpgsign=false", "-c", "tag.gpgsign=false", *a],
+                                    check=True, capture_output=True, text=True, env=env)
     git("checkout", "-q", "-B", "main")
     git("add", "-A")
     git("commit", "-q", "--allow-empty", "-m", mensagem)
