@@ -6,8 +6,9 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
-import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, X } from "lucide-react";
+import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
 import { definirDireto, useDireto } from "../palco/direto";
+import type { Placar } from "../Navegacao.astro";
 import "./comandos.css";
 
 type Vizinho = { href: string; rotulo: string };
@@ -25,8 +26,8 @@ const temaAtual = (): Tema => {
   return matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "papel";
 };
 
-export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
-  livro: string; onde: string; anterior?: Vizinho; proximo?: Vizinho; emBreve?: string;
+export default function Comandos({ livro, onde, anterior, proximo, emBreve, placar }: {
+  livro: string; onde: string; anterior?: Vizinho; proximo?: Vizinho; emBreve?: string; placar?: Placar;
 }) {
   const [recolhida, setRecolhida] = useState(false);
   const [aberto, setAberto] = useState(false);
@@ -41,6 +42,30 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
   const [ideVisto, setIdeVisto] = useState(false);
   const fecharPorQue = useRef<HTMLButtonElement>(null);
   const lembrete = useRef<HTMLButtonElement>(null);
+  /* o placar: a nota mais recente; no capítulo em que ela nasce, "?" até o leitor chegar à seção dela */
+  const [placarAberto, setPlacarAberto] = useState(false);
+  const atualMarco = placar?.marcos[placar.marcos.length - 1];
+  const [revelado, setRevelado] = useState(!atualMarco?.revelaEm);
+  const botaoPlacar = useRef<HTMLButtonElement>(null), painelPlacar = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const id = atualMarco?.revelaEm;
+    if (!id) return;
+    const chave = `fontmar:placar:${atualMarco.capitulo}`;
+    try { if (localStorage.getItem(chave) === "visto") { setRevelado(true); return; } } catch { /* sem armazenamento */ }
+    const ver = () => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < innerHeight * 0.8) { setRevelado(true); guardar(chave, "visto"); removeEventListener("scroll", ver); }
+    };
+    addEventListener("scroll", ver, { passive: true }); ver();
+    return () => removeEventListener("scroll", ver);
+  }, [atualMarco?.revelaEm]);
+  useEffect(() => {
+    if (!placarAberto) return;
+    const fora = (e: PointerEvent) => { if (!painelPlacar.current?.contains(e.target as Node) && !botaoPlacar.current?.contains(e.target as Node)) setPlacarAberto(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") { setPlacarAberto(false); botaoPlacar.current?.focus(); } };
+    addEventListener("pointerdown", fora); addEventListener("keydown", esc);
+    return () => { removeEventListener("pointerdown", fora); removeEventListener("keydown", esc); };
+  }, [placarAberto]);
 
   /* ao hidratar: lê o que o script do <head> já aplicou */
   useEffect(() => {
@@ -89,6 +114,33 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
       aria-haspopup="dialog" aria-label="Este livro rende mais com uma IDE aberta: por quê" title="Leia com a IDE aberta">
       <Laptop size={16} /><span>Leia com a IDE aberta</span>
     </button>
+    {placar && (
+      <div className="cm-placar-canto">
+        <button ref={botaoPlacar} type="button" className="cm-placar" aria-haspopup="dialog" aria-expanded={placarAberto} onClick={() => setPlacarAberto((a) => !a)}
+          aria-label={atualMarco && revelado ? `Placar: ${atualMarco.rotulo}, ${atualMarco.nota}` : "Placar do agente"}>
+          <Target size={15} /><span>{atualMarco ? <>nota <b>{revelado ? atualMarco.nota : "?"}</b></> : "placar"}</span>
+        </button>
+        <AnimatePresence>
+          {placarAberto && (
+            <motion.div ref={painelPlacar} className="cm-painel-placar" role="dialog" aria-label="O placar do agente"
+              initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: .16 }}>
+              <p className="cm-titulo">o placar do agente</p>
+              {!atualMarco ? <p className="cm-placar-texto">Ainda não há nota. Ela nasce no capítulo 1, antes de existir agente, e cada capítulo depois tenta empurrar o número.</p>
+                : !revelado ? <p className="cm-placar-texto">A primeira nota deste livro sai neste capítulo. Ela aparece aqui quando você chegar lá, e não antes: primeiro você aposta.</p>
+                : <>
+                  <ol className="cm-marcos">
+                    {placar.marcos.map((m) => (
+                      <li key={m.capitulo}><span className="cm-cap">cap. {m.capitulo}</span><b>{m.nota}</b><span>{m.rotulo}: {m.acertos} de {m.total}, {m.quem}</span></li>
+                    ))}
+                    {placar.proximo && <li className="cm-proximo"><span className="cm-cap">cap. {placar.proximo.capitulo}</span><b>?</b><span>{placar.proximo.pergunta}</span></li>}
+                  </ol>
+                  <p className="cm-placar-texto">Confira na sua IDE: <code>{atualMarco.comando}</code></p>
+                </>}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    )}
     <AnimatePresence>
       {porQue && (
         <motion.div key="veu" className="cm-veu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={fechar}>

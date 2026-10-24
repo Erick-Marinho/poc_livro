@@ -6,6 +6,8 @@ import Comandos from "./comandos/Comandos";
  * A partir de 1280 px ele fica aberto ao lado do texto; abaixo disso vira gaveta, aberta pelo botão da pílula.
  */
 export type ItemSumario = { numero?: number; titulo: string; href?: string; atual: boolean };
+export type Marco = { capitulo: number; rotulo: string; quem: string; acertos: number; total: number; nota: string; comando: string; revelaEm?: string };
+export type Placar = { marcos: Marco[]; proximo?: { capitulo: number; pergunta: string } };
 type Vizinho = { href: string; rotulo: string };
 interface Props {
   livro: string;
@@ -15,8 +17,9 @@ interface Props {
   anterior?: Vizinho;
   proximo?: Vizinho;
   emBreve?: string;
+  placar?: Placar;
 }
-const { livro, onde, itens, secoes, anterior, proximo, emBreve } = Astro.props;
+const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro.props;
 ---
 <aside id="sumario" class="sumario" aria-label="Sumário do livro" data-sumario>
   <div class="sm-topo">
@@ -43,7 +46,7 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve } = Astro.props;
 </aside>
 <div class="sm-veu" data-veu hidden></div>
 
-<Comandos client:load livro={livro} onde={onde} anterior={anterior} proximo={proximo} emBreve={emBreve} />
+<Comandos client:load livro={livro} onde={onde} anterior={anterior} proximo={proximo} emBreve={emBreve} placar={placar} />
 
 <script>
   const aside = document.querySelector<HTMLElement>("[data-sumario]")!;

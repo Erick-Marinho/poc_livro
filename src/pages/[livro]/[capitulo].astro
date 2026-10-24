@@ -1,13 +1,18 @@
 ---
 import { getCollection, render } from "astro:content";
 import Capitulo from "../../layouts/Capitulo.astro";
-import type { ItemSumario } from "../../components/livro/Navegacao.astro";
+import type { ItemSumario, Placar } from "../../components/livro/Navegacao.astro";
 
 /** Um texto do livro por página. Anterior e próximo saem da ordem dos textos, não de um campo escrito à mão. */
 export async function getStaticPaths() {
   /* o sumário de cada livro: os capítulos planejados, escritos ou não (livros/<livro>/sumario.json).
      Fica aqui dentro porque o getStaticPaths do Astro não enxerga variáveis de fora dele. */
   const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../../livros/*/sumario.json", { eager: true, import: "default" });
+  /* o placar (livros/<livro>/placar.json): cada marco aponta uma saída gravada, e o número sai dela */
+  type MarcoBruto = { capitulo: number; saida: string; rotulo: string; quem: string; revela_em?: string };
+  const placares = import.meta.glob<{ marcos: MarcoBruto[]; proximo?: { capitulo: number; pergunta: string } }>("../../../livros/*/placar.json", { eager: true, import: "default" });
+  const todasSaidas = import.meta.glob<Record<string, { comando: string; saida: [string, string][] }>>("../../../livros/*/saidas.json", { eager: true, import: "default" });
+  const doLivroArq = <T,>(mapa: Record<string, T>, livro: string) => Object.entries(mapa).find(([p]) => p.includes(`/livros/${livro}/`))?.[1];
   const todos = await getCollection("capitulos");
   const livroDe = (e: (typeof todos)[number]) => e.id.split("/")[0];
   const endereco = (e: (typeof todos)[number]) => `/${livroDe(e)}/${e.id.split("/").pop()}/`;
@@ -31,15 +36,30 @@ export async function getStaticPaths() {
         return { numero: p.numero, titulo: p.titulo, href: e && endereco(e), atual: e === entrada };
       }),
     ];
+    /* placar: os marcos até este capítulo (no prefácio, nenhum), com o número lido da saída gravada */
+    const bruto = doLivroArq(placares, livro);
+    let placar: Placar | undefined;
+    if (bruto) {
+      const saidas = doLivroArq(todasSaidas, livro) ?? {};
+      const marcos = bruto.marcos.map((m) => {
+        const linha = saidas[m.saida]?.saida.map(([l]) => l).find((l) => /\d+ de \d+ \(\d+%\)/.test(l));
+        const achado = linha?.match(/(\d+) de (\d+) \((\d+)%\)/);
+        if (!achado) throw new Error(`placar.json de ${livro}: a saída "${m.saida}" não tem "X de Y (Z%)"; rode npm run saidas`);
+        return { capitulo: m.capitulo, rotulo: m.rotulo, quem: m.quem, acertos: +achado[1], total: +achado[2], nota: `${achado[3]}%`, comando: saidas[m.saida].comando,
+          revelaEm: m.capitulo === entrada.data.numero ? m.revela_em : undefined };
+      }).filter((m) => entrada.data.tipo === "capitulo" && m.capitulo <= (entrada.data.numero ?? 0));
+      const ultimo = marcos[marcos.length - 1];
+      placar = { marcos, proximo: bruto.proximo && ultimo ? { capitulo: bruto.proximo.capitulo, pergunta: bruto.proximo.pergunta.replace("{nota}", ultimo.nota) } : undefined };
+    }
     return {
       params: { livro, capitulo: entrada.id.split("/").pop()! },
-      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens },
+      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens, placar },
     };
   });
 }
-const { entrada, anterior, proximo, itens } = Astro.props;
+const { entrada, anterior, proximo, itens, placar } = Astro.props;
 const { Content, headings } = await render(entrada);
 ---
-<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo} itens={itens}>
+<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo} itens={itens} placar={placar}>
   <Content />
 </Capitulo>

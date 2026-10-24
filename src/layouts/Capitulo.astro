@@ -3,11 +3,11 @@ import "../styles/livro.css";
 import type { CollectionEntry } from "astro:content";
 import type { MarkdownHeading } from "astro";
 import Navegacao from "../components/livro/Navegacao.astro";
-import type { ItemSumario } from "../components/livro/Navegacao.astro";
+import type { ItemSumario, Placar } from "../components/livro/Navegacao.astro";
 
 type Vizinho = { href: string; rotulo: string };
-interface Props { capitulo: CollectionEntry<"capitulos">; secoes: MarkdownHeading[]; anterior?: Vizinho; proximo?: Vizinho; itens: ItemSumario[] }
-const { capitulo, secoes, anterior, proximo, itens } = Astro.props;
+interface Props { capitulo: CollectionEntry<"capitulos">; secoes: MarkdownHeading[]; anterior?: Vizinho; proximo?: Vizinho; itens: ItemSumario[]; placar?: Placar }
+const { capitulo, secoes, anterior, proximo, itens, placar } = Astro.props;
 const c = capitulo.data;
 /* texto curto do cabeçalho: `assim` vira código, o resto é escapado */
 const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
@@ -29,7 +29,7 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <Navegacao livro={c.livro} onde={rotulo} itens={itens} secoes={titulos} anterior={anterior} proximo={proximo} emBreve={c.em_breve} />
+    <Navegacao livro={c.livro} onde={rotulo} itens={itens} secoes={titulos} anterior={anterior} proximo={proximo} emBreve={c.em_breve} placar={placar} />
     <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FontMar, início">Font<span>Mar</span></a><span class="nome"><b>{c.livro}</b> · um livro que roda</span><span class="esp"></span><span id="onde">{rotulo}</span></div><div class="progresso" id="progresso"></div></header>
     <main class="livro">
       <section class="abertura">
