@@ -406,7 +406,16 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     if (esperaPedido || perguntandoOnde) return fs;
     return [...fs, pessoa("p", <p>{inicio.onde && `${ondeNome(inicio.onde)} `}{ps.pedido}</p>)];
   };
+  /* as dúvidas que o leitor perguntou, por ação (etapa 4): a pergunta e a resposta entram no fim do que a ação mostrou */
+  const [duvidasFeitas, setDuvidasFeitas] = useState<Record<number, number[]>>({});
   const falas = (x: Quadro, i: number): Fala[] => {
+    const f = falasDoQuadro(x, i);
+    if (x.tipo !== "acao" || !duvidasFeitas[x.k]) return f;
+    const a = acoes[x.k];
+    if (a.tipo === "editar" && x.b !== undefined && x.b < a.blocos.length - 1) return f;
+    return [...f, ...duvidasFeitas[x.k].flatMap((n) => [pessoa(`dq-${n}`, <p>{a.duvidas![n].pergunta}</p>), ia(`dr-${n}`, <p><Md t={a.duvidas![n].resposta} /></p>)])];
+  };
+  const falasDoQuadro = (x: Quadro, i: number): Fala[] => {
     const atual = i === q, ps = passos[x.p];
     if (x.tipo === "abre" && i === 0 && (esperaPedido || perguntandoOnde || perguntaRetomar)) return falasDoInicio(ps);
     if (x.tipo === "abre") return [
@@ -526,6 +535,14 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       enviar: () => { setVisiveis(falasAgora.length); setInicio((v) => ({ ...v, retomou: { de: retomar!, continuar: false } })); doInicio(); } },
   ] : perguntandoOnde ? LUGARES.map((l) => ({ rotulo: l.nome[0].toUpperCase() + l.nome.slice(1), texto: `${ondeNome(l.id)} ${passos[0].pedido}`, destaque: l.id === sugestaoOnde(),
     enviar: () => { setInicio((v) => ({ ...v, onde: l.id })); definirOnde(l.id); comecar(); } })) : [];
+  /* as dúvidas da ação da vez, depois que ela foi toda mostrada; a que já foi perguntada sai das opções */
+  const duvidasAgora = quadro.tipo === "acao" && acao?.duvidas && ultimoBloco && !aguardando
+    ? acao.duvidas.map((d, n) => ({ ...d, n })).filter((d) => !(duvidasFeitas[quadro.k] ?? []).includes(d.n)) : [];
+  const perguntarDuvida = (n: number) => {
+    if (quadro.tipo !== "acao") return;
+    setVisiveis(falasAgora.length);
+    setDuvidasFeitas((v) => ({ ...v, [quadro.k]: [...(v[quadro.k] ?? []), n] }));
+  };
   const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? "Fim do capítulo." : `Mensagem para o ${aba}`);
   /* a conversa até aqui: o que já passou leva a fala com que o leitor saiu de cada ação */
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
@@ -679,6 +696,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
           {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
           {rapidas.length > 0 && <div className="ic-respostas" role="group" aria-label="Respostas">
             {rapidas.map((r) => <button key={r.rotulo} type="button" data-destaque={r.destaque || undefined} onClick={r.enviar} aria-label={`Enviar: ${r.texto}`}>{r.rotulo}</button>)}
+          </div>}
+          {rapidas.length === 0 && duvidasAgora.length > 0 && <div className="ic-respostas ic-duvidas" role="group" aria-label="Dúvidas que você pode perguntar">
+            {duvidasAgora.map((d) => <button key={d.n} type="button" onClick={() => perguntarDuvida(d.n)} aria-label={`Perguntar: ${d.pergunta}`}>{d.pergunta}</button>)}
           </div>}
           {sugestao
             ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} aria-label={`Enviar: ${sugestao.texto}`}>

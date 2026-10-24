@@ -248,3 +248,7 @@ button.ic-caixa:disabled .ic-enviar, .ic-caixa-vazia .ic-enviar { background: #2
 @media (max-width: 680px) { .ic .ic-term-modos { display: none } }
 /* sem o botão seguir (a passagem é uma fala no chat), a seta de avançar fica na ponta da barra */
 .ic-guia .ic-avancar { margin-left: auto }
+/* as dúvidas (etapa 4): perguntas que o leitor pode fazer; mais discretas que as respostas do começo, para não competir
+   com a fala que segue */
+.ic-duvidas button { border-color: #3a4150; color: var(--ide-texto); font-weight: 400; text-align: left }
+.ic-duvidas button:hover { border-color: var(--ide-acento); filter: none }

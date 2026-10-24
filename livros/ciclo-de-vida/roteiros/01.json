@@ -41,14 +41,30 @@
       "id": "r01-uv-add-pydantic",
       "comando": "uv add pydantic",
       "espera": 0,
-      "nota": "O uv escolhe as versões, cria o ambiente do projeto (.venv), instala, e anota a dependência no pyproject.toml e no uv.lock."
+      "nota": "O uv escolhe as versões, cria o ambiente do projeto (.venv), instala, e anota a dependência no pyproject.toml e no uv.lock.",
+      "duvidas": [
+        {
+          "pergunta": "Por que pydantic, e não uma dataclass?",
+          "resposta": "A dataclass só descreve os campos: ela aceita `id='R7'` sem reclamar. O pydantic confere cada valor quando o caso entra (tipo, padrão, tamanho) e, se algo estiver fora, diz qual campo e qual regra. É disso que um contrato precisa."
+        },
+        {
+          "pergunta": "Pra que serve o uv.lock?",
+          "resposta": "O `pyproject.toml` diz o que o projeto quer: o pydantic, a partir de uma versão. O `uv.lock` anota o que foi instalado de fato, versão por versão, inclusive o que o pydantic trouxe junto. Com ele, outra máquina instala exatamente o mesmo."
+        }
+      ]
     },
     {
       "acao": "rodar",
       "id": "r01-uv-add-pytest",
       "comando": "uv add --dev pytest",
       "espera": 0,
-      "nota": "O --dev separa o que só serve para conferir: o pytest não vai junto quando o agente for para o ar."
+      "nota": "O --dev separa o que só serve para conferir: o pytest não vai junto quando o agente for para o ar.",
+      "duvidas": [
+        {
+          "pergunta": "E se eu instalar sem o --dev?",
+          "resposta": "Na sua máquina, funciona igual. Muda onde ele fica anotado: sem o `--dev`, o pytest entra nas dependências do projeto e vai junto quando o agente for instalado para atender de verdade, onde ninguém roda teste. Com ele, fica no grupo `dev` do `pyproject.toml`."
+        }
+      ]
     },
     {
       "acao": "copiar",
@@ -249,7 +265,13 @@
       "id": "r01-caso-id-torto",
       "comando": "uv run python -c \"from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))\"",
       "espera": 1,
-      "nota": "O id R7 não segue o padrão, e o pydantic diz qual campo e qual regra."
+      "nota": "O id R7 não segue o padrão, e o pydantic diz qual campo e qual regra.",
+      "duvidas": [
+        {
+          "pergunta": "Por onde eu leio um erro desses?",
+          "resposta": "De baixo para cima. As últimas linhas dizem o quê: `ValidationError` para `Caso`, o campo (`id`) e a regra que ele não seguiu (`^R\\d{2}$`: um R e dois dígitos). As de cima dizem por onde o erro passou, aqui por dentro do pydantic, que não é o seu código."
+        }
+      ]
     },
     {
       "acao": "trocar",
@@ -413,6 +435,12 @@
             "in",
             "return self"
           ]
+        }
+      ],
+      "duvidas": [
+        {
+          "pergunta": "Por que essa regra fica no contrato, e não no agente?",
+          "resposta": "Porque o contrato é a régua. Se a regra morasse só no agente, um caso de referência com pedido e sem e-mail entraria nas vinte perguntas, e o agente seria cobrado por uma resposta que não existe. Barrando aqui, o erro aparece ao carregar o arquivo, antes de qualquer agente."
         }
       ]
     },
@@ -676,7 +704,13 @@
         "arquivo": "referencia.jsonl",
         "linha": 12,
         "texto": "o pedido BT-1001 é da Ana; quem pergunta é o Bruno"
-      }
+      },
+      "duvidas": [
+        {
+          "pergunta": "Se o arquivo carregou, como os testes falham?",
+          "resposta": "Carregar confere o formato: cada caso com os campos certos, dos tipos certos. Os testes conferem o conteúdo contra os dados da loja: o pedido BT-1001 é da Ana, e quem pergunta é o Bruno. O formato do R12 estava certo; a decisão, não."
+        }
+      ]
     },
     {
       "acao": "trocar",
@@ -809,7 +843,17 @@
             "nota": "10%: só dois casos pedem chamado. A nota de uma decisão fixa é o tamanho da fatia dela nas vinte perguntas."
           }
         ]
-      }
+      },
+      "duvidas": [
+        {
+          "pergunta": "Por que 25%, e não zero?",
+          "resposta": "Porque 5 das 20 perguntas esperam mesmo que a conversa passe para uma pessoa. Quem sempre passa acerta essas 5 sem ler nada."
+        },
+        {
+          "pergunta": "Pra que medir um agente que nem lê a pergunta?",
+          "resposta": "Para ter de onde partir. Todo agente dos próximos capítulos vai ser medido pela mesma régua e tem que bater estes 25%. Sem esse ponto, uma nota de 60% não diria se o agente é bom ou só parece."
+        }
+      ]
     }
   ]
 }

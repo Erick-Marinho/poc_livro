@@ -186,3 +186,15 @@ test("a aba de problemas sai da saída gravada: arquivo e linha quando a saída 
   assert.deepEqual(de("r01-decisao-talvez"), [{ mensagem: "ValueError: 'talvez' is not a valid Decisao" }]);
   assert.deepEqual(de("r01-testes-passam"), []);
 });
+
+test("as dúvidas chegam às ações do roteiro, no máximo duas, cada uma com resposta", () => {
+  const com = acoes.map((a, k) => [k, a]).filter(([, a]) => a.duvidas);
+  assert.deepEqual(com.map(([k, a]) => [k, a.duvidas.length]), [[4, 2], [5, 1], [11, 1], [20, 1], [33, 1], [39, 2]]);
+  assert.ok(com.every(([, a]) => a.duvidas.every((d) => d.pergunta.endsWith("?") && d.resposta.length > 40)));
+  assert.match(acoes[39].duvidas[0].resposta, /5 das 20/);
+});
+
+test("o livro não monta com dúvida demais numa ação", async () => {
+  const muito = entrada(); muito.roteiro.passos[4].duvidas = [1, 2, 3].map((n) => ({ pergunta: `Dúvida ${n}?`, resposta: "uma resposta" }));
+  await assert.rejects(montarIde(muito), /no máximo duas/);
+});
