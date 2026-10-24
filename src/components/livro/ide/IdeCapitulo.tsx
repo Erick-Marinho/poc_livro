@@ -234,20 +234,24 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   useEffect(() => {
     const avancou = q > qAnterior.current, voltou = q < qAnterior.current;
     qAnterior.current = q;
-    if (calmo() || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); return; }
+    /* a abertura de um passo não pede nada ao leitor: quando ele avança até ela, a conversa emenda sozinha na primeira
+       ação (docs/capacidades/imersao-ide.md, etapa 2). Voltando, ela fica parada, para reler. */
+    const emendar = avancou && quadros[q].tipo === "abre" && q < quadros.length - 1;
+    const relogios: ReturnType<typeof setTimeout>[] = [];
+    const seguirSozinho = (ms: number) => relogios.push(setTimeout(() => setQ((x) => (x === q ? x + 1 : x)), ms));
+    if (calmo() || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); if (emendar) seguirSozinho(0); return () => relogios.forEach(clearTimeout); }
     let j = avancou ? 0 : Math.min(visiveisRef.current, tipos.length);
     if (j >= tipos.length) return;
-    const relogios: ReturnType<typeof setTimeout>[] = [];
     const proxima = () => {
       while (j < tipos.length && tipos[j] !== "i") j += 1;   /* o leitor e a divisa não "digitam" */
       setVisiveis(j);
-      if (j >= tipos.length) { setDigitando(false); return; }
+      if (j >= tipos.length) { setDigitando(false); if (emendar) seguirSozinho(700); return; }
       setDigitando(true);
       relogios.push(setTimeout(() => { j += 1; setDigitando(false); setVisiveis(j); relogios.push(setTimeout(proxima, 180)); }, 650));
     };
     proxima();
     return () => relogios.forEach(clearTimeout);
-  }, [q, tipos, direto]);
+  }, [q, tipos, direto, quadros]);
   /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
   const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando;
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
