@@ -1,4 +1,4 @@
-/* Os guias: a lista (o mais novo em cima) e a abertura de um guia. O resto da página é o do livro (livro.css). */
+/* As vitrines do site: os guias (a lista e a abertura de um guia) e a estante dos livros. O resto da página é o do livro (livro.css). */
 .etiqueta { display: inline-block; border: 1px solid var(--ink-2); border-radius: 999px; padding: 1px 10px; font: 500 12px/1.6 var(--f-ui); color: var(--ink) }
 .quando { font: 500 12px var(--f-ui); letter-spacing: .06em; color: var(--ink-2) }
 
@@ -23,4 +23,26 @@
   .guias-topo h1 { font-size: 36px }
   .abertura-guia h1 { font-size: 32px }
   .guias h2 { font-size: 21px }
+}
+
+/* a estante (/livros/): um card por livro, com a capa tipográfica, o estado e o quanto já está escrito */
+.livros { list-style: none; margin: 0 auto; padding: 0; display: grid; gap: 20px }
+.card-livro { display: grid; grid-template-columns: 180px 1fr; gap: 24px; padding: 20px; border: 1px solid var(--linha); border-radius: 14px;
+  background: var(--nota); color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s }
+.card-livro:hover { border-color: var(--acento); transform: translateY(-2px) }
+.card-livro .capa { display: flex; align-items: flex-end; aspect-ratio: 3 / 4; padding: 16px; border-radius: 6px; background: var(--acento); color: var(--papel);
+  font: 700 21px/1.15 var(--f-marca); letter-spacing: -.01em; box-shadow: inset 6px 0 0 color-mix(in srgb, var(--ink) 25%, transparent) }
+.card-livro .sobre { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+.card-livro .estado { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--aviso) }
+.card-livro h2 { font: 700 26px/1.2 var(--f-texto); letter-spacing: -.01em; margin: 0 }
+.card-livro .lide { margin: 0; font: 16px/1.55 var(--f-ui); color: var(--ink-2) }
+.card-livro .autores { margin: 0; font: 500 14px var(--f-ui); color: var(--ink) }
+.progresso-livro { display: grid; gap: 4px; margin-top: 6px; font: 13px var(--f-ui); color: var(--ink-2) }
+.progresso-livro .barra { height: 4px; border-radius: 2px; background: var(--linha); overflow: hidden }
+.progresso-livro .barra > span { display: block; height: 100%; background: var(--acento) }
+.card-livro .comecar { margin-top: auto; padding-top: 8px; font: 600 14px var(--f-ui); color: var(--acento) }
+
+@media (max-width: 640px) {
+  .card-livro { grid-template-columns: 1fr }
+  .card-livro .capa { aspect-ratio: auto; min-height: 120px }
 }

@@ -1,0 +1,63 @@
+---
+import "../../styles/livro.css";
+import "../../styles/guias.css";
+import { getCollection } from "astro:content";
+
+/* um card por livro, montado do que o livro já tem: o título e o lide do prefácio, os autores da assinatura,
+   e os capítulos escritos contra os planejados no sumario.json. Nada aqui é escrito à mão. */
+const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../../livros/*/sumario.json", { eager: true, import: "default" });
+const textos = await getCollection("capitulos");
+const ids = [...new Set(textos.map((t) => t.id.split("/")[0]))].sort();
+const livros = ids.map((id) => {
+  const doLivro = textos.filter((t) => t.id.startsWith(`${id}/`)).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
+  const abertura = doLivro.find((t) => t.data.tipo === "prefacio") ?? doLivro[0];
+  const escritos = doLivro.filter((t) => t.data.tipo === "capitulo").length;
+  const planejados = Object.entries(sumarios).find(([p]) => p.includes(`/livros/${id}/`))?.[1].capitulos.length ?? escritos;
+  return {
+    id, titulo: abertura.data.livro, lide: abertura.data.lide, autores: abertura.data.assinatura?.autores ?? [],
+    href: `/${id}/${abertura.id.split("/").pop()}/`, comeca: abertura.data.titulo, escritos, planejados,
+  };
+});
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
+    <title>Livros · FonteMar.ai</title>
+    <meta name="description" content="Livros técnicos de engenharia de IA em que o código se monta e o terminal roda no meio do texto." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
+  </head>
+  <body>
+    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><b>Livros</b></span><span class="esp"></span><a href="/guias/">Guias</a></div></header>
+    <main class="livro">
+      <section class="guias-topo">
+        <h1>Livros</h1>
+        <p>O aprofundamento: um projeto real construído do começo ao fim, capítulo a capítulo.</p>
+      </section>
+      <ul class="livros">
+        {livros.map((l) => (
+          <li>
+            <a class="card-livro" href={l.href}>
+              <div class="capa" aria-hidden="true">{l.titulo}</div>
+              <div class="sobre">
+                <span class="estado">{l.escritos < l.planejados ? "em andamento" : "completo"}</span>
+                <h2>{l.titulo}</h2>
+                <p class="lide">{l.lide}</p>
+                {l.autores.length > 0 && <p class="autores">{l.autores.join(" e ")}</p>}
+                <span class="progresso-livro">
+                  <span class="barra"><span style={`width: ${(100 * l.escritos) / l.planejados}%`} /></span>
+                  {l.escritos} de {l.planejados} capítulos escritos
+                </span>
+                <span class="comecar">Começar pelo {l.comeca.toLowerCase()} →</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </main>
+  </body>
+</html>
