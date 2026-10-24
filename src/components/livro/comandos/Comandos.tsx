@@ -9,6 +9,8 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
 import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
 import { definirDireto, useDireto } from "../palco/direto";
+import { definirOnde, useOnde } from "../palco/onde";
+import type { Onde } from "../palco/onde";
 import type { Placar } from "../Navegacao.astro";
 import "./comandos.css";
 
@@ -23,6 +25,7 @@ type Fonte = "serifada" | "sem-serifa";
 type Tamanho = "pequeno" | "medio" | "grande";
 const FONTES: { id: Fonte; nome: string }[] = [{ id: "serifada", nome: "Serifada" }, { id: "sem-serifa", nome: "Sem serifa" }];
 const TAMANHOS: { id: Tamanho; nome: string }[] = [{ id: "pequeno", nome: "Pequeno" }, { id: "medio", nome: "Médio" }, { id: "grande", nome: "Grande" }];
+const LUGARES: { id: Onde; nome: string }[] = [{ id: "ide", nome: "Na minha IDE" }, { id: "livro", nome: "Aqui no livro" }];
 const CHAVE_TEMA = "fontmar:tema", CHAVE_PILULA = "fontmar:pilula", CHAVE_IDE = "fontmar:ide";
 const guardar = (k: string, v: string | null) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sem armazenamento: vale só nesta visita */ } };
 const temaAtual = (): Tema => {
@@ -63,6 +66,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const [fonte, setFonte] = useState<Fonte>("serifada");
   const [tamanho, setTamanho] = useState<Tamanho>("medio");
   const direto = useDireto();
+  const fazer = useOnde();
   const x = useMotionValue(0);
   const sumindo = useTransform(x, [0, 160], [1, 0.35]);
   const painel = useRef<HTMLDivElement>(null);
@@ -282,6 +286,14 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
             <button type="button" role="switch" aria-checked={direto} className="cm-chave cm-chave-2" onClick={() => definirDireto(!direto)}>
               <span>Modo direto<small>sem passo a passo: código, saídas e respostas já abertos</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
             </button>
+            {/* a mesma pergunta da IDE do capítulo (palco/onde.ts): muda os terminais e o "sua vez" */}
+            <p className="cm-titulo cm-titulo-2">Onde você faz o projeto</p>
+            <div role="radiogroup" aria-label="Onde você faz o projeto" className="cm-segmentos">
+              {LUGARES.map(({ id, nome }, i) => (
+                <button key={id} type="button" role="radio" aria-checked={fazer === id} tabIndex={fazer === id || (!fazer && i === 0) ? 0 : -1} className="cm-seg"
+                  onClick={() => definirOnde(id)} onKeyDown={(e) => teclaRadio(e, i, LUGARES.length, (k) => definirOnde(LUGARES[k].id))}>{nome}</button>
+              ))}
+            </div>
             {/* o mesmo que arrastar a pílula, para quem usa teclado ou leitor de tela */}
             <p className="cm-titulo cm-titulo-2">Navegação</p>
             <button type="button" role="switch" aria-checked={recolhida} className="cm-chave" onClick={() => recolher(!recolhida)}>

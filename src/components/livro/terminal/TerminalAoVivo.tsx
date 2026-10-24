@@ -1,27 +1,28 @@
 /**
- * O terminal do livro, uma réplica de um terminal de verdade, com dois modos:
- * - guiado: o leitor aperta Rodar e vê o que o comando imprime (sem digitação animada: é enfeite, docs/PRINCIPIOS.md);
- * - interativo: o leitor digita (Tab completa, ↑ e ↓ andam no histórico, Ctrl+L limpa, `help` ajuda).
+ * O terminal do livro, uma réplica de um terminal de verdade, com dois modos, conforme onde o leitor faz o projeto
+ * (palco/onde.ts, a pergunta da IDE do capítulo e das configurações):
+ * - guiado, para quem faz na IDE dele: aperta Rodar e vê o que o comando imprime (sem digitação animada: é enfeite,
+ *   docs/PRINCIPIOS.md), e digita na máquina dele;
+ * - interativo, para quem faz aqui no livro: digita (Tab completa, ↑ e ↓ andam no histórico, Ctrl+L limpa, `help` ajuda).
  * Nos dois, a saída é a gravada do projeto real (saidas.json, pelo scripts/saidas.py): no navegador não há
  * Python, então este terminal não inventa saída. O que não é do projeto aparece como aviso do livro, em outra cor.
- * O modo escolhido vale para todos os terminais (fica guardado no navegador). No modo direto do livro,
- * não há modo: o comando e a saída aparecem prontos.
+ * No modo direto do livro, não há modo: o comando e a saída aparecem prontos.
  */
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { useDireto } from "../palco/direto";
+import { useOnde } from "../palco/onde";
 import "./terminal.css";
 
 export type Linha = [string, string?];
 export type Saida = { comando: string; saida?: Linha[]; variantes?: Record<string, Linha[]> };
 type Item = { tipo: "prompt"; texto: string; cursor?: boolean } | { tipo: "linha"; texto: string; classe?: string } | { tipo: "livro"; texto: string };
 type Modo = "guiado" | "interativo";
-const CHAVE = "fontmar:terminal", EVENTO = "fontmar:terminal-modo";
 const junta = (s: string) => s.trim().replace(/\s+/g, " ");
 
 export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {} }: { saida: Saida; pasta?: string; rotulos?: Record<string, string> }) {
   const variantes = saida.variantes ? Object.keys(saida.variantes) : [];
-  const [modo, setModo] = useState<Modo>("guiado");
+  const modo: Modo = useOnde() === "livro" ? "interativo" : "guiado";
   const [variante, setVariante] = useState(variantes[0] ?? "");
   /* o servidor desenha o comando e a saída inteira: é o que fica para quem lê sem JS */
   const [tela, setTela] = useState<Item[]>(() => [{ tipo: "prompt", texto: saida.comando }, ...linhas(variantes[0]).map(([t, c]) => ({ tipo: "linha" as const, texto: t, classe: c }))]);
@@ -34,15 +35,8 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
     ? [{ tipo: "prompt", texto: saida.comando }, { tipo: "livro", texto: "aperte ▶ Rodar" }]
     : [{ tipo: "livro", texto: "Digite o comando desta seção (Tab completa; help mostra o que este terminal sabe)." }];
 
-  /* ao hidratar: o modo guardado, e a tela limpa esperando o leitor */
-  useEffect(() => {
-    let m: Modo = "guiado";
-    try { if (localStorage.getItem(CHAVE) === "interativo") m = "interativo"; } catch { /* sem armazenamento */ }
-    setModo(m); setTela(inicio(m));
-    const ouvir = (e: Event) => { const n = (e as CustomEvent<Modo>).detail; vez.current++; setModo(n); setTela(inicio(n)); };
-    addEventListener(EVENTO, ouvir);
-    return () => removeEventListener(EVENTO, ouvir);
-  }, []);
+  /* ao hidratar, e quando o leitor muda onde faz o projeto: a tela limpa esperando por ele */
+  useEffect(() => { vez.current++; setTela(inicio(modo)); }, [modo]);
   useEffect(() => { corpo.current?.scrollTo({ top: corpo.current.scrollHeight }); }, [tela, entrada]);
 
   const imprimir = (v: number, ls: Linha[]) => {
@@ -93,11 +87,6 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
     if (e.key === "c" && e.ctrlKey) { e.preventDefault(); vez.current++; setTela((x) => [...x, { tipo: "prompt", texto: `${entrada}^C` }]); setEntrada(""); }
   };
 
-  const trocarModo = (m: Modo) => {
-    try { localStorage.setItem(CHAVE, m); } catch { /* sem armazenamento */ }
-    dispatchEvent(new CustomEvent(EVENTO, { detail: m }));   /* todos os terminais da página mudam juntos */
-    if (m === "interativo") setTimeout(() => campo.current?.focus(), 0);
-  };
   const escolherVariante = (v: string) => { vez.current++; setVariante(v); setTela(inicio(modo)); };
 
   const direto = useDireto();
@@ -107,11 +96,6 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
     <div className="tm-barra">
       <span className="tm-luzes" aria-hidden="true"><i /><i /><i /></span>
       <span className="tm-titulo">voce@maquina: {pasta}</span>
-      {!direto && <div className="tm-modos" role="radiogroup" aria-label="Modo do terminal">
-        {(["guiado", "interativo"] as Modo[]).map((m) => (
-          <button key={m} type="button" role="radio" aria-checked={modo === m} onClick={() => trocarModo(m)}>{m}</button>
-        ))}
-      </div>}
     </div>
     {(variantes.length > 0 || (modo === "guiado" && !direto)) && (
       <div className="tm-acoes">

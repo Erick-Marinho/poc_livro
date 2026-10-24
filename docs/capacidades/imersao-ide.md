@@ -14,11 +14,16 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 - (etapa 3) O livro lembra o passo em que o leitor parou (no navegador) e oferece continuar dali; a trilha mantém os
   passos feitos entre visitas.
 - (etapa 4) Modo foco: a IDE ocupa a tela inteira (sem sumário, cabeçalho e pílula); Esc volta ao livro.
-- (etapa 5) No terminal da IDE, o comando não roda sozinho: o chat diz qual é, e o leitor digita e aperta Enter. Tab
-  completa; "roda pra mim" é a saída para quem está no celular ou não quer digitar um `python -c` longo. O que não é o
-  comando ganha uma dica do livro, em outra letra (não é saída de terminal). A aposta vem depois do Enter, antes da
-  saída. O modo é o mesmo dos terminais avulsos (guiado ou interativo, guardado no navegador); a IDE começa no
-  interativo, os terminais avulsos continuam começando no guiado. No modo direto, não se digita.
+- (etapa 5) Revisada antes do ok: o que decide se o leitor digita não é um modo de terminal, é onde ele faz o
+  projeto. A IDE pergunta uma vez, no lugar do primeiro "seguir": "Onde você vai fazer o projeto?" (no computador, a
+  sugestão é "na minha IDE"; no celular, "aqui no livro"). Fica no navegador (`fontmar:onde`, `palco/onde.ts`), vale
+  para todos os terminais e muda nas configurações e na barra do terminal da IDE.
+  - Na minha IDE: o comando roda sozinho aqui (depois da aposta) e o cartão "sua vez" pede para rodar na máquina dele.
+    Ninguém digita duas vezes.
+  - Aqui no livro: o chat diz o comando e o leitor digita; Tab completa; "roda pra mim" para o `python -c` longo; o
+    que não é o comando ganha uma dica do livro em outra letra; a aposta vem depois do Enter. O "sua vez" sai: digitar
+    aqui já é o fazer. Os cliques não diminuem (o "fiz na minha IDE" vira "seguir").
+  - No modo direto, não há pergunta nem digitação. O seletor guiado/interativo dos terminais avulsos saiu.
 
 ## Etapas
 
@@ -39,6 +44,6 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 | 2 | `812f432` | percurso do capítulo 1 inteiro: de 95 para 78 cliques; as 40 pausas "sua vez" continuam | Erick, 24/10/2026 |
 | 3 | `8135191` | duas visitas no mesmo navegador: oferece continuar do passo 4 depois de fechar o 3, e a trilha mantém os feitos | Erick, 24/10/2026 |
 | 4 | `26ddea9` | a IDE cobre 1440×813, a página não rola, a pílula e o cabeçalho ficam por baixo, Esc volta; capturas no computador e no celular | Erick, 24/10/2026 |
-| 5 | `62d03d7` | percurso do capítulo 1: no interativo, 78 cliques mais 15 comandos (14 digitados, 1 "roda pra mim"), e as 7 apostas depois do Enter; no guiado, 78 cliques, como antes; no direto, 58 e sem campo. Capítulo 2 no interativo: 5 digitados, 1 "roda pra mim", até o passo 10. Erros digitados mostram a dica do livro; Tab completa | pendente |
+| 5 | `62d03d7`, revisão (este) | percurso do capítulo 1: sem resposta, a pergunta no lugar do seguir, e responder já avança; "na minha IDE": 78 cliques, 40 "sua vez", nenhum comando digitado, como antes; "aqui no livro": 78 cliques, 15 comandos (14 digitados, 1 "roda pra mim"), nenhum "sua vez", as 7 apostas depois do Enter; modo direto: 58 cliques, sem pergunta. Capturas da pergunta no computador e no celular, e das configurações | pendente |
 
 (redação: claude-opus-5-5)

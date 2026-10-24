@@ -173,6 +173,12 @@
 /* o comando que chamou um modelo de verdade: a resposta é a gravada, e o terminal diz */
 .ic-gravado { margin: 2px 0 6px; color: #8fb8e8; font-style: italic }
 
+/* onde o leitor faz o projeto: a pergunta na barra de controles, no lugar do seguir */
+.ic-pergunta-onde { flex: 1; min-width: 0; display: grid; gap: 1px; padding-left: 6px; font: 13.5px var(--f-ui); color: var(--ink) }
+.ic-pergunta-onde small { font-size: 12.5px; color: var(--ink-2) }
+.ic-pergunta-onde ~ button { min-width: 0; white-space: nowrap }
+@media (max-width: 680px) { .ic-guia:has(.ic-pergunta-onde) { flex-wrap: wrap } .ic-pergunta-onde { flex-basis: 100%; padding: 2px 4px 4px } .ic-pergunta-onde ~ button { flex: 1 } }
+
 /* o terminal interativo (docs/capacidades/imersao-ide.md, etapa 5): o leitor digita o comando da vez. O campo de
    verdade fica invisível por cima da linha, e o que se vê é o texto com o cursor, como num terminal */
 .ic-entrada { display: block; position: relative; cursor: text }
