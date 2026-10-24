@@ -52,5 +52,6 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 |---|---|---|---|
 | 1 | `8824ff6` | percurso do capítulo 1: 18 pedidos enviados pelo compositor, 47 falas da pessoa, todas "você"; 78 cliques na minha IDE e 58 no direto, como antes; 79 para o leitor novo (1 para dizer onde faz). Capturas do compositor no computador e no celular | Erick, 24/10/2026 |
 | 2 | `0e398ae` | percurso do capítulo 1 só pelo compositor, nenhum "seguir": 78 envios na minha IDE (18 pedidos, 20 "E o próximo?", 40 "Fiz…" em quatro jeitos), 78 cliques aqui no livro mais 1 para dizer onde faz, 58 no direto; 87 falas da pessoa, todas "você"; a caixa avisa quando é para digitar, apostar ou responder. Capturas no computador e no celular. De carona: as opções das perguntas do chat estavam com a cor da página (quase pretas no fundo escuro) | Erick, 24/10/2026 |
+| 3 | `0765ce1` | percurso do capítulo 1 só pelo chat: leitor novo com 78 cliques (era 79), "Aqui no livro mesmo." e o primeiro pedido numa fala só; quem volta vê "Você parou no passo 5. Continuo de lá?" e continua dali (67 cliques) ou começa do início e responde onde fazer (79); direto, 58; a barra só com as duas setas. Capturas no computador e no celular (no celular, "Aqui no livro" em destaque) | pendente |
 
 (redação: claude-opus-5-5)
