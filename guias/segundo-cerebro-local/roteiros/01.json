@@ -536,6 +536,71 @@
           "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 7 segundos por pergunta na CPU; e, montando o guia, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
         }
       ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "pessoas.py",
+      "partes": [
+        {
+          "linhas": "1-38"
+        }
+      ],
+      "nota": "A pergunta preferida do artigo do Rowboat é o que uma pessoa ficou de fazer. Aqui, ela sai dos [[links]] do cofre, sem modelo.",
+      "blocos": [
+        {
+          "linhas": "12-14",
+          "titulo": "quem cita a pessoa",
+          "texto": "As notas com um link para ela: é o painel de backlinks do Obsidian, em uma linha de código.",
+          "termos": [
+            "backlinks"
+          ]
+        },
+        {
+          "linhas": "17-20",
+          "titulo": "o que ela ficou de fazer",
+          "texto": "Nas notas que citam a pessoa, as frases com ficou de que falam dela: pelo nome, ou por um Ele ou Ela logo depois de citar."
+        },
+        {
+          "linhas": "23-28",
+          "titulo": "e o que veio depois",
+          "texto": "Para cada compromisso, a frase de uma nota mais nova que mais fala do mesmo assunto. É a regra da data de novo: o que mudou depois vale."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-pessoa-rafael",
+      "comando": "uv run python pessoas.py \"Rafael Souza\"",
+      "espera": 0,
+      "nota": "Dois compromissos, cada um com o que aconteceu depois: o ambiente ficou pronto no prazo, e a integração do SMS atrasou. É o que você leria juntando cinco notas à mão.",
+      "aposta": {
+        "pergunta": "Segundo o cofre, quantas coisas o Rafael ficou de fazer?",
+        "opcoes": [
+          "1",
+          "2",
+          "3"
+        ],
+        "certa": 1
+      },
+      "variar": {
+        "trecho": "\"Rafael Souza\"",
+        "original": "\"Rafael Souza\"",
+        "convite": "Troque a pessoa: toque no nome no terminal.",
+        "opcoes": [
+          {
+            "id": "sc-pessoa-otavio",
+            "rotulo": "\"Otávio Reis\"",
+            "por": "\"Otávio Reis\"",
+            "nota": "Um compromisso, e nenhuma notícia depois: as telas de cancelamento até 14/11. Repare que a frase diz Ele, não Otávio; o código aceita porque a nota acabou de citar ele."
+          },
+          {
+            "id": "sc-pessoa-bianca",
+            "rotulo": "\"Bianca Teles\"",
+            "por": "\"Bianca Teles\"",
+            "nota": "Nenhum compromisso: a Bianca aparece em três notas, mas ninguém escreveu que ela ficou de fazer algo. O cérebro só sabe o que está escrito."
+          }
+        ]
+      }
     }
   ]
 }

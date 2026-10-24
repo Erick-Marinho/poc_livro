@@ -396,5 +396,58 @@
  {
   "passo": 26,
   "rodou": "sc-nota-modelo"
+ },
+ {
+  "passo": 27,
+  "arquivo": "pessoas.py",
+  "conteudo": "\"\"\"O que uma pessoa ficou de fazer, seguindo os [[links]] do cofre: as notas que citam a pessoa (os backlinks do\nObsidian), as frases com \"ficou de\" nelas, e o que uma nota mais nova disse depois sobre o mesmo assunto.\n\n    uv run python pessoas.py \"Rafael Souza\"\n\"\"\"\nimport re\nimport sys\n\nfrom cerebro import COFRE, dia, ler_cofre, palavras\n\n\ndef citam(pessoa: str) -> list:\n    \"\"\"As notas que têm um [[link]] para a pessoa: o painel de backlinks dela, no Obsidian.\"\"\"\n    return [n for n in ler_cofre() if f\"[[{pessoa}]]\" in (COFRE / n.arquivo).read_text(encoding=\"utf-8\")]\n\n\ndef compromissos(pessoa: str) -> list[tuple]:\n    \"\"\"Cada frase \"ficou de\" sobre a pessoa (pelo nome, ou por um \"Ele\"/\"Ela\" logo depois de citar ela), com a nota.\"\"\"\n    nome = pessoa.split()[0]\n    return [(n, f) for n in citam(pessoa) for f in n.frases if \"ficou de\" in f and (nome in f or re.match(r\"(Ele|Ela) \", f))]\n\n\ndef depois(pessoa: str, nota, frase: str):\n    \"\"\"A frase de uma nota mais nova, entre as que citam a pessoa, que mais fala do mesmo assunto (duas palavras, ao menos).\"\"\"\n    assunto = set(palavras(frase)) - set(palavras(pessoa + \" ficou ate\"))\n    candidatas = [(len(assunto & set(palavras(f))), n, f) for n in citam(pessoa) if n.data > nota.data for f in n.frases]\n    melhor = max(candidatas, key=lambda x: x[0], default=None)\n    return melhor if melhor and melhor[0] >= 2 else None\n\n\nif __name__ == \"__main__\":\n    pessoa = \" \".join(sys.argv[1:])\n    lista = compromissos(pessoa)\n    print(f\"{pessoa}: {len(lista)} {'compromisso' if len(lista) == 1 else 'compromissos'}, em {len(citam(pessoa))} notas que citam {pessoa.split()[0]}\")\n    for nota, frase in lista:\n        print(f\"{dia(nota.data)}  {frase}  ({nota.arquivo})\")\n        d = depois(pessoa, nota, frase)\n        print(f\"       depois, {dia(d[1].data)}: {d[2]}  ({d[1].arquivo})\" if d else \"       depois: nenhuma nota mais nova fala disso\")\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38
+  ]
+ },
+ {
+  "passo": 28,
+  "rodou": "sc-pessoa-rafael",
+  "variantes": {
+   "sc-pessoa-otavio": {},
+   "sc-pessoa-bianca": {}
+  }
  }
 ]

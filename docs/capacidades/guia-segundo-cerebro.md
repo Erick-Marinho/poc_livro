@@ -52,8 +52,8 @@ compara a nota antes e depois.
   `glossario.json`, `guia.mdx` (o fecho), e a figura do cofre, se ajudar a mostrar os backlinks de uma pessoa.
 - **Muda:** a pergunta-bandeira do artigo ("o que a Sarah ficou de fazer?"), feita do nosso jeito: "o que o Rafael
   ficou de fazer?". Os `[[links]]` dão as notas que citam a pessoa (os backlinks do Obsidian); nelas, as frases com
-  "ficou de", com data e fonte; e o que veio depois, nas notas dele. Sem modelo. Uma aposta, e duas perguntas novas na
-  régua. No fim do guia, o fecho: o que fica de fato local aqui (o cofre, a busca, o modelo) e o que deixaria de
+  "ficou de", com data e fonte; e o que veio depois, nas notas dele. Sem modelo, com uma aposta e a troca da pessoa no
+  próprio comando (a régua das dez perguntas fica como está: mexer nela pediria regravar o modelo). No fim do guia, o fecho: o que fica de fato local aqui (o cofre, a busca, o modelo) e o que deixaria de
   ficar se você ligasse o e-mail e a agenda, como o artigo faz; e quando um app como o Rowboat vale o que custa.
 - **Evidência:** as saídas novas gravadas e conferidas no `npm test`; a IDE do guia até o fim; capturas.
 - **Fica fora:** a voz dos autores (fica com `Pendente`).

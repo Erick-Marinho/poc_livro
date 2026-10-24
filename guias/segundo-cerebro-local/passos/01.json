@@ -114,6 +114,20 @@
       "depois": [
         "Mais acerto, mais custo: a régua é o que deixa a escolha ser sua, com número."
       ]
+    },
+    {
+      "id": "pessoas",
+      "secao": "5",
+      "titulo": "As pessoas",
+      "curta": "os links",
+      "de": 27,
+      "ate": 28,
+      "objetivo": "o que cada pessoa ficou de fazer, seguindo os links do cofre.",
+      "temos": "o `pessoas.py`: os backlinks, os compromissos e o que veio depois.",
+      "pedido": "E o que o Rafael ficou de fazer?",
+      "antes": [
+        "É a pergunta preferida do artigo do Rowboat. Aqui, sem modelo: os links que você escreve no Obsidian já são o grafo."
+      ]
     }
   ]
 }

@@ -558,7 +558,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     setVisiveis(falasAgora.length);
     setDuvidasFeitas((v) => ({ ...v, [quadro.k]: [...(v[quadro.k] ?? []), n] }));
   };
-  const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? "Fim do capítulo." : `Mensagem para o ${aba}`);
+  const vazia = rapidas.length ? "Escolha uma resposta acima." : aguardando ?? (q === quadros.length - 1 ? `Fim do ${obra === "guia" ? "guia" : "capítulo"}.` : `Mensagem para o ${aba}`);
   /* a conversa até aqui: o que já passou leva a fala com que o leitor saiu de cada ação */
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
     const f = i === q ? falasAgora.slice(0, visiveis) : [...falas(x, i), ...(x.tipo === "acao" ? [pessoa("passa", <p>{passagem(x, i)}</p>)] : [])];
@@ -595,9 +595,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     : pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
 
   return <div ref={raiz} className={`ide ic${foco ? " ic-foco" : ""}`} data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}
-    role={foco ? "dialog" : undefined} aria-modal={foco || undefined} aria-label={foco ? "IDE do capítulo, em tela cheia" : undefined}>
+    role={foco ? "dialog" : undefined} aria-modal={foco || undefined} aria-label={foco ? `IDE do ${obra === "guia" ? "guia" : "capítulo"}, em tela cheia` : undefined}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
-    <nav className="ic-trilha" aria-label="Passos do capítulo">
+    <nav className="ic-trilha" aria-label={`Passos do ${obra === "guia" ? "guia" : "capítulo"}`}>
       {secoes.map((s) => <div key={s} className="ic-secao">
         <span className="ic-secao-nome"><b>{s}</b> {passos.find((p) => p.secao === s)!.nomeSecao}</span>
         <span className="ic-pontos">{passos.filter((p) => p.secao === s).map((p) => (
@@ -736,7 +736,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     </div>
 
     {/* os controles, fora da janela: são do livro, como a trilha em cima */}
-    <nav className="ic-guia" aria-label="Avançar no capítulo">
+    <nav className="ic-guia" aria-label={`Avançar no ${obra === "guia" ? "guia" : "capítulo"}`}>
       {/* as perguntas do livro (onde fazer, continuar de onde parou) são da conversa (etapa 3); aqui, as setas e o passo */}
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>

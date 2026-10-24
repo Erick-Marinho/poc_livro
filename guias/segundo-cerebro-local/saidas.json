@@ -274,11 +274,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 37 packages in 59ms",
+        "Resolved 37 packages in 162ms",
         ""
       ],
       [
-        "Installed 35 packages in 27ms",
+        "Installed 35 packages in 42ms",
         ""
       ],
       [
@@ -501,6 +501,60 @@
       ],
       [
         "nota: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  },
+  "sc-pessoa-rafael": {
+    "comando": "uv run python pessoas.py \"Rafael Souza\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Rafael Souza: 2 compromissos, em 5 notas que citam Rafael",
+        ""
+      ],
+      [
+        "20/10  Rafael Souza ficou de montar o ambiente de testes até 24/10.  (Reuniões/2026-10-20 Kickoff do piloto.md)",
+        ""
+      ],
+      [
+        "       depois, 24/10: De Rafael Souza: o ambiente de testes ficou pronto hoje, 24/10, e a clínica já pode entrar com o usuário de demonstração.  (E-mails/2026-10-24 Ambiente de testes.md)",
+        ""
+      ],
+      [
+        "03/11  Rafael Souza ficou de terminar a integração do SMS até 07/11.  (Reuniões/2026-11-03 Status semanal.md)",
+        ""
+      ],
+      [
+        "       depois, 06/11: De Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.  (E-mails/2026-11-06 Integração do SMS atrasou.md)",
+        ""
+      ]
+    ]
+  },
+  "sc-pessoa-otavio": {
+    "comando": "uv run python pessoas.py \"Otávio Reis\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Otávio Reis: 1 compromisso, em 4 notas que citam Otávio",
+        ""
+      ],
+      [
+        "10/11  Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.  (Reuniões/2026-11-10 Conversa com o Otávio.md)",
+        ""
+      ],
+      [
+        "       depois: nenhuma nota mais nova fala disso",
+        ""
+      ]
+    ]
+  },
+  "sc-pessoa-bianca": {
+    "comando": "uv run python pessoas.py \"Bianca Teles\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Bianca Teles: 0 compromissos, em 3 notas que citam Bianca",
         ""
       ]
     ]

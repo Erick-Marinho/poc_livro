@@ -55,6 +55,9 @@
       "marca": "with_structured_output",
       "texto": "Pede ao modelo uma resposta no formato da classe (aqui, a frase e o arquivo), em vez de texto livre. O código recebe um objeto, não um texto para adivinhar."
     },
+    "backlinks": {
+      "texto": "No Obsidian, o painel que mostra as notas que têm um link para a nota aberta. Aqui, a mesma coisa em código: as notas cujo texto tem [[nome da pessoa]]."
+    },
     "f-string": {
       "rotulo": "f\"…\"",
       "texto": "Um texto com valores dentro das chaves. O :.0% mostra a fração como porcentagem, sem casas decimais."

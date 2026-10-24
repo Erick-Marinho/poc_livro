@@ -53,8 +53,16 @@ O problema não está na busca, está no cofre. As notas foram escritas ao longo
 
 O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno rodando no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você aposta no que vai sair.
 
-<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua", "4": "O modelo" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia. As respostas do modelo (llama3.2:3b, no Ollama) foram gravadas uma vez e são repetidas pelo site." />
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua", "4": "O modelo", "5": "As pessoas" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia. As respostas do modelo (llama3.2:3b, no Ollama) foram gravadas uma vez e são repetidas pelo site." />
 
 <Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não roda ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
 
-<Nota titulo="em construção">Este guia está sendo escrito. Falta a última parte: o que uma pessoa ficou de fazer, seguindo os `[[links]]`, e o que fica de fato local num segundo cérebro.</Nota>
+## O que fica local
+
+Neste guia, nada do que você escreveu sai da sua máquina: o cofre é uma pasta, o cérebro é código que você leu, e o modelo roda no Ollama, no endereço `localhost`. O "100% local" vale aqui por um motivo simples: nada foi ligado a um serviço de fora.
+
+Ligar o e-mail, a agenda e as reuniões, como o artigo faz, muda isso. As notas continuam no seu disco, mas a fonte delas fica nos servidores do Google e dos serviços de reunião, com uma autorização para ler a sua caixa de entrada. E o cofre passa a guardar e-mail em texto puro: proteja a pasta como você protege a caixa de entrada.
+
+Um app como o Rowboat vale quando você quer o que este guia não faz: trazer e-mail e agenda sozinho, todo dia, e manter as notas das pessoas em dia sem escrever código. Antes de confiar nele, faça o que você fez aqui: escreva dez perguntas cuja resposta você sabe, e veja quantas ele acerta, e se a nota que ele cita diz mesmo aquilo.
+
+<Pendente o="A voz dos autores: o segundo cérebro que vocês usam, e o que aprenderam medindo" parte="fecho do guia" />
