@@ -6,6 +6,7 @@
     "dev": "PUBLIC_URL_INICIO=${PUBLIC_URL_INICIO:-http://localhost:5173/} astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "site": "astro build && astro preview --port 4321",
     "test": "astro build && npm run saidas:conferir && npm run guias:conferir && node --test \"testes/*.test.mjs\" && npm run gravacao:testar",
     "saidas": "python3 scripts/saidas.py ciclo-de-vida",
     "saidas:conferir": "python3 scripts/saidas.py ciclo-de-vida --conferir",

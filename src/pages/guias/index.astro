@@ -1,12 +1,12 @@
 ---
 import "../../styles/livro.css";
 import "../../styles/guias.css";
-import { getCollection } from "astro:content";
+import { guias as listar } from "../../lib/vitrine";
 import TopoSite from "../../components/TopoSite.astro";
 import { dataCurta } from "../../lib/guias";
 
-/* o mais novo em cima; no mesmo dia, a ordem do título */
-const guias = (await getCollection("guias")).sort((a, b) => b.data.data.localeCompare(a.data.data) || a.data.titulo.localeCompare(b.data.titulo));
+/* o mais novo em cima (lib/vitrine.ts) */
+const guias = await listar();
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -30,10 +30,10 @@ const guias = (await getCollection("guias")).sort((a, b) => b.data.data.localeCo
       <ul class="guias">
         {guias.map((g) => (
           <li>
-            <span class="etiqueta">{g.data.etiqueta}</span>
-            <h2><a href={`/guias/${g.id}/`}>{g.data.titulo}</a></h2>
-            <p class="lide">{g.data.lide}</p>
-            <time class="quando" datetime={g.data.data}>{dataCurta(g.data.data)}</time>
+            <span class="etiqueta">{g.etiqueta}</span>
+            <h2><a href={g.href}>{g.titulo}</a></h2>
+            <p class="lide">{g.lide}</p>
+            <time class="quando" datetime={g.data}>{dataCurta(g.data)}</time>
           </li>
         ))}
       </ul>

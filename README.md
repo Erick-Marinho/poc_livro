@@ -10,7 +10,11 @@ npm install
 npm run dev      # http://localhost:4321
 npm test         # monta o site e confere as saídas do livro
 npm run saidas   # roda os comandos do livro no projeto e grava as saídas
+npm run site     # monta e serve o site em http://localhost:4321, como a landing do FontMar.ai o lê
 ```
+
+O build publica `/livros/index.json` e `/guias/index.json` (`src/lib/vitrine.ts`), que a landing do FontMar.ai mostra.
+A marca e o "Início" levam a `PUBLIC_URL_INICIO`: no `npm run dev`, o FontMar.ai local; sem a variável, `/`.
 
 Para o projeto do livro (Python): [uv](https://docs.astral.sh/uv/).
 

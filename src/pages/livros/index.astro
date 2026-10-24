@@ -1,24 +1,11 @@
 ---
 import "../../styles/livro.css";
 import "../../styles/guias.css";
-import { getCollection } from "astro:content";
+import { estante } from "../../lib/vitrine";
 import TopoSite from "../../components/TopoSite.astro";
 
-/* um card por livro, montado do que o livro já tem: o título e o lide do prefácio, os autores da assinatura,
-   e os capítulos escritos contra os planejados no sumario.json. Nada aqui é escrito à mão. */
-const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../../livros/*/sumario.json", { eager: true, import: "default" });
-const textos = await getCollection("capitulos");
-const ids = [...new Set(textos.map((t) => t.id.split("/")[0]))].sort();
-const livros = ids.map((id) => {
-  const doLivro = textos.filter((t) => t.id.startsWith(`${id}/`)).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
-  const abertura = doLivro.find((t) => t.data.tipo === "prefacio") ?? doLivro[0];
-  const escritos = doLivro.filter((t) => t.data.tipo === "capitulo").length;
-  const planejados = Object.entries(sumarios).find(([p]) => p.includes(`/livros/${id}/`))?.[1].capitulos.length ?? escritos;
-  return {
-    id, titulo: abertura.data.livro, lide: abertura.data.lide, autores: abertura.data.assinatura?.autores ?? [],
-    href: `/${id}/${abertura.id.split("/").pop()}/`, comeca: abertura.data.titulo, escritos, planejados,
-  };
-});
+/* um card por livro, montado do que o livro já tem (lib/vitrine.ts): nada aqui é escrito à mão */
+const livros = await estante();
 ---
 <!doctype html>
 <html lang="pt-BR">
