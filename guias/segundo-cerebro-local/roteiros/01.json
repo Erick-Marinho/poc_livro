@@ -1,0 +1,403 @@
+{
+  "guia": "segundo-cerebro-local",
+  "sobre": "O caminho do projeto do guia, da pasta vazia à nota, na ordem em que se pensa. O scripts/saidas.py aplica numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
+  "passos": [
+    {
+      "acao": "rodar",
+      "id": "sc-uv-init",
+      "onde": "acima",
+      "comando": "uv init segundo-cerebro",
+      "espera": 0,
+      "nota": "O uv cria a pasta do projeto, o pyproject.toml, um main.py de exemplo e um repositório git. Nenhuma dependência: o cérebro vai ser Python puro."
+    },
+    {
+      "acao": "apagar",
+      "arquivo": "main.py",
+      "nota": "O main.py é o exemplo do uv. O nosso começa pelo cofre, então ele sai."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "pyproject.toml",
+      "de": "description = \"Add your description here\"\n",
+      "para": [
+        {
+          "linhas": "4-4"
+        }
+      ],
+      "nota": "Uma frase que diz o que o projeto é."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "cofre/E-mails/2026-10-24 Ambiente de testes.md",
+        "cofre/E-mails/2026-11-07 Bianca confirma.md",
+        "cofre/Notas/Ideias de métrica.md",
+        "cofre/Pessoas/Bianca Teles.md",
+        "cofre/Pessoas/Otávio Reis.md",
+        "cofre/Pessoas/Rafael Souza.md",
+        "cofre/Projetos/Piloto da agenda.md",
+        "cofre/Reuniões/2026-10-20 Kickoff do piloto.md",
+        "cofre/Reuniões/2026-10-28 Revisão de design.md",
+        "cofre/Reuniões/2026-11-03 Status semanal.md",
+        "cofre/Reuniões/2026-11-10 Conversa com o Otávio.md"
+      ],
+      "nota": "O cofre do Obsidian é só uma pasta de Markdown. Vieram onze notas de uma gerente de produto inventada: o kickoff de um piloto, e-mails, reuniões, as pessoas e o resumo do projeto. Três delas dizem que a entrega é em 14/11.",
+      "suavez": "Instale o Obsidian (obsidian.md, gratuito) e crie um cofre novo chamado `cofre`, dentro da pasta do projeto. Copie para ele as notas do repositório do guia, mantendo as pastas (E-mails, Notas, Pessoas, Projetos, Reuniões). O Obsidian cria uma pasta `.obsidian/` com as configurações dele; o cérebro só lê os `.md`."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "cofre/E-mails/2026-11-06 Integração do SMS atrasou.md",
+      "partes": [
+        {
+          "linhas": "1-8"
+        }
+      ],
+      "nota": "A nota que faltava, e é você quem escreve: o e-mail em que o prazo muda.",
+      "suavez": "No Obsidian, crie a nota `2026-11-06 Integração do SMS atrasou` dentro da pasta `E-mails` e escreva o texto. A data vai nas propriedades: escreva `---` na primeira linha e o Obsidian abre o campo, ou use o comando Adicionar propriedade, com o nome `data`. O `[[Rafael Souza]]` vira um link para a nota dele.",
+      "blocos": [
+        {
+          "linhas": "1-3",
+          "titulo": "as propriedades",
+          "texto": "A data em que a coisa aconteceu, no topo da nota. O Obsidian mostra como propriedade; o cérebro vai ler daqui.",
+          "termos": [
+            "propriedades"
+          ]
+        },
+        {
+          "linhas": "6-6",
+          "titulo": "quem mandou",
+          "texto": "O nome entre colchetes duplos é um link: no Obsidian, este e-mail aparece na nota do Rafael, no painel de backlinks.",
+          "termos": [
+            "[[link]]"
+          ]
+        },
+        {
+          "linhas": "8-8",
+          "titulo": "o que mudou",
+          "texto": "A frase que importa: o prazo foi para 21/11. As notas antigas não mudam; elas estavam certas quando foram escritas.",
+          "pergunta": {
+            "texto": "Para saber que esta nota é mais nova que o status de 03/11, o que o cérebro deve ler?",
+            "opcoes": [
+              "a data em que o arquivo foi salvo",
+              "a propriedade data, no topo",
+              "o nome do arquivo"
+            ],
+            "certa": 1,
+            "porque": "A data de quando a coisa aconteceu é a que você escreveu. A do arquivo muda quando você copia, sincroniza ou só abre e salva; o nome do arquivo é para você achar a nota."
+          }
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "cerebro.py",
+      "partes": [
+        {
+          "linhas": "1-13"
+        },
+        {
+          "linhas": "16-43"
+        }
+      ],
+      "nota": "O cérebro começa lendo o cofre: cada nota vira a data das propriedades, o título e as frases.",
+      "blocos": [
+        {
+          "linhas": "19-22",
+          "titulo": "palavras que contam",
+          "texto": "Minúsculas, sem acento e sem as palavras que não dizem nada sozinhas (de, o, quando). É assim que a pergunta e as notas vão ser comparadas.",
+          "termos": [
+            "NFKD",
+            "re.findall"
+          ]
+        },
+        {
+          "linhas": "26-30",
+          "titulo": "uma nota",
+          "texto": "Um pacote com quatro coisas: o arquivo, a data, o título e as frases.",
+          "termos": [
+            "@dataclass"
+          ]
+        },
+        {
+          "linhas": "33-43",
+          "titulo": "ler o cofre",
+          "texto": "Para cada .md, em qualquer pasta do cofre: corta as propriedades do corpo, lê a data, troca cada [[link]] pelo nome e quebra o texto em frases.",
+          "termos": [
+            "rglob",
+            "split('---')"
+          ],
+          "pergunta": {
+            "texto": "E se uma nota não tiver a propriedade data?",
+            "opcoes": [
+              "fica com a data de hoje",
+              "dá erro ao ler o cofre",
+              "é ignorada"
+            ],
+            "certa": 1,
+            "porque": "O re.search não acha a data e devolve None, e o .group(1) quebra. É de propósito: uma nota sem data entraria na regra da data sem ninguém saber de quando ela é."
+          }
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-ler-cofre",
+      "comando": "uv run python -c \"from cerebro import ler_cofre; print(len(ler_cofre()), 'notas no cofre')\"",
+      "espera": 0,
+      "nota": "As onze que vieram e a que você escreveu."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "cerebro.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "44-57"
+        },
+        {
+          "linhas": "59-60"
+        },
+        {
+          "texto": "def responder(pergunta: str, notas: list[Nota] | None = None) -> Resposta:\n    notas = notas or ler_cofre()\n    consulta = palavras(pergunta)\n    pontos = bm25(notas, consulta)\n    melhores = [n for p, n in sorted(zip(pontos, notas), key=lambda x: -x[0])[:5] if p > 0]\n    # cada frase das notas achadas, com quantas palavras da pergunta ela tem\n    frases = [(len(set(consulta) & set(palavras(f))), n, f) for n in melhores for f in n.frases]\n    # a nota mais parecida com a pergunta, e a frase dela com mais palavras da pergunta\n    nota = melhores[0]\n    _, _, frase = max((x for x in frases if x[1] is nota), key=lambda x: x[0])\n    return Resposta(frase, nota)\n"
+        },
+        {
+          "linhas": "78-83"
+        },
+        {
+          "texto": "if __name__ == \"__main__\":\n    r = responder(\" \".join(sys.argv[1:]))\n"
+        },
+        {
+          "linhas": "88-89"
+        }
+      ],
+      "nota": "A busca: as cinco notas mais parecidas com a pergunta, e a frase da melhor delas, com a fonte.",
+      "blocos": [
+        {
+          "linhas": "46-51",
+          "titulo": "o BM25",
+          "texto": "A conta clássica de busca, sem modelo nenhum: para cada palavra da pergunta, quantas vezes ela aparece na nota, pesada pela raridade e pelo tamanho da nota.",
+          "termos": [
+            "BM25",
+            "idf"
+          ]
+        },
+        {
+          "linhas": "62-67",
+          "titulo": "achar as notas e as frases",
+          "texto": "Dá nota a todas, fica com as cinco melhores e, de cada frase delas, conta quantas palavras da pergunta ela tem."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-prazo-ingenuo",
+      "comando": "uv run python cerebro.py \"Quando é a entrega do piloto?\"",
+      "espera": 0,
+      "nota": "Respondeu a data velha, e com cara de certeza. A nota mais parecida com a pergunta é o status de 03/11, que estava certo no dia em que foi escrito. Essa é a tese do artigo do Rowboat, agora rodando: o mais parecido não é o que vale hoje.",
+      "aposta": {
+        "pergunta": "Três notas dizem 14/11; o e-mail que você escreveu diz 21/11. O que o cérebro responde?",
+        "opcoes": [
+          "21/11, do e-mail mais novo",
+          "14/11, de uma nota mais velha"
+        ],
+        "certa": 1
+      },
+      "duvidas": [
+        {
+          "pergunta": "Por que não usar a data do arquivo?",
+          "resposta": "Porque ela muda quando você copia o cofre, sincroniza com outro computador ou só abre e salva a nota. A data de quando a coisa aconteceu é a que você escreveu nas propriedades."
+        }
+      ]
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "cerebro.py",
+      "de": "def responder(pergunta: str, notas: list[Nota] | None = None) -> Resposta:\n    notas = notas or ler_cofre()\n    consulta = palavras(pergunta)\n    pontos = bm25(notas, consulta)\n    melhores = [n for p, n in sorted(zip(pontos, notas), key=lambda x: -x[0])[:5] if p > 0]\n    # cada frase das notas achadas, com quantas palavras da pergunta ela tem\n    frases = [(len(set(consulta) & set(palavras(f))), n, f) for n in melhores for f in n.frases]\n    # a nota mais parecida com a pergunta, e a frase dela com mais palavras da pergunta\n    nota = melhores[0]\n    _, _, frase = max((x for x in frases if x[1] is nota), key=lambda x: x[0])\n    return Resposta(frase, nota)\n",
+      "para": [
+        {
+          "linhas": "61-77"
+        }
+      ],
+      "nota": "O conserto usa o que o cofre já tem, a data de cada nota.",
+      "blocos": [
+        {
+          "linhas": "68-71",
+          "titulo": "o jeito antigo continua",
+          "texto": "Com com_data falso, o cérebro faz o que fazia: a frase da nota mais parecida. Fica para comparar."
+        },
+        {
+          "linhas": "72-77",
+          "titulo": "a regra da data",
+          "texto": "Entre as frases com mais palavras da pergunta, vale a da nota mais nova; e a resposta guarda a velha, para mostrar o que mudou.",
+          "termos": [
+            "sorted(key=…)"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "cerebro.py",
+      "depois": "COFRE = Path(__file__).parent / \"cofre\"\n",
+      "partes": [
+        {
+          "linhas": "14-15"
+        }
+      ],
+      "nota": "O limite da regra, com nome: quão perto da melhor frase uma frase precisa chegar para disputar pela data."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "cerebro.py",
+      "depois": "    nota: Nota\n",
+      "partes": [
+        {
+          "linhas": "58-58"
+        }
+      ],
+      "nota": "A resposta ganha onde guardar a frase velha."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "cerebro.py",
+      "de": "if __name__ == \"__main__\":\n    r = responder(\" \".join(sys.argv[1:]))\n",
+      "para": [
+        {
+          "linhas": "84-87"
+        }
+      ],
+      "nota": "E o comando ganha a opção --sem-data, para comparar com a busca ingênua."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "cerebro.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "90-91"
+        }
+      ],
+      "nota": "Se a resposta mudou com o tempo, a velha aparece embaixo."
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-prazo",
+      "comando": "uv run python cerebro.py \"Quando é a entrega do piloto?\"",
+      "espera": 0,
+      "nota": "21/11, do e-mail que você escreveu, com o 14/11 de antes ao lado: você vê a resposta e vê que algo mudou."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "perguntas.jsonl",
+      "partes": [
+        {
+          "linhas": "1-10"
+        }
+      ],
+      "nota": "A régua: dez perguntas de referência, cada uma com o pedaço que a resposta certa tem que trazer. Uma pergunta certa não diz se o cérebro presta.",
+      "blocos": [
+        {
+          "linhas": "1-1",
+          "titulo": "uma pergunta da régua",
+          "texto": "A pergunta e o pedaço da resposta certa. Não precisa ser a frase inteira: basta que a resposta traga o que importa.",
+          "termos": [
+            "jsonl"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "medir.py",
+      "partes": [
+        {
+          "linhas": "1-21"
+        }
+      ],
+      "nota": "O medir.py faz as dez perguntas, marca cada uma e dá a nota.",
+      "blocos": [
+        {
+          "linhas": "16-21",
+          "titulo": "pergunta por pergunta",
+          "texto": "Para cada caso, a resposta, se ela traz o pedaço certo, e a linha com ✓ ou ✗. No fim, a nota.",
+          "termos": [
+            "f-string"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-nota-ingenua",
+      "comando": "uv run python medir.py --sem-data",
+      "espera": 0,
+      "nota": "A nota de partida da busca ingênua. Olhe as que erraram: o prazo, a do canal e a da antecedência.",
+      "aposta": {
+        "pergunta": "Das dez perguntas, quantas a busca sem a data acerta?",
+        "opcoes": [
+          "10",
+          "7",
+          "4"
+        ],
+        "certa": 1
+      },
+      "duvidas": [
+        {
+          "pergunta": "Dez perguntas bastam?",
+          "resposta": "Para começar e para comparar duas versões do cérebro, sim. Para confiar, não: a régua cresce cada vez que ele errar uma pergunta de verdade, e cada erro novo vira uma linha do perguntas.jsonl."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-nota",
+      "comando": "uv run python medir.py",
+      "espera": 0,
+      "nota": "De 7 para 9: a data consertou o prazo e a antecedência. A que sobrou diz mais que as nove: nenhuma nota tem a palavra canal, e a busca por palavras não sabe que canal do lembrete e o lembrete vai por SMS falam da mesma coisa.",
+      "aposta": {
+        "pergunta": "E com a regra da data?",
+        "opcoes": [
+          "10 de 10",
+          "9 de 10",
+          "continua 7"
+        ],
+        "certa": 1
+      },
+      "duvidas": [
+        {
+          "pergunta": "Um modelo acertaria a do canal?",
+          "resposta": "É a aposta da parte do modelo local: um modelo entende que canal do lembrete e o lembrete vai por SMS falam da mesma coisa. A régua vai dizer se ele acerta essa sem errar as outras."
+        }
+      ],
+      "variar": {
+        "arquivo": "cerebro.py",
+        "trecho": "PARECIDA = 1.0",
+        "original": "1.0",
+        "convite": "Mexa no limite: toque em `1.0` no editor e veja a nota mudar. Quando você seguir, o `cerebro.py` volta a ser o do guia.",
+        "opcoes": [
+          {
+            "id": "sc-nota-parecida-06",
+            "rotulo": "0.6",
+            "por": "PARECIDA = 0.6",
+            "aposta": {
+              "pergunta": "Com 0.6, frases um pouco menos parecidas também disputam pela data. A nota sobe, desce ou fica?",
+              "opcoes": [
+                "Sobe",
+                "Desce",
+                "Fica"
+              ],
+              "certa": 1
+            },
+            "nota": "Desce para 8: a do WhatsApp quebra. Uma frase mais nova, sobre a métrica, tem duas das três palavras da pergunta, passa a disputar e vence pela data. Limite frouxo, e a regra da data troca um erro por outro."
+          },
+          {
+            "id": "sc-nota-parecida-08",
+            "rotulo": "0.8",
+            "por": "PARECIDA = 0.8",
+            "nota": "Continua 9. Entre 0.8 e 1.0, nada muda neste cofre; num cofre maior, pode mudar. Por isso a régua roda de novo a cada troca."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -26,17 +26,19 @@ const SINAL = { ok: "✓", erro: "✗", engano: "!", nada: "•" };
 const Md = ({ t }: { t: string }) => <>{t.split(/(`[^`]+`)/).map((x, i) => x.startsWith("`") && x.endsWith("`") ? <code key={i}>{x.slice(1, -1)}</code> : <Fragment key={i}>{x}</Fragment>)}</>;
 /* "sua vez": o que o leitor faz na IDE dele depois de ver a ação aqui */
 const DADO = /(\.(jsonl?|md|toml)$|(^|\/)\.[^/]+$)/;
-function suaVez(a: AcaoIde): string {
+/* a pasta que uma cópia traz (dados/, cofre/…) */
+const pastaCopiada = (a: Extract<AcaoIde, { tipo: "copiar" }>) => a.arquivos[0].nome.split("/")[0];
+function suaVez(a: AcaoIde, obra: Obra): string {
   const troque = a.tipo === "rodar" && a.variar ? ` Depois, troque \`${a.variar.trecho}\` por \`${a.variar.por}\`${a.variar.arquivo ? ` no seu \`${a.variar.arquivo}\`` : " no comando"} e rode de novo.` : "";
-  return suaVezBase(a) + troque;
+  return (a.suavez ?? suaVezBase(a, obra)) + troque;
 }
-function suaVezBase(a: AcaoIde): string {
+function suaVezBase(a: AcaoIde, obra: Obra): string {
   /* o comando que chama um modelo de verdade: na máquina do leitor ele custa, pede a chave, e pode responder diferente */
   if (a.tipo === "rodar" && a.gravacao) return `Rode o comando no seu terminal, na pasta do projeto, com a sua chave no ambiente (\`OPENAI_API_KEY\`). Ele chama o ${a.gravacao.modelo} de verdade, e cada rodada custa centavos. A sua nota pode sair diferente da daqui: o modelo não responde sempre igual.`;
   if (a.tipo === "rodar") return `Rode o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
   if (a.tipo === "apagar") return `Apague o \`${a.arquivo}\` no seu projeto.`;
-  if (a.tipo === "copiar") return "Copie a pasta `dados/` do repositório do livro para o seu projeto. Digitar dado inventado não ensina nada.";
-  if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do livro vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
+  if (a.tipo === "copiar") return `Copie a pasta \`${pastaCopiada(a)}/\` do repositório do ${obra} para o seu projeto. Digitar dado inventado não ensina nada.`;
+  if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do ${obra} vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
   return a.novo ? `Crie o \`${a.arquivo}\` na sua IDE e digite este código. Digitar, e não colar, é o que faz perceber o que não ficou claro.` : `Digite as linhas novas no seu \`${a.arquivo}\`, no mesmo lugar em que elas aparecem aqui.`;
 }
 /* a palavra dentro da linha que o shiki pintou: às vezes ela vem colada (` Decisao.PASSAR` num pedaço só), e aí ganha um
@@ -58,7 +60,9 @@ const AUTOR = "você";
 /* as falas de passagem (etapa 2): quatro jeitos de dizer o mesmo, para a conversa não soar como um botão apertado */
 const FIZ = ["Fiz na minha IDE.", "Feito aqui também.", "Pronto, fiz.", "Fiz. Pode seguir."];
 const SEGUE = ["E agora?", "Pode seguir.", "Certo, e depois?", "Entendi. Próximo?"];
-const LUGARES: { id: Onde; nome: string }[] = [{ id: "ide", nome: "na minha IDE" }, { id: "livro", nome: "aqui no livro" }];
+/* onde a IDE está: num livro ou num guia; os textos dela dizem um ou outro */
+type Obra = "livro" | "guia";
+const lugares = (obra: Obra): { id: Onde; nome: string }[] => [{ id: "ide", nome: "na minha IDE" }, { id: "livro", nome: `aqui no ${obra}` }];
 const junta = (s: string) => s.trim().replace(/\s+/g, " ");
 
 /* uma fala do chat, com chave estável. O componente fica fora da IDE de propósito: definido dentro, ele seria um tipo
@@ -74,18 +78,21 @@ function feito(a: AcaoIde, leitor = false): string {
   if (a.tipo === "rodar" && leitor) return "Rodou.";
   if (a.tipo === "rodar") return `Rodei \`${a.comando.length > 60 ? a.comando.slice(0, 57) + "…" : a.comando}\` no terminal.`;
   if (a.tipo === "apagar") return `Apaguei o \`${a.arquivo}\`.`;
-  if (a.tipo === "copiar") return "Copiei a pasta `dados/` para o projeto.";
+  if (a.tipo === "copiar") return `Copiei ${a.arquivos.length} arquivos para a pasta \`${pastaCopiada(a)}/\`.`;
   return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
 }
 
-export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [], abreCom = null, pasta }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
+export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [], abreCom = null, pasta, obra = "livro" }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
   python: { versao: string; desde: number } | null;
   /** os arquivos com que a IDE abre: o projeto como os capítulos anteriores o deixaram */
   iniciais?: { nome: string; versao: number }[];
   /** o arquivo à vista quando a IDE abre, antes de qualquer ação */
   abreCom?: string | null;
   /** a pasta do projeto do livro, como o leitor a vê (~/<projeto>) */
-  pasta: string }) {
+  pasta: string;
+  /** "guia" numa página de guia: os textos da IDE dizem guia onde diriam livro */
+  obra?: Obra }) {
+  const LUGARES = lugares(obra);
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
@@ -145,7 +152,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const aDigitar = acao?.tipo === "rodar" && !digitada(quadro.k as number);
   /* a pausa para fazer na própria IDE: quando a ação já foi toda mostrada aqui (o último bloco, ou a saída depois da aposta) */
   const ultimoBloco = !bloco || (acao?.tipo === "editar" && quadro.tipo === "acao" && quadro.b === acao.blocos.length - 1);
-  const pausa = !direto && fazer !== "livro" && quadro.tipo === "acao" && !!acao && !esperando && !perguntando && ultimoBloco ? suaVez(acao) : null;
+  const pausa = !direto && fazer !== "livro" && quadro.tipo === "acao" && !!acao && !esperando && !perguntando && ultimoBloco ? suaVez(acao, obra) : null;
   /* a troca só se oferece depois que o comando do livro rodou; a aposta de uma troca segura o seguir, como a do livro */
   const variar = acao?.tipo === "rodar" && !esperando ? acao.variar ?? null : null;
   const troca = variar && trocaAtual ? variar.opcoes.find((o) => o.id === trocaAtual) ?? null : null;
@@ -171,7 +178,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
 
   /* o arquivo à vista: o da ação, ou o primeiro que o comando criou ou mudou, ou o que o leitor abriu */
   const daAcao = !acao ? null : acao.tipo === "editar" ? acao.arquivo : acao.tipo === "copiar" ? acao.arquivos[0].nome
-    : acao.tipo === "rodar" && !esperando ? acao.gerados.find((g) => versoes[g.versao].html)?.nome ?? null : null;
+    : acao.tipo === "rodar" && !esperando ? acao.gerados.find((g) => versoes[g.versao].html)?.nome ?? acao.variar?.arquivo ?? null : null;
   useEffect(() => { if (daAcao) abrir(daAcao); }, [q, daAcao]);
   const nomes = Object.keys(projeto.arquivos).sort((a, b) => Number(a.includes("/")) - Number(b.includes("/")) || a.localeCompare(b));
   /* as abas: o que nasceu ou mudou neste passo, e o que o leitor abriu; menos as que ele fechou */
@@ -181,6 +188,12 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   if (abertoValido && !abas.includes(abertoValido) && legivel(abertoValido)) abas.push(abertoValido);
   /* sem nada aberto: no começo, o primeiro arquivo; depois que o leitor fechou tudo, o editor fica vazio */
   const vista = abertoValido ?? abas[0] ?? (fechadas.size ? null : nomes.find(legivel) ?? null);
+  /* com muitas abas (uma cópia de onze notas), a faixa rola até a aba à vista, sem mexer na rolagem da página */
+  const faixaAbas = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const f = faixaAbas.current, a = f?.querySelector<HTMLElement>(".ic-aba[data-ativa]");
+    if (f && a && (a.offsetLeft < f.scrollLeft || a.offsetLeft + a.offsetWidth > f.scrollLeft + f.clientWidth)) f.scrollLeft = a.offsetLeft - 16;
+  }, [vista, abas.length]);
   const fecharAba = (a: string) => {
     const i = abas.indexOf(a), resto = abas.filter((x) => x !== a);
     setFechadas((s) => new Set(s).add(a));
@@ -278,10 +291,10 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     const cmd = junta(bruto), certo = junta(acao.comando), nome = cmd.split(" ")[0];
     if (cmd === certo) { rodarComando("leitor"); return; }
     const aviso = !cmd ? null
-      : cmd === "help" ? `Este terminal mostra a saída gravada do projeto do livro, e só roda o comando deste passo: ${acao.comando}`
+      : cmd === "help" ? `Este terminal mostra a saída gravada do projeto do ${obra}, e só roda o comando deste passo: ${acao.comando}`
       : certo.startsWith(cmd) ? "Quase: o comando é mais longo. Aperte Tab para completar."
       : nome === certo.split(" ")[0] ? `Não é esse. O comando deste passo é: ${acao.comando}`
-      : `${nome}: este terminal do livro só roda o comando deste passo. Digite help.`;
+      : `${nome}: este terminal do ${obra} só roda o comando deste passo. Digite help.`;
     setTentativas((t) => [...t, { texto: bruto, aviso }]);
   };
   const tecla = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -395,7 +408,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const [inicio, setInicio] = useState<{ retomou?: { de: number; continuar: boolean }; onde?: Onde }>({});
   const perguntaRetomar = q === 0 && retomar !== null;
   const perguntandoOnde = q === 0 && perguntaOnde && !perguntaRetomar;
-  const ondeNome = (o: Onde) => (o === "ide" ? "Na minha IDE, ao lado do livro." : "Aqui no livro mesmo.");
+  const ondeNome = (o: Onde) => (o === "ide" ? `Na minha IDE, ao lado do ${obra}.` : `Aqui no ${obra} mesmo.`);
   const falasDoInicio = (ps: PassoCap): Fala[] => {
     const fs: Fala[] = [{ chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> }];
     const r = inicio.retomou ?? (perguntaRetomar ? { de: retomar!, continuar: undefined } : null);
@@ -404,7 +417,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       if (r.continuar === undefined) return fs;
       fs.push(pessoa("rr", <p>{r.continuar ? `Continua do passo ${r.de + 1}.` : "Começa do início."}</p>));
     }
-    if (inicio.onde || perguntandoOnde) fs.push(ia("oq", <p>Antes de começar: você vai fazer o projeto na sua IDE, ao lado do livro, ou aqui mesmo? Na sua IDE, eu rodo os comandos aqui e você repete na sua máquina. Aqui, você digita os comandos no terminal da IDE.</p>));
+    if (inicio.onde || perguntandoOnde) fs.push(ia("oq", <p>Antes de começar: você vai fazer o projeto na sua IDE, ao lado do {obra}, ou aqui mesmo? Na sua IDE, eu rodo os comandos aqui e você repete na sua máquina. Aqui, você digita os comandos no terminal da IDE.</p>));
     if (esperaPedido || perguntandoOnde) return fs;
     return [...fs, pessoa("p", <p>{inicio.onde && `${ondeNome(inicio.onde)} `}{ps.pedido}</p>)];
   };
@@ -619,7 +632,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         </ul>}
       </nav>
       <div className="ide-editor" ref={editor}>
-        <div className="ide-abas" role="tablist" aria-label="Arquivos abertos">
+        <div className="ide-abas" role="tablist" aria-label="Arquivos abertos" ref={faixaAbas}>
           {abas.map((a) => <span key={a} className="ic-aba" data-ativa={a === vista || undefined}
             onAuxClick={(e) => { if (e.button === 1) { e.preventDefault(); fecharAba(a); } }}>
             <button type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>
@@ -636,7 +649,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
           style={{ left: menu.x, ...(menu.baixo !== undefined ? { bottom: menu.baixo } : { top: menu.y }) }}>
           {[{ id: null as string | null, rotulo: variar.original }, ...variar.opcoes].map((o) => (
             <button key={o.id ?? "livro"} type="button" role="menuitemradio" aria-checked={(trocaAtual ?? null) === o.id} onClick={() => escolher(o.id)}>
-              <code>{o.rotulo}</code>{o.id === null && <small>o do livro</small>}{(trocaAtual ?? null) === o.id && <Check size={14} />}
+              <code>{o.rotulo}</code>{o.id === null && <small>o do {obra}</small>}{(trocaAtual ?? null) === o.id && <Check size={14} />}
             </button>))}
         </div>}
         <div className="ide-painel">
@@ -660,7 +673,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
               {/* o veredito da aposta do comando da vez, logo depois da saída (antes das trocas que o leitor fizer) */}
               {k === quadro.k && apostaFeita !== null && a.aposta && veredito(a.aposta, apostaFeita)}
               {a.variar && trocasRodadas(a, k)}
-              {a.gravacao && <div className="ic-gravado">↻ resposta do {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o livro repete a gravação, não chama o modelo</div>}</div>)}
+              {a.gravacao && <div className="ic-gravado">↻ resposta do {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o {obra} repete a gravação, não chama o modelo</div>}</div>)}
             {esperando && errados}
             {aDigitar && acao?.tipo === "rodar" && <div>
               <label className="ic-entrada">{prompt(acao.onde)}<span>{entrada}<span className="ide-cursor" /></span>
@@ -706,7 +719,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
             ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} aria-label={`Enviar: ${sugestao.texto}`}>
                 <span>{sugestao.texto}</span><i className="ic-enviar"><ArrowUp size={15} /></i></button>
             : <div className="ic-caixa ic-caixa-vazia" aria-hidden="true"><span>{vazia}</span><i className="ic-enviar"><ArrowUp size={15} /></i></div>}
-          <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
+          <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do {obra}, não por um modelo</p>
         </div>
       </aside>
     </div>

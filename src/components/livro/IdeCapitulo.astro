@@ -8,7 +8,7 @@
 import IdeCapitulo from "./ide/IdeCapitulo";
 import { montarIde, resumirGravacao } from "../../lib/ideCapitulo.ts";
 import type { Entrada, GravacaoIde } from "../../lib/ideCapitulo.ts";
-import { pastaDoLeitor } from "../../lib/livroDaPagina.ts";
+import { livroDe, pastaDoLeitor } from "../../lib/livroDaPagina.ts";
 
 type Props = Omit<Entrada, "pasta" | "gravacoes"> & { numero: string; legenda: string };
 const { legenda, ...entrada } = Astro.props;
@@ -20,7 +20,7 @@ const gravacoes: Record<string, GravacaoIde> = Object.fromEntries(
 const { acoes, passos, versoes, python, iniciais, abreCom, pasta } = await montarIde({ ...entrada, gravacoes, pasta: pastaDoLeitor(Astro.url) });
 ---
 <figure class="ide-capitulo">
-  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} iniciais={iniciais} abreCom={abreCom} pasta={pasta} />
+  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} iniciais={iniciais} abreCom={abreCom} pasta={pasta} obra={livroDe(Astro.url).startsWith("guias/") ? "guia" : "livro"} />
   <figcaption><b>Figura {entrada.numero}</b> · {legenda}</figcaption>
 </figure>
 <style>

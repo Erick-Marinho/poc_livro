@@ -1,0 +1,51 @@
+{
+  "sobre": "As palavras do código do guia que o leitor pode perguntar no chat.",
+  "termos": {
+    "propriedades": {
+      "rotulo": "--- propriedades ---",
+      "texto": "O bloco entre as duas linhas --- no topo da nota. O Obsidian mostra como propriedades; para o código, é texto na forma nome: valor."
+    },
+    "[[link]]": {
+      "texto": "Um link entre notas, do jeito do Obsidian. A nota citada mostra quem cita ela no painel de backlinks, e é isso que desenha o grafo do cofre."
+    },
+    "NFKD": {
+      "rotulo": "normalize(\"NFKD\")",
+      "texto": "Separa a letra do acento (é vira e mais o acento); o encode('ascii', 'ignore') joga o acento fora. Assim, férias e ferias viram a mesma palavra."
+    },
+    "re.findall": {
+      "marca": "findall",
+      "texto": "Acha todos os pedaços do texto que casam com o padrão; aqui, cada palavra feita de letras e números."
+    },
+    "@dataclass": {
+      "marca": "dataclass",
+      "texto": "Gera o construtor e a impressão da classe a partir dos campos. A Nota é só um pacote de dados."
+    },
+    "rglob": {
+      "marca": "rglob",
+      "texto": "Procura arquivos em todas as subpastas. Com *.md, acha toda nota do cofre, esteja em E-mails, Reuniões ou onde for."
+    },
+    "split('---')": {
+      "rotulo": "split(\"---\\n\", 2)",
+      "texto": "Corta o arquivo nas linhas ---: o que vem antes (nada), as propriedades e o corpo da nota."
+    },
+    "BM25": {
+      "texto": "Uma conta de busca dos anos 90, ainda a base de muito buscador. Para cada palavra da pergunta, soma quantas vezes ela aparece na nota, pesada pela raridade da palavra e pelo tamanho da nota."
+    },
+    "idf": {
+      "marca": "idf",
+      "texto": "O peso da raridade. Uma palavra que está em quase toda nota (piloto) vale pouco; uma que está em poucas (SMS) vale muito."
+    },
+    "sorted(key=…)": {
+      "rotulo": "sorted(…, key=…, reverse=True)",
+      "texto": "Ordena pela chave: primeiro a data da nota, depois quantas palavras a frase tem. Com reverse=True, a mais nova vem na frente."
+    },
+    "jsonl": {
+      "rotulo": ".jsonl",
+      "texto": "Um JSON por linha. Dá para acrescentar uma pergunta nova à régua sem mexer nas outras."
+    },
+    "f-string": {
+      "rotulo": "f\"…\"",
+      "texto": "Um texto com valores dentro das chaves. O :.0% mostra a fração como porcentagem, sem casas decimais."
+    }
+  }
+}

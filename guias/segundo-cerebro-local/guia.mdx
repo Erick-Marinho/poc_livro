@@ -1,76 +1,32 @@
 ---
 titulo: "Um segundo cérebro que diz de onde tirou a resposta"
-lide: "Antes de instalar um app que promete um cérebro de IA para as suas notas, monte o mecanismo em umas 90 linhas, num cofre do Obsidian, e meça: quantas perguntas ele acerta, e qual ele erra porque a informação mudou."
+lide: "Antes de instalar um app que promete um cérebro de IA para as suas notas, construa o mecanismo num cofre do Obsidian, com o chat guiando, e meça: quantas perguntas ele acerta, e qual ele erra porque a informação mudou."
 data: "2026-10-24"
 etiqueta: "IA local"
 ---
-import Listagem from "../../src/components/livro/Listagem.astro";
-import Terminal from "../../src/components/livro/Terminal.astro";
+import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import Nota from "../../src/components/livro/Nota.astro";
-import PareEPense from "../../src/components/livro/PareEPense.astro";
-import Exercicio from "../../src/components/livro/Exercicio.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
-import cerebro from "./projeto/cerebro.py?raw";
+import roteiro from "./roteiros/01.json";
+import estados from "./roteiros/01.estados.json";
+import passos from "./passos/01.json";
+import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 
 Circula por aí um tutorial de "segundo cérebro 100% local": você instala um app, liga o seu e-mail, a sua agenda e as gravações das suas reuniões, e ele monta um grafo das suas notas que responde perguntas sobre o seu trabalho ([o artigo do Daily Dose of Data Science](https://www.dailydoseofds.com/p/build-your-own-100-local-ai-second-brain/)). A promessa é boa. Três coisas nela não fecham.
 
-O "100% local" vale para o modelo, e só se ele rodar na sua máquina: o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem. A tese central (um resumo não acompanha o que mudou, como um prazo que foi adiado entre dois e-mails) é afirmada, mas não aparece funcionando. E nada é medido: não há um número que diga quantas perguntas o cérebro acerta.
+O "100% local" vale para o modelo, e só se ele rodar na sua máquina: o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem. A tese central (um resumo não acompanha o que mudou, como um prazo adiado entre dois e-mails) é afirmada, mas não aparece funcionando. E nada é medido: não há um número que diga quantas perguntas o cérebro acerta.
 
-Este guia faz o caminho contrário. O cérebro é pequeno e fica à vista, as notas são suas, e cada passo tem uma nota.
+Aqui você faz o caminho contrário: constrói o mecanismo, vê ele errar do jeito que o artigo descreve, conserta e mede.
 
 <Pendente o="A voz dos autores: por que desconfiar de um cérebro que não diz de onde tirou a resposta" parte="abertura do guia" />
 
-## O cofre
+## Mão na massa
 
-As notas moram numa pasta de Markdown, que o [Obsidian](https://obsidian.md) abre como um cofre. Cada nota tem a data nas propriedades do topo (`data: 2026-11-06`) e liga pessoas e projetos com `[[links]]`, do jeito que o Obsidian já faz:
+O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. Antes de cada comando que importa, você aposta no que vai sair.
 
-<Terminal saida={saidas["cofre"]} pasta="~/segundo-cerebro" />
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua" }} numero="1" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia, gravados ao montar o site." />
 
-<Nota titulo="o que é inventado">As doze notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O código e as saídas, sim: vêm do projeto do guia e são conferidos a cada vez que o site é montado.</Nota>
+<Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não roda ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
 
-O Obsidian não é necessário para rodar nada: o cérebro lê a pasta. Ele é gratuito, mas não é código aberto; as notas, por outro lado, são Markdown, e saem de lá quando você quiser.
-
-## O cérebro em umas 90 linhas
-
-O cérebro faz duas coisas. Primeiro acha as notas que mais se parecem com a pergunta, com o BM25, a conta clássica de busca: palavra rara vale mais, e nota comprida não ganha só por ser comprida. Depois escolhe, nessas notas, a frase que responde, e diz de qual nota ela veio.
-
-<Listagem codigo={cerebro} nome="cerebro.py" notas={{ 16: "o quanto uma frase precisa empatar com a melhor para disputar pela data", 20: "sem acento e sem as palavras que não dizem nada sozinhas", 34: "a data vem das propriedades da nota, no topo do arquivo", 47: "o BM25: a busca, sem modelo nenhum", 66: "as cinco notas mais parecidas", 75: "a regra da data: entre as frases que empatam, vale a da nota mais nova", 77: "a resposta velha, para mostrar o que mudou" }} />
-
-## A armadilha do prazo
-
-O piloto devia sair em 14/11. O kickoff disse isso, o resumo do projeto diz isso, e o status de 03/11 confirmou. Em 06/11, um e-mail adiou para 21/11.
-
-<PareEPense pergunta="Sem olhar a data, o cérebro devolve a frase da nota mais parecida com a pergunta. Perguntando `Quando é a entrega do piloto?`, ele responde 14/11 ou 21/11?">
-
-Responde a data velha, e com cara de certeza:
-
-<Terminal saida={saidas["prazo-sem-data"]} pasta="~/segundo-cerebro" />
-
-Três notas dizem que a entrega é em 14/11. A mudança está num e-mail só, e a confirmação da clínica, no dia seguinte, nem repete a palavra "entrega". Para a busca, a nota do status semanal é a mais parecida com a pergunta, e ela estava certa no dia em que foi escrita. Essa é a tese do artigo, agora rodando: o que é mais parecido não é o que vale hoje.
-
-</PareEPense>
-
-O conserto usa o que o cofre já tem, a data de cada nota. Entre as frases que respondem igualmente bem, vale a da nota mais recente; e a resposta mostra a velha ao lado, para você ver que algo mudou:
-
-<Terminal saida={saidas["prazo"]} pasta="~/segundo-cerebro" />
-
-## A nota
-
-Uma pergunta certa não diz se o cérebro presta. A régua são dez perguntas de referência (`perguntas.jsonl`), cada uma com o pedaço que a resposta certa tem que trazer. Primeiro, a busca ingênua:
-
-<Terminal saida={saidas["nota-sem-data"]} pasta="~/segundo-cerebro" />
-
-Depois, com a regra da data:
-
-<Terminal saida={saidas["nota"]} pasta="~/segundo-cerebro" />
-
-De 7 para 9. A data consertou o prazo e a antecedência do lembrete. A que sobrou errada diz mais que as nove certas: nenhuma nota tem a palavra "canal", e a busca por palavras não sabe que "canal do lembrete" e "o lembrete vai por SMS" falam da mesma coisa. É aí que um modelo, rodando na sua máquina, começa a valer o que custa.
-
-<Exercicio titulo="A regra da data também erra">
-
-Troque, no `cerebro.py`, o `PARECIDA = 1.0` por `PARECIDA = 0.6`: frases um pouco menos parecidas com a pergunta passam a disputar pela data. **Antes de rodar**, escreva a nota que você espera e qual pergunta muda. Depois rode `uv run python medir.py` e olhe pergunta por pergunta, não só o total.
-
-</Exercicio>
-
-<Nota titulo="em construção">Este guia está sendo escrito. A próxima parte sobe o Ollama, um modelo pequeno rodando na sua máquina, e mede se ele acerta a pergunta do canal sem perder as outras.</Nota>
+<Nota titulo="em construção">Este guia está sendo escrito. A próxima parte sobe o Ollama, um modelo pequeno rodando na sua máquina, e mede com a mesma régua se ele acerta a pergunta do canal sem perder as outras.</Nota>

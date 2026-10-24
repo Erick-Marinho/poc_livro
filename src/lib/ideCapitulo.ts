@@ -26,7 +26,7 @@ export type OpcaoVariar = { id: string; rotulo: string; comando: string; saida: 
 export type VariarIde = { arquivo?: string; linha?: number; trecho: string; original: string; convite: string; por: string; opcoes: OpcaoVariar[] };
 /** uma dúvida comum naquele ponto, com a resposta escrita no roteiro: o leitor pergunta no chat, se quiser */
 export type DuvidaIde = { pergunta: string; resposta: string };
-export type AcaoIde = { nota: string; duvidas?: DuvidaIde[] } & (
+export type AcaoIde = { nota: string; duvidas?: DuvidaIde[]; suavez?: string } & (
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
@@ -43,7 +43,9 @@ type DefBloco = { linhas: string; titulo: string; texto: string; termos?: string
 type DefVariar = { arquivo?: string; trecho: string; original: string; convite: string;
   opcoes: { id: string; rotulo: string; por: string; nota: string; aposta?: Aposta }[] };
 type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[]; variar?: DefVariar;
-  duvidas?: DuvidaIde[] };
+  duvidas?: DuvidaIde[];
+  /** o que o leitor faz na máquina dele, quando o texto genérico não serve (instalar um programa, criar o cofre) */
+  suavez?: string };
 type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string;
   gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string;
   variantes?: Record<string, { arquivo?: string; conteudo?: string; alteradas?: number[] }> };
@@ -234,6 +236,7 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     for (const x of d) if (!x.pergunta.trim().endsWith("?") || !x.resposta.trim()) falhar(`ação ${k + 1}: dúvida sem pergunta ou sem resposta: ${x.pergunta}`);
     a.duvidas = d;
   });
+  acoes.forEach((a, k) => { const sv = roteiro.passos[k].suavez; if (sv) a.suavez = sv; });
   if (acoes.length !== roteiro.passos.length) falhar(`o roteiro tem ${roteiro.passos.length} ações e os estados, ${acoes.length}; rode npm run saidas`);
 
   /* os passos do capítulo, com o sinal do comando do fim (para o progresso no topo) */

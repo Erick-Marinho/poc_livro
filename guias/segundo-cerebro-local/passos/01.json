@@ -1,0 +1,91 @@
+{
+  "sobre": "Os passos da construção do guia, na ordem; cada um é um trecho do roteiro (de, ate). `pedido` é a mensagem do leitor ao chat que abre o passo.",
+  "autores": [
+    "Erick Marinho",
+    "Victor Fontela"
+  ],
+  "passos": [
+    {
+      "id": "projeto",
+      "secao": "1",
+      "titulo": "O projeto nasce",
+      "curta": "uv init",
+      "de": 1,
+      "ate": 3,
+      "objetivo": "uma pasta de projeto, sem nenhuma dependência.",
+      "temos": "o `segundo-cerebro`, com nome e descrição.",
+      "pedido": "Quero um segundo cérebro para as minhas notas, rodando na minha máquina. Começa criando o projeto com o uv.",
+      "antes": [
+        "Antes do código, a pasta. O cérebro vai ser Python puro: nada para instalar além do próprio Python."
+      ]
+    },
+    {
+      "id": "cofre",
+      "secao": "1",
+      "titulo": "O cofre no Obsidian",
+      "curta": "o cofre",
+      "de": 4,
+      "ate": 5,
+      "objetivo": "um cofre do Obsidian dentro do projeto, com a nota em que o prazo muda.",
+      "temos": "doze notas com data e links, e uma delas escrita por você.",
+      "pedido": "As notas ficam num cofre do Obsidian, dentro do projeto. E eu mesmo escrevo a nota em que o prazo mudou.",
+      "antes": [
+        "As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento. O prazo do piloto muda no meio do caminho: guarde essa informação."
+      ],
+      "depois": [
+        "O cofre é só uma pasta. O Obsidian lê, liga e desenha; o cérebro vai ler a mesma pasta, sem precisar do Obsidian aberto."
+      ]
+    },
+    {
+      "id": "ler",
+      "secao": "2",
+      "titulo": "Ler o cofre",
+      "curta": "ler o cofre",
+      "de": 6,
+      "ate": 7,
+      "objetivo": "o código lê cada nota: data, título e frases.",
+      "temos": "`ler_cofre`, que transforma o cofre em notas.",
+      "pedido": "Agora o código. Primeiro, ler o cofre."
+    },
+    {
+      "id": "busca",
+      "secao": "2",
+      "titulo": "A busca",
+      "curta": "a busca",
+      "de": 8,
+      "ate": 9,
+      "objetivo": "uma pergunta, uma resposta e a nota de onde ela veio.",
+      "temos": "um cérebro que responde citando a fonte, e que erra o prazo.",
+      "pedido": "Faz ele responder uma pergunta, dizendo de onde tirou.",
+      "depois": [
+        "Citar a fonte já valeu a pena: você vê que a resposta veio de uma nota de 03/11, e desconfia."
+      ],
+      "engano": "o prazo sai 14/11, de uma nota velha"
+    },
+    {
+      "id": "data",
+      "secao": "2",
+      "titulo": "A data",
+      "curta": "a regra da data",
+      "de": 10,
+      "ate": 15,
+      "objetivo": "entre as frases que respondem igual, vale a da nota mais nova.",
+      "temos": "a resposta nova, com a velha ao lado.",
+      "pedido": "Ele respondeu a data velha. Conserta: o que mudou depois tem que valer."
+    },
+    {
+      "id": "regua",
+      "secao": "3",
+      "titulo": "A régua",
+      "curta": "a nota",
+      "de": 16,
+      "ate": 19,
+      "objetivo": "dez perguntas de referência e uma nota, antes e depois do conserto.",
+      "temos": "a nota de partida (7 de 10) e a do conserto (9 de 10).",
+      "pedido": "Como eu sei se ele presta? Mede com umas perguntas de referência.",
+      "depois": [
+        "A que sobrou errada é a próxima parte do guia: um modelo rodando na sua máquina, medido com esta mesma régua."
+      ]
+    }
+  ]
+}

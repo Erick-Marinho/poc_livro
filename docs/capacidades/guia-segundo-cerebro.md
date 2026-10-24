@@ -10,40 +10,49 @@ compara a nota antes e depois.
 
 | Peça | Função | Entrada | Saída | Cor |
 |---|---|---|---|---|
-| `projeto/cofre/` | as notas de uma pessoa inventada, em Markdown, com data e `[[links]]`; abre no Obsidian | — | o cofre | nova |
-| `projeto/cerebro.py` | acha as notas da pergunta e responde com a frase e a fonte; com `--sem-data`, a busca ingênua | uma pergunta | resposta e fonte | nova |
-| `projeto/perguntas.jsonl` + `medir.py` | dez perguntas de referência com a resposta certa, e a nota | o cofre | "X de 10" | nova |
-| `guia.mdx` | o texto: a armadilha (com aposta), o conserto, a nota, o que é local | as saídas gravadas | a página | nova |
-| Ollama + modelo pequeno | o modelo local redige a resposta a partir das notas achadas | as notas | a resposta gravada | nova (etapa 2) |
+| IDE do capítulo no guia | o chat guia a construção, passo a passo, com aposta, dúvida e troca | roteiro, passos, glossário | a ilha da IDE | existe (o guia passa a usar) |
+| `roteiros/01.json` + `passos/01.json` + `glossario.json` | o caminho do projeto, da pasta vazia à nota, na ordem em que se pensa | o projeto final | estados e saídas | nova |
+| `livroDaPagina.ts` e `saidas.py` | a IDE e o motor de roteiros valem também em `/guias/<guia>/` | o endereço | a pasta do guia | troca |
+| `projeto/cofre/` | o cofre do Obsidian: o leitor cria e escreve a nota que muda o prazo | — | as notas | existe |
+| `projeto/cerebro.py`, `medir.py`, `perguntas.jsonl` | a busca com fonte, a regra da data, a régua | o cofre | respostas e nota | existe |
+| figura "o que vamos construir" | o caminho de uma pergunta, animado: cofre, busca, regra da data, resposta com fonte, régua | o projeto | figura no topo | nova |
+| figura do cofre no tempo | o grafo dos `[[links]]` e o prazo mudando de 14/11 para 21/11 nas notas | o cofre | figura | nova |
+| Ollama + modelo pequeno | instalar e baixar (no terminal do leitor) e o cérebro pedir a resposta ao modelo, gravada | as notas achadas | a resposta | nova |
 
 ## Decisões
 
 - (Erick, 24/10/2026) Notas de uma pessoa qualquer, inventada; nada de dado real.
 - (Erick, 24/10/2026) O guia ensina a subir o Ollama; o guia de modelos locais, mais fundo, vem depois.
-- (Erick, 24/10/2026) As notas moram num cofre do Obsidian; o Obsidian não roda no build, e captura dele é ilustração.
-- (1) O cérebro começa sem modelo: a parte que decide (achar a nota certa e a mais recente) roda e se mede em qualquer
-  máquina. A busca é um BM25 de vinte linhas, em Python puro, sem dependência.
+- (Erick, 24/10/2026) As notas moram num cofre do Obsidian; o leitor instala o Obsidian e cria o cofre.
+- (Erick, 24/10/2026) O guia segue o padrão do livro: a IDE com o chat guiando a construção, figuras que se mexem
+  começando pelo que vamos construir, e o raciocínio ligando os pontos. Sem isso, vira mais um tutorial.
+- (1) O que não roda no build fica como "sua vez", sem saída inventada: instalar o Obsidian, abrir o cofre, instalar
+  o Ollama e baixar o modelo. O que roda (o projeto, a busca, a régua, a resposta do modelo) é gravado e conferido.
+- (1) O cérebro começa sem modelo, com um BM25 em Python puro: a parte que decide roda e se mede em qualquer máquina.
 
 ## Etapas
 
-1. O cofre e o cérebro sem modelo: a busca com fonte, a armadilha do prazo, o conserto pela data e a nota.
-2. Subir o Ollama e deixar um modelo pequeno redigir a resposta, medido pela mesma régua (precisa do ok para baixar).
-3. Os `[[links]]`: o que uma pessoa ficou de fazer, seguindo as notas que citam ela.
-4. O fecho: o que fica local e o que não fica, e quando vale um app como o Rowboat.
+1. A IDE no guia: o roteiro da construção, da pasta vazia à nota (o projeto, o cofre no Obsidian com a nota que muda o
+   prazo escrita pelo leitor, o `cerebro.py` por blocos, a armadilha com aposta, o conserto, a régua com a troca do
+   limite), e o texto em volta.
+2. As figuras: "o que vamos construir" no topo, e o cofre no tempo (o grafo dos links e o prazo que muda).
+3. O modelo local: instalar o Ollama e baixar o modelo como "sua vez"; o cérebro pede a resposta ao modelo com as
+   notas achadas, gravada; a régua diz se ele acerta o canal sem perder as outras (precisa do ok para baixar aqui).
+4. Os links e o fecho: o que uma pessoa ficou de fazer, seguindo os `[[links]]`; o que fica local, e quando um app.
 
 ## Etapa 1 (detalhe)
 
-- **Arquivos:** `guias/segundo-cerebro-local/` (`guia.mdx`, `comandos.json`, `saidas.json`, `projeto/` com `cofre/`,
-  `cerebro.py`, `perguntas.jsonl`, `medir.py`, `pyproject.toml`).
-- **Evidência:** `npm run guias:conferir` grava e confere as saídas; com `--sem-data`, a pergunta do prazo devolve a
-  data velha, citando a nota de onde veio; sem a flag, a nova, com a velha ao lado; as duas notas da régua, como
-  saírem; `npm test`; captura da página.
-- **Fica fora:** o modelo (etapa 2), os links (etapa 3), o fecho (etapa 4); a voz dos autores fica com `Pendente`.
+- **Arquivos:** `src/lib/livroDaPagina.ts`; `guias/segundo-cerebro-local/` (`roteiros/01.json`, `passos/01.json`,
+  `glossario.json`, `comandos.json`, `guia.mdx`, e o `projeto/` como o `uv init` deixa: `.gitignore`, `README.md`).
+- **Evidência:** `npm run guias:conferir` aplica o roteiro numa pasta vazia, grava cada saída no estado em que o
+  código está e chega ao `projeto/`; a IDE no guia, percorrida até o fim no Chrome headless (aposta do prazo, régua,
+  troca do limite); capturas; `npm test`.
+- **Fica fora:** figuras (2), modelo (3), links e fecho (4); a voz dos autores fica com `Pendente`.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `4778c64` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | pendente |
+| 1 (primeira versão) | `4778c64` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | refeita: faltou o padrão (a IDE com o chat, as figuras), Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)

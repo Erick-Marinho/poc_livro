@@ -1,7 +1,6 @@
 """Um segundo cérebro em cima de um cofre do Obsidian: acha as notas da pergunta e responde com a frase e a fonte.
 
     uv run python cerebro.py "Quando é a entrega do piloto?"
-    uv run python cerebro.py --sem-data "Quando é a entrega do piloto?"   # a busca ingênua: a nota mais parecida vence
 """
 import math
 import re
@@ -83,7 +82,7 @@ def dia(d: date) -> str:
 
 
 if __name__ == "__main__":
-    com_data = "--sem-data" not in sys.argv
+    com_data = "--sem-data" not in sys.argv   # --sem-data: a busca ingênua, para comparar
     pergunta = " ".join(a for a in sys.argv[1:] if a != "--sem-data")
     r = responder(pergunta, com_data)
     print(f"resposta: {r.frase}")
