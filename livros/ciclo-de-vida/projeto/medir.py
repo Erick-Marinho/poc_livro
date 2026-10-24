@@ -1,19 +1,20 @@
-"""A nota do agente: o grafo do capítulo 2, com Claude, contra as 20 perguntas de referência.
+"""A nota do agente: o grafo do capítulo 2, com o GPT-6 Luna, contra as 20 perguntas de referência.
 
-Precisa da chave da Anthropic no ambiente (ANTHROPIC_API_KEY). Cada pergunta passa pelo agente inteiro: ele decide e,
+Precisa da chave da OpenAI no ambiente (OPENAI_API_KEY). Cada pergunta passa pelo agente inteiro: ele decide e,
 quando a decisão pede, escreve a resposta. A régua é a mesma da nota de partida.
 """
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 
 from agente import montar
 from baseline import avaliar
 from contrato import carregar_referencia
 
-MODELO = "claude-haiku-5-5"
+MODELO = "gpt-6-luna"
 
 
 if __name__ == "__main__":
-    agente = montar(ChatAnthropic(model=MODELO, temperature=0, max_tokens=1024))
+    # sem temperature: fica o padrão do modelo; max_tokens limita o gasto de cada resposta
+    agente = montar(ChatOpenAI(model=MODELO, max_tokens=4096))
     casos = carregar_referencia()
     decidiu = {}
 

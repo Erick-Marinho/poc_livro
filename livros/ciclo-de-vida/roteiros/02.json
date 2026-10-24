@@ -38,17 +38,17 @@
     },
     {
       "acao": "rodar",
-      "id": "r02-uv-add-anthropic",
-      "comando": "uv add langchain-anthropic",
+      "id": "r02-uv-add-openai",
+      "comando": "uv add langchain-openai",
       "espera": 0,
-      "nota": "A ponte entre a LangChain e os modelos Claude, da Anthropic."
+      "nota": "A ponte entre a LangChain e os modelos da OpenAI, como o GPT-6 Luna."
     },
     {
       "acao": "escrever",
       "arquivo": "medir.py",
       "partes": [
         {
-          "linhas": "1-31"
+          "linhas": "1-32"
         }
       ],
       "nota": "A régua do capítulo 1, agora com o agente de verdade: a nota e os casos que ele errou."

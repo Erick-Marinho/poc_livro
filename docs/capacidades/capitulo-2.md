@@ -9,7 +9,7 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - **0b.** O marco do capítulo 1: `marcos/cap-01/` e o gravador encadeando os roteiros.
 - **1.** O grafo com um modelo falso, sem chamada paga.
 - **2.** A gravação: o build repete o que o modelo respondeu, e falha se pedir uma chamada não gravada.
-- **3.** A primeira rodada paga: as 20 perguntas com Claude, gravadas (ok e chave do Erick).
+- **3.** A primeira rodada paga: as 20 perguntas com o GPT-6 Luna, gravadas (ok e chave do Erick).
 - **4.** O roteiro do capítulo na IDE: passos, blocos, apostas e pedidos.
 - **5.** O texto do capítulo 2, com `Pendente` na voz dos autores.
 - **6.** O placar ganha o marco do capítulo 2, e o repositório do leitor ganha as tags `cap-02`.
@@ -23,7 +23,8 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (0b) O repositório do leitor tem `cap-NN/fim` e, do 2 em diante, `cap-NN/inicio` (o mesmo commit do fim anterior).
   O capítulo 1 começa numa pasta vazia: o livro não mostra `git checkout` para ele.
 - (0b) O capítulo seguinte herda o `.venv` do anterior, recriado em silêncio: o leitor não vê o uv criar de novo.
-- (1) O `langchain-anthropic` entra na etapa 3, quando o modelo de verdade é usado: o leitor não instala antes.
+- (1) A ponte com o modelo (`langchain-openai`) entra na etapa 3, quando ele é usado: o leitor não instala antes.
+- (3) O modelo do livro é o GPT-6 Luna, da OpenAI (decisão do Erick, 24/10/2026); o prefácio diz isso.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
@@ -31,7 +32,7 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 
 ## Etapa atual: 3
 
-Arquivos: `uv add langchain-anthropic`, `projeto/medir.py` (o agente com Claude contra as 20 perguntas, a nota e os
+Arquivos: `uv add langchain-openai`, `projeto/medir.py` (o agente com o GPT-6 Luna contra as 20 perguntas, a nota e os
 casos errados), o roteiro 02 e `gravacoes/r02-medir.json`. Duas partes: 3a sem custo (o código e o roteiro, até o
 comando que mede) e 3b paga (`npm run gravar` na máquina do Erick, com a chave dele no ambiente). Evidência: a nota
 do agente gravada, os casos que ele errou, e a conferência repetindo tudo sem chamar o modelo. Fica fora: IDE e texto.
