@@ -29,5 +29,9 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `75439e6` (outra sessão) | o "pendente" do pensamento já não aparece na tela | Erick, 24/10/2026 |
+| 2 | `812f432` | percurso do capítulo 1 inteiro: de 95 para 78 cliques; as 40 pausas "sua vez" continuam | Erick, 24/10/2026 |
+| 3 | `8135191` | duas visitas no mesmo navegador: oferece continuar do passo 4 depois de fechar o 3, e a trilha mantém os feitos | Erick, 24/10/2026 |
+| 4 | `26ddea9` | a IDE cobre 1440×813, a página não rola, a pílula e o cabeçalho ficam por baixo, Esc volta; capturas no computador e no celular | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
