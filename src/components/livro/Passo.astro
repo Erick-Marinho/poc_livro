@@ -29,9 +29,13 @@ interface Props {
   de: number;
   ate: number;
   passador?: { codigo: string; dados: { arquivo: string; linhas: string; blocos: { linhas: string }[] } };
+  /** linhas que ficam à vista mesmo dobradas (números do arquivo no fim do passo), por arquivo */
+  ver?: Record<string, number[]>;
   pasta?: string;
 }
-const { roteiro, estados, saidas, glossario, n, total, titulo, objetivo, temos, de, ate, passador, pasta = "~/atendimento-bemtevi" } = Astro.props;
+const { roteiro, estados, saidas, glossario, n, total, titulo, objetivo, temos, de, ate, passador, ver = {}, pasta = "~/atendimento-bemtevi" } = Astro.props;
+/* arquivo de dados (perguntas, loja) não conta no limite: é para copiar, não para digitar; mostra só o começo e o que `ver` pedir */
+const DADOS = /\.(jsonl?|md|toml)$/;
 const falhar = (m: string): never => { throw new Error(`Passo ${n} (${titulo}): ${m}`); };
 if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos)`);
 
@@ -70,16 +74,19 @@ const linhas = (s: string) => s.replace(/\n$/, "").split("\n");
 const LINGUA: Record<string, string> = { py: "python", jsonl: "json", json: "json", md: "markdown", toml: "toml" };
 
 type Pedaco = { tipo: "codigo"; html: string } | { tipo: "passador"; codigo: string; dados: NonNullable<Props["passador"]>["dados"] };
-const arquivos: { nome: string; novo: boolean; quantas: number; notas: string[]; pedacos: Pedaco[] }[] = [];
+const arquivos: { nome: string; novo: boolean; quantas: number; dados: boolean; notas: string[]; pedacos: Pedaco[] }[] = [];
 let totalNovas = 0;
 for (const nome of editados) {
   const b = linhas(depois[nome]), a = nome in antes ? linhas(antes[nome]) : [];
   const novas = mudadas(a, b);
   const quantas = [...novas].filter((k) => b[k - 1].trim()).length;
-  totalNovas += quantas;
-  /* à vista: as linhas novas e uma de cada lado; o resto dobra */
-  const vista = new Set<number>();
-  for (const k of novas) for (const d of [-1, 0, 1]) if (k + d >= 1 && k + d <= b.length) vista.add(k + d);
+  const dado = DADOS.test(nome);
+  if (!dado) totalNovas += quantas;
+  for (const k of ver[nome] ?? []) if (!(k >= 1 && k <= b.length)) falhar(`ver: a linha ${k} não existe em ${nome} (${b.length} linhas)`);
+  /* à vista: as linhas novas e uma de cada lado (num arquivo de dados, as três primeiras novas); o resto dobra */
+  const vista = new Set<number>(ver[nome] ?? []);
+  if (dado) [...novas].sort((x, y) => x - y).slice(0, 3).forEach((k) => vista.add(k));
+  else for (const k of novas) for (const d of [-1, 0, 1]) if (k + d >= 1 && k + d <= b.length) vista.add(k + d);
   /* o trecho do passador, achado pelo texto (no arquivo final ele tem outros números de linha) */
   let faixa: [number, number] | null = null, dadosPd: Pedaco | null = null;
   if (passador && passador.dados.arquivo === nome) {
@@ -111,7 +118,7 @@ for (const nome of editados) {
   };
   if (faixa) { await realcar(1, faixa[0] - 1); pedacos.push(dadosPd!); await realcar(faixa[1] + 1, b.length); }
   else await realcar(1, b.length);
-  arquivos.push({ nome, novo: !(nome in antes), quantas, notas: notas[nome], pedacos });
+  arquivos.push({ nome, novo: !(nome in antes), quantas, dados: dado, notas: notas[nome], pedacos });
 }
 if (totalNovas > LIMITE) falhar(`${totalNovas} linhas novas; o limite é ${LIMITE}. Divida o passo.`);
 
@@ -134,7 +141,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 
   {arquivos.map((f) => (
     <div class="ps-arquivo" data-arquivo>
-      <div class="ps-aba"><span class="ps-nome">{f.nome}</span><span class="ps-conta">{f.novo ? "arquivo novo" : `+${f.quantas} ${f.quantas === 1 ? "linha" : "linhas"}`}</span><button type="button" class="ps-inteiro" data-inteiro>ver o arquivo inteiro</button></div>
+      <div class="ps-aba"><span class="ps-nome">{f.nome}</span><span class="ps-conta">{f.novo ? (f.dados ? `arquivo novo · ${f.quantas} linhas de dados, para copiar do repositório` : "arquivo novo") : `+${f.quantas} ${f.quantas === 1 ? "linha" : "linhas"}`}</span><button type="button" class="ps-inteiro" data-inteiro>ver o arquivo inteiro</button></div>
       <ol class="ps-notas">{f.notas.map((t) => <li set:html={md(t)} />)}</ol>
       {f.pedacos.map((p) => p.tipo === "codigo"
         ? <div class="ps-codigo" set:html={p.html} />
@@ -143,7 +150,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   ))}
 
   {rodadas.map((r) => (
-    <div class="ps-rodar" data-rodar data-certa={r.aposta?.certa}>
+    <div class="ps-rodar" data-rodar data-id={r.id} data-certa={r.aposta?.certa}>
       <div class="ps-term">
         <div class="ps-cmd"><span class="ps-prompt">voce@maquina:{pasta}$</span> {r.s.comando}</div>
         {r.aposta && (
@@ -181,6 +188,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
         r.querySelectorAll<HTMLButtonElement>("[data-op]").forEach((x) => { x.disabled = true; if (x.dataset.op === r.dataset.certa) x.classList.add("e-a-certa"); if (x === b) x.classList.add("escolhida"); });
         r.querySelector(".ps-veredito")!.textContent = certo ? "Você acertou." : "Não foi dessa vez.";
         r.classList.add(certo ? "certo" : "errado");
+        dispatchEvent(new CustomEvent("fontmar:apostou", { detail: r.dataset.id }));   /* o placar só se revela depois da aposta */
         mostrar(r);
       }));
     });

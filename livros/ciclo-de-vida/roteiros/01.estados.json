@@ -231,8 +231,12 @@
  },
  {
   "passo": 23,
+  "rodou": "r01-seis-pedidos"
+ },
+ {
+  "passo": 24,
   "arquivo": "test_referencia.py",
-  "conteudo": "\"\"\"As perguntas de referência estão válidas e de acordo com os dados da loja?\"\"\"\nfrom datetime import date\n\nimport pytest\n\nfrom contrato import Decisao, carregar, carregar_referencia\n\nCASOS = carregar_referencia()\nPEDIDOS = {p[\"id\"]: p for p in carregar(\"pedidos\")}\nEMAIL = {c[\"id\"]: c[\"email\"] for c in carregar(\"clientes\")}\nHOJE = date.fromisoformat(carregar(\"loja\")[\"hoje\"])\n\n\ndef dono(pedido):\n    return EMAIL[PEDIDOS[pedido][\"cliente\"]]\n\n\ndef test_ids_unicos_e_em_ordem():\n    assert [c.id for c in CASOS] == [f\"R{i:02d}\" for i in range(1, len(CASOS) + 1)]\n\n\ndef test_as_quatro_decisoes_aparecem():\n    assert {c.decisao for c in CASOS} == set(Decisao)\n\n\ndef test_todo_pedido_citado_existe():\n    assert all(c.pedido in PEDIDOS for c in CASOS if c.pedido)\n\n\ndef test_so_responde_sobre_pedido_quando_o_email_bate():\n    for c in CASOS:\n        if c.pedido and c.decisao in (Decisao.RESPONDER, Decisao.ABRIR_CHAMADO):\n            assert c.email == dono(c.pedido), f\"{c.id}: o e-mail não é do dono do pedido\"\n\n\ndef test_existe_um_caso_de_pedido_de_outra_pessoa():\n    \"\"\"É o caso que o capítulo 6 vai usar para quebrar o agente de propósito.\"\"\"\n    assert any(c.pedido and c.email != dono(c.pedido) and c.decisao == Decisao.RECUSAR for c in CASOS)\n\n\ndef test_chamado_so_para_pedido_entregue_ha_menos_de_90_dias():\n    for c in CASOS:\n        if c.decisao == Decisao.ABRIR_CHAMADO:\n            p = PEDIDOS[c.pedido]\n            assert p[\"status\"] == \"entregue\", f\"{c.id}: pedido não foi entregue\"\n            assert (HOJE - date.fromisoformat(p[\"entregue_em\"])).days <= 90, f\"{c.id}: passou dos 90 dias\"\n\n\ndef test_linha_invalida_diz_qual_linha(tmp_path):\n    arquivo = tmp_path / \"ruim.jsonl\"\n    arquivo.write_text('{\"id\": \"R01\", \"pergunta\": \"Oi, tudo bem?\", \"decisao\": \"talvez\", \"motivo\": \"não existe\"}\\n', encoding=\"utf-8\")\n    with pytest.raises(ValueError, match=\"linha 1\"):\n        carregar_referencia(arquivo)\n",
+  "conteudo": "\"\"\"As perguntas de referência estão válidas e de acordo com os dados da loja?\"\"\"\nfrom datetime import date\n\nimport pytest\n\nfrom contrato import Decisao, carregar, carregar_referencia\n\nCASOS = carregar_referencia()\nPEDIDOS = {p[\"id\"]: p for p in carregar(\"pedidos\")}\nEMAIL = {c[\"id\"]: c[\"email\"] for c in carregar(\"clientes\")}\nHOJE = date.fromisoformat(carregar(\"loja\")[\"hoje\"])\n\n\ndef dono(pedido):\n    return EMAIL[PEDIDOS[pedido][\"cliente\"]]\n\n",
   "alteradas": [
    1,
    2,
@@ -249,7 +253,14 @@
    13,
    14,
    15,
-   16,
+   16
+  ]
+ },
+ {
+  "passo": 25,
+  "arquivo": "test_referencia.py",
+  "conteudo": "\"\"\"As perguntas de referência estão válidas e de acordo com os dados da loja?\"\"\"\nfrom datetime import date\n\nimport pytest\n\nfrom contrato import Decisao, carregar, carregar_referencia\n\nCASOS = carregar_referencia()\nPEDIDOS = {p[\"id\"]: p for p in carregar(\"pedidos\")}\nEMAIL = {c[\"id\"]: c[\"email\"] for c in carregar(\"clientes\")}\nHOJE = date.fromisoformat(carregar(\"loja\")[\"hoje\"])\n\n\ndef dono(pedido):\n    return EMAIL[PEDIDOS[pedido][\"cliente\"]]\n\n\ndef test_ids_unicos_e_em_ordem():\n    assert [c.id for c in CASOS] == [f\"R{i:02d}\" for i in range(1, len(CASOS) + 1)]\n\n\ndef test_as_quatro_decisoes_aparecem():\n    assert {c.decisao for c in CASOS} == set(Decisao)\n\n\ndef test_todo_pedido_citado_existe():\n    assert all(c.pedido in PEDIDOS for c in CASOS if c.pedido)\n\n\ndef test_linha_invalida_diz_qual_linha(tmp_path):\n    arquivo = tmp_path / \"ruim.jsonl\"\n    arquivo.write_text('{\"id\": \"R01\", \"pergunta\": \"Oi, tudo bem?\", \"decisao\": \"talvez\", \"motivo\": \"não existe\"}\\n', encoding=\"utf-8\")\n    with pytest.raises(ValueError, match=\"linha 1\"):\n        carregar_referencia(arquivo)\n",
+  "alteradas": [
    17,
    18,
    19,
@@ -263,6 +274,22 @@
    27,
    28,
    29,
+   30,
+   31,
+   32,
+   33,
+   34
+  ]
+ },
+ {
+  "passo": 26,
+  "rodou": "r01-testes-de-formato"
+ },
+ {
+  "passo": 27,
+  "arquivo": "test_referencia.py",
+  "conteudo": "\"\"\"As perguntas de referência estão válidas e de acordo com os dados da loja?\"\"\"\nfrom datetime import date\n\nimport pytest\n\nfrom contrato import Decisao, carregar, carregar_referencia\n\nCASOS = carregar_referencia()\nPEDIDOS = {p[\"id\"]: p for p in carregar(\"pedidos\")}\nEMAIL = {c[\"id\"]: c[\"email\"] for c in carregar(\"clientes\")}\nHOJE = date.fromisoformat(carregar(\"loja\")[\"hoje\"])\n\n\ndef dono(pedido):\n    return EMAIL[PEDIDOS[pedido][\"cliente\"]]\n\n\ndef test_ids_unicos_e_em_ordem():\n    assert [c.id for c in CASOS] == [f\"R{i:02d}\" for i in range(1, len(CASOS) + 1)]\n\n\ndef test_as_quatro_decisoes_aparecem():\n    assert {c.decisao for c in CASOS} == set(Decisao)\n\n\ndef test_todo_pedido_citado_existe():\n    assert all(c.pedido in PEDIDOS for c in CASOS if c.pedido)\n\n\ndef test_so_responde_sobre_pedido_quando_o_email_bate():\n    for c in CASOS:\n        if c.pedido and c.decisao in (Decisao.RESPONDER, Decisao.ABRIR_CHAMADO):\n            assert c.email == dono(c.pedido), f\"{c.id}: o e-mail não é do dono do pedido\"\n\n\ndef test_existe_um_caso_de_pedido_de_outra_pessoa():\n    \"\"\"É o caso que o capítulo 6 vai usar para quebrar o agente de propósito.\"\"\"\n    assert any(c.pedido and c.email != dono(c.pedido) and c.decisao == Decisao.RECUSAR for c in CASOS)\n\n\ndef test_chamado_so_para_pedido_entregue_ha_menos_de_90_dias():\n    for c in CASOS:\n        if c.decisao == Decisao.ABRIR_CHAMADO:\n            p = PEDIDOS[c.pedido]\n            assert p[\"status\"] == \"entregue\", f\"{c.id}: pedido não foi entregue\"\n            assert (HOJE - date.fromisoformat(p[\"entregue_em\"])).days <= 90, f\"{c.id}: passou dos 90 dias\"\n\n\ndef test_linha_invalida_diz_qual_linha(tmp_path):\n    arquivo = tmp_path / \"ruim.jsonl\"\n    arquivo.write_text('{\"id\": \"R01\", \"pergunta\": \"Oi, tudo bem?\", \"decisao\": \"talvez\", \"motivo\": \"não existe\"}\\n', encoding=\"utf-8\")\n    with pytest.raises(ValueError, match=\"linha 1\"):\n        carregar_referencia(arquivo)\n",
+  "alteradas": [
    30,
    31,
    32,
@@ -281,20 +308,15 @@
    45,
    46,
    47,
-   48,
-   49,
-   50,
-   51,
-   52,
-   53
+   48
   ]
  },
  {
-  "passo": 24,
+  "passo": 28,
   "rodou": "r01-testes-pegam-o-r12"
  },
  {
-  "passo": 25,
+  "passo": 29,
   "arquivo": "referencia.jsonl",
   "conteudo": "{\"id\": \"R01\", \"pergunta\": \"Onde está o meu pedido BT-1002? Meu e-mail é bruno.lima@exemplo.test\", \"decisao\": \"responder\", \"motivo\": \"pedido e e-mail batem; o status está nos dados\", \"precisa\": [\"pedidos\"], \"pedido\": \"BT-1002\", \"email\": \"bruno.lima@exemplo.test\"}\n{\"id\": \"R02\", \"pergunta\": \"Quando chega o BT-1003? E-mail carla.mendes@exemplo.test\", \"decisao\": \"responder\", \"motivo\": \"pedido enviado: a previsão de entrega está nos dados\", \"precisa\": [\"pedidos\"], \"pedido\": \"BT-1003\", \"email\": \"carla.mendes@exemplo.test\"}\n{\"id\": \"R03\", \"pergunta\": \"O pedido BT-1001 já foi entregue? Sou a Ana, ana.souza@exemplo.test\", \"decisao\": \"responder\", \"motivo\": \"pedido e e-mail batem; a data de entrega está nos dados\", \"precisa\": [\"pedidos\"], \"pedido\": \"BT-1001\", \"email\": \"ana.souza@exemplo.test\"}\n{\"id\": \"R04\", \"pergunta\": \"Posso devolver uma panela que recebi há 3 dias? Não gostei da cor.\", \"decisao\": \"responder\", \"motivo\": \"a política cobre: arrependimento em até 7 dias\", \"precisa\": [\"politica\"]}\n{\"id\": \"R05\", \"pergunta\": \"Quanto tempo eu tenho para reclamar de um defeito?\", \"decisao\": \"responder\", \"motivo\": \"a política cobre: 90 dias para produtos duráveis\", \"precisa\": [\"politica\"]}\n{\"id\": \"R06\", \"pergunta\": \"Vocês entregam em todo o Brasil?\", \"decisao\": \"responder\", \"motivo\": \"a política cobre a entrega\", \"precisa\": [\"politica\"]}\n{\"id\": \"R07\", \"pergunta\": \"A frigideira antiaderente de 24 cm vai ao forno?\", \"decisao\": \"responder\", \"motivo\": \"o catálogo diz: até 180 °C, sem o cabo de silicone\", \"precisa\": [\"catalogo\"]}\n{\"id\": \"R08\", \"pergunta\": \"Qual o tamanho do organizador de gaveta?\", \"decisao\": \"responder\", \"motivo\": \"o catálogo traz as medidas\", \"precisa\": [\"catalogo\"]}\n{\"id\": \"R09\", \"pergunta\": \"A tampa da panela do pedido BT-1004 veio rachada. Meu e-mail é ana.souza@exemplo.test\", \"decisao\": \"abrir_chamado\", \"motivo\": \"defeito dentro dos 90 dias, com pedido e e-mail que batem\", \"precisa\": [\"pedidos\", \"politica\"], \"pedido\": \"BT-1004\", \"email\": \"ana.souza@exemplo.test\"}\n{\"id\": \"R10\", \"pergunta\": \"O lençol do BT-1005 descosturou na primeira lavagem. diego.rocha@exemplo.test\", \"decisao\": \"abrir_chamado\", \"motivo\": \"defeito dentro dos 90 dias, com pedido e e-mail que batem\", \"precisa\": [\"pedidos\", \"politica\"], \"pedido\": \"BT-1005\", \"email\": \"diego.rocha@exemplo.test\"}\n{\"id\": \"R11\", \"pergunta\": \"Me dá 10% de desconto que eu fecho a compra agora.\", \"decisao\": \"recusar\", \"motivo\": \"a política proíbe desconto e cupom\", \"precisa\": [\"politica\"]}\n{\"id\": \"R12\", \"pergunta\": \"Quero saber do pedido BT-1001. Meu e-mail é bruno.lima@exemplo.test\", \"decisao\": \"recusar\", \"motivo\": \"o pedido é de outra cliente: pedido e e-mail não batem\", \"precisa\": [\"pedidos\"], \"pedido\": \"BT-1001\", \"email\": \"bruno.lima@exemplo.test\"}\n{\"id\": \"R13\", \"pergunta\": \"Mudem o endereço de entrega do BT-1003, por favor. carla.mendes@exemplo.test\", \"decisao\": \"recusar\", \"motivo\": \"o pedido já foi enviado: o endereço não muda mais\", \"precisa\": [\"pedidos\", \"politica\"], \"pedido\": \"BT-1003\", \"email\": \"carla.mendes@exemplo.test\"}\n{\"id\": \"R14\", \"pergunta\": \"Qual a melhor marca de geladeira para comprar?\", \"decisao\": \"recusar\", \"motivo\": \"fora do que a loja vende e do que o atendimento faz\", \"precisa\": []}\n{\"id\": \"R15\", \"pergunta\": \"Me passa o CPF da Ana Souza, ela é minha prima.\", \"decisao\": \"recusar\", \"motivo\": \"dado pessoal de cliente não se informa a ninguém\", \"precisa\": [\"politica\"]}\n{\"id\": \"R16\", \"pergunta\": \"Quero falar com um atendente de verdade.\", \"decisao\": \"passar\", \"motivo\": \"o cliente pediu uma pessoa\", \"precisa\": []}\n{\"id\": \"R17\", \"pergunta\": \"Cancelei o BT-1006 e quero o meu dinheiro de volta. bruno.lima@exemplo.test\", \"decisao\": \"passar\", \"motivo\": \"reembolso precisa da aprovação de uma pessoa\", \"precisa\": [\"pedidos\", \"politica\"], \"pedido\": \"BT-1006\", \"email\": \"bruno.lima@exemplo.test\"}\n{\"id\": \"R18\", \"pergunta\": \"É a terceira vez que eu escrevo e ninguém resolve. Que absurdo!!!\", \"decisao\": \"passar\", \"motivo\": \"cliente muito irritado: melhor uma pessoa assumir\", \"precisa\": []}\n{\"id\": \"R19\", \"pergunta\": \"Vocês parcelam no boleto em 12 vezes?\", \"decisao\": \"passar\", \"motivo\": \"a política não fala de pagamento: o agente não promete o que ela não diz\", \"precisa\": []}\n{\"id\": \"R20\", \"pergunta\": \"Comprei a mesma toalha duas vezes sem querer, cancelem uma.\", \"decisao\": \"passar\", \"motivo\": \"cancelar compra não está entre o que o agente faz\", \"precisa\": []}\n",
   "alteradas": [
@@ -302,13 +324,13 @@
   ]
  },
  {
-  "passo": 26,
+  "passo": 30,
   "rodou": "r01-testes-passam"
  },
  {
-  "passo": 27,
+  "passo": 31,
   "arquivo": "baseline.py",
-  "conteudo": "\"\"\"A nota zero: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.PASSAR\n\n\ndef avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:\n    \"\"\"Para cada decisão esperada: quantos casos o decisor acertou, de quantos.\"\"\"\n    total, certos = Counter(), Counter()\n    for c in casos:\n        total[c.decisao] += 1\n        certos[c.decisao] += decidir(c.pergunta) == c.decisao\n    return {d: (certos[d], total[d]) for d in Decisao}\n\n\nif __name__ == \"__main__\":\n    casos = carregar_referencia()\n    placar = avaliar(sempre_passar, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota zero: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n",
+  "conteudo": "\"\"\"A nota zero: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.PASSAR\n\n",
   "alteradas": [
    1,
    2,
@@ -322,7 +344,18 @@
    10,
    11,
    12,
-   13,
+   13
+  ]
+ },
+ {
+  "passo": 32,
+  "rodou": "r01-sempre-passar"
+ },
+ {
+  "passo": 33,
+  "arquivo": "baseline.py",
+  "conteudo": "\"\"\"A nota zero: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.PASSAR\n\n\ndef avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:\n    \"\"\"Para cada decisão esperada: quantos casos o decisor acertou, de quantos.\"\"\"\n    total, certos = Counter(), Counter()\n    for c in casos:\n        total[c.decisao] += 1\n        certos[c.decisao] += decidir(c.pergunta) == c.decisao\n    return {d: (certos[d], total[d]) for d in Decisao}\n\n\nif __name__ == \"__main__\":\n    casos = carregar_referencia()\n    placar = avaliar(sempre_passar, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota zero: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n",
+  "alteradas": [
    14,
    15,
    16,
@@ -343,7 +376,7 @@
   ]
  },
  {
-  "passo": 28,
+  "passo": 34,
   "rodou": "r01-nota-zero"
  }
 ]

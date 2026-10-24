@@ -197,17 +197,49 @@ O contrato diz como um caso deve ser. As perguntas de referência são os casos 
 
 Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={17} ate={26} numero="1.3" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
+<Passo {...base} n={1} total={6} titulo="As vinte perguntas" de={17} ate={19} ver={{ "referencia.jsonl": [12] }}
+  objetivo="as vinte perguntas de referência no projeto, com um engano escondido nelas."
+  temos="vinte casos que carregam, e um deles errado sem ninguém saber." />
 
-Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
+Carregar sem erro só prova que cada linha tem o formato certo. Para conferir se as perguntas fazem sentido com a loja, os testes vão precisar ler os pedidos e os clientes.
 
-<Nota titulo="teste do teste">Um teste que nunca falha não protege nada, e a figura mostrou um falhando pelo motivo certo. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e rode `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
+<Passo {...base} n={2} total={6} titulo="O contrato lê a loja" de={20} ate={23}
+  objetivo="o código abre qualquer arquivo de dados da loja pelo nome."
+  temos="`carregar`, que os testes vão usar." />
+
+<Passo {...base} n={3} total={6} titulo="O que os testes leem" de={24} ate={24}
+  objetivo="o começo do arquivo de testes: tudo o que os testes vão consultar, lido uma vez só."
+  temos={'os casos, os pedidos, os e-mails dos clientes, o "hoje" da loja e quem é dono de cada pedido.'} />
+
+<Passo {...base} n={4} total={6} titulo="Os testes do formato" de={25} ate={26}
+  objetivo="testes que conferem o arquivo em si: ids, decisões, pedidos que existem."
+  temos="quatro testes verdes, e o R12 ainda errado." />
+
+Os quatro passaram, e o R12 continua errado. Teste de formato não pega engano de regra: para isso, a regra tem que virar teste.
+
+<Passo {...base} n={5} total={6} titulo="As regras da política" de={27} ate={28}
+  objetivo="cada regra da política vira um teste que a máquina confere."
+  temos="dois testes vermelhos, e os dois apontam o R12." />
+
+<Passo {...base} n={6} total={6} titulo="O R12 corrigido" de={29} ate={30}
+  objetivo="o caso certo, e os sete testes verdes."
+  temos="vinte perguntas de referência conferidas contra a loja." />
+
+Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
+
+<Nota titulo="teste do teste">Um teste que nunca falha não protege nada, e o passo 5 mostrou dois falhando pelo motivo certo. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e rode `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
 
 ## 1.8 A nota zero
 
 Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={27} ate={28} numero="1.4" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
+<Passo {...base} n={1} total={2} titulo="O agente mais simples" de={31} ate={32}
+  objetivo={'um "agente" que nem lê a pergunta.'}
+  temos="`sempre_passar`, que responde passar a tudo." />
+
+<Passo {...base} n={2} total={2} titulo="A régua" de={33} ate={34}
+  objetivo="uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota."
+  temos="a nota zero: o número que todo agente do livro tem que bater." />
 
 Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
 

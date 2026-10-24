@@ -243,6 +243,30 @@
       ]
     ]
   },
+  "r01-seis-pedidos": {
+    "comando": "uv run python -c \"from contrato import carregar; print(len(carregar('pedidos')), 'pedidos na loja')\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "6 pedidos na loja",
+        ""
+      ]
+    ]
+  },
+  "r01-testes-de-formato": {
+    "comando": "uv run pytest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "....                                                                     [100%]",
+        ""
+      ],
+      [
+        "4 passed in 0.09s",
+        "okv"
+      ]
+    ]
+  },
   "r01-testes-pegam-o-r12": {
     "comando": "uv run pytest -q",
     "saiu_com": 1,
@@ -332,7 +356,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f6c271402e0>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f068a2f8660>)",
         "err"
       ],
       [
@@ -370,8 +394,18 @@
         ""
       ],
       [
-        "7 passed in 0.08s",
+        "7 passed in 0.07s",
         "okv"
+      ]
+    ]
+  },
+  "r01-sempre-passar": {
+    "comando": "uv run python -c \"from baseline import sempre_passar; print(sempre_passar('Onde está o meu pedido BT-1002?'))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "passar",
+        ""
       ]
     ]
   },

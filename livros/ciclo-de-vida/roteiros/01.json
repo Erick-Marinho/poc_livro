@@ -271,14 +271,62 @@
       "nota": "E a função que abre um arquivo de dados pelo nome."
     },
     {
+      "acao": "rodar",
+      "id": "r01-seis-pedidos",
+      "comando": "uv run python -c \"from contrato import carregar; print(len(carregar('pedidos')), 'pedidos na loja')\"",
+      "espera": 0,
+      "nota": "A loja inventada tem seis pedidos, e agora o código enxerga todos."
+    },
+    {
       "acao": "escrever",
       "arquivo": "test_referencia.py",
       "partes": [
         {
-          "linhas": "1-53"
+          "linhas": "1-16"
         }
       ],
-      "nota": "Cada teste é uma regra da política escrita de um jeito que a máquina confere."
+      "nota": "Antes de qualquer teste, o que todos vão usar: os casos, os pedidos, os e-mails dos clientes e o \"hoje\" da loja."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_referencia.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "17-27"
+        },
+        {
+          "linhas": "47-53"
+        }
+      ],
+      "nota": "Quatro testes do formato: ids em ordem, as quatro decisões presentes, pedido que existe, e linha errada dizendo qual linha."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-testes-de-formato",
+      "comando": "uv run pytest -q",
+      "espera": 0,
+      "aposta": {
+        "pergunta": "O R12 continua marcado como responder. Quantos destes quatro testes falham?",
+        "opcoes": [
+          "Nenhum",
+          "Um",
+          "Os quatro"
+        ],
+        "certa": 0
+      },
+      "nota": "Os quatro passam: nenhum deles olha para quem é dono de qual pedido. Formato certo não quer dizer caso certo."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_referencia.py",
+      "depois": "    assert all(c.pedido in PEDIDOS for c in CASOS if c.pedido)\n",
+      "partes": [
+        {
+          "linhas": "28-46"
+        }
+      ],
+      "nota": "Três testes da política: só se fala de pedido com o dono, o caso do capítulo 6 existe, e chamado só dentro dos 90 dias."
     },
     {
       "acao": "rodar",
@@ -324,10 +372,28 @@
       "arquivo": "baseline.py",
       "partes": [
         {
-          "linhas": "1-30"
+          "linhas": "1-13"
         }
       ],
-      "nota": "Um \"agente\" que passa tudo para uma pessoa: a nota que todo agente depois tem que bater."
+      "nota": "O \"agente\" mais simples que existe: qualquer pergunta, a mesma decisão."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-sempre-passar",
+      "comando": "uv run python -c \"from baseline import sempre_passar; print(sempre_passar('Onde está o meu pedido BT-1002?'))\"",
+      "espera": 0,
+      "nota": "Ele nem lê a pergunta."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "baseline.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "14-30"
+        }
+      ],
+      "nota": "A régua: para cada decisão do contrato, quantos casos o decisor acertou, e a nota no fim."
     },
     {
       "acao": "rodar",

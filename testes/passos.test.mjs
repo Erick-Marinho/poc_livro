@@ -35,3 +35,23 @@ test("o passo 1 pede a aposta antes de mostrar o erro do 'talvez'", () => {
   assert.match(passos[0], /aposte antes de rodar:<\/b> E se alguém escrever &quot;talvez&quot; como decisão\?/);
   assert.match(passos[0], /class="ps-saida" hidden/);
 });
+
+const trecho = (de, ate) => html.slice(html.indexOf(`id="${de}"`), ate ? html.indexOf(`id="${ate}"`) : undefined);
+const contar = (t) => [...t.matchAll(/data-passo aria-label="Passo (\d+) de (\d+)/g)].map((m) => `${m[1]}/${m[2]}`);
+
+test("a 1.7 tem seis passos e a 1.8 tem dois, e o capítulo não tem mais a IDE no meio do texto", () => {
+  assert.deepEqual(contar(trecho("s1-7", "s1-8")), ["1/6", "2/6", "3/6", "4/6", "5/6", "6/6"]);
+  assert.deepEqual(contar(trecho("s1-8")), ["1/2", "2/2"]);
+  assert.doesNotMatch(html, /class="ide-figura"/);
+});
+
+test("o R12 fica à vista no passo das vinte perguntas, mesmo com o resto do arquivo dobrado", () => {
+  const p = trecho("s1-7", "s1-8").split('data-passo aria-label="')[1];
+  assert.match(p, /<span class="line novo depois-da-dobra" data-n="12">/);
+  assert.match(p, /<span class="line novo dobrada" data-n="7">/);
+});
+
+test("o passo da nota zero avisa o placar quando o leitor aposta", () => {
+  assert.match(trecho("s1-8"), /data-id="r01-nota-zero"/);
+  assert.match(html, /fontmar:apostou/);
+});
