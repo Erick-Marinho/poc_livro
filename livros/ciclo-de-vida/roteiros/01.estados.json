@@ -94,7 +94,11 @@
  },
  {
   "passo": 9,
-  "rodou": "r01-decisao-talvez"
+  "rodou": "r01-decisao-talvez",
+  "variantes": {
+   "r01-decisao-responder": {},
+   "r01-decisao-maiuscula": {}
+  }
  },
  {
   "passo": 10,
@@ -429,6 +433,29 @@
  },
  {
   "passo": 40,
-  "rodou": "r01-nota-de-partida"
+  "rodou": "r01-nota-de-partida",
+  "variantes": {
+   "r01-nota-sempre-responder": {
+    "arquivo": "baseline.py",
+    "conteudo": "\"\"\"A nota de partida: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.RESPONDER\n\n\ndef avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:\n    \"\"\"Para cada decisão esperada: quantos casos o decisor acertou, de quantos.\"\"\"\n    total, certos = Counter(), Counter()\n    for c in casos:\n        total[c.decisao] += 1\n        certos[c.decisao] += decidir(c.pergunta) == c.decisao\n    return {d: (certos[d], total[d]) for d in Decisao}\n\n\nif __name__ == \"__main__\":\n    casos = carregar_referencia()\n    placar = avaliar(sempre_passar, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota de partida: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n",
+    "alteradas": [
+     12
+    ]
+   },
+   "r01-nota-sempre-recusar": {
+    "arquivo": "baseline.py",
+    "conteudo": "\"\"\"A nota de partida: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.RECUSAR\n\n\ndef avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:\n    \"\"\"Para cada decisão esperada: quantos casos o decisor acertou, de quantos.\"\"\"\n    total, certos = Counter(), Counter()\n    for c in casos:\n        total[c.decisao] += 1\n        certos[c.decisao] += decidir(c.pergunta) == c.decisao\n    return {d: (certos[d], total[d]) for d in Decisao}\n\n\nif __name__ == \"__main__\":\n    casos = carregar_referencia()\n    placar = avaliar(sempre_passar, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota de partida: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n",
+    "alteradas": [
+     12
+    ]
+   },
+   "r01-nota-sempre-chamado": {
+    "arquivo": "baseline.py",
+    "conteudo": "\"\"\"A nota de partida: um \"agente\" que passa toda pergunta para uma pessoa da equipe.\n\nEle nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.\nTodo agente que vier depois tem que bater esta nota.\n\"\"\"\nfrom collections import Counter\n\nfrom contrato import Caso, Decisao, carregar_referencia\n\n\ndef sempre_passar(pergunta: str) -> Decisao:\n    return Decisao.ABRIR_CHAMADO\n\n\ndef avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:\n    \"\"\"Para cada decisão esperada: quantos casos o decisor acertou, de quantos.\"\"\"\n    total, certos = Counter(), Counter()\n    for c in casos:\n        total[c.decisao] += 1\n        certos[c.decisao] += decidir(c.pergunta) == c.decisao\n    return {d: (certos[d], total[d]) for d in Decisao}\n\n\nif __name__ == \"__main__\":\n    casos = carregar_referencia()\n    placar = avaliar(sempre_passar, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota de partida: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n",
+    "alteradas": [
+     12
+    ]
+   }
+  }
  }
 ]

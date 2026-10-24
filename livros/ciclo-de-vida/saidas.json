@@ -185,6 +185,26 @@
       ]
     ]
   },
+  "r01-decisao-responder": {
+    "comando": "uv run python -c \"from contrato import Decisao; print(Decisao('responder'))\" 2>&1 | tail -1",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder",
+        ""
+      ]
+    ]
+  },
+  "r01-decisao-maiuscula": {
+    "comando": "uv run python -c \"from contrato import Decisao; print(Decisao('RESPONDER'))\" 2>&1 | tail -1",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "ValueError: 'RESPONDER' is not a valid Decisao",
+        "err"
+      ]
+    ]
+  },
   "r01-caso-id-torto": {
     "comando": "uv run python -c \"from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))\"",
     "saiu_com": 1,
@@ -559,6 +579,84 @@
       ],
       [
         "nota de partida: 5 de 20 (25%)",
+        ""
+      ]
+    ]
+  },
+  "r01-nota-sempre-responder": {
+    "comando": "uv run python baseline.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       8 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         0 de  5",
+        ""
+      ],
+      [
+        "passar          0 de  5",
+        ""
+      ],
+      [
+        "nota de partida: 8 de 20 (40%)",
+        ""
+      ]
+    ]
+  },
+  "r01-nota-sempre-recusar": {
+    "comando": "uv run python baseline.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       0 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         5 de  5",
+        ""
+      ],
+      [
+        "passar          0 de  5",
+        ""
+      ],
+      [
+        "nota de partida: 5 de 20 (25%)",
+        ""
+      ]
+    ]
+  },
+  "r01-nota-sempre-chamado": {
+    "comando": "uv run python baseline.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       0 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   2 de  2",
+        ""
+      ],
+      [
+        "recusar         0 de  5",
+        ""
+      ],
+      [
+        "passar          0 de  5",
+        ""
+      ],
+      [
+        "nota de partida: 2 de 20 (10%)",
         ""
       ]
     ]

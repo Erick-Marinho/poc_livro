@@ -24,6 +24,20 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
     que não é o comando ganha uma dica do livro em outra letra; a aposta vem depois do Enter. O "sua vez" sai: digitar
     aqui já é o fazer. Os cliques não diminuem (o "fiz na minha IDE" vira "seguir").
   - No modo direto, não há pergunta nem digitação. O seletor guiado/interativo dos terminais avulsos saiu.
+- (etapa 6) Modificar antes de criar, em dois lugares só do capítulo 1. Poucos e bons: o primeiro apresenta o gesto
+  com algo pequeno, o segundo é onde mexer muda o argumento do capítulo.
+  - `Decisao('talvez')` (passo 5): depois da saída, a palavra `'talvez'` do comando vira um seletor. `'responder'`
+    entra; `'RESPONDER'` dá erro. A lista fechada é exata, até na maiúscula.
+  - A nota de partida (passo 18): depois da nota, o `PASSAR` do `baseline.py` vira um seletor no editor. Sempre
+    `RESPONDER` dá 40%, mais que os 25% de passar, e é o pior agente dos quatro (responderia ao Bruno sobre o pedido da
+    Ana). Antes dessa saída, uma aposta: a nota sobe, desce ou fica? Nota sozinha não diz se o agente presta.
+  - O gesto é manipular o próprio código (um toque na palavra abre as opções), não um botão ao lado. A linha muda no
+    editor, o comando roda de novo no terminal com a saída gravada daquela versão, e o chat registra a troca e
+    comenta. "O do livro" volta ao original; ao seguir, o arquivo volta sozinho, e o chat avisa isso antes.
+  - Não segura o leitor: explorar é opcional, e o seguir só espera uma aposta que ele mesmo abriu. Quem faz na
+    própria IDE ganha, no "sua vez", o convite para fazer a mesma troca lá.
+  - Cada variante roda de verdade no `scripts/saidas.py` (o arquivo trocado e depois restaurado, conferido igual), e
+    a saída entra no `saidas.json` com id próprio: o livro continua sem mentir.
 
 ## Etapas
 
@@ -33,7 +47,9 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 4. Modo foco.
 5. (médio) O leitor digita os comandos no terminal da IDE. Medida: o percurso inteiro nos três modos; o guiado e o
    direto não podem mudar.
-6. (médio) Modificar antes de criar: 2 ou 3 variantes gravadas, com aposta.
+6. (médio) Modificar antes de criar: 2 ou 3 variantes gravadas, com aposta. Medida: as variantes conferidas pelo
+   `npm test`; o percurso inteiro sem explorar continua com os mesmos cliques; explorando, cada troca mostra a linha,
+   a saída gravada e a fala do chat.
 7. (grande) "Fiz na minha IDE" conferido: `uv run conferir` no repositório do leitor.
 
 ## Registro
@@ -45,5 +61,6 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 | 3 | `8135191` | duas visitas no mesmo navegador: oferece continuar do passo 4 depois de fechar o 3, e a trilha mantém os feitos | Erick, 24/10/2026 |
 | 4 | `26ddea9` | a IDE cobre 1440×813, a página não rola, a pílula e o cabeçalho ficam por baixo, Esc volta; capturas no computador e no celular | Erick, 24/10/2026 |
 | 5 | `62d03d7`, revisão `5d7d580` | percurso do capítulo 1: sem resposta, a pergunta no lugar do seguir, e responder já avança; "na minha IDE": 78 cliques, 40 "sua vez", nenhum comando digitado, como antes; "aqui no livro": 78 cliques, 15 comandos (14 digitados, 1 "roda pra mim"), nenhum "sua vez", as 7 apostas depois do Enter; modo direto: 58 cliques, sem pergunta. Capturas da pergunta no computador e no celular, e das configurações | Erick, 24/10/2026 |
+| 6 | (este) | 5 variantes rodadas de verdade e gravadas (`npm run saidas`, conferidas pelo `npm test`; as saídas antigas ficaram como estavam). Percurso no passo 18: o `PASSAR` vira seletor, o menu abre na escolha atual, RESPONDER pede a aposta (o seguir espera), a linha 12 muda e fica realçada, a saída dá 40% e o chat comenta; RECUSAR dá 25%; "o do livro" volta ao original. No passo 5, o `'talvez'` relembrado no terminal: `'RESPONDER'` dá o erro, `'responder'` entra. Sem explorar, o percurso inteiro continua com 78 cliques (na minha IDE e aqui no livro) e 58 (direto). Capturas no computador e no celular | pendente |
 
 (redação: claude-opus-5-5)

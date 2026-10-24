@@ -17,11 +17,16 @@ export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porq
 export type BlocoIde = { a: number; z: number; titulo: string; texto: string; termos: TermoIde[]; pergunta?: PerguntaIde };
 /** o que um modelo de verdade respondeu num comando, gravado uma vez e repetido no livro (scripts/gravacao) */
 export type GravacaoIde = { quando: string; modelo: string; chamadas: number };
+/** modificar antes de criar: uma troca do trecho (no arquivo ou no comando), com a saída que ela gravou de verdade */
+export type OpcaoVariar = { id: string; rotulo: string; comando: string; saida: Trecho[]; erro: boolean; nota: string; aposta?: Aposta;
+  versao?: number; alteradas?: number[] };
+/** `linha`: onde o trecho está no arquivo (sem `arquivo`, o trecho está no comando); `original`: a palavra do livro */
+export type VariarIde = { arquivo?: string; linha?: number; trecho: string; original: string; convite: string; por: string; opcoes: OpcaoVariar[] };
 export type AcaoIde = { nota: string } & (
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
-  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta; gravacao?: GravacaoIde;
+  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta; gravacao?: GravacaoIde; variar?: VariarIde;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
@@ -31,9 +36,12 @@ export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string
   volta?: { repositorio: string; tag: string } };
 
 type DefBloco = { linhas: string; titulo: string; texto: string; termos?: string[]; pergunta?: PerguntaIde };
-type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[] };
+type DefVariar = { arquivo?: string; trecho: string; original: string; convite: string;
+  opcoes: { id: string; rotulo: string; por: string; nota: string; aposta?: Aposta }[] };
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[]; variar?: DefVariar };
 type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string;
-  gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string };
+  gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string;
+  variantes?: Record<string, { arquivo?: string; conteudo?: string; alteradas?: number[] }> };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
 type DefPasso = { id: string; secao: string; titulo: string; curta: string; de: number; ate: number; objetivo: string; temos: string;
   engano?: string; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean };
@@ -147,8 +155,26 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
         atual[nome] = texto;
       }
       for (const nome of e.apagados ?? []) delete atual[nome];
+      /* as variantes: cada uma com a saída gravada dela, e o arquivo trocado como mais uma versão do editor */
+      let variar: VariarIde | undefined;
+      if (p.variar) {
+        const v = p.variar, opcoes: OpcaoVariar[] = [];
+        const texto = v.arquivo ? atual[v.arquivo] ?? falhar(`${e.rodou}: a variante mexe em ${v.arquivo}, que não existe nesse momento`) : s.comando;
+        if (texto.split(v.trecho).length !== 2) falhar(`${e.rodou}: o trecho a variar não aparece uma vez só: ${v.trecho}`);
+        if (!v.trecho.includes(v.original)) falhar(`${e.rodou}: a palavra do livro (${v.original}) não está no trecho (${v.trecho})`);
+        for (const op of v.opcoes) {
+          const so = saidas[op.id] ?? falhar(`a saída da variante ${op.id} não está no saidas.json; rode npm run saidas`);
+          const est = e.variantes?.[op.id] ?? falhar(`a variante ${op.id} não está nos estados; rode npm run saidas`);
+          if (op.aposta && !op.aposta.opcoes[op.aposta.certa]) falhar(`a aposta da variante ${op.id} não tem a resposta certa entre as opções`);
+          if (!op.por.includes(op.rotulo)) falhar(`a variante ${op.id}: o rótulo (${op.rotulo}) não está no que entra (${op.por})`);
+          opcoes.push({ id: op.id, rotulo: op.rotulo, comando: so.comando, saida: dobrarErro(so.saida), erro: so.saiu_com !== 0 || so.saida.some(([, c]) => c === "err"),
+            nota: op.nota, aposta: op.aposta, ...(v.arquivo ? { versao: await versao(v.arquivo, est.conteudo!), alteradas: est.alteradas } : {}) });
+        }
+        const linha = v.arquivo ? texto.slice(0, texto.indexOf(v.trecho)).split("\n").length : undefined;
+        variar = { arquivo: v.arquivo, linha, trecho: v.trecho, original: v.original, convite: v.convite, por: v.opcoes[0].por, opcoes };
+      }
       acoes.push({ tipo: "rodar", nota: p.nota, id: e.rodou, comando: s.comando, onde: cwdLeitor(p.onde), saida: dobrarErro(s.saida),
-        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), aposta: p.aposta, gravacao: gravacoes[e.rodou], gerados, apagados: e.apagados ?? [] });
+        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), aposta: p.aposta, gravacao: gravacoes[e.rodou], variar, gerados, apagados: e.apagados ?? [] });
     } else if (e.arquivos) {
       const arquivos = [];
       for (const [nome, texto] of Object.entries(e.arquivos)) { arquivos.push({ nome, versao: await versao(nome, texto) }); atual[nome] = texto; }

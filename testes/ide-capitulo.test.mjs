@@ -165,3 +165,15 @@ test("o texto do capítulo 2 diz a nota que a gravação deu", () => {
   const aposta = roteiro02.passos.find((p) => p.id === "r02-medir").aposta;
   assert.equal(aposta.opcoes[aposta.certa], "um pouco mais que a nota de partida");
 });
+
+test("modificar antes de criar: as variantes trazem a saída gravada de cada troca, e a linha certa do arquivo", () => {
+  const nota = acoes.find((a) => a.tipo === "rodar" && a.id === "r01-nota-de-partida").variar;
+  assert.equal(nota.arquivo, "baseline.py");
+  assert.equal(nota.linha, 12);
+  assert.deepEqual(nota.opcoes.map((o) => o.saida.at(-1).l), ["nota de partida: 8 de 20 (40%)", "nota de partida: 5 de 20 (25%)", "nota de partida: 2 de 20 (10%)"]);
+  assert.ok(nota.opcoes.every((o) => o.alteradas.length === 1 && o.alteradas[0] === 12));
+  const talvez = acoes.find((a) => a.tipo === "rodar" && a.id === "r01-decisao-talvez").variar;
+  assert.equal(talvez.arquivo, undefined);
+  assert.deepEqual(talvez.opcoes.map((o) => [o.comando.includes(o.rotulo), o.saida.at(-1).l]),
+    [[true, "responder"], [true, "ValueError: 'RESPONDER' is not a valid Decisao"]]);
+});

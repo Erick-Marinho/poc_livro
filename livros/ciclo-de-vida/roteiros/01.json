@@ -124,7 +124,26 @@
         ],
         "certa": 1
       },
-      "nota": "Lista fechada é isto: o que não está nela não entra. O tail -1 mostra só a última linha do erro, a que diz o que houve."
+      "nota": "Lista fechada é isto: o que não está nela não entra. O tail -1 mostra só a última linha do erro, a que diz o que houve.",
+      "variar": {
+        "trecho": "'talvez'",
+        "original": "'talvez'",
+        "convite": "Troque a palavra e veja o que a lista aceita: toque em `'talvez'` no terminal.",
+        "opcoes": [
+          {
+            "id": "r01-decisao-responder",
+            "rotulo": "'responder'",
+            "por": "'responder'",
+            "nota": "Entra: `responder` é uma das quatro. A lista aceita o valor, escrito igualzinho."
+          },
+          {
+            "id": "r01-decisao-maiuscula",
+            "rotulo": "'RESPONDER'",
+            "por": "'RESPONDER'",
+            "nota": "Não entra. `RESPONDER` é o nome da opção no código; o valor é `responder`, em minúscula. Lista fechada não adivinha."
+          }
+        ]
+      }
     },
     {
       "acao": "trocar",
@@ -755,6 +774,41 @@
           "50%"
         ],
         "certa": 1
+      },
+      "variar": {
+        "arquivo": "baseline.py",
+        "trecho": "Decisao.PASSAR",
+        "original": "PASSAR",
+        "convite": "E se o decisor devolvesse sempre outra decisão? Toque em `PASSAR` no editor e troque. Quando você seguir, o `baseline.py` volta a ser o do livro.",
+        "opcoes": [
+          {
+            "id": "r01-nota-sempre-responder",
+            "rotulo": "RESPONDER",
+            "por": "Decisao.RESPONDER",
+            "aposta": {
+              "pergunta": "Sempre responder, nunca passar. A nota sobe, desce ou fica nos 25%?",
+              "opcoes": [
+                "Sobe",
+                "Desce",
+                "Fica"
+              ],
+              "certa": 0
+            },
+            "nota": "40%: oito acertos, mais que o passar. E é o mais perigoso dos quatro: responderia ao Bruno sobre o pedido da Ana. A nota sozinha não diz se o agente presta; por isso a régua conta cada decisão em separado."
+          },
+          {
+            "id": "r01-nota-sempre-recusar",
+            "rotulo": "RECUSAR",
+            "por": "Decisao.RECUSAR",
+            "nota": "25%, a mesma nota do passar, com os cinco acertos em outro lugar. Nota igual não quer dizer agente igual."
+          },
+          {
+            "id": "r01-nota-sempre-chamado",
+            "rotulo": "ABRIR_CHAMADO",
+            "por": "Decisao.ABRIR_CHAMADO",
+            "nota": "10%: só dois casos pedem chamado. A nota de uma decisão fixa é o tamanho da fatia dela nas vinte perguntas."
+          }
+        ]
       }
     }
   ]

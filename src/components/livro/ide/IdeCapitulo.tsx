@@ -3,7 +3,9 @@
  * Cada passo tem três momentos: abre (o que vai existir no fim, e o que o autor pensa), as ações (um arquivo que nasce,
  * código que entra, um comando que roda) e fecha ("agora você tem"). Quem avança é o leitor; antes de um comando com
  * aposta, ele aposta, e só então o terminal mostra a saída gravada do projeto real. Quem faz o projeto aqui no livro, e
- * não na IDE dele (palco/onde.ts), digita o comando no terminal (Tab completa), e o cartão "sua vez" sai.
+ * não na IDE dele (palco/onde.ts), digita o comando no terminal (Tab completa), e o cartão "sua vez" sai. Em alguns
+ * comandos, depois da saída, uma palavra do código vira um seletor: o leitor troca, e vê a saída gravada da troca
+ * (modificar antes de criar, etapa 6).
  */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
@@ -11,7 +13,7 @@ import { useDireto } from "../palco/direto";
 import { definirOnde, sugestaoOnde, useOnde } from "../palco/onde";
 import type { Onde } from "../palco/onde";
 import type { Trecho } from "../../../lib/codigo.ts";
-import type { AcaoIde, PassoCap, VersaoIde } from "../../../lib/ideCapitulo.ts";
+import type { AcaoIde, Aposta, PassoCap, VersaoIde } from "../../../lib/ideCapitulo.ts";
 import "./ide.css";
 import "./ide-capitulo.css";
 
@@ -25,6 +27,10 @@ const Md = ({ t }: { t: string }) => <>{t.split(/(`[^`]+`)/).map((x, i) => x.sta
 /* "sua vez": o que o leitor faz na IDE dele depois de ver a ação aqui */
 const DADO = /(\.(jsonl?|md|toml)$|(^|\/)\.[^/]+$)/;
 function suaVez(a: AcaoIde): string {
+  const troque = a.tipo === "rodar" && a.variar ? ` Depois, troque \`${a.variar.trecho}\` por \`${a.variar.por}\`${a.variar.arquivo ? ` no seu \`${a.variar.arquivo}\`` : " no comando"} e rode de novo.` : "";
+  return suaVezBase(a) + troque;
+}
+function suaVezBase(a: AcaoIde): string {
   /* o comando que chama um modelo de verdade: na máquina do leitor ele custa, pede a chave, e pode responder diferente */
   if (a.tipo === "rodar" && a.gravacao) return `Rode o comando no seu terminal, na pasta do projeto, com a sua chave no ambiente (\`OPENAI_API_KEY\`). Ele chama o ${a.gravacao.modelo} de verdade, e cada rodada custa centavos. A sua nota pode sair diferente da daqui: o modelo não responde sempre igual.`;
   if (a.tipo === "rodar") return `Rode o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
@@ -32,6 +38,20 @@ function suaVez(a: AcaoIde): string {
   if (a.tipo === "copiar") return "Copie a pasta `dados/` do repositório do livro para o seu projeto. Digitar dado inventado não ensina nada.";
   if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do livro vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
   return a.novo ? `Crie o \`${a.arquivo}\` na sua IDE e digite este código. Digitar, e não colar, é o que faz perceber o que não ficou claro.` : `Digite as linhas novas no seu \`${a.arquivo}\`, no mesmo lugar em que elas aparecem aqui.`;
+}
+/* a palavra dentro da linha que o shiki pintou: às vezes ela vem colada (` Decisao.PASSAR` num pedaço só), e aí ganha um
+   pedaço próprio, com a mesma cor, para poder virar o seletor */
+function palavraNaLinha(linha: HTMLElement, palavra: string): HTMLElement | null {
+  const folhas = [...linha.querySelectorAll<HTMLElement>("span")].filter((x) => !x.children.length);
+  const exata = folhas.find((x) => x.textContent!.trim() === palavra);
+  if (exata) return exata;
+  const re = new RegExp(`\\b${palavra.replace(/[^\w]/g, "\\$&")}\\b`), dona = folhas.find((x) => re.test(x.textContent!));
+  if (!dona) return null;
+  const t = dona.textContent!, i = t.search(re);
+  const nova = dona.cloneNode() as HTMLElement, resto = dona.cloneNode() as HTMLElement;
+  dona.textContent = t.slice(0, i); nova.textContent = palavra; resto.textContent = t.slice(i + palavra.length);
+  dona.after(nova, resto);
+  return nova;
 }
 /* quem fala com a IA no chat: o autor, construindo junto com o leitor */
 const AUTOR = "Erick";
@@ -87,6 +107,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const [rodou, setRodou] = useState<Record<number, "leitor" | "pediu">>({});
   const [tentativas, setTentativas] = useState<{ texto: string; aviso: string | null }[]>([]);
   const [entrada, setEntrada] = useState("");
+  /* modificar antes de criar: a troca à vista no comando da vez, as que o leitor já tentou (por ação), as apostas delas,
+     e o seletor aberto (onde, dentro do editor) */
+  const [trocaAtual, setTrocaAtual] = useState<string | null>(null);
+  const [tentadas, setTentadas] = useState<Record<number, string[]>>({});
+  const [apostasTroca, setApostasTroca] = useState<Record<string, number | "pulou">>({});
+  const [menu, setMenu] = useState<{ x: number; y?: number; baixo?: number } | null>(null);
+  const editor = useRef<HTMLDivElement>(null), menuRef = useRef<HTMLDivElement>(null), gatilho = useRef<HTMLElement | null>(null);
   const raiz = useRef<HTMLDivElement>(null);
   const codigo = useRef<HTMLDivElement>(null), terminal = useRef<HTMLDivElement>(null), campo = useRef<HTMLInputElement>(null);
 
@@ -107,6 +134,10 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   /* a pausa para fazer na própria IDE: quando a ação já foi toda mostrada aqui (o último bloco, ou a saída depois da aposta) */
   const ultimoBloco = !bloco || (acao?.tipo === "editar" && quadro.tipo === "acao" && quadro.b === acao.blocos.length - 1);
   const pausa = !direto && fazer !== "livro" && quadro.tipo === "acao" && !!acao && !esperando && !perguntando && ultimoBloco ? suaVez(acao) : null;
+  /* a troca só se oferece depois que o comando do livro rodou; a aposta de uma troca segura o seguir, como a do livro */
+  const variar = acao?.tipo === "rodar" && !esperando ? acao.variar ?? null : null;
+  const troca = variar && trocaAtual ? variar.opcoes.find((o) => o.id === trocaAtual) ?? null : null;
+  const apostandoTroca = !!troca?.aposta && !direto && apostasTroca[troca.id] === undefined;
 
   /* o projeto depois da ação feitaAte: a versão de cada arquivo, e o que nasceu ou mudou neste passo */
   const projeto = useMemo(() => {
@@ -132,8 +163,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   useEffect(() => { if (daAcao) setAberto(daAcao); }, [q, daAcao]);
   const nomes = Object.keys(projeto.arquivos).sort((a, b) => Number(a.includes("/")) - Number(b.includes("/")) || a.localeCompare(b));
   const vista = aberto && projeto.arquivos[aberto] !== undefined ? aberto : nomes.find((n) => versoes[projeto.arquivos[n]].html) ?? null;
-  const versao = vista ? versoes[projeto.arquivos[vista]] : null;
-  const alteradas = !acao ? [] : acao.tipo === "editar" && acao.arquivo === vista ? acao.alteradas
+  const trocado = !!troca && troca.versao !== undefined && variar?.arquivo === vista;
+  const versao = vista ? versoes[trocado ? troca!.versao! : projeto.arquivos[vista]] : null;
+  const alteradas = trocado ? troca!.alteradas ?? [] : !acao ? [] : acao.tipo === "editar" && acao.arquivo === vista ? acao.alteradas
     : acao.tipo === "rodar" && !esperando ? acao.gerados.find((g) => g.nome === vista)?.alteradas ?? [] : [];
   const abas = [...projeto.marcas.keys()].filter((a) => projeto.arquivos[a] !== undefined && versoes[projeto.arquivos[a]].html);
   if (vista && !abas.includes(vista) && versao?.html) abas.push(vista);
@@ -154,20 +186,65 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         if (t) { sp.classList.add("ic-termo"); sp.dataset.termo = t.chave; }
       }
     });
-    const alvo = blocoVisto?.a ?? alteradas[0];
+    /* a palavra que se troca: um toque nela abre as opções, como um seletor no próprio código */
+    el.querySelectorAll<HTMLElement>(".ic-varia").forEach((t) => { t.classList.remove("ic-varia"); ["role", "tabindex", "aria-haspopup", "aria-label"].forEach((x) => t.removeAttribute(x)); });
+    const noArquivo = variar?.arquivo === vista ? variar : null;
+    if (noArquivo?.linha) {
+      const palavra = troca?.rotulo ?? noArquivo.original;
+      const linhaV = el.querySelector<HTMLElement>(`.line[data-n="${noArquivo.linha}"]`), sp = linhaV && palavraNaLinha(linhaV, palavra);
+      if (sp) { sp.classList.add("ic-varia"); sp.setAttribute("role", "button"); sp.tabIndex = 0; sp.setAttribute("aria-haspopup", "menu"); sp.setAttribute("aria-label", `Trocar ${palavra}`); }
+    }
+    const alvo = blocoVisto?.a ?? alteradas[0] ?? noArquivo?.linha;
     const linha = alvo ? el.querySelector<HTMLElement>(`.line[data-n="${alvo}"]`) : null;
     el.scrollTo({ top: linha ? Math.max(linha.offsetTop - 60, 0) : 0 });
-  }, [versao, alteradas.join(","), blocoVisto]);
+  }, [versao, alteradas.join(","), blocoVisto, variar, troca]);
   /* perguntar o que é uma palavra: vira mais uma fala da conversa, e fica nela */
   const perguntar = (chave: string) => setPerguntados((v) => (v[chaveBloco] ?? []).includes(chave) ? v : { ...v, [chaveBloco]: [...(v[chaveBloco] ?? []), chave] });
-  const clicarCodigo = (e: React.MouseEvent) => { const t = (e.target as HTMLElement).closest<HTMLElement>(".ic-termo"); if (t?.dataset.termo) perguntar(t.dataset.termo); };
+  const clicarCodigo = (e: React.MouseEvent) => {
+    const v = (e.target as HTMLElement).closest<HTMLElement>(".ic-varia");
+    if (v) { abrirMenu(v); return; }
+    const t = (e.target as HTMLElement).closest<HTMLElement>(".ic-termo"); if (t?.dataset.termo) perguntar(t.dataset.termo);
+  };
+  const teclaCodigo = (e: React.KeyboardEvent) => {
+    const v = (e.target as HTMLElement).closest<HTMLElement>(".ic-varia");
+    if (v && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrirMenu(v); }
+  };
+  /* o seletor abre junto da palavra: embaixo dela no editor; em cima dela no terminal, que fica no pé da janela */
+  const abrirMenu = (alvo: HTMLElement) => {
+    const base = editor.current?.getBoundingClientRect(), r = alvo.getBoundingClientRect();
+    if (!base) return;
+    gatilho.current = alvo;
+    const x = Math.max(8, Math.min(r.left - base.left - 6, base.width - 236));
+    setMenu(alvo.closest(".ide-terminal") ? { x, baixo: base.bottom - r.top + 6 } : { x, y: r.bottom - base.top + 6 });
+  };
+  const fecharMenu = () => { setMenu(null); gatilho.current?.focus({ preventScroll: true }); };
+  const escolher = (id: string | null) => {
+    setMenu(null);
+    if (quadro.tipo !== "acao" || !variar) return;
+    setTrocaAtual(id);
+    if (id) setTentadas((t) => (t[quadro.k] ?? []).includes(id) ? t : { ...t, [quadro.k]: [...(t[quadro.k] ?? []), id] });
+    if (variar.arquivo) setAberto(variar.arquivo);
+  };
+  useEffect(() => {
+    if (!menu) return;
+    menuRef.current?.querySelector<HTMLElement>("[aria-checked='true']")?.focus({ preventScroll: true });
+    const fora = (e: MouseEvent) => { if (!menuRef.current?.contains(e.target as Node) && !(e.target as HTMLElement).closest(".ic-varia")) setMenu(null); };
+    addEventListener("mousedown", fora);
+    return () => removeEventListener("mousedown", fora);
+  }, [menu]);
+  const teclaMenu = (e: React.KeyboardEvent) => {
+    const itens = [...menuRef.current!.querySelectorAll<HTMLElement>("[role='menuitemradio']")], i = itens.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); fecharMenu(); }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); itens[(i + (e.key === "ArrowDown" ? 1 : itens.length - 1)) % itens.length]?.focus(); }
+    if (e.key === "Tab") setMenu(null);
+  };
 
   /* o terminal: tudo o que já rodou no capítulo, e o comando da vez (com a aposta, se houver) */
   const rodados = acoes.map((a, k) => ({ a, k })).filter(({ a, k }) => a.tipo === "rodar" && k <= feitaAte && (k < feitaAte || respondida(k) || quadro.tipo !== "acao"));
-  useEffect(() => { const t = requestAnimationFrame(() => { const el = terminal.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, apostas, rodou, tentativas]);
+  useEffect(() => { const t = requestAnimationFrame(() => { const el = terminal.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, apostas, rodou, tentativas, tentadas, apostasTroca]);
 
   /* cada comando começa com a linha limpa; se o leitor está na IDE, o cursor já vai para o terminal (sem rolar a página) */
-  useEffect(() => { setTentativas([]); setEntrada(""); }, [q]);
+  useEffect(() => { setTentativas([]); setEntrada(""); setTrocaAtual(null); setMenu(null); }, [q]);
   useEffect(() => { if (aDigitar && raiz.current?.contains(document.activeElement)) campo.current?.focus({ preventScroll: true }); }, [q, aDigitar]);
   const rodarComando = (quem: "leitor" | "pediu") => { if (quadro.tipo === "acao") setRodou((r) => ({ ...r, [quadro.k]: quem })); };
   /* o que o terminal do livro responde ao que o leitor digita: o comando da vez roda; o resto ganha uma dica do livro */
@@ -235,13 +312,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   useEffect(() => { setQ(quadros.findIndex((x) => x.tipo === "abre" && x.p === passoAtual.current)); }, [direto]);
   /* as setas do teclado avançam e voltam, quando o foco está na IDE */
   const teclas = (e: React.KeyboardEvent) => {
-    if ((e.target as HTMLElement).closest("input, button.ic-opcao-aposta, .ide-opcoes, .ic-opcoes")) return;
+    if ((e.target as HTMLElement).closest("input, button.ic-opcao-aposta, .ide-opcoes, .ic-opcoes, .ic-menu-troca")) return;
     if (e.key === "ArrowRight" && podeSeguir) { setQ(q + 1); e.preventDefault(); }
     if (e.key === "ArrowLeft" && q > 0) { setQ(q - 1); e.preventDefault(); }
   };
 
   const prompt = (onde: string) => <><span className="ide-pr">voce@maquina</span>:<span className="ide-cwd">{onde}</span>$ </>;
-  const saida = (t: Trecho[], k: number) => t.map((x, j) => x.tipo === "linha" ? <div key={j} className={x.c || undefined}>{x.l || " "}</div> : (
+  const saida = (t: Trecho[], k: number | string) => t.map((x, j) => x.tipo === "linha" ? <div key={j} className={x.c || undefined}>{x.l || " "}</div> : (
     <div key={j} className="ic-dobra">
       <button type="button" onClick={() => setAbertas((s) => { const n = new Set(s); const c = `${k}:${j}`; n.has(c) ? n.delete(c) : n.add(c); return n; })}>
         ⋯ {x.linhas.length} linhas do caminho do erro fora do seu código
@@ -251,6 +328,26 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
 
   /* o que o leitor digitou antes de acertar o comando da vez fica na tela, logo antes dele, como num terminal */
   const errados = acao?.tipo === "rodar" && tentativas.map((t, j) => <div key={`t${j}`}><div>{prompt(acao.onde)}{t.texto}</div>{t.aviso && <div className="ic-livro">{t.aviso}</div>}</div>);
+  const cartaoAposta = (ap: Aposta, responder: (op: number | "pulou") => void) => <div className="ide-aposta" role="group" aria-label="Aposte antes de ver">
+    <b>aposte antes de ver</b>
+    <p>{ap.pergunta}</p>
+    <div className="ide-opcoes">
+      {ap.opcoes.map((o, j) => <button key={j} type="button" onClick={() => responder(j)}>{o}</button>)}
+      <button type="button" className="ide-pular" onClick={() => responder("pulou")}>só mostrar</button>
+    </div>
+  </div>;
+  const veredito = (ap: Aposta, feita: number) => <div className={`ide-veredito ${feita === ap.certa ? "ide-acertou" : "ide-errou"}`}>
+    {feita === ap.certa ? <Check size={14} /> : <X size={14} />}
+    {feita === ap.certa ? "Você acertou." : `Você apostou "${ap.opcoes[feita]}". Saiu: ${ap.opcoes[ap.certa]}.`}
+  </div>;
+  /* as trocas que o leitor rodou num comando: cada uma com o comando, a aposta (se tem) e a saída gravada dela */
+  const trocasRodadas = (a: Extract<AcaoIde, { tipo: "rodar" }>, k: number) => (tentadas[k] ?? []).map((id) => {
+    const o = a.variar!.opcoes.find((x) => x.id === id)!, feita = apostasTroca[id];
+    const pendente = !!o.aposta && !direto && feita === undefined;
+    return <div key={id}><div>{prompt(a.onde)}{o.comando}</div>
+      {pendente ? cartaoAposta(o.aposta!, (op) => setApostasTroca((v) => ({ ...v, [id]: op })))
+        : <>{o.aposta && typeof feita === "number" && veredito(o.aposta, feita)}{saida(o.saida, `${k}:${id}`)}</>}</div>;
+  });
   const secoes = [...new Set(passos.map((p) => p.secao))];
   const apostaFeita = acao?.tipo === "rodar" && acao.aposta && typeof apostas[quadro.k as number] === "number" ? apostas[quadro.k as number] as number : null;
 
@@ -288,6 +385,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         ...pede,
         ...(aposta !== undefined ? [pessoa("ap", <p>{aposta === "pulou" ? "Só me mostra." : `Aposto: ${(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.`}</p>)] : []),
         ia("n", <p><Md t={feito(a, quem === "leitor")} /> <Md t={a.nota} /></p>),
+        ...(a.tipo === "rodar" && a.variar ? trocasNoChat(a, x.k) : []),
       ];
     }
     const b = a.blocos[x.b], chave = `${x.k}:${x.b}`, r = respostas[chave];
@@ -315,6 +413,20 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       ] : []),
     ];
   };
+  /* o convite para trocar, e cada troca que o leitor fez: a pergunta dele, a aposta (se tem) e o comentário */
+  function trocasNoChat(a: Extract<AcaoIde, { tipo: "rodar" }>, k: number): Fala[] {
+    const fs: Fala[] = [ia("v", <p><Md t={a.variar!.convite} /></p>)];
+    for (const id of tentadas[k] ?? []) {
+      const o = a.variar!.opcoes.find((x) => x.id === id)!, feita = apostasTroca[id];
+      fs.push(pessoa(`vp-${id}`, <p>E com <code>{o.rotulo}</code>?</p>));
+      if (o.aposta && !direto) {
+        if (feita === undefined) { fs.push(ia(`ve-${id}`, <p>Antes de ver: aposta comigo no terminal.</p>)); break; }
+        fs.push(pessoa(`va-${id}`, <p>{feita === "pulou" ? "Só me mostra." : `Aposto: ${o.aposta.opcoes[feita]}.`}</p>));
+      }
+      fs.push(ia(`vn-${id}`, <p><Md t={o.nota} /></p>));
+    }
+    return fs;
+  }
   /* o ritmo de um chat de verdade: a fala do leitor entra na hora em que ele age; a da IA vem depois do "digitando".
      Só entra o que é novo; voltar, o modo direto e quem pede menos movimento veem tudo de uma vez. */
   const falasAgora = falas(quadro, q);
@@ -343,7 +455,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     return () => relogios.forEach(clearTimeout);
   }, [q, tipos, direto, quadros]);
   /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
-  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !(perguntaOnde && q === 0);
+  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !apostandoTroca && !(perguntaOnde && q === 0);
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
     const f = i === q ? falasAgora.slice(0, visiveis) : falas(x, i);
     return f.map((y) => <Mensagem key={`${i}:${y.chave}`} f={y} ia={aba} />);
@@ -407,14 +519,21 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
           {acao?.tipo === "apagar" && <li><button type="button" disabled className="ic-apagado">{icone(acao.arquivo)}<span>{acao.arquivo}</span><i className="ide-git">D</i></button></li>}
         </ul>}
       </nav>
-      <div className="ide-editor">
+      <div className="ide-editor" ref={editor}>
         <div className="ide-abas" role="tablist" aria-label="Arquivos abertos">
           {abas.map((a) => <button key={a} type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>)}
         </div>
         {pausa && <div className="ic-suavez ic-suavez-editor" role="note">{cartaoSuaVez}</div>}
         {versao?.html
-          ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
+          ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} onKeyDown={teclaCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
           : <div className="ide-codigo ic-sem-arquivo" ref={codigo}><p>{nomes.length ? "Abra um arquivo no explorador." : "Nenhum arquivo ainda: o projeto começa no terminal."}</p></div>}
+        {menu && variar && <div ref={menuRef} className="ic-menu-troca" role="menu" aria-label={`Trocar ${troca?.rotulo ?? variar.original}`} onKeyDown={teclaMenu}
+          style={{ left: menu.x, ...(menu.baixo !== undefined ? { bottom: menu.baixo } : { top: menu.y }) }}>
+          {[{ id: null as string | null, rotulo: variar.original }, ...variar.opcoes].map((o) => (
+            <button key={o.id ?? "livro"} type="button" role="menuitemradio" aria-checked={(trocaAtual ?? null) === o.id} onClick={() => escolher(o.id)}>
+              <code>{o.rotulo}</code>{o.id === null && <small>o do livro</small>}{(trocaAtual ?? null) === o.id && <Check size={14} />}
+            </button>))}
+        </div>}
         <div className="ide-painel">
           <div className="ide-painel-abas"><button type="button" aria-selected="true">terminal</button>
             {/* onde o leitor faz o projeto, à mão para trocar: na IDE dele, o comando roda sozinho aqui; no livro, ele digita */}
@@ -424,6 +543,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
           </div>
           <div className="ide-terminal" ref={terminal} aria-live="polite" onClick={() => aDigitar && campo.current?.focus({ preventScroll: true })}>
             {rodados.map(({ a, k }) => a.tipo === "rodar" && <div key={k}>{k === quadro.k && errados}<div>{prompt(a.onde)}{a.comando}</div>{saida(a.saida, k)}
+              {/* o veredito da aposta do comando da vez, logo depois da saída (antes das trocas que o leitor fizer) */}
+              {k === quadro.k && apostaFeita !== null && a.aposta && veredito(a.aposta, apostaFeita)}
+              {a.variar && trocasRodadas(a, k)}
               {a.gravacao && <div className="ic-gravado">↻ resposta do {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o livro repete a gravação, não chama o modelo</div>}</div>)}
             {esperando && errados}
             {aDigitar && acao?.tipo === "rodar" && <div>
@@ -436,22 +558,15 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
             </div>}
             {esperando && !aDigitar && acao?.tipo === "rodar" && <div>
               <div>{prompt(acao.onde)}{acao.comando}</div>
-              <div className="ide-aposta" role="group" aria-label="Aposte antes de ver">
-                <b>aposte antes de ver</b>
-                <p>{acao.aposta!.pergunta}</p>
-                <div className="ide-opcoes">
-                  {acao.aposta!.opcoes.map((o, j) => <button key={j} type="button" onClick={() => apostar(j)}>{o}</button>)}
-                  <button type="button" className="ide-pular" onClick={() => apostar("pulou")}>só mostrar</button>
-                </div>
-              </div>
+              {cartaoAposta(acao.aposta!, apostar)}
             </div>}
-            {apostaFeita !== null && acao?.tipo === "rodar" && (
-              <div className={`ide-veredito ${apostaFeita === acao.aposta!.certa ? "ide-acertou" : "ide-errou"}`}>
-                {apostaFeita === acao.aposta!.certa ? <Check size={14} /> : <X size={14} />}
-                {apostaFeita === acao.aposta!.certa ? "Você acertou." : `Você apostou "${acao.aposta!.opcoes[apostaFeita]}". Saiu: ${acao.aposta!.opcoes[acao.aposta!.certa]}.`}
-              </div>
-            )}
-            {!esperando && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length || iniciais.length ? "~/atendimento-bemtevi" : "~")}<span className="ide-cursor" /></div>}
+            {!esperando && !apostandoTroca && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length || iniciais.length ? "~/atendimento-bemtevi" : "~")}
+              {/* a troca no próprio comando: ele volta à linha (como a seta para cima), e a palavra é o seletor */}
+              {variar && !variar.arquivo && acao?.tipo === "rodar" ? (() => {
+                const palavra = troca?.rotulo ?? variar.original, cmd = troca?.comando ?? acao.comando, i = cmd.indexOf(palavra);
+                return <span className="ic-relembrado">{cmd.slice(0, i)}<button type="button" className="ic-varia" aria-haspopup="menu" aria-label={`Trocar ${palavra}`}
+                  onClick={(e) => abrirMenu(e.currentTarget)}>{palavra}</button>{cmd.slice(i + palavra.length)}</span>;
+              })() : <span className="ide-cursor" />}</div>}
           </div>
         </div>
       </div>
@@ -499,8 +614,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
       <button type="button" className="ic-seguir" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-        {aDigitar ? "rode no terminal" : esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-        {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
+        {aDigitar ? "rode no terminal" : esperando || apostandoTroca ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+        {!esperando && !perguntando && !apostandoTroca && q < quadros.length - 1 && <ChevronRight size={16} />}
       </button>
       </>}
     </nav>

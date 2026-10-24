@@ -16,6 +16,8 @@ paga, só com o ok dos autores e a chave no ambiente): LIVRO_GRAVACAO_MODO=grava
 Os roteiros de construção (livros/<livro>/roteiros/*.json) contam o caminho do código na ordem em que se
 pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, escrever, inserir, trocar, apagar e
 rodar (com `"onde": "acima"`, o comando roda na pasta de cima, como o `uv init`). Cada `rodar` grava a saída no estado em que o código está naquele passo.
+Um `rodar` com `variar` grava também as variantes (modificar antes de criar): cada opção troca um trecho do arquivo, ou
+do comando, roda de verdade com id próprio, e o arquivo volta; o projeto tem que sair igual de todas.
 
 Os roteiros se encadeiam: o 01 parte da pasta vazia, e cada um dos seguintes parte de onde o anterior terminou.
 No fim, a pasta do roteiro NN tem que ser igual a marcos/cap-NN/ (o projeto congelado no fim do capítulo NN) ou,
@@ -183,6 +185,8 @@ def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Pa
                 estado["gerados"] = gerados
             if apagados := sorted(set(antes_de_rodar) - set(depois_de_rodar)):
                 estado["apagados"] = apagados
+            if "variar" in passo:
+                estado["variantes"] = variantes(passo, pasta, cwd, leitor, env, livro, saidas, onde)
             estados.append(estado)
             continue
         if acao == "apagar":
@@ -225,6 +229,38 @@ def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Pa
     if diferentes:
         raise RoteiroErrado(f"{roteiro.name}: no fim, a pasta não é igual a {projeto.relative_to(RAIZ)}: {', '.join(diferentes)}")
     return saidas, estados, pasta
+
+
+def variantes(passo: dict, pasta: Path, cwd: Path, leitor: str, env: dict, livro: str, saidas: dict, onde: str) -> dict:
+    """Modificar antes de criar: cada opção de `variar` troca o trecho (no arquivo, ou no comando, sem arquivo), roda, e o
+    arquivo volta ao que era. A saída entra em `saidas` com o id da opção; o estado guarda o arquivo trocado, para a IDE."""
+    v, antes, feitas = passo["variar"], arquivos(pasta), {}
+    arquivo = v.get("arquivo")
+    for op in v["opcoes"]:
+        comando, alvo = passo["comando"], pasta / arquivo if arquivo else None
+        original = alvo.read_text(encoding="utf-8") if alvo else comando
+        if original.count(v["trecho"]) != 1:
+            raise RoteiroErrado(f"{onde}: o trecho a variar aparece {original.count(v['trecho'])} vezes em {arquivo or 'o comando'}: {v['trecho']!r}")
+        trocado = original.replace(v["trecho"], op["por"])
+        if alvo:
+            alvo.write_text(trocado, encoding="utf-8")
+        else:
+            comando = trocado
+        try:
+            codigo, linhas = executar(comando, pasta, leitor, com_gravacao(env, livro, op["id"]), cwd)
+        finally:
+            if alvo:
+                alvo.write_text(original, encoding="utf-8")
+        if codigo != op.get("espera", 0):
+            raise RoteiroErrado(f"{onde}: a variante {op['id']} saiu com {codigo}, o roteiro espera {op.get('espera', 0)}\n"
+                                + "\n".join(f"    {l}" for l, _ in linhas))
+        if op["id"] in saidas:
+            raise RoteiroErrado(f"{onde}: a variante {op['id']} repete um id")
+        saidas[op["id"]] = {"comando": comando, "saiu_com": codigo, "saida": linhas}
+        feitas[op["id"]] = {"arquivo": arquivo, "conteudo": trocado, "alteradas": alteradas(original, trocado)} if alvo else {}
+    if arquivos(pasta) != antes:
+        raise RoteiroErrado(f"{onde}: as variantes deixaram o projeto diferente do que estava")
+    return feitas
 
 
 def diferenca(a: Path, b: Path) -> list[str]:
