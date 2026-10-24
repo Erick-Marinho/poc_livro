@@ -109,3 +109,36 @@ test("o rodapé sabe o Python do projeto: o que o uv achou ao criar o .venv", as
   assert.match(python.versao, /^3\.13\.\d+$/);
   assert.equal(acoes[python.desde].comando, "uv add pydantic");
 });
+
+/* ===== o capítulo 2: a IDE abre onde o capítulo 1 terminou ===== */
+const roteiro02 = json("livros/ciclo-de-vida/roteiros/02.json");
+/* os passos do capítulo 2 só chegam na etapa 4b: aqui, um passo só, cobrindo o roteiro inteiro */
+const um02 = { repositorio: "https://github.com/Erick-Marinho/atendimento-bemtevi", prefixo_tag: "cap-02",
+  passos: [{ id: "tudo", secao: "2.5a", titulo: "o capítulo inteiro", curta: "tudo", de: 1, ate: roteiro02.passos.length, objetivo: "x", temos: "y", pedido: "z" }] };
+const cap02 = await montarIde({ ...entrada(), roteiro: roteiro02, estados: json("livros/ciclo-de-vida/roteiros/02.estados.json"),
+  capitulo: um02, secoes: { "2.5a": "O agente" }, anteriores: [json("livros/ciclo-de-vida/roteiros/01.estados.json")],
+  gravacoes: { "r02-medir": { quando: "2026-10-24", modelo: "gpt-6-luna", chamadas: 21 } } });
+
+test("o capítulo 1 abre numa pasta vazia; o 2, com o projeto do fim do 1", async () => {
+  assert.equal((await montarIde(entrada())).iniciais.length, 0);
+  const nomes = cap02.iniciais.map((f) => f.nome).sort();
+  assert.deepEqual(nomes, [".gitignore", ".python-version", "README.md", "baseline.py", "contrato.py", "dados/catalogo.json", "dados/clientes.json",
+    "dados/loja.json", "dados/pedidos.json", "dados/politica.md", "pyproject.toml", "referencia.jsonl", "test_referencia.py", "uv.lock"]);
+  /* o uv add do capítulo 2 muda arquivos que já existiam: não são novos */
+  const add = cap02.acoes[0];
+  assert.equal(add.comando, "uv add langgraph");
+  assert.deepEqual(add.gerados.map((g) => [g.nome, g.novo]).sort(), [["pyproject.toml", false], ["uv.lock", false]]);
+  assert.ok(cap02.acoes.find((a) => a.tipo === "editar" && a.arquivo === "agente.py").novo);
+  /* o ponto de volta do primeiro passo é o início do capítulo */
+  assert.equal(cap02.passos[0].volta.tag, "cap-02/inicio");
+});
+
+test("o comando que chamou o modelo diz quando e com qual foi gravado; os outros, não", () => {
+  const rodados = cap02.acoes.filter((a) => a.tipo === "rodar");
+  assert.deepEqual(rodados.filter((a) => a.gravacao).map((a) => [a.id, a.gravacao.modelo, a.gravacao.chamadas]), [["r02-medir", "gpt-6-luna", 21]]);
+});
+
+test("o resumo da gravação sai do arquivo gravado de verdade", async () => {
+  const { resumirGravacao } = await import("../src/lib/ideCapitulo.ts");
+  assert.deepEqual(resumirGravacao(json("livros/ciclo-de-vida/gravacoes/r02-medir.json")), { quando: "2026-10-24", modelo: "gpt-6-luna", chamadas: 21 });
+});

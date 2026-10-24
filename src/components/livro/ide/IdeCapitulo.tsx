@@ -47,7 +47,10 @@ function feito(a: AcaoIde): string {
   return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
 }
 
-export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[]; python: { versao: string; desde: number } | null }) {
+export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [] }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
+  python: { versao: string; desde: number } | null;
+  /** os arquivos com que a IDE abre: o projeto como os capítulos anteriores o deixaram */
+  iniciais?: { nome: string; versao: number }[] }) {
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
@@ -84,7 +87,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
 
   /* o projeto depois da ação feitaAte: a versão de cada arquivo, e o que nasceu ou mudou neste passo */
   const projeto = useMemo(() => {
-    const arquivos: Record<string, number> = {};
+    const arquivos: Record<string, number> = Object.fromEntries(iniciais.map((f) => [f.nome, f.versao]));
     const marcas = new Map<string, "U" | "M">();
     const marcar = (nome: string, novo: boolean, k: number) => { if (k >= passo.de - 1) marcas.set(nome, novo || marcas.get(nome) === "U" ? "U" : "M"); };
     for (let k = 0; k <= feitaAte; k++) {
@@ -98,7 +101,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       }
     }
     return { arquivos, marcas };
-  }, [feitaAte, acoes, passo.de, apostas, direto, quadro.tipo]);
+  }, [feitaAte, acoes, iniciais, passo.de, apostas, direto, quadro.tipo]);
 
   /* o arquivo à vista: o da ação, ou o primeiro que o comando criou ou mudou, ou o que o leitor abriu */
   const daAcao = !acao ? null : acao.tipo === "editar" ? acao.arquivo : acao.tipo === "copiar" ? acao.arquivos[0].nome
@@ -306,7 +309,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
     {passo.volta && <span className="ic-volta">Perdeu o ritmo? <code>git checkout {passo.volta.tag}</code> traz o projeto como estava no começo deste passo, no clone de <a href={passo.volta.repositorio}>{passo.volta.repositorio.replace(/^https:\/\//, "")}</a>.</span>}
   </>;
   /* o rodapé: o git existe depois do uv init; os problemas são os do último comando à vista; o Python, o do .python-version */
-  const temGit = feitaAte >= 0 && rodados.length > 0;
+  const temGit = iniciais.length > 0 || (feitaAte >= 0 && rodados.length > 0);
   const ultimoRodado = rodados.at(-1)?.a;
   const problemas = ultimoRodado?.tipo === "rodar" && ultimoRodado.erro ? 1 : 0;
   const pv = projeto.arquivos[".python-version"];
@@ -361,7 +364,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
         <div className="ide-painel">
           <div className="ide-painel-abas"><button type="button" aria-selected="true">terminal</button></div>
           <div className="ide-terminal" ref={terminal} aria-live="polite">
-            {rodados.map(({ a, k }) => a.tipo === "rodar" && <div key={k}><div>{prompt(a.onde)}{a.comando}</div>{saida(a.saida, k)}</div>)}
+            {rodados.map(({ a, k }) => a.tipo === "rodar" && <div key={k}><div>{prompt(a.onde)}{a.comando}</div>{saida(a.saida, k)}
+              {a.gravacao && <div className="ic-gravado">↻ resposta do {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o livro repete a gravação, não chama o modelo</div>}</div>)}
             {esperando && acao?.tipo === "rodar" && <div>
               <div>{prompt(acao.onde)}{acao.comando}</div>
               <div className="ide-aposta" role="group" aria-label="Aposte antes de ver">
@@ -379,7 +383,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
                 {apostaFeita === acao.aposta!.certa ? "Você acertou." : `Você apostou "${acao.aposta!.opcoes[apostaFeita]}". Saiu: ${acao.aposta!.opcoes[acao.aposta!.certa]}.`}
               </div>
             )}
-            {!esperando && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length ? "~/atendimento-bemtevi" : "~")}<span className="ide-cursor" /></div>}
+            {!esperando && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length || iniciais.length ? "~/atendimento-bemtevi" : "~")}<span className="ide-cursor" /></div>}
           </div>
         </div>
       </div>

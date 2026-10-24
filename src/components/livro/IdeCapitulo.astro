@@ -6,15 +6,19 @@
  * e fecha com "agora você tem". O que ela mostra é montado em src/lib/ideCapitulo.ts.
  */
 import IdeCapitulo from "./ide/IdeCapitulo";
-import { montarIde } from "../../lib/ideCapitulo.ts";
-import type { Entrada } from "../../lib/ideCapitulo.ts";
+import { montarIde, resumirGravacao } from "../../lib/ideCapitulo.ts";
+import type { Entrada, GravacaoIde } from "../../lib/ideCapitulo.ts";
 
 type Props = Entrada & { numero: string; legenda: string };
 const { legenda, ...entrada } = Astro.props;
-const { acoes, passos, versoes, python } = await montarIde(entrada);
+/* o que cada comando gravou do modelo (scripts/gravacao): o terminal diz quando e com qual modelo */
+const arquivos = import.meta.glob<{ default: Record<string, { quando: string; modelo: string }> }>("../../../livros/*/gravacoes/*.json", { eager: true });
+const gravacoes: Record<string, GravacaoIde> = Object.fromEntries(
+  Object.entries(arquivos).map(([caminho, m]) => [caminho.split("/").pop()!.replace(/\.json$/, ""), resumirGravacao(m.default)]));
+const { acoes, passos, versoes, python, iniciais } = await montarIde({ ...entrada, gravacoes });
 ---
 <figure class="ide-capitulo">
-  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} />
+  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} iniciais={iniciais} />
   <figcaption><b>Figura {entrada.numero}</b> · {legenda}</figcaption>
 </figure>
 <style>

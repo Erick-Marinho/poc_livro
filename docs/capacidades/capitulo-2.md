@@ -10,7 +10,8 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - **1.** O grafo com um modelo falso, sem chamada paga.
 - **2.** A gravação: o build repete o que o modelo respondeu, e falha se pedir uma chamada não gravada.
 - **3.** A primeira rodada paga: as 20 perguntas com o GPT-6 Luna, gravadas (ok e chave do Erick).
-- **4.** O roteiro do capítulo na IDE: passos, blocos, apostas e pedidos.
+- **4a.** A IDE do capítulo 2 abre com o projeto do fim do 1, e diz quando a resposta do modelo foi gravada.
+- **4b.** O roteiro 02 completo: passos, blocos, apostas, um erro do caminho e os pedidos (rascunho).
 - **5.** O texto do capítulo 2, com `Pendente` na voz dos autores.
 - **6.** O placar ganha o marco do capítulo 2, e o repositório do leitor ganha as tags `cap-02`.
 
@@ -31,9 +32,12 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 4
+## Etapa atual: 4a
 
-A detalhar: o roteiro do capítulo na IDE (passos, blocos, apostas, pedidos), partindo do fim do capítulo 1.
+Arquivos: `lib/ideCapitulo.ts` (os arquivos de abertura vindos dos estados dos capítulos anteriores, o resumo da
+gravação), `IdeCapitulo.astro` (lê `gravacoes/*.json`), a ilha da IDE e os testes. Evidência: o capítulo 2 abre com
+os 14 arquivos do fim do 1, o `uv add` marca `pyproject.toml` e `uv.lock` como mudados (não novos), e o terminal do
+`medir.py` diz "gravada em 24/10/2026 com gpt-6-luna (21 chamadas)". Fica fora: os passos e o texto (4b e 5).
 
 ## Registro
 

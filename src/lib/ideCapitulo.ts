@@ -1,7 +1,8 @@
 /**
  * O que a IDE do capítulo mostra, montado a partir do roteiro, dos estados e das saídas gravadas (scripts/saidas.py).
  * Falha (e o livro não monta) se os passos não emendarem e cobrirem o roteiro inteiro, se faltar uma saída, ou se uma
- * aposta não tiver a resposta certa entre as opções.
+ * aposta não tiver a resposta certa entre as opções. Do capítulo 2 em diante, a IDE abre com o projeto como os
+ * capítulos anteriores o deixaram (os estados deles), e o comando que chamou um modelo diz quando e com qual foi gravado.
  * Puro de propósito: o teste do livro chama isto direto, sem montar a página.
  */
 import { codeToHtml } from "shiki";
@@ -14,11 +15,13 @@ export type TermoIde = { chave: string; rotulo: string; texto: string; marca?: s
 export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porque: string };
 /** um bloco lógico do código que entrou: as linhas (no arquivo daquele momento), o que ele faz, e as palavras dele */
 export type BlocoIde = { a: number; z: number; titulo: string; texto: string; termos: TermoIde[]; pergunta?: PerguntaIde };
+/** o que um modelo de verdade respondeu num comando, gravado uma vez e repetido no livro (scripts/gravacao) */
+export type GravacaoIde = { quando: string; modelo: string; chamadas: number };
 export type AcaoIde = { nota: string } & (
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
-  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta;
+  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta; gravacao?: GravacaoIde;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
@@ -44,9 +47,36 @@ export type Entrada = {
   glossario: { termos: Record<string, { marca?: string; rotulo?: string; texto: string }> };
   pasta?: string;
   numero?: string;
+  /** os estados dos capítulos anteriores, em ordem: a IDE abre com o projeto como eles o deixaram */
+  anteriores?: Estado[][];
+  /** o que os comandos gravaram do modelo, por id do comando (resumirGravacao) */
+  gravacoes?: Record<string, GravacaoIde>;
 };
 
-export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, glossario, pasta = "~/atendimento-bemtevi", numero = "" }: Entrada) {
+/** O resumo de um arquivo de gravação (livros/<livro>/gravacoes/<id>.json): o dia, o modelo e quantas chamadas. */
+export function resumirGravacao(itens: Record<string, { quando: string; modelo: string }>): GravacaoIde {
+  const lista = Object.values(itens);
+  /* o nome do modelo, como a LangChain guarda (a OpenAI usa model_name; outros, model) */
+  const nome = (i: { modelo: string }) => { const k = JSON.parse(i.modelo.split("---")[0]).kwargs ?? {}; return k.model ?? k.model_name ?? "modelo desconhecido"; };
+  const modelos = new Set(lista.map(nome));
+  const dias = lista.map((i) => i.quando).sort();
+  return { quando: dias.at(-1) ?? "", modelo: [...modelos].join(", "), chamadas: lista.length };
+}
+
+/** O projeto como os estados deixaram: o conteúdo de cada arquivo (null: grande demais para mostrar). */
+function projetoDepois(estados: Estado[], de: Record<string, string | null> = {}): Record<string, string | null> {
+  const atual = { ...de };
+  for (const e of estados) {
+    if (e.arquivo) atual[e.arquivo] = e.conteudo!;
+    for (const [n, t] of Object.entries({ ...(e.arquivos ?? {}), ...(e.gerados ?? {}) })) atual[n] = t;
+    for (const n of e.apagados ?? []) delete atual[n];
+    if (e.apagado) delete atual[e.apagado];
+  }
+  return atual;
+}
+
+export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, glossario, pasta = "~/atendimento-bemtevi", numero = "",
+  anteriores = [], gravacoes = {} }: Entrada) {
   const falhar = (m: string): never => { throw new Error(`IDE do capítulo (figura ${numero}): ${m}`); };
 
   /* os passos emendam um no outro e cobrem o roteiro inteiro */
@@ -76,7 +106,8 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
   }
 
   /* o fim de cada arquivo (é igual ao fim do capítulo, o saidas.py garante): os blocos apontam linhas dele, como as partes do roteiro */
-  const finais: Record<string, string> = {};
+  const inicio = anteriores.reduce<Record<string, string | null>>((proj, est) => projetoDepois(est, proj), {});
+  const finais: Record<string, string> = Object.fromEntries(Object.entries(inicio).filter(([, t]) => t !== null)) as Record<string, string>;
   for (const e of estados) { if (e.arquivo) finais[e.arquivo] = e.conteudo!; for (const [n, t] of Object.entries({ ...(e.arquivos ?? {}), ...(e.gerados ?? {}) })) if (t !== null) finais[n] = t; }
   /* um bloco: acha as linhas dele no arquivo daquele momento, pelo texto, e confere as palavras e a pergunta */
   function blocosDe(k: number, arquivo: string, conteudo: string, defs: DefBloco[]): BlocoIde[] {
@@ -97,7 +128,10 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
   }
 
   /* as ações do roteiro, na ordem, cada uma com o que muda no projeto */
-  const atual: Record<string, string | null> = {};
+  const atual: Record<string, string | null> = { ...inicio };
+  /* os arquivos com que a IDE abre: os que os capítulos anteriores deixaram (no capítulo 1, nenhum) */
+  const iniciais: { nome: string; versao: number }[] = [];
+  for (const [nome, texto] of Object.entries(inicio)) iniciais.push({ nome, versao: await versao(nome, texto) });
   const acoes: AcaoIde[] = [];
   const cwdLeitor = (onde?: string) => (onde === "acima" ? pasta.replace(/\/[^/]+$/, "") || "~" : pasta);
   for (const e of estados) {
@@ -112,7 +146,7 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
       }
       for (const nome of e.apagados ?? []) delete atual[nome];
       acoes.push({ tipo: "rodar", nota: p.nota, id: e.rodou, comando: s.comando, onde: cwdLeitor(p.onde), saida: dobrarErro(s.saida),
-        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), aposta: p.aposta, gerados, apagados: e.apagados ?? [] });
+        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), aposta: p.aposta, gravacao: gravacoes[e.rodou], gerados, apagados: e.apagados ?? [] });
     } else if (e.arquivos) {
       const arquivos = [];
       for (const [nome, texto] of Object.entries(e.arquivos)) { arquivos.push({ nome, versao: await versao(nome, texto) }); atual[nome] = texto; }
@@ -138,7 +172,10 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     return { n: i + 1, id: p.id, secao: p.secao, nomeSecao: secoes[p.secao], titulo: p.titulo, curta: p.curta, de: p.de, ate: p.ate,
       objetivo: p.objetivo, temos: p.temos, engano: p.engano, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
     pedido: p.pedido ?? falhar(`o passo ${p.id} não tem o pedido do autor ao chat`), rascunho: !p.pedido_revisado,
-    volta: capitulo.repositorio && i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` } : undefined };
+    /* voltar ao começo de um passo: o fim do anterior; no primeiro passo, o início do capítulo (que só existe do 2 em diante) */
+    volta: !capitulo.repositorio ? undefined
+      : i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` }
+      : anteriores.length ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag}/inicio` } : undefined };
   });
   /* o Python do projeto, como o uv contou ao criar o ambiente (o .venv): é o que o rodapé da IDE mostra */
   let python: { versao: string; desde: number } | null = null;
@@ -146,5 +183,5 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     if (python || a.tipo !== "rodar") return;
     for (const t of a.saida) { const m = t.tipo === "linha" && t.l.match(/^Using CPython (\S+)/); if (m) { python = { versao: m[1], desde: k }; break; } }
   });
-  return { acoes, passos, versoes, python };
+  return { acoes, passos, versoes, python, iniciais };
 }

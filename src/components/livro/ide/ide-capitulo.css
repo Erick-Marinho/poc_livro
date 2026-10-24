@@ -169,3 +169,6 @@
 .ic.ic-foco .ide-corpo { height: auto; min-height: 0 }
 /* em tela estreita, as partes da janela empilham com altura própria: a janela rola por dentro, em vez de espremer */
 @media (max-width: 1000px) { .ic.ic-foco .ic-janela { display: block; overflow-y: auto } .ic.ic-foco .ide-corpo { height: auto } }
+
+/* o comando que chamou um modelo de verdade: a resposta é a gravada, e o terminal diz */
+.ic-gravado { margin: 2px 0 6px; color: #8fb8e8; font-style: italic }
