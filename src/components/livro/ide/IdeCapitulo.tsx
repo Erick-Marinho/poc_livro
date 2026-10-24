@@ -155,6 +155,73 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const secoes = [...new Set(passos.map((p) => p.secao))];
   const apostaFeita = acao?.tipo === "rodar" && acao.aposta && typeof apostas[quadro.k as number] === "number" ? apostas[quadro.k as number] as number : null;
 
+  /* ===== a conversa do chat: tudo o que já aconteceu neste passo, como mensagens ===== */
+  const [aba, setAba] = useState<"Claude Code" | "Codex">("Claude Code");
+  const conversa = useRef<HTMLDivElement>(null);
+  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas]);
+  const Ia = ({ children }: { children: React.ReactNode }) => <div className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha">{children}</div></div>;
+  const Pessoa = ({ quem, children }: { quem: string; children: React.ReactNode }) => <div className="ic-msg ic-pessoa"><span className="ic-quem">{quem}</span><div className="ic-bolha">{children}</div></div>;
+  const daqui = quadros.map((x, i) => ({ x, i })).filter(({ x, i }) => x.p === quadro.p && i <= q);
+  const mensagens = daqui.map(({ x, i }) => {
+    const atual = i === q;
+    if (x.tipo === "abre") return <Fragment key={i}>
+      <p className="ic-divisa">passo {passo.n} · {passo.titulo}</p>
+      {passo.pensamento
+        ? <Pessoa quem={primeiro(passo.pensamento.autor)}><p>{passo.pensamento.pergunta}</p><p className="ic-fraco">{passo.pensamento.por_que}</p>
+            {passo.pensamento.espero && !acoes.slice(passo.de - 1, passo.ate).some((a) => a.tipo === "rodar" && a.aposta) && <p className="ic-fraco">espero: {passo.pensamento.espero}</p>}</Pessoa>
+        : <p className="ic-pendente" data-pendente="pensamento">💭 o que o autor pensa neste passo: pendente</p>}
+      <Ia>{passo.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={passo.objetivo} /></p></Ia>
+    </Fragment>;
+    if (x.tipo === "fecha") return <Ia key={i}><p className="ic-temos">✓ <b>agora você tem:</b> <Md t={passo.temos} /></p>{passo.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</Ia>;
+    const a = acoes[x.k];
+    if (x.b === undefined || a.tipo !== "editar") {
+      const aposta = a.tipo === "rodar" && a.aposta ? apostas[x.k] : undefined;
+      if (atual && esperando) return <Ia key={i}><p>Antes de rodar: o que você acha que vai acontecer? Aposte no terminal.</p></Ia>;
+      return <Fragment key={i}>
+        <Ia><p><Md t={a.nota} /></p></Ia>
+        {typeof aposta === "number" && passo.pensamento?.espero && <Pessoa quem={primeiro(passo.pensamento.autor)}><p>Eu tinha apostado: {passo.pensamento.espero}</p></Pessoa>}
+      </Fragment>;
+    }
+    const b = a.blocos[x.b], chave = `${x.k}:${x.b}`, r = respostas[chave];
+    return <Fragment key={i}>
+      <Ia>
+        {x.b === 0 && <p className="ic-fraco"><Md t={a.nota} /></p>}
+        <p className="ic-bloco-titulo">bloco {x.b + 1} de {a.blocos.length} · {b.titulo} <span>(linhas {b.a}{b.z > b.a ? `–${b.z}` : ""})</span></p>
+        <p><Md t={b.texto} /></p>
+        {b.termos.length > 0 && <div className="ic-termos">{b.termos.map((t) => atual
+          ? <button key={t.chave} type="button" aria-expanded={termo === t.chave} onClick={() => setTermo(termo === t.chave ? null : t.chave)}><code>{t.rotulo}</code></button>
+          : <code key={t.chave} className="ic-termo-fixo">{t.rotulo}</code>)}</div>}
+      </Ia>
+      {atual && termo && b.termos.some((t) => t.chave === termo) && <>
+        <Pessoa quem="você"><p>O que é <code>{b.termos.find((t) => t.chave === termo)!.rotulo}</code>?</p></Pessoa>
+        <Ia><p>{b.termos.find((t) => t.chave === termo)!.texto}</p></Ia>
+      </>}
+      {b.pergunta && <>
+        <Ia><p><b>Antes de seguir:</b> {b.pergunta.texto}</p>
+          {r === undefined && atual && !direto && <div className="ic-opcoes">
+            {b.pergunta.opcoes.map((o, j) => <button key={j} type="button" onClick={() => setRespostas((v) => ({ ...v, [chave]: j }))}>{o}</button>)}
+            <button type="button" className="ic-pular" onClick={() => setRespostas((v) => ({ ...v, [chave]: "pulou" }))}>só mostrar</button>
+          </div>}
+        </Ia>
+        {r !== undefined && <>
+          <Pessoa quem="você"><p>{r === "pulou" ? "Me mostra." : b.pergunta.opcoes[r]}</p></Pessoa>
+          <Ia><p><b className={r === b.pergunta.certa ? "ic-ok" : "ic-nao"}>{r === b.pergunta.certa ? "Isso." : r === "pulou" ? `É "${b.pergunta.opcoes[b.pergunta.certa]}".` : `Não: é "${b.pergunta.opcoes[b.pergunta.certa]}".`}</b> {b.pergunta.porque}</p></Ia>
+        </>}
+      </>}
+    </Fragment>;
+  });
+  const cartaoSuaVez = pausa && <>
+    <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
+    <span><Md t={pausa} /></span>
+    {passo.volta && <span className="ic-volta">Perdeu o ritmo? <code>git checkout {passo.volta.tag}</code> traz o projeto como estava no começo deste passo, no clone de <a href={passo.volta.repositorio}>{passo.volta.repositorio.replace(/^https:\/\//, "")}</a>.</span>}
+  </>;
+  /* o rodapé: o git existe depois do uv init; os problemas são os do último comando à vista; o Python, o do .python-version */
+  const temGit = feitaAte >= 0 && rodados.length > 0;
+  const ultimoRodado = rodados.at(-1)?.a;
+  const problemas = ultimoRodado?.tipo === "rodar" && ultimoRodado.erro ? 1 : 0;
+  const pv = projeto.arquivos[".python-version"];
+  const python = pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
+
   return <div className="ide ic" data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
     <nav className="ic-trilha" aria-label="Passos do capítulo">
@@ -188,6 +255,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
         <div className="ide-abas" role="tablist" aria-label="Arquivos abertos">
           {abas.map((a) => <button key={a} type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>)}
         </div>
+        {pausa && <div className="ic-suavez ic-suavez-editor" role="note">{cartaoSuaVez}</div>}
         {versao?.html
           ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
           : <div className="ide-codigo ic-sem-arquivo" ref={codigo}><p>{nomes.length ? "Abra um arquivo no explorador." : "Nenhum arquivo ainda: o projeto começa no terminal."}</p></div>}
@@ -216,74 +284,37 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
           </div>
         </div>
       </div>
-    </div>
-
-    {/* o passador: o que este momento do passo quer dizer */}
-    <div className="ic-passador">
-      <p className="ic-onde">passo {passo.n} de {passos.length} · seção {passo.secao} · <b>{passo.titulo}</b>
-        {quadro.tipo === "acao" && <span> · ação {quadro.k - passo.de + 2} de {passo.ate - passo.de + 1}</span>}
-        {bloco && acao?.tipo === "editar" && <span> · bloco {quadro.tipo === "acao" ? quadro.b! + 1 : 0} de {acao.blocos.length}</span>}</p>
-
-      {quadro.tipo === "abre" && <div className="ic-quadro">
-        {passo.antes.map((t, i) => <p key={i} className="ic-texto"><Md t={t} /></p>)}
-        <p className="ic-objetivo"><b>no fim deste passo:</b> <Md t={passo.objetivo} /></p>
-        {passo.pensamento ? <div className="ic-pensa">
-          <span className="ic-autor" title={passo.pensamento.autor}>{iniciais(passo.pensamento.autor)}</span>
-          <div><p className="ic-pensa-rot">o que eu penso · {primeiro(passo.pensamento.autor)}</p>
-            <p><b>me pergunto:</b> {passo.pensamento.pergunta}</p>
-            <p><b>por que assim:</b> {passo.pensamento.por_que}</p>
-            {passo.pensamento.espero && !acoes.slice(passo.de - 1, passo.ate).some((a) => a.tipo === "rodar" && a.aposta) && <p><b>espero:</b> {passo.pensamento.espero}</p>}
+      {/* a barra da direita: o chat que guia (uma simulação, escrita pelos autores) */}
+      <aside className="ic-chat" aria-label="Chat que guia o passo">
+        <div className="ic-chat-abas" role="tablist">
+          {(["Claude Code", "Codex"] as const).map((n) => <button key={n} type="button" role="tab" aria-selected={aba === n} onClick={() => setAba(n)}>{n}</button>)}
+        </div>
+        <div className="ic-chat-topo"><b>{passo.titulo}</b><span>passo {passo.n} de {passos.length} · seção {passo.secao}</span></div>
+        <div className="ic-conversa" ref={conversa} aria-live="polite">
+          {mensagens}
+        </div>
+        <div className="ic-compositor">
+          {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
+          <div className="ic-controles">
+            <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
+            <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
+              {esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+              {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
+            </button>
           </div>
-        </div> : <p className="ic-pendente" data-pendente="pensamento">💭 o que eu penso: <span>pendente · as palavras dos autores entram aqui</span></p>}
-      </div>}
-
-      {bloco && <div className="ic-quadro">
-        {quadro.tipo === "acao" && quadro.b === 0 && <p className="ic-nota-acao"><Md t={acao!.nota} /></p>}
-        <p className="ic-bloco-titulo">{bloco.titulo}</p>
-        <p className="ic-texto"><Md t={bloco.texto} /></p>
-        {bloco.termos.length > 0 && <div className="ic-termos">
-          <span className="ic-termos-rot">palavras deste bloco</span>
-          {bloco.termos.map((t) => <button key={t.chave} type="button" aria-expanded={termo === t.chave} onClick={() => setTermo(termo === t.chave ? null : t.chave)}><code>{t.rotulo}</code></button>)}
-          {termo && bloco.termos.find((t) => t.chave === termo) && <p className="ic-def"><code>{bloco.termos.find((t) => t.chave === termo)!.rotulo}</code> {bloco.termos.find((t) => t.chave === termo)!.texto}</p>}
-        </div>}
-        {bloco.pergunta && <div className="ic-pergunta">
-          <p><b>◆ antes de seguir:</b> {bloco.pergunta.texto}</p>
-          <div className="ic-opcoes">{bloco.pergunta.opcoes.map((o, j) => {
-            const r = respostas[chaveBloco];
-            return <button key={j} type="button" disabled={r !== undefined}
-              className={r === undefined ? "" : j === bloco.pergunta!.certa ? "ic-certa" : r === j ? "ic-errada" : ""}
-              onClick={() => setRespostas((x) => ({ ...x, [chaveBloco]: j }))}>{o}</button>;
-          })}{respostas[chaveBloco] === undefined && <button type="button" className="ic-pular" onClick={() => setRespostas((x) => ({ ...x, [chaveBloco]: "pulou" }))}>só mostrar</button>}</div>
-          {respostas[chaveBloco] !== undefined && <p className="ic-porque"><b>{respostas[chaveBloco] === bloco.pergunta.certa ? "Isso." : respostas[chaveBloco] === "pulou" ? "A resposta:" : "Não é essa."}</b> {bloco.pergunta.porque}</p>}
-        </div>}
-      </div>}
-
-      {quadro.tipo === "acao" && acao && !bloco && <div className="ic-quadro">
-        {esperando ? <p className="ic-texto">Antes de rodar: o que você acha que vai acontecer? Aposte no terminal.</p> : <>
-          <p className="ic-texto"><Md t={acao.nota} /></p>
-          {apostaFeita !== null && passo.pensamento?.espero && <p className="ic-apostou"><span className="ic-autor">{iniciais(passo.pensamento.autor)}</span>
-            <span><b>{primeiro(passo.pensamento.autor)} tinha apostado:</b> {passo.pensamento.espero}</span></p>}
-        </>}
-      </div>}
-
-      {pausa && <div className="ic-suavez" role="note">
-        <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
-        <span><Md t={pausa} /></span>
-        {passo.volta && <span className="ic-volta">Perdeu o ritmo? <code>git checkout {passo.volta.tag}</code> traz o projeto como estava no começo deste passo, no clone de <a href={passo.volta.repositorio}>{passo.volta.repositorio.replace(/^https:\/\//, "")}</a>.</span>}
-      </div>}
-
-      {quadro.tipo === "fecha" && <div className="ic-quadro">
-        <p className="ic-temos">✓ <b>agora você tem:</b> <Md t={passo.temos} /></p>
-        {passo.depois.map((t, i) => <p key={i} className="ic-texto"><Md t={t} /></p>)}
-      </div>}
-
-      {<div className="ide-controles ic-controles">
-        <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
-        <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-          {esperando ? "aposte para seguir" : perguntando ? "responda para seguir" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-          {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
-        </button>
-      </div>}
+          <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
+        </div>
+      </aside>
     </div>
+
+    {/* o rodapé, como o da IDE: o ramo do git, os problemas do último comando e o Python do projeto */}
+    <footer className="ic-status">
+      {temGit && <span>⎇ main</span>}
+      <span className={problemas ? "ic-st-erro" : undefined}>⊗ {problemas} ⚠ 0</span>
+      <span className="ic-st-esp" />
+      <span>passo {passo.n}/{passos.length}</span>
+      <span>UTF-8</span><span>LF</span>
+      {python && <span>Python {python}</span>}
+    </footer>
   </div>;
 }
