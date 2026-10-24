@@ -50,5 +50,6 @@ mesmo quando contraria o que se esperava. O nome passa a dizer isso: **Experimen
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `c949877` (e o FontMarAI) | `npm test` com 52 testes (um novo: os endereços antigos redirecionam); pelo túnel, `/experimentos/`, o JSON e o experimento abrem, e `/guias/` e `/guias/segundo-cerebro-local/` levam aos novos; a landing com o card Experimentos, "O experimento do dia" e "Experimentos recentes"; capturas | Erick, 24/10/2026 |
+| 2 | `4f5b94a` | `npm test` com 54 testes; o build falha sem um campo do molde, com resultado que aponta saída inexistente ou sem "X de Y", e com régua que aponta arquivo inexistente; o teste falha sem "O que vamos construir", sem aposta no roteiro, sem a nota do inventado e sem o `Pendente`; capturas no claro, no escuro e no celular | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
