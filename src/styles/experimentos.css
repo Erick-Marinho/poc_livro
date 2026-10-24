@@ -59,3 +59,21 @@
 .topo-site { display: flex; gap: 16px }
 .topo-site a[aria-current="page"] { color: var(--ink); font-weight: 600 }
 .topo-site a:hover { color: var(--acento) }
+
+/* o molde de um experimento (Experimento.astro): o que se testa, no topo, e o que deu, no fim */
+.molde { margin-top: 2.4em; margin-bottom: 2.4em; padding: 22px 24px; border: 1px solid var(--linha); border-radius: 14px; background: var(--nota) }
+.molde h2 { font: 600 12px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 14px }
+.molde p { margin: 12px 0 0; font: 16px/1.6 var(--f-ui) }
+.molde .rotulo { font-weight: 600; color: var(--ink) }
+.molde code { font: 13px var(--f-mono); color: var(--ink-2) }
+.afirmacao { margin: 0; padding: 0 0 0 16px; border-left: 3px solid var(--acento) }
+.afirmacao p { margin: 0; font: italic calc(19px * var(--escala))/1.5 var(--f-texto) }
+.afirmacao footer { margin-top: 8px; font: 13px var(--f-ui); color: var(--ink-2) }
+.afirmacao footer a { color: var(--acento) }
+.resultados { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px }
+.resultados li { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center }
+.resultados .barra { grid-column: 1 / -1; grid-row: 2; height: 6px; border-radius: 3px; background: var(--linha); overflow: hidden }
+.resultados .barra > span { display: block; height: 100%; background: var(--ok) }
+.resultados .rotulo { font: 600 15px/1.4 var(--f-ui) }
+.resultados .numero { font: 600 15px var(--f-mono); color: var(--ink) }
+.resultados .comando { grid-column: 1 / -1; font-size: 12px }

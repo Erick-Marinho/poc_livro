@@ -15,3 +15,19 @@ Em todo capítulo:
 - ✓ as seções são N.1, N.2… sem buraco; ✓ não há bloco de código no texto: código só aparece na IDE.
 - Começa onde o anterior terminou (`cap-NN/fim` do anterior) e mede com a mesma régua.
 - O que o modelo responde é gravado uma vez e repetido no build; o terminal diz quando e com que modelo.
+
+# O formato de um experimento
+
+Um experimento testa uma afirmação que circula, com o projeto rodando (`docs/capacidades/experimentos.md`). As partes,
+na ordem da página. ✓ é o que o build (`src/content.config.ts`, `src/pages/experimentos/[experimento].astro`) ou o
+`testes/experimentos.test.mjs` confere.
+
+| Parte | O que tem | Conferido |
+|---|---|---|
+| O que se testa | a afirmação, com a fonte, e a régua: o arquivo e o que conta como acerto, definidos antes de construir | ✓ `afirmacao`, `regua` no topo do `.mdx`; ✓ o arquivo da régua existe |
+| O que vamos construir | o mecanismo inteiro numa figura, antes de construir | ✓ `## O que vamos construir` |
+| A construção | a IDE, com o chat guiando e ao menos uma aposta antes de um comando que importa | ✓ `IdeCapitulo`; ✓ uma `aposta` no roteiro |
+| O que deu | cada resultado lido de uma saída gravada ("X de Y (Z%)"), o que a medição mostrou de inesperado e o custo | ✓ `resultado` aponta saídas que existem e têm o número; ✓ `achado`, `custo` |
+
+Em todo experimento: ✓ a nota "o que é inventado" e ✓ o `Pendente` da voz dos autores. O resultado fica no fim da
+página, para não estragar as apostas.

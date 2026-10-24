@@ -1,12 +1,28 @@
 ---
+import { existsSync } from "node:fs";
 import { getCollection, render } from "astro:content";
 import Experimento from "../../layouts/Experimento.astro";
 
 /** Um experimento por página, em /experimentos/<experimento>/: o nome da pasta do experimento é o endereço. */
 export async function getStaticPaths() {
-  return (await getCollection("experimentos")).map((experimento) => ({ params: { experimento: experimento.id }, props: { experimento } }));
+  /* o resultado do molde: cada linha aponta uma saída gravada, e o número sai dela, como no placar dos livros.
+     Fica aqui dentro porque o getStaticPaths do Astro não enxerga variáveis de fora dele. */
+  const todasSaidas = import.meta.glob<Record<string, { comando: string; saida: [string, string][] }>>("../../../experimentos/*/saidas.json", { eager: true, import: "default" });
+  return (await getCollection("experimentos")).map((experimento) => {
+    const { id, data } = experimento;
+    const saidas = Object.entries(todasSaidas).find(([p]) => p.includes(`/experimentos/${id}/`))?.[1] ?? {};
+    const resultados = data.resultado.map((r) => {
+      const s = saidas[r.saida];
+      if (!s) throw new Error(`experimentos/${id}: o resultado "${r.rotulo}" aponta a saída "${r.saida}", que não está no saidas.json; rode npm run experimentos`);
+      const achado = s.saida.map(([l]) => l).find((l) => /\d+ de \d+ \(\d+%\)/.test(l))?.match(/(\d+) de (\d+) \((\d+)%\)/);
+      if (!achado) throw new Error(`experimentos/${id}: a saída "${r.saida}" não tem "X de Y (Z%)"`);
+      return { rotulo: r.rotulo, acertos: +achado[1], total: +achado[2], nota: `${achado[3]}%`, comando: s.comando };
+    });
+    if (!existsSync(`experimentos/${id}/${data.regua.arquivo}`)) throw new Error(`experimentos/${id}: a régua aponta ${data.regua.arquivo}, que não existe`);
+    return { params: { experimento: id }, props: { experimento, resultados } };
+  });
 }
-const { experimento } = Astro.props;
+const { experimento, resultados } = Astro.props;
 const { Content } = await render(experimento);
 ---
-<Experimento {...experimento.data}><Content /></Experimento>
+<Experimento {...experimento.data} resultados={resultados}><Content /></Experimento>

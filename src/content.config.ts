@@ -33,7 +33,9 @@ const capitulos = defineCollection({
 
 /**
  * Cada experimento é experimentos/<experimento>/experimento.mdx, com o projeto real ao lado (projeto/, comandos.json, saidas.json).
- * Tutorial curto do dia: título, lide, a data em que sai e a etiqueta do assunto. Sem um deles, não monta.
+ * Além de título, lide, data e etiqueta, o molde (docs/capacidades/experimentos.md): a afirmação testada, com a fonte;
+ * a régua (o arquivo e o que conta como acerto); o resultado, em que cada linha aponta uma saída gravada (o número sai
+ * dela, nunca é escrito à mão); o que a medição mostrou de inesperado; e o custo. Sem um deles, não monta.
  */
 const experimentos = defineCollection({
   loader: glob({ pattern: "*/experimento.mdx", base: "./experimentos", generateId: ({ entry }) => entry.split("/")[0] }),
@@ -42,6 +44,11 @@ const experimentos = defineCollection({
     lide: z.string(),
     data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data no formato AAAA-MM-DD"),
     etiqueta: z.string(),
+    afirmacao: z.object({ texto: z.string().min(20), fonte: z.object({ titulo: z.string(), url: z.string().url() }) }),
+    regua: z.object({ arquivo: z.string(), conta: z.string().min(20) }),
+    resultado: z.array(z.object({ rotulo: z.string(), saida: z.string() })).min(1, "o resultado precisa de ao menos uma medição gravada"),
+    achado: z.string().min(20),
+    custo: z.string().min(20),
   }),
 });
 

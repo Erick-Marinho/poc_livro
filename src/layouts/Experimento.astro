@@ -4,9 +4,16 @@ import "../styles/experimentos.css";
 import { dataLonga } from "../lib/datas";
 import TopoSite from "../components/TopoSite.astro";
 
-/** A página de um experimento: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta. */
-interface Props { titulo: string; lide: string; data: string; etiqueta: string }
-const { titulo, lide, data, etiqueta } = Astro.props;
+/** A página de um experimento: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta.
+ *  Abre com o que se testa (a afirmação e a régua) e fecha com o que deu: o resultado fica no fim, para não estragar as apostas. */
+interface Resultado { rotulo: string; acertos: number; total: number; nota: string; comando: string }
+interface Props {
+  titulo: string; lide: string; data: string; etiqueta: string;
+  afirmacao: { texto: string; fonte: { titulo: string; url: string } };
+  regua: { arquivo: string; conta: string };
+  resultados: Resultado[]; achado: string; custo: string;
+}
+const { titulo, lide, data, etiqueta, afirmacao, regua, resultados, achado, custo } = Astro.props;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -29,7 +36,27 @@ const { titulo, lide, data, etiqueta } = Astro.props;
         <h1>{titulo}</h1>
         <p class="lide">{lide}</p>
       </section>
+      <section class="molde teste" aria-labelledby="o-que-se-testa">
+        <h2 id="o-que-se-testa">O que se testa</h2>
+        <blockquote class="afirmacao"><p>{afirmacao.texto}</p><footer>A afirmação, de <a href={afirmacao.fonte.url}>{afirmacao.fonte.titulo}</a></footer></blockquote>
+        <p class="regua"><span class="rotulo">A régua</span> {regua.conta} <code>{regua.arquivo}</code></p>
+      </section>
       <div class="corpo"><slot /></div>
+      <section class="molde deu" aria-labelledby="o-que-deu">
+        <h2 id="o-que-deu">O que deu</h2>
+        <ol class="resultados">
+          {resultados.map((r) => (
+            <li>
+              <span class="rotulo">{r.rotulo}</span>
+              <span class="barra" aria-hidden="true"><span style={`width: ${(100 * r.acertos) / r.total}%`} /></span>
+              <span class="numero">{r.acertos} de {r.total}</span>
+              <code class="comando">$ {r.comando}</code>
+            </li>
+          ))}
+        </ol>
+        <p><span class="rotulo">O inesperado</span> {achado}</p>
+        <p><span class="rotulo">O custo</span> {custo}</p>
+      </section>
       <nav class="proximo" aria-label="Navegação entre experimentos"><a href="/experimentos/">← Todos os experimentos</a><span /></nav>
     </main>
   </body>

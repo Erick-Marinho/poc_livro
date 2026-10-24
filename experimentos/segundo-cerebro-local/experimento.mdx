@@ -3,6 +3,23 @@ titulo: "Um segundo cérebro que diz de onde tirou a resposta"
 lide: "Antes de instalar um app que promete um cérebro de IA para as suas notas, construa o mecanismo num cofre do Obsidian, com o chat guiando, e meça: quantas perguntas ele acerta, e qual ele erra porque a informação mudou."
 data: "2026-10-24"
 etiqueta: "IA local"
+afirmacao:
+  texto: "Um segundo cérebro 100% local, montado das suas notas, acompanha o que mudou nelas, como um prazo adiado entre dois e-mails."
+  fonte:
+    titulo: "Build your own 100% local AI second brain, no Daily Dose of Data Science"
+    url: "https://www.dailydoseofds.com/p/build-your-own-100-local-ai-second-brain/"
+regua:
+  arquivo: "projeto/perguntas.jsonl"
+  conta: "Dez perguntas sobre as notas, cada uma com os fatos que a resposta certa tem que trazer; o fato também tem que estar na nota citada como fonte."
+resultado:
+  - rotulo: "busca por palavras"
+    saida: "sc-nota-ingenua"
+  - rotulo: "busca com a data de cada nota"
+    saida: "sc-nota"
+  - rotulo: "modelo local (llama3.2:3b, no Ollama)"
+    saida: "sc-nota-modelo"
+achado: "A busca devolve a data velha com toda a segurança: três notas dizem 14/11, e só o e-mail diz 21/11. E o modelo pequeno estropiou nomes de arquivo com acento ao citar a fonte; com as notas numeradas, acertou as dez."
+custo: "A busca com a data roda na hora, em qualquer máquina, sem nada para instalar. O modelo pede 2 GB e uns 7 segundos por pergunta numa CPU sem placa de vídeo."
 ---
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import FiguraCaminho from "../../src/components/livro/FiguraCaminho.astro";
