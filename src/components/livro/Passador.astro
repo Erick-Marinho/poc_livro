@@ -17,10 +17,13 @@ interface Props {
   codigo: string;
   dados: { arquivo: string; linhas: string; blocos: Bloco[] };
   glossario: { termos: Record<string, Termo> };
-  numero: string;
-  legenda: string;
+  numero?: string;
+  legenda?: string;
+  /** dentro de um Passo: sem moldura de figura e sem legenda */
+  embutido?: boolean;
 }
-const { codigo, dados, glossario, numero, legenda } = Astro.props;
+const { codigo, dados, glossario, numero = "", legenda, embutido = false } = Astro.props;
+const Moldura = embutido ? "div" : "figure";
 const falhar = (m: string): never => { throw new Error(`Passador (figura ${numero}, ${dados.arquivo}): ${m}`); };
 const faixa = (s: string): [number, number] => {
   const m = s.match(/^(\d+)(?:-(\d+))?$/) ?? falhar(`"${s}" não é uma faixa de linhas`);
@@ -72,7 +75,7 @@ const marcar: ShikiTransformer = {
 };
 const rotuloDe = (k: string) => glossario.termos[k].rotulo ?? k;
 ---
-<figure class="passador largo" data-passador>
+<Moldura class:list={["passador", { largo: !embutido, embutido }]} data-passador>
   <div class="pd-quadro">
     <div class="pd-codigo">
       <div class="pd-aba"><span class="pd-ic">PY</span>{dados.arquivo}<span class="pd-info">linhas {de} a {ate}</span></div>
@@ -106,8 +109,8 @@ const rotuloDe = (k: string) => glossario.termos[k].rotulo ?? k;
       </div>
     </div>
   </div>
-  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
-</figure>
+  {!embutido && <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>}
+</Moldura>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-passador]").forEach((fig) => {
@@ -160,6 +163,9 @@ const rotuloDe = (k: string) => glossario.termos[k].rotulo ?? k;
 
 <style is:global>
   .passador { margin: 1.8em auto 2em }
+  .passador.embutido { margin: 0 }
+  .passador.embutido .pd-quadro { border-radius: 0; border: 0 }
+  .passador.embutido .pd-painel { color: var(--ink) }
   .pd-quadro { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); border-radius: 12px; overflow: hidden; border: 1px solid var(--linha); background: var(--papel-2) }
   .pd-codigo { background: var(--ide-bg); color: var(--ide-ink); min-width: 0 }
   .pd-aba { display: flex; align-items: center; gap: 8px; background: var(--ide-tabs); font: 12.5px var(--f-ui); color: #ddd; padding: 7px 14px }

@@ -1,0 +1,251 @@
+---
+/**
+ * Um passo de construção: um pedaço pequeno do roteiro, com começo e fim à vista.
+ * Em cima, o que vai existir no fim do passo e o mapa do projeto (só o que importa, com o que muda aceso).
+ * No meio, o que muda em cada arquivo: só as linhas novas e uma de contexto; o resto fica dobrado, e abre por clique.
+ * Se o passo tem um passador, o trecho dele entra bloco a bloco no lugar do código corrido.
+ * Embaixo, o comando: com aposta, a saída só aparece depois da aposta. No fim, "agora você tem".
+ * Tudo vem do roteiro, dos estados e das saídas gravadas (scripts/saidas.py): nada aqui reconstrói código.
+ * No build: o trecho existe no roteiro, tem o que mostrar, e não passa de LIMITE linhas novas.
+ */
+import { codeToHtml } from "shiki";
+import Passador from "./Passador.astro";
+
+const LIMITE = 15;   /* docs/capacidades/passo-a-passo.md: cerca de 12 linhas novas por passo; passou disso, o passo se divide */
+type Aposta = { pergunta: string; opcoes: string[]; certa: number };
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta };
+type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string };
+type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
+interface Props {
+  roteiro: { passos: PassoRoteiro[] };
+  estados: Estado[];
+  saidas: Record<string, Saida>;
+  glossario: { termos: Record<string, unknown> };
+  n: number;
+  total: number;
+  titulo: string;
+  objetivo: string;
+  temos: string;
+  de: number;
+  ate: number;
+  passador?: { codigo: string; dados: { arquivo: string; linhas: string; blocos: { linhas: string }[] } };
+  pasta?: string;
+}
+const { roteiro, estados, saidas, glossario, n, total, titulo, objetivo, temos, de, ate, passador, pasta = "~/atendimento-bemtevi" } = Astro.props;
+const falhar = (m: string): never => { throw new Error(`Passo ${n} (${titulo}): ${m}`); };
+if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos)`);
+
+/* o projeto antes e depois do trecho */
+const antes: Record<string, string> = {}, depois: Record<string, string> = {};
+const prontos = new Set<string>();
+const editados: string[] = [], notas: Record<string, string[]> = {};
+const rodadas: { id: string; nota: string; aposta?: Aposta; s: Saida }[] = [];
+for (const e of estados) {
+  if (e.passo > ate) break;
+  const p = roteiro.passos[e.passo - 1];
+  if (e.arquivos) for (const [nome, texto] of Object.entries(e.arquivos)) { prontos.add(nome); depois[nome] = texto ?? ""; if (e.passo < de) antes[nome] = texto ?? ""; }
+  if (e.arquivo) {
+    depois[e.arquivo] = e.conteudo!;
+    if (e.passo < de) antes[e.arquivo] = e.conteudo!;
+    else { if (!editados.includes(e.arquivo)) editados.push(e.arquivo); (notas[e.arquivo] ??= []).push(p.nota); }
+  }
+  if (e.rodou && e.passo >= de) rodadas.push({ id: e.rodou, nota: p.nota, aposta: p.aposta, s: saidas[e.rodou] ?? falhar(`a saída ${e.rodou} não está no saidas.json`) });
+}
+if (!editados.length && !rodadas.length) falhar("o trecho não muda nenhum arquivo nem roda nada");
+
+/* as linhas que mudaram, por arquivo: uma comparação de linhas simples (os arquivos do livro são pequenos) */
+function mudadas(a: string[], b: string[]): Set<number> {
+  const t = Array.from({ length: a.length + 1 }, () => new Array<number>(b.length + 1).fill(0));
+  for (let i = a.length - 1; i >= 0; i--) for (let j = b.length - 1; j >= 0; j--) t[i][j] = a[i] === b[j] ? t[i + 1][j + 1] + 1 : Math.max(t[i + 1][j], t[i][j + 1]);
+  const novas = new Set<number>();
+  let i = 0, j = 0;
+  while (j < b.length) {
+    if (i < a.length && a[i] === b[j]) { i++; j++; }
+    else if (i < a.length && t[i + 1][j] >= t[i][j + 1]) i++;
+    else { novas.add(j + 1); j++; }
+  }
+  return novas;
+}
+const linhas = (s: string) => s.replace(/\n$/, "").split("\n");
+const LINGUA: Record<string, string> = { py: "python", jsonl: "json", json: "json", md: "markdown", toml: "toml" };
+
+type Pedaco = { tipo: "codigo"; html: string } | { tipo: "passador"; codigo: string; dados: NonNullable<Props["passador"]>["dados"] };
+const arquivos: { nome: string; novo: boolean; quantas: number; notas: string[]; pedacos: Pedaco[] }[] = [];
+let totalNovas = 0;
+for (const nome of editados) {
+  const b = linhas(depois[nome]), a = nome in antes ? linhas(antes[nome]) : [];
+  const novas = mudadas(a, b);
+  const quantas = [...novas].filter((k) => b[k - 1].trim()).length;
+  totalNovas += quantas;
+  /* à vista: as linhas novas e uma de cada lado; o resto dobra */
+  const vista = new Set<number>();
+  for (const k of novas) for (const d of [-1, 0, 1]) if (k + d >= 1 && k + d <= b.length) vista.add(k + d);
+  /* o trecho do passador, achado pelo texto (no arquivo final ele tem outros números de linha) */
+  let faixa: [number, number] | null = null, dadosPd: Pedaco | null = null;
+  if (passador && passador.dados.arquivo === nome) {
+    const [pa, pz] = passador.dados.linhas.split("-").map(Number);
+    const alvo = linhas(passador.codigo).slice(pa - 1, pz);
+    const k = b.findIndex((_, i) => alvo.every((l, j) => b[i + j] === l));
+    if (k < 0) falhar(`o trecho ${passador.dados.linhas} do passador não está em ${nome} no fim do passo`);
+    const desloca = k + 1 - pa, mover = (s: string) => s.split("-").map((x) => Number(x) + desloca).join("-");
+    faixa = [k + 1, k + alvo.length];
+    dadosPd = { tipo: "passador", codigo: depois[nome], dados: { ...passador.dados, linhas: mover(passador.dados.linhas), blocos: passador.dados.blocos.map((bl) => ({ ...bl, linhas: mover(bl.linhas) })) } };
+  }
+  const pedacos: Pedaco[] = [];
+  const realcar = async (de_: number, ate_: number) => {
+    if (de_ > ate_) return;
+    const html = await codeToHtml(b.slice(de_ - 1, ate_).join("\n"), {
+      lang: LINGUA[nome.split(".").pop() ?? ""] ?? "text", theme: "dark-plus",
+      transformers: [{
+        line(no, i) {
+          const k = de_ + i - 1;
+          no.properties["data-n"] = String(k);
+          if (novas.has(k)) this.addClassToHast(no, "novo");
+          if (!vista.has(k)) this.addClassToHast(no, "dobrada");
+          else if (k > de_ && !vista.has(k - 1)) this.addClassToHast(no, "depois-da-dobra");
+        },
+        code(no) { no.children = no.children.filter((c) => c.type === "element"); },
+      }],
+    });
+    pedacos.push({ tipo: "codigo", html });
+  };
+  if (faixa) { await realcar(1, faixa[0] - 1); pedacos.push(dadosPd!); await realcar(faixa[1] + 1, b.length); }
+  else await realcar(1, b.length);
+  arquivos.push({ nome, novo: !(nome in antes), quantas, notas: notas[nome], pedacos });
+}
+if (totalNovas > LIMITE) falhar(`${totalNovas} linhas novas; o limite é ${LIMITE}. Divida o passo.`);
+
+/* o mapa: os arquivos do leitor (os prontos ficam num grupo só) */
+const doLeitor = Object.keys(depois).filter((k) => !prontos.has(k)).sort();
+const grupoPronto = [...prontos].some((k) => k.startsWith("dados/")) ? `dados/ (${[...prontos].filter((k) => k.startsWith("dados/")).length}) e o pyproject.toml` : [...prontos].join(", ");
+const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
+const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+---
+<section class="passo largo" data-passo aria-label={`Passo ${n} de ${total}: ${titulo}`}>
+  <header class="ps-topo">
+    <span class="ps-n">passo {n} de {total}</span>
+    <h3 class="ps-titulo">{titulo}</h3>
+    <p class="ps-objetivo"><b>no fim deste passo:</b> <span set:html={md(objetivo)} /></p>
+    <div class="ps-mapa" aria-label="O projeto neste passo">
+      {doLeitor.map((k) => <span class:list={["ps-arq", { muda: editados.includes(k) }]}>{editados.includes(k) ? "●" : "○"} {k}{arquivos.find((x) => x.nome === k)?.novo && <i> novo</i>}</span>)}
+      {prontos.size > 0 && <span class="ps-arq pronto">já pronto: {grupoPronto}</span>}
+    </div>
+  </header>
+
+  {arquivos.map((f) => (
+    <div class="ps-arquivo" data-arquivo>
+      <div class="ps-aba"><span class="ps-nome">{f.nome}</span><span class="ps-conta">{f.novo ? "arquivo novo" : `+${f.quantas} ${f.quantas === 1 ? "linha" : "linhas"}`}</span><button type="button" class="ps-inteiro" data-inteiro>ver o arquivo inteiro</button></div>
+      <ol class="ps-notas">{f.notas.map((t) => <li set:html={md(t)} />)}</ol>
+      {f.pedacos.map((p) => p.tipo === "codigo"
+        ? <div class="ps-codigo" set:html={p.html} />
+        : <Passador codigo={p.codigo} dados={p.dados as any} glossario={glossario as any} embutido />)}
+    </div>
+  ))}
+
+  {rodadas.map((r) => (
+    <div class="ps-rodar" data-rodar data-certa={r.aposta?.certa}>
+      <div class="ps-term">
+        <div class="ps-cmd"><span class="ps-prompt">voce@maquina:{pasta}$</span> {r.s.comando}</div>
+        {r.aposta && (
+          <div class="ps-aposta">
+            <p><b>◆ aposte antes de rodar:</b> {r.aposta.pergunta}</p>
+            <div class="ps-opcoes">{r.aposta.opcoes.map((o, j) => <button type="button" data-op={j}>{o}</button>)}</div>
+          </div>
+        )}
+        {!r.aposta && <button type="button" class="ps-btn-rodar" data-rodar-btn>▶ Rodar</button>}
+        <pre class="ps-saida" hidden>{r.s.saida.map(([l, c]) => <span class={c || undefined}>{l}{"\n"}</span>)}</pre>
+      </div>
+      <p class="ps-nota-run" hidden><span class="ps-veredito"></span> <span set:html={md(r.nota)} /></p>
+    </div>
+  ))}
+
+  <p class="ps-temos" data-temos hidden={rodadas.length > 0}>✓ <b>agora você tem:</b> <span set:html={md(temos)} /></p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-passo]").forEach((sec) => {
+    const direto = () => document.documentElement.hasAttribute("data-direto");
+    const runs = [...sec.querySelectorAll<HTMLElement>("[data-rodar]")];
+    const fechar = () => { if (runs.every((r) => r.classList.contains("rodou"))) (sec.querySelector("[data-temos]") as HTMLElement).hidden = false; };
+    const mostrar = (r: HTMLElement) => {
+      r.classList.add("rodou");
+      (r.querySelector(".ps-saida") as HTMLElement).hidden = false;
+      (r.querySelector(".ps-nota-run") as HTMLElement).hidden = false;
+      r.querySelector<HTMLElement>("[data-rodar-btn]")?.remove();
+      fechar();
+    };
+    runs.forEach((r) => {
+      r.querySelector("[data-rodar-btn]")?.addEventListener("click", () => mostrar(r));
+      r.querySelectorAll<HTMLButtonElement>("[data-op]").forEach((b) => b.addEventListener("click", () => {
+        const certo = b.dataset.op === r.dataset.certa;
+        r.querySelectorAll<HTMLButtonElement>("[data-op]").forEach((x) => { x.disabled = true; if (x.dataset.op === r.dataset.certa) x.classList.add("e-a-certa"); if (x === b) x.classList.add("escolhida"); });
+        r.querySelector(".ps-veredito")!.textContent = certo ? "Você acertou." : "Não foi dessa vez.";
+        r.classList.add(certo ? "certo" : "errado");
+        mostrar(r);
+      }));
+    });
+    sec.querySelectorAll<HTMLElement>("[data-arquivo]").forEach((f) => f.querySelector("[data-inteiro]")!.addEventListener("click", (e) => {
+      const aberto = f.classList.toggle("inteiro");
+      (e.currentTarget as HTMLElement).textContent = aberto ? "só o que mudou" : "ver o arquivo inteiro";
+    }));
+    const aplicarDireto = () => { if (direto()) runs.forEach(mostrar); };
+    addEventListener("fontmar:direto", aplicarDireto); aplicarDireto();
+  });
+</script>
+
+<style is:global>
+  .passo { margin: 2em auto 2.2em; border: 1px solid var(--linha); border-radius: 14px; background: var(--papel-2); overflow: hidden }
+  .ps-topo { padding: 14px 18px 12px; display: grid; gap: 6px; border-bottom: 1px solid var(--linha) }
+  .ps-n { font: 600 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--acento) }
+  .ps-titulo { margin: 0; font: 700 22px/1.25 var(--f-texto); text-wrap: balance }
+  .ps-objetivo { margin: 0; font: 15.5px/1.5 var(--f-ui) }
+  .ps-objetivo b { font-weight: 600 }
+  .ps-mapa { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
+  .ps-arq { font: 12.5px/1.6 var(--f-mono); padding: 1px 9px; border-radius: 999px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink-2) }
+  .ps-arq.muda { color: var(--acento); border-color: var(--acento) }
+  .ps-arq i { font-style: normal; font-family: var(--f-ui); font-size: 11.5px }
+  .ps-arq.pronto { border-style: solid; opacity: .8; font-family: var(--f-ui) }
+  .ps-arquivo { background: var(--ide-bg); color: var(--ide-ink) }
+  .ps-arquivo + .ps-arquivo { border-top: 1px solid #333 }
+  .ps-aba { display: flex; align-items: center; gap: 10px; background: var(--ide-tabs); padding: 7px 14px; font: 12.5px var(--f-ui); color: #ddd }
+  .ps-nome { font-family: var(--f-mono) }
+  .ps-conta { color: #9cdcfe; font-size: 11.5px }
+  .ps-inteiro { margin-left: auto; background: none; border: 0; color: #8b8b8b; font: 11.5px var(--f-ui); cursor: pointer; padding: 0 }
+  .ps-inteiro:hover { color: #ddd }
+  .ps-notas { margin: 0; padding: 8px 14px 8px 34px; background: #252526; font: 13.5px/1.5 var(--f-ui); color: #c8c8c8; display: grid; gap: 2px }
+  .ps-notas code { background: #333; color: #e6e6e6 }
+  .ps-codigo pre.astro-code, .ps-codigo pre.shiki { margin: 0; padding: 8px 0 10px; overflow-x: auto; font: 13.5px/22px var(--f-mono); background: var(--ide-bg) !important }
+  .ps-codigo pre code { display: block; min-width: max-content; background: none; padding: 0; font-size: inherit }
+  .ps-codigo .line { display: block; min-height: 22px; white-space: pre; padding-right: 16px }
+  .ps-codigo .line::before { content: attr(data-n); display: inline-block; width: 40px; padding-right: 14px; text-align: right; color: #6e7681; user-select: none }
+  .ps-codigo .line:not(.novo) { opacity: .5 }
+  .ps-codigo .line.novo { background: var(--ide-new) }
+  .ps-codigo .line.novo::before { color: #cfcfcf }
+  .ps-codigo .line.dobrada { display: none }
+  .ps-codigo .line.depois-da-dobra { border-top: 1px dashed #444 }
+  .ps-arquivo.inteiro .line.dobrada { display: block }
+  .ps-arquivo.inteiro .line.depois-da-dobra { border-top: 0 }
+  .ps-rodar { padding: 12px 18px 0 }
+  .ps-term { background: var(--ide-term); color: #ddd; border-radius: 10px; padding: 10px 14px; font: 13px/1.55 var(--f-mono); display: grid; gap: 8px }
+  .ps-cmd { white-space: pre-wrap; overflow-wrap: anywhere }
+  .ps-prompt { color: #3fd68b }
+  .ps-aposta { font-family: var(--f-ui); font-size: 14.5px; display: grid; gap: 6px; border-top: 1px dashed #444; padding-top: 8px }
+  .ps-aposta p { margin: 0 }
+  .ps-aposta b { color: #e0a440; font-weight: 600 }
+  .ps-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .ps-opcoes button, .ps-btn-rodar { border: 1px solid #555; background: #2a2a2a; color: #eee; border-radius: 6px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .ps-btn-rodar { justify-self: start; border-color: #3794ff; color: #9cdcfe }
+  .ps-opcoes button:disabled { cursor: default; opacity: .5 }
+  .ps-opcoes button.e-a-certa { opacity: 1; border-color: #3fd68b; color: #3fd68b }
+  .ps-opcoes button.escolhida:not(.e-a-certa) { opacity: 1; border-color: #e0a440; color: #e0a440 }
+  .ps-saida { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; border-top: 1px solid #333; padding-top: 8px }
+  .ps-saida .okv { color: #3fd68b } .ps-saida .err { color: #ff6b6b }
+  .ps-nota-run { margin: 8px 2px 0; font: 15px/1.5 var(--f-ui) }
+  .ps-rodar.certo .ps-veredito { color: var(--ok); font-weight: 600 }
+  .ps-rodar.errado .ps-veredito { color: var(--aviso); font-weight: 600 }
+  .ps-temos { margin: 12px 18px 16px; padding: 8px 12px; border-radius: 8px; background: var(--papel); border-left: 3px solid var(--ok); font: 15px/1.5 var(--f-ui) }
+  .ps-temos[hidden], .ps-saida[hidden], .ps-nota-run[hidden] { display: none }
+  .ps-temos b { color: var(--ok); font-weight: 600 }
+  .passo > :last-child:not(.ps-temos) { margin-bottom: 16px }
+  html[data-direto] .ps-aposta { display: none }
+</style>

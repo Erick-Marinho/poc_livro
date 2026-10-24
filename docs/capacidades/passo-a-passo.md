@@ -21,6 +21,13 @@ o caminho aparece na página.
   máquina) mostra só a última linha do erro, com `2>&1 | tail -1`; o comando aparece inteiro, então o leitor vê o truque.
 - (5b1) Linha que começa com `NomeError:` passa a ser marcada como erro nas saídas gravadas.
 - (5b1) A conferência do fim do roteiro ignora `.ruff_cache`, como já ignorava `.venv` e `__pycache__`.
+- (5b2) O limite vale para o passo inteiro: até 15 linhas novas, sem contar as em branco, somando todos os arquivos.
+  Passou disso, o build falha e pede para dividir (foi o que dividiu "ler o arquivo" e "as três primeiras perguntas").
+- (5b2) No passo, cada arquivo mostra só as linhas novas e uma de cada lado; o resto dobra, com "ver o arquivo inteiro".
+  O código não "entra" animado. A nota de cada edição do roteiro aparece em cima do código, como o porquê da mudança.
+- (5b2) Comando com aposta: a saída só aparece depois da aposta. Sem aposta: botão "Rodar". "Agora você tem" aparece
+  quando todos os comandos do passo rodaram. No modo direto, tudo aberto, sem apostas.
+- (5b2) A IDE da 1.6 saiu; as figuras seguintes foram renumeradas (as IDEs da 1.7 e da 1.8 viram 1.3 e 1.4).
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -30,7 +37,7 @@ o caminho aparece na página.
 | `glossario.json` | as palavras difíceis, uma vez por livro | — | termos | nova |
 | `Passador.astro` | um trecho real, bloco a bloco, com palavras e perguntas | arquivo real + `passadores/*.json` + glossário | figura | nova |
 | `passadores/caso.json` | os 5 blocos do formato de um caso (`contrato.py`, 29–38) | — | blocos | nova |
-| passo de construção | objetivo, mapa pequeno, código novo, rodar, "agora você tem" | roteiro + estados | figura | a construir (5b) |
+| `Passo.astro` | objetivo, mapa pequeno, código novo, rodar com aposta, "agora você tem" | roteiro + estados + saídas | figura | nova (5b2) |
 | trilha do capítulo | fluxograma clicável dos passos | roteiro | figura | a construir (5c) |
 
 ## Etapas
@@ -49,3 +56,4 @@ o caminho aparece na página.
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 5a | `43782da` | `npm test` (10 testes, 4 novos); passador no ngrok, no computador e no celular; perguntas conferidas no projeto real | Erick, 23/10/2026 |
+| 5b1 | `11d272c` | contagem de linhas novas por passo (todas ≤ 13 no `contrato.py`); 2 saídas novas gravadas e conferidas | Erick, 23/10/2026 |
