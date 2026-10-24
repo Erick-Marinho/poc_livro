@@ -21,7 +21,7 @@ gancho → **prever** → **fazer** → **errar** → consertar → lembrar → 
 
 ## Fontes de encanto
 
-- **O placar sempre à vista.** A nota zero (25%) é o começo de uma história; cada capítulo empurra o número.
+- **O placar sempre à vista.** A nota de partida (25%) é o começo de uma história; cada capítulo empurra o número.
   "O seu agente bate os 25%?" é uma meta do leitor, e o progresso é real.
 - **Preparar e cobrar.** Um caso plantado volta depois (Ana e Bruno: capítulo 1, cobrado no 6). Uma semente
   por capítulo, de propósito, e o leitor reconhece: "ah, é aquele!".

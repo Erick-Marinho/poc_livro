@@ -1,5 +1,5 @@
 {
-  "nota-zero": {
+  "nota-de-partida": {
     "comando": "uv run python baseline.py",
     "saiu_com": 0,
     "saida": [
@@ -20,7 +20,7 @@
         ""
       ],
       [
-        "nota zero: 5 de 20 (25%)",
+        "nota de partida: 5 de 20 (25%)",
         ""
       ]
     ]
@@ -70,11 +70,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 10ms",
+        "Resolved 6 packages in 9ms",
         ""
       ],
       [
-        "Installed 5 packages in 140ms",
+        "Installed 5 packages in 22ms",
         ""
       ],
       [
@@ -108,7 +108,7 @@
         ""
       ],
       [
-        "Installed 5 packages in 402ms",
+        "Installed 5 packages in 86ms",
         ""
       ],
       [
@@ -442,7 +442,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f13a5bdc660>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fd05b3e4660>)",
         "err"
       ],
       [
@@ -466,7 +466,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.10s",
+        "2 failed, 5 passed in 0.12s",
         "err"
       ]
     ]
@@ -495,7 +495,7 @@
       ]
     ]
   },
-  "r01-nota-zero": {
+  "r01-nota-de-partida": {
     "comando": "uv run python baseline.py",
     "saiu_com": 0,
     "saida": [
@@ -516,7 +516,7 @@
         ""
       ],
       [
-        "nota zero: 5 de 20 (25%)",
+        "nota de partida: 5 de 20 (25%)",
         ""
       ]
     ]

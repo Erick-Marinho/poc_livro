@@ -689,7 +689,7 @@
       "blocos": [
         {
           "linhas": "1-5",
-          "titulo": "o que é a nota zero",
+          "titulo": "o que é a nota de partida",
           "texto": "A explicação do arquivo: um \"agente\" que passa tudo para a equipe. Ele nunca erra feio, mas também não ajuda ninguém.",
           "termos": [
             "docstring"
@@ -743,10 +743,10 @@
     },
     {
       "acao": "rodar",
-      "id": "r01-nota-zero",
+      "id": "r01-nota-de-partida",
       "comando": "uv run python baseline.py",
       "espera": 0,
-      "nota": "Nota zero: 5 de 20.",
+      "nota": "Nota de partida: 5 de 20.",
       "aposta": {
         "pergunta": "Um \"agente\" que passa toda pergunta para uma pessoa. Quanto ele acerta das 20?",
         "opcoes": [

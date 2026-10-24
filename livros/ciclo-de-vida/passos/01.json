@@ -282,9 +282,9 @@
       "de": 39,
       "ate": 40,
       "objetivo": "uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota.",
-      "temos": "a nota zero: o número que todo agente do livro tem que bater.",
+      "temos": "a nota de partida: o número que todo agente do livro tem que bater.",
       "depois": [
-        "Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la."
+        "Vinte e cinco por cento. Esta é a nota de partida do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la."
       ],
       "pedido": "E como a gente mede esse agente contra as vinte perguntas?"
     }

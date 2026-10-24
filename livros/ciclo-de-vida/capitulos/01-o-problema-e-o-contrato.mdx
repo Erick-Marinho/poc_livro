@@ -12,7 +12,7 @@ neste:
   - entende o que é um agente, e quando não usar um;
   - escreve o contrato do agente, antes de qualquer código de agente;
   - transforma o contrato em 20 perguntas de referência que um teste confere;
-  - mede a nota zero, a que todo agente dos próximos capítulos tem que bater.
+  - mede a nota de partida, a que todo agente dos próximos capítulos tem que bater.
 partida:
   texto: "Ponto de partida: uma pasta vazia."
   tag: cap-01/inicio
@@ -119,9 +119,9 @@ Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: 
 
 ## 1.5 Mão na massa
 
-Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota zero em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
+Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota de partida em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
 
-<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota zero. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
+<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
 ## 1.6 O que ficou de pé
 
@@ -131,7 +131,7 @@ Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, 
 
 <Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
-<PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota zero?">
+<PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota de partida?">
 Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
 
 <Terminal saida={saidas["sempre-responder"]} pasta="~/atendimento-bemtevi" />
@@ -139,7 +139,7 @@ Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
 Mas esse agente também "respondeu" a pergunta do Bruno sobre o pedido da Ana. Pela nota, foi só um erro entre doze. Na vida real, é o pior erro possível. A lição: uma nota que conta todo erro igual engana. No capítulo 4, os erros passam a ter peso.
 </PareEPense>
 
-Com o contrato escrito, as perguntas de referência no lugar e a nota zero medida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
+Com o contrato escrito, as perguntas de referência no lugar e a nota de partida medida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
 
 <PontoDeVolta tag="cap-01/fim" />
 
@@ -149,15 +149,15 @@ Com o contrato escrito, as perguntas de referência no lugar e a nota zero medid
 - O contrato tem quatro decisões: responder, abrir chamado, recusar e passar a vez.
 - Passar a vez é uma decisão com regra própria, não uma falha.
 - As perguntas de referência são o contrato em casos; um teste confere se elas batem com os dados da loja.
-- A nota zero (passar tudo para a equipe) é 25%. Todo agente tem que bater esse número.
+- A nota de partida (passar tudo para a equipe) é 25%. Todo agente tem que bater esse número.
 </Resumo>
 
 <Exercicio titulo="Cinco perguntas novas">
 
 1. Acrescente 5 perguntas ao `referencia.jsonl`, de R21 a R25: uma de cada decisão e mais uma de pedido de outra pessoa, usando um par de pedido e cliente diferente do Bruno e da Ana.
-2. Antes de rodar, escreva num papel qual vai ser a nova nota zero.
+2. Antes de rodar, escreva num papel qual vai ser a nova nota de partida.
 3. Rode `uv run pytest -q` até os testes ficarem verdes, e depois `uv run python baseline.py`. A nota bateu com a sua previsão?
 
-Dica: a nota zero só acerta as perguntas de passar a vez. Conte quantas você acrescentou.
+Dica: a nota de partida só acerta as perguntas de passar a vez. Conte quantas você acrescentou.
 
 </Exercicio>

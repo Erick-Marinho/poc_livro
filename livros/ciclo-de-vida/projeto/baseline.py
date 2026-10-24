@@ -1,4 +1,4 @@
-"""A nota zero: um "agente" que passa toda pergunta para uma pessoa da equipe.
+"""A nota de partida: um "agente" que passa toda pergunta para uma pessoa da equipe.
 
 Ele nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.
 Todo agente que vier depois tem que bater esta nota.
@@ -27,4 +27,4 @@ if __name__ == "__main__":
     for d, (certos, total) in placar.items():
         print(f"{d:<14} {certos:>2} de {total:>2}")
     acertos = sum(c for c, _ in placar.values())
-    print(f"nota zero: {acertos} de {len(casos)} ({acertos / len(casos):.0%})")
+    print(f"nota de partida: {acertos} de {len(casos)} ({acertos / len(casos):.0%})")

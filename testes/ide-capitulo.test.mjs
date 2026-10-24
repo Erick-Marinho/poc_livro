@@ -1,4 +1,4 @@
-/** A IDE do capítulo 1: o caminho inteiro da pasta vazia à nota zero, montado do roteiro e das saídas reais. */
+/** A IDE do capítulo 1: o caminho inteiro da pasta vazia à nota de partida, montado do roteiro e das saídas reais. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -9,7 +9,7 @@ const json = (p) => JSON.parse(ler(p));
 const entrada = () => ({
   roteiro: json("livros/ciclo-de-vida/roteiros/01.json"), estados: json("livros/ciclo-de-vida/roteiros/01.estados.json"),
   saidas: json("livros/ciclo-de-vida/saidas.json"), capitulo: json("livros/ciclo-de-vida/passos/01.json"),
-  secoes: { "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" },
+  secoes: { "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota de partida" },
   glossario: json("livros/ciclo-de-vida/glossario.json"),
 });
 const { acoes, passos } = await montarIde(entrada());

@@ -2,7 +2,7 @@
   "versoes_ate": "2026-10-16T00:00:00Z",
   "pasta_do_leitor": "/home/voce/atendimento-bemtevi",
   "comandos": {
-    "nota-zero": {
+    "nota-de-partida": {
       "comando": "uv run python baseline.py"
     },
     "sempre-responder": {

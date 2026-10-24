@@ -6,5 +6,5 @@ Clientes, CPFs, e-mails, pedidos e transportadoras são todos falsos.
 
 ```bash
 uv run pytest -q          # o contrato e as perguntas de referência estão válidos?
-uv run python baseline.py # a nota zero: quanto acerta quem passa tudo para um humano
+uv run python baseline.py # a nota de partida: quanto acerta quem passa tudo para um humano
 ```

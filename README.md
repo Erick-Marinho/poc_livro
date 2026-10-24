@@ -44,5 +44,5 @@ Título de seção com número: `## 1.4 As perguntas de referência`.
 
 Formato pronto: fonte em MDX, `Listagem` e `Terminal`.
 Livro em andamento: *O ciclo de vida de um agente*. O projeto do capítulo 1 está em
-`livros/ciclo-de-vida/projeto/` (a loja inventada, o contrato, as perguntas de referência e a nota zero).
+`livros/ciclo-de-vida/projeto/` (a loja inventada, o contrato, as perguntas de referência e a nota de partida).
 Escritos: prefácio e capítulo 1 (rascunhos para revisão).

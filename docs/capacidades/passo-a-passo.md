@@ -57,7 +57,7 @@ o caminho aparece na página.
 - (6b) O pensamento do autor por passo (me pergunto, por que assim, espero) entrou e saiu em 8e: a conversa do chat já
   é o raciocínio do autor.
 - (7a) Mudança de rumo, a pedido do Erick: os passos espalhados no texto (`Passo`, `Trilha`) saem, e o capítulo é
-  construído numa **IDE só**, da pasta vazia à nota zero. O explorador ganha os arquivos na ordem em que nascem, o
+  construído numa **IDE só**, da pasta vazia à nota de partida. O explorador ganha os arquivos na ordem em que nascem, o
   terminal guarda tudo o que rodou, e o **passador** embaixo avança ação por ação: cada passo abre (o que vai existir
   no fim, e o que o autor pensa), segue nas ações e fecha ("agora você tem").
 - (7a) O texto que ficava entre os passos vira `antes` e `depois` do passo, no `passos/01.json`, e aparece no passador.
@@ -104,7 +104,7 @@ o caminho aparece na página.
 - **6b.** A camada "o que eu penso" no passo, na voz dos autores, com o marcador de pendente em todos os passos.
 - **6c.** A coleta com o Erick, passo a passo: três perguntas por passo, as palavras dele no passo.
 
-- **7a.** A IDE do capítulo, da pasta vazia à nota zero, com o passador; os passos espalhados saem.
+- **7a.** A IDE do capítulo, da pasta vazia à nota de partida, com o passador; os passos espalhados saem.
 - **7b.** O código entra por blocos lógicos dentro do editor, com o balão de cada bloco e as palavras clicáveis.
 - **7c.** O celular (o explorador vira uma linha de arquivos), o modo direto e o acabamento.
 
@@ -149,5 +149,7 @@ o caminho aparece na página.
 - (8e) A conversa é uma só, do passo 1 até onde o leitor está: o que já foi dito não some nem é desenhado de novo, só
   entra o novo. A fala do leitor entra na hora em que ele age; a da IA, depois de um "digitando" curto. A conversa não
   segura o "seguir": quem segue antes vê o resto já escrito. As palavras perguntadas ficam na conversa.
+- (8f) "Nota zero" vira **nota de partida**, a pedido do Erick: "zero" fazia pensar em 0%, e ela vale 25%. Muda no
+  texto, no `baseline.py`, nas saídas (gravadas de novo) e no placar; o id da saída passa a `nota-de-partida`.
 
 **Capacidade fechada em 24/10/2026.** Fica para depois: a barra flutuante do livro por cima do "seguir" no celular.

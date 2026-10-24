@@ -1,7 +1,7 @@
 {
   "sobre": "O placar do livro: a nota do agente, capítulo a capítulo. Cada marco aponta uma saída gravada (saidas.json); o número sai dela, nunca daqui. No capítulo em que o marco nasce, ele fica escondido até o leitor apostar no comando indicado (ou chegar ao fim do capítulo), para não estragar a aposta.",
   "marcos": [
-    { "capitulo": 1, "saida": "nota-zero", "rotulo": "nota zero", "quem": "um \"agente\" que passa toda pergunta para uma pessoa", "revela_com": "r01-nota-zero" }
+    { "capitulo": 1, "saida": "nota-de-partida", "rotulo": "nota de partida", "quem": "um \"agente\" que passa toda pergunta para uma pessoa", "revela_com": "r01-nota-de-partida" }
   ],
   "proximo": { "capitulo": 2, "pergunta": "O seu agente bate os {nota}?" }
 }
