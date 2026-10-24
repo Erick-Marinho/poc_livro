@@ -8,6 +8,7 @@
  * Abaixo da figura vai o mesmo conteúdo em texto, para quem lê sem JS ou com leitor de tela.
  */
 import RastroAoVivo, { ARESTAS_RASTRO } from "./rastro/RastroAoVivo";
+import { nomeDaLoja } from "../../lib/livroDaPagina.ts";
 import type { DadosRastro, PassoRastro, Quem } from "./rastro/RastroAoVivo";
 
 type Passo = { quem: string; texto: string; decide?: boolean; erro?: string; certo?: boolean };
@@ -43,7 +44,7 @@ const prontos: DadosRastro = { perguntas, modos };
 const i0 = Math.max(dados.modos.findIndex((m) => m.id === inicio), 0);
 ---
 <figure class="rastro largo">
-  <RastroAoVivo client:visible={{ rootMargin: "400px" }} dados={prontos} inicio={i0} />
+  <RastroAoVivo client:visible={{ rootMargin: "400px" }} dados={prontos} inicio={i0} loja={nomeDaLoja(Astro.url)} />
   <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
   <details class="rastro-texto">
     <summary>A figura em texto</summary>

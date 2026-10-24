@@ -79,15 +79,17 @@ export function LinhaDoTempo({ passos, passo, fracao, ir, narracao }: {
 
 export type Mensagem = { chave: string; tipo: "cliente" | "agente" | "digitando" | "sistema"; autor?: string; texto?: string; cor?: string; nota?: ReactNode };
 
-/* "e-mail" e número de pedido não quebram no hífen */
-const QUEBRA = /([Ee]-mail|BT-\d+)/g;
+/* "e-mail" e número de pedido (como BT-1001) não quebram no hífen */
+const QUEBRA = /([Ee]-mail|[A-Z]{2,}-\d+)/g;
+/* o avatar da loja: as iniciais da última palavra do nome (Casa Bem-te-vi vira Bt), ou as duas primeiras letras dela */
+const sigla = (loja: string) => { const p = loja.split(" ").pop()!.split("-"); return p.length > 1 ? p[0][0] + p[1][0] : p[0].slice(0, 2); };
 const semQuebra = (texto?: string) => texto?.split(QUEBRA).map((parte, i) => (i % 2 ? <span key={i} className="palco-junto">{parte}</span> : parte));
 
 /** A conversa como o cliente vê: o cabeçalho da loja, os balões e uma caixa de mensagem só de enfeite. */
-export function Conversa({ mensagens }: { mensagens: Mensagem[] }) {
+export function Conversa({ mensagens, loja }: { mensagens: Mensagem[]; loja: string }) {
   const entra = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: .35 } };
   return <section className="palco-chat" aria-label="A conversa, como o cliente vê">
-    <header><span className="palco-avatar">Bt</span><span><b>Casa Bem-te-vi</b><small><i className="palco-online" />atendimento</small></span></header>
+    <header><span className="palco-avatar">{sigla(loja)}</span><span><b>{loja}</b><small><i className="palco-online" />atendimento</small></span></header>
     <div className="palco-mensagens">
       <AnimatePresence mode="popLayout" initial={false}>
         {mensagens.map((m) => m.tipo === "cliente"

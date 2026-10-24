@@ -87,7 +87,8 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   useEffect(() => {
     const id = atualMarco?.revelaCom;
     if (!id) return;
-    const chave = `fontmar:placar:${atualMarco.capitulo}`;
+    /* por livro e capítulo: o capítulo 2 de um livro não marca o do outro */
+    const chave = `fontmar:placar:${location.pathname.split("/").filter(Boolean)[0]}:${atualMarco.capitulo}`;
     try { if (localStorage.getItem(chave) === "visto") { setRevelado(true); return; } } catch { /* sem armazenamento */ }
     const revelar = () => { setRevelado(true); guardar(chave, "visto"); removeEventListener("scroll", fim); removeEventListener("fontmar:apostou", apostou); };
     const apostou = (e: Event) => { if ((e as CustomEvent<string>).detail === id) revelar(); };

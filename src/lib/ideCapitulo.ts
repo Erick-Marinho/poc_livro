@@ -59,7 +59,8 @@ export type Entrada = {
   capitulo: { autores?: string[]; repositorio?: string; prefixo_tag?: string; abre_com?: string; passos: DefPasso[] };
   secoes: Record<string, string>;
   glossario: { termos: Record<string, { marca?: string; rotulo?: string; texto: string }> };
-  pasta?: string;
+  /** a pasta do projeto, como o leitor a vê (~/<projeto>): vem do comandos.json do livro (pasta_do_leitor) */
+  pasta: string;
   numero?: string;
   /** os estados dos capítulos anteriores, em ordem: a IDE abre com o projeto como eles o deixaram */
   anteriores?: Estado[][];
@@ -83,7 +84,7 @@ export function resumirGravacao(itens: Record<string, { quando: string; modelo: 
  * dela; num traceback, a mensagem final e o último trecho que é do projeto (o que está no .venv é biblioteca); sem
  * nenhum dos dois, a linha de erro que sobrou, sem lugar.
  */
-export function problemasDe(saida: [string, string][], pasta = "~/atendimento-bemtevi"): ProblemaIde[] {
+export function problemasDe(saida: [string, string][], pasta: string): ProblemaIde[] {
   const linhas = saida.map(([l]) => l), raiz = `${pasta.replace(/^~/, "/home/voce")}/`;
   const curta = (m: string) => m.trim().replace(/^([\w.]+\.)(\w+(Error|Exception)\b)/, "$2");
   const achados: ProblemaIde[] = [];
@@ -117,9 +118,10 @@ function projetoDepois(estados: Estado[], de: Record<string, string | null> = {}
   return atual;
 }
 
-export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, glossario, pasta = "~/atendimento-bemtevi", numero = "",
+export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, glossario, pasta, numero = "",
   anteriores = [], gravacoes = {} }: Entrada) {
   const falhar = (m: string): never => { throw new Error(`IDE do capítulo (figura ${numero}): ${m}`); };
+  if (!pasta) falhar("falta a pasta do projeto (pasta_do_leitor, no comandos.json do livro)");
 
   /* os passos emendam um no outro e cobrem o roteiro inteiro */
   capitulo.passos.forEach((p, i) => {
@@ -253,5 +255,5 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     if (python || a.tipo !== "rodar") return;
     for (const t of a.saida) { const m = t.tipo === "linha" && t.l.match(/^Using CPython (\S+)/); if (m) { python = { versao: m[1], desde: k }; break; } }
   });
-  return { acoes, passos, versoes, python, iniciais, abreCom: capitulo.abre_com ?? null };
+  return { acoes, passos, versoes, python, iniciais, abreCom: capitulo.abre_com ?? null, pasta };
 }

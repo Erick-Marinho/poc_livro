@@ -6,6 +6,7 @@
  * O que cada ferramenta devolve ("o que o agente já sabe") sai dos dados da loja, não do roteiro.
  */
 import AgenteAoVivo from "./agente/AgenteAoVivo";
+import { nomeDaLoja } from "../../lib/livroDaPagina.ts";
 import type { Cenario, Escolha } from "./agente/cena";
 
 interface Passo { no: string; trajeto?: string; escolha?: string; marca?: string; trecho?: string; texto: string; duracao: number }
@@ -87,7 +88,7 @@ const cenarios: Cenario[] = roteiro.cenarios.map((cenario) => {
 });
 ---
 <figure class="figura-agente largo">
-  <AgenteAoVivo client:visible={{ rootMargin: "400px" }} cenarios={cenarios} />
+  <AgenteAoVivo client:visible={{ rootMargin: "400px" }} cenarios={cenarios} loja={nomeDaLoja(Astro.url)} />
   <figcaption><b>Figura P.1</b> · Simulação do agente que você vai construir. As perguntas e as decisões vêm do contrato do&nbsp;capítulo&nbsp;1; o que as ferramentas devolvem vem dos dados da loja.</figcaption>
 </figure>
 

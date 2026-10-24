@@ -280,7 +280,7 @@ function Grafo() {
 
 /* ---------- por fora: a conversa ---------- */
 
-function ConversaDoAgente() {
+function ConversaDoAgente({ loja }: { loja: string }) {
   const cen = useRelogio((s) => s.cen);
   const r = useContext(Ctx)!;
   const c = r.cenarios[cen];
@@ -292,7 +292,7 @@ function ConversaDoAgente() {
     ...(respondeu ? [{ chave: `${c.caso}-r`, tipo: "agente" as const, autor: "agente", texto: c.resposta, cor: COR[c.decisao] }] : []),
     ...(respondeu && c.decisao === "passar" ? [{ chave: `${c.caso}-s`, tipo: "sistema" as const, texto: "conversa transferida para a equipe" }] : []),
   ];
-  return <Conversa mensagens={mensagens} />;
+  return <Conversa mensagens={mensagens} loja={loja} />;
 }
 
 /* ---------- linha do tempo e controles ---------- */
@@ -307,7 +307,7 @@ function Linha({ ir }: { ir: (i: number) => void }) {
 
 /* ---------- a figura ---------- */
 
-export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
+export default function AgenteAoVivo({ cenarios, loja }: { cenarios: Cenario[]; loja: string }) {
   const r = useMemo(() => criarRelogio(cenarios), [cenarios]);
   const raiz = useRef<HTMLDivElement>(null);
   const [anuncio, setAnuncio] = useState("");
@@ -366,7 +366,7 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
           <span className="palco-selo">simulação · {c.caso}</span>
         </div>
         <div className="aav-palco">
-          <ConversaDoAgente />
+          <ConversaDoAgente loja={loja} />
           <section className="aav-dentro" aria-label="Por dentro: o caminho da resposta">
             <ReactFlowProvider initialNodes={inicio.nodes} initialEdges={inicio.edges} initialWidth={599} initialHeight={Math.round(599 * PAISAGEM.altura / PAISAGEM.largura)} fitView>
               <DesenhoCtx.Provider value={desenho}><Grafo /></DesenhoCtx.Provider></ReactFlowProvider>

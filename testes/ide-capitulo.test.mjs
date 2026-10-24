@@ -11,6 +11,7 @@ const entrada = () => ({
   saidas: json("livros/ciclo-de-vida/saidas.json"), capitulo: json("livros/ciclo-de-vida/passos/01.json"),
   secoes: { "1.5a": "O projeto", "1.5b": "O contrato", "1.5c": "As perguntas", "1.5d": "A nota de partida" },
   glossario: json("livros/ciclo-de-vida/glossario.json"),
+  pasta: json("livros/ciclo-de-vida/comandos.json").pasta_do_leitor.replace(/^\/home\/voce/, "~"),
 });
 const { acoes, passos } = await montarIde(entrada());
 
@@ -197,4 +198,9 @@ test("as dúvidas chegam às ações do roteiro, no máximo duas, cada uma com r
 test("o livro não monta com dúvida demais numa ação", async () => {
   const muito = entrada(); muito.roteiro.passos[4].duvidas = [1, 2, 3].map((n) => ({ pergunta: `Dúvida ${n}?`, resposta: "uma resposta" }));
   await assert.rejects(montarIde(muito), /no máximo duas/);
+});
+
+test("a pasta do projeto vem do livro: sem ela, a IDE não monta", async () => {
+  const sem = entrada(); delete sem.pasta;
+  await assert.rejects(montarIde(sem), /falta a pasta do projeto/);
 });

@@ -78,12 +78,14 @@ function feito(a: AcaoIde, leitor = false): string {
   return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
 }
 
-export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [], abreCom = null }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
+export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [], abreCom = null, pasta }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
   python: { versao: string; desde: number } | null;
   /** os arquivos com que a IDE abre: o projeto como os capítulos anteriores o deixaram */
   iniciais?: { nome: string; versao: number }[];
   /** o arquivo à vista quando a IDE abre, antes de qualquer ação */
-  abreCom?: string | null }) {
+  abreCom?: string | null;
+  /** a pasta do projeto do livro, como o leitor a vê (~/<projeto>) */
+  pasta: string }) {
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
@@ -597,7 +599,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     <div className="ide-barra">
       {/* a luz verde maximiza, como numa janela de verdade; o botão da direita diz o mesmo em palavras */}
       <span className="ide-luzes" aria-hidden="true"><i /><i /><i className="ic-luz-foco" onClick={() => setFoco(!foco)} title={foco ? "Sair do modo foco" : "Modo foco"} /></span>
-      <span className="ide-titulo">atendimento-bemtevi{vista ? ` — ${vista}` : ""}</span>
+      <span className="ide-titulo">{pasta.split("/").pop()}{vista ? ` — ${vista}` : ""}</span>
       <button type="button" className="ic-foco-botao" onClick={() => setFoco(!foco)} aria-pressed={foco}
         aria-label={foco ? "Sair do modo foco (Esc)" : "Modo foco: a IDE na tela inteira"} title={foco ? "Sair do modo foco (Esc)" : "Modo foco"}>
         {foco ? <Minimize2 size={14} /> : <Maximize2 size={14} />}<span>{foco ? "sair" : "foco"}</span>
@@ -672,7 +674,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
               <div>{prompt(acao.onde)}{acao.comando}</div>
               {cartaoAposta(acao.aposta!, apostar)}
             </div>}
-            {!esperando && !apostandoTroca && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length || iniciais.length ? "~/atendimento-bemtevi" : "~")}
+            {!esperando && !apostandoTroca && <div>{prompt(acao?.tipo === "rodar" ? acao.onde : rodados.length || iniciais.length ? pasta : "~")}
               {/* a troca no próprio comando: ele volta à linha (como a seta para cima), e a palavra é o seletor */}
               {variar && !variar.arquivo && acao?.tipo === "rodar" ? (() => {
                 const palavra = troca?.rotulo ?? variar.original, cmd = troca?.comando ?? acao.comando, i = cmd.indexOf(palavra);

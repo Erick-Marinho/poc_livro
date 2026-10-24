@@ -203,7 +203,7 @@ function Grafo() {
 
 /* ---------- a conversa e a narração ---------- */
 
-function ConversaDoRastro() {
+function ConversaDoRastro({ loja }: { loja: string }) {
   const r = useContext(Ctx)!;
   const pergunta = useRastro((s) => r.dados.perguntas[s.perg]);
   const chave = useRastro((s) => `${s.modo}/${s.perg}`);
@@ -217,7 +217,7 @@ function ConversaDoRastro() {
     ...(respondeu ? [{ chave: `${chave}-r`, tipo: "agente" as const, autor: "atendimento", texto: fim.texto, cor: fim.certo ? "verde" : "ambar",
       nota: <span className="palco-veredito"><Icone d={fim.certo ? IC.certo : IC.errado} tam={14} />{fim.certo ? "veio dos dados da loja" : fim.erro}</span> }] : []),
   ];
-  return <Conversa mensagens={mensagens} />;
+  return <Conversa mensagens={mensagens} loja={loja} />;
 }
 
 const ROTULO: Record<Quem, string> = { cliente: "cliente", codigo: "seu código", modelo: "modelo", ferramenta: "ferramenta", resposta: "resposta" };
@@ -232,7 +232,7 @@ function Linha({ ir }: { ir: (i: number) => void }) {
 
 /* ---------- a figura ---------- */
 
-export default function RastroAoVivo({ dados, inicio = 0 }: { dados: DadosRastro; inicio?: number }) {
+export default function RastroAoVivo({ dados, inicio = 0, loja }: { dados: DadosRastro; inicio?: number; loja: string }) {
   const r = useMemo(() => criarRelogio(dados, inicio), [dados, inicio]);
   const s = useSyncExternalStore(r.assinar, r.get, r.get);
   /* o servidor desenha o primeiro caminho já terminado: é o que fica para quem lê sem JS */
@@ -289,7 +289,7 @@ export default function RastroAoVivo({ dados, inicio = 0 }: { dados: DadosRastro
           </div>
         </div>
         <div className="rs-palco">
-          <ConversaDoRastro />
+          <ConversaDoRastro loja={loja} />
           <section className={`rs-dentro cor-${modo.cor}`} aria-label="Por dentro: quem faz cada passo">
             <p className="rs-quem-decide">quem decide o próximo passo: <b>{modo.quem_decide}</b></p>
             <ReactFlowProvider initialNodes={semente.nodes} initialEdges={semente.edges} initialWidth={559} initialHeight={Math.round(559 * PAISAGEM.altura * 1.16 / PAISAGEM.largura)} fitView>
