@@ -45,5 +45,6 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `938c8d5` | percurso do capítulo 1: 18 pedidos enviados pelo compositor, 47 falas da pessoa, todas "você"; 78 cliques na minha IDE e 58 no direto, como antes; 79 para o leitor novo (1 para dizer onde faz). Capturas do compositor no computador e no celular | pendente |
 
 (redação: claude-opus-5-5)
