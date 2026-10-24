@@ -39,6 +39,6 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 | 2 | `812f432` | percurso do capítulo 1 inteiro: de 95 para 78 cliques; as 40 pausas "sua vez" continuam | Erick, 24/10/2026 |
 | 3 | `8135191` | duas visitas no mesmo navegador: oferece continuar do passo 4 depois de fechar o 3, e a trilha mantém os feitos | Erick, 24/10/2026 |
 | 4 | `26ddea9` | a IDE cobre 1440×813, a página não rola, a pílula e o cabeçalho ficam por baixo, Esc volta; capturas no computador e no celular | Erick, 24/10/2026 |
-| 5 | (este) | percurso do capítulo 1: no interativo, 78 cliques mais 15 comandos (14 digitados, 1 "roda pra mim"), e as 7 apostas depois do Enter; no guiado, 78 cliques, como antes; no direto, 58 e sem campo. Capítulo 2 no interativo: 5 digitados, 1 "roda pra mim", até o passo 10. Erros digitados mostram a dica do livro; Tab completa | pendente |
+| 5 | `62d03d7` | percurso do capítulo 1: no interativo, 78 cliques mais 15 comandos (14 digitados, 1 "roda pra mim"), e as 7 apostas depois do Enter; no guiado, 78 cliques, como antes; no direto, 58 e sem campo. Capítulo 2 no interativo: 5 digitados, 1 "roda pra mim", até o passo 10. Erros digitados mostram a dica do livro; Tab completa | pendente |
 
 (redação: claude-opus-5-5)
