@@ -1,0 +1,123 @@
+---
+livro: O ciclo de vida de um agente
+numero: 2
+titulo: O primeiro agente
+lide: O modelo entra, mas não manda sozinho. O código desenha os caminhos, o contrato diz o formato da resposta, e a régua do capítulo 1 diz se valeu a pena.
+neste:
+  - monta o agente como um grafo da LangGraph, com estado, nós e setas;
+  - faz o modelo responder no formato do contrato, e não em texto solto;
+  - testa o grafo sem pagar nada, com um modelo falso;
+  - mede o agente com o GPT-6 Luna, pela mesma régua da nota de partida.
+partida:
+  texto: "Ponto de partida: o projeto como o capítulo 1 terminou."
+  tag: cap-02/inicio
+em_breve: Capítulo 3 · As ferramentas
+---
+import Nota from "../../../src/components/livro/Nota.astro";
+import PareEPense from "../../../src/components/livro/PareEPense.astro";
+import Pendente from "../../../src/components/livro/Pendente.astro";
+import Terminal from "../../../src/components/livro/Terminal.astro";
+import Resumo from "../../../src/components/livro/Resumo.astro";
+import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
+import Exercicio from "../../../src/components/livro/Exercicio.astro";
+import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
+import saidas from "../saidas.json";
+import roteiro02 from "../roteiros/02.json";
+import estados02 from "../roteiros/02.estados.json";
+import estados01 from "../roteiros/01.estados.json";
+import passos02 from "../passos/02.json";
+import glossario from "../glossario.json";
+
+## 2.1 Um agente desenhado
+
+No capítulo 1, o agente era uma promessa: um modelo que decide os próprios passos. Agora ele vai existir. A pergunta é por onde começar, e a resposta deste livro é: pelo desenho, e não pelo modelo.
+
+O agente deste capítulo faz duas coisas. Primeiro, lê a mensagem e decide o que o contrato manda: responder, abrir chamado, recusar ou passar a vez. Depois, segue o caminho daquela decisão. Dá para escrever isso como uma função cheia de `if`, mas vamos escrever como um **grafo**: cada passo é um **nó**, as **setas** dizem qual nó vem depois, e um **estado** passa de nó em nó levando o que já se sabe.
+
+<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e rodar esse desenho.</Nota>
+
+<Pendente o="Figura 2.1: o grafo do agente, com o caminho que cada pergunta gravada percorreu" parte="5b do capítulo 2" />
+
+Vale ser honesto com a definição do capítulo 1. Ali, um agente decide os próprios passos, num ciclo, usando ferramentas. O daqui decide só uma coisa, qual caminho seguir, e não tem ferramenta nem ciclo. Ainda é o esqueleto. As ferramentas, e com elas o ciclo, chegam no capítulo 3, e entram nesse mesmo desenho como nós novos.
+
+<PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
+Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem rodar modelo nenhum. No capítulo 5, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
+</PareEPense>
+
+## 2.2 O modelo decide, o contrato dá a forma
+
+Pedir a um modelo "decida o que fazer com esta mensagem" devolve texto: "Acho melhor encaminhar para um atendente, porque...". Texto é ótimo para o cliente ler e péssimo para o código seguir. Qual dos quatro caminhos é "acho melhor encaminhar"?
+
+Por isso o agente não pede texto. Ele pede uma **saída estruturada**: o modelo responde preenchendo um molde do pydantic, a `Escolha`, com uma decisão e o motivo numa frase. E a decisão não é um texto qualquer: é a `Decisao` do contrato do capítulo 1. Se o modelo inventar uma quinta decisão, o pydantic recusa na hora, antes de o grafo dar um passo.
+
+Repare na divisão de trabalho. O modelo faz o que só ele faz: lê uma mensagem em português e escolhe. O código faz o resto: conduz o caminho, e onde não há o que escrever, não chama o modelo. Passar a vez e abrir chamado têm uma frase fixa. Sai mais barato, e na hora de entregar o caso a uma pessoa o modelo não tem o que improvisar.
+
+<Pendente o="Voz dos autores: uma vez em que texto solto de um modelo quebrou o código que vinha depois" parte="dos autores" />
+
+## 2.3 Testar sem pagar
+
+Todo teste que chama um modelo de verdade custa dinheiro, demora, e pode dar um resultado diferente a cada rodada. Um teste assim não serve para a pergunta mais básica: o grafo tem o desenho certo?
+
+Para essa pergunta, a LangChain tem um **modelo falso**: ele devolve, na ordem, as respostas que você combinou, sem chamar ninguém. Com ele, os testes conferem o desenho e os caminhos. Combina-se "escolha passar a vez" e confere-se que o caminho de passar não pediu nada ao modelo. Combina-se "escolha responder, e escreva tal frase" e confere-se que a frase chegou.
+
+O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes da LangChain recomenda.
+
+<PareEPense pergunta="Se o modelo falso responde o que a gente combinou, o que esses testes provam?">
+Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada decisão, que cada caminho faz o que deve, que o caminho de passar a vez não gasta uma chamada. Se o modelo decide bem, eles não dizem: para isso existe a régua. Os dois juntos dizem onde está o problema quando a nota cai: no desenho (os testes quebram) ou na decisão do modelo (os testes passam e a nota cai).
+</PareEPense>
+
+## 2.4 Medir com a mesma régua
+
+Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%? A régua é a mesma: as 20 perguntas de referência, as quatro decisões do contrato e a contagem de acertos. Só o decisor muda. Antes era um "agente" que passava tudo para a equipe; agora é o grafo com o GPT-6 Luna.
+
+O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com um modelo, isso pede um cuidado a mais, porque ele não responde sempre igual e cada chamada custa. Então a resposta do modelo é gravada uma vez, e o livro repete a gravação, sem chamar o modelo de novo. O terminal da IDE diz de quando é a gravação e de qual modelo. Na sua máquina, o comando chama o modelo de verdade, com a sua chave, e a sua nota pode sair um pouco diferente.
+
+<PareEPense pergunta="Antes de medir: o agente com o GPT-6 Luna, sem acesso aos pedidos, ao catálogo e à política da loja, acerta quanto das 20?">
+Guarde o seu palpite. A IDE vai pedir a aposta antes de rodar, e a resposta está no fim do capítulo.
+</PareEPense>
+
+## 2.5 Mão na massa
+
+O projeto do capítulo 1 continua aqui: o contrato, as perguntas e a régua. Em dez passos, ele ganha o agente, os testes do grafo e a medida com o modelo de verdade. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Um dos passos dá errado de verdade, e um deles chama o GPT-6 Luna: na sua máquina, esse custa centavos.
+
+<IdeCapitulo roteiro={roteiro02} estados={estados02} saidas={saidas} capitulo={passos02} glossario={glossario} anteriores={[estados01]} secoes={{ "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" }} numero="2.2" legenda="O capítulo 2 numa IDE só, do projeto do capítulo 1 à nota do agente. O código, os comandos e o erro são os do projeto real; a resposta do modelo foi gravada uma vez e é repetida pelo livro." />
+
+## 2.6 O que ficou de pé
+
+A nota do agente:
+
+<Terminal saida={saidas["r02-medir"]} pasta="~/atendimento-bemtevi" />
+
+Trinta por cento: 6 de 20, cinco pontos acima da nota de partida. O agente passou a vez em 19 das 20 perguntas. A única que ele recusou foi a do CPF da prima, justamente a que não precisa de nenhum dado da loja.
+
+O motivo que ele deu em cada caso explica o resto: "Não tenho acesso ao status de entrega do pedido BT-1001", "A política da loja não informa o prazo para reclamar de um defeito". Ele seguiu ao pé da letra a última linha da instrução, quando a política não diz, não prometa: passe a vez. Sem dados, a política nunca diz nada.
+
+<PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
+Pela nota, sim. Pelo tipo de erro, não. O que respondia tudo "respondeu" a pergunta do Bruno sobre o pedido da Ana, e mostrou a compra de uma pessoa para outra. Este errou sempre para o lado seguro: passou a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
+</PareEPense>
+
+<Pendente o="Voz dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
+
+O cuidado está no agente. O que falta é informação: os pedidos, o catálogo e a política estão na pasta `dados/`, e ele não tem como olhar. Dar a ele esse jeito de olhar é o assunto do capítulo 3, as ferramentas. E a pergunta continua a mesma: a nota sobe sem que ele perca o cuidado?
+
+<PontoDeVolta tag="cap-02/fim" />
+
+<Resumo>
+- O agente deste capítulo é um grafo: o nó que decide, um caminho para cada decisão do contrato, e o estado que passa de um nó para o outro.
+- O modelo responde no formato do contrato, a `Escolha`, e não em texto solto; uma decisão fora das quatro é recusada pelo pydantic.
+- Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm frase fixa.
+- Os testes do grafo usam um modelo falso: provam o desenho e os caminhos, sem custo; a régua mede a decisão.
+- A resposta do modelo é gravada uma vez e repetida pelo livro; na sua máquina, ela pode sair diferente.
+- Com o GPT-6 Luna e sem dados da loja, o agente tira 30%: passa a vez quase sempre, que é o erro seguro. Falta informação, e ela vem com as ferramentas.
+</Resumo>
+
+<Exercicio titulo="Tire a regra de passar a vez">
+
+1. Na `INSTRUCAO` do `agente.py`, apague a frase "Quando a política não diz, não prometa: passe a vez." Deixe as três aspas do fim: elas fecham o texto.
+2. Antes de rodar, escreva num papel: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
+3. Rode `uv run pytest -q` (os testes do grafo continuam passando? por quê?) e depois `uv run python medir.py`, com a sua chave no ambiente. É uma rodada paga, de centavos.
+4. Compare a nota e a lista de erros com a do livro. Depois, volte a linha.
+
+Dica: os testes não olham a instrução, só o desenho. A régua olha só a decisão, não a resposta que o cliente leria.
+
+</Exercicio>

@@ -157,6 +157,11 @@ test("o texto do capítulo 2 diz a nota que a gravação deu", () => {
   const pct = nota.match(/\((\d+%)\)/)[1];
   const fim = passos02.passos.find((p) => p.id === "a-nota");
   assert.ok(fim.depois.join(" ").startsWith(pct), `o passo diz "${fim.depois[0].slice(0, 20)}…", e a gravação deu ${pct}`);
+  assert.ok(ler("livros/ciclo-de-vida/capitulos/02-o-primeiro-agente.mdx").includes(pct), `o capítulo 2 não diz ${pct}`);
+  /* as frases do modelo citadas no texto estão, palavra por palavra, na gravação */
+  const gravada = ler("livros/ciclo-de-vida/gravacoes/r02-medir.json");
+  for (const citada of ["Não tenho acesso ao status de entrega do pedido BT-1001", "A política da loja não informa o prazo para reclamar de um defeito"])
+    assert.ok(gravada.includes(citada), `a gravação não tem: ${citada}`);
   const aposta = roteiro02.passos.find((p) => p.id === "r02-medir").aposta;
   assert.equal(aposta.opcoes[aposta.certa], "um pouco mais que a nota de partida");
 });

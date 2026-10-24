@@ -12,7 +12,8 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - **3.** A primeira rodada paga: as 20 perguntas com o GPT-6 Luna, gravadas (ok e chave do Erick).
 - **4a.** A IDE do capítulo 2 abre com o projeto do fim do 1, e diz quando a resposta do modelo foi gravada.
 - **4b.** O roteiro 02 completo: passos, blocos, apostas, um erro do caminho e os pedidos (rascunho).
-- **5.** O texto do capítulo 2, com `Pendente` na voz dos autores.
+- **5a.** O texto do capítulo 2 no formato, com `Pendente` na voz dos autores e no lugar da figura 2.1.
+- **5b.** A figura 2.1: o grafo do agente, com o caminho que cada pergunta gravada percorreu.
 - **6.** O placar ganha o marco do capítulo 2, e o repositório do leitor ganha as tags `cap-02`.
 
 ## Decisões
@@ -29,17 +30,19 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (3) Repetindo a gravação, o comando recebe uma chave de mentira: o cliente da OpenAI exige uma ao ser criado.
 - (4b) O erro do caminho do capítulo 2 é o modelo falso da LangChain sem o `bind_tools`: real, e documentado por ela.
 - (4b) Texto que cita um número gravado (a nota) tem teste: se a gravação mudar, o build avisa.
+- (5a) O texto diz que o agente do capítulo 2 ainda não é um agente inteiro: sem ferramenta e sem ciclo.
+- (5a) Frase do modelo citada no texto é a gravada, palavra por palavra, e um teste confere.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 4b
+## Etapa atual: 5a
 
-Arquivos: `roteiros/02.json` (16 ações, na ordem em que se pensa), `passos/02.json` (10 passos, pedidos em rascunho,
-`abre_com`), o glossário (24 palavras novas), a IDE (abre no `contrato.py`; o "sua vez" do comando pago avisa da chave
-e do custo) e os testes. Evidência: o erro de verdade no passo 6 (`NotImplementedError` do modelo falso, com aposta),
-a nota com aposta no passo 10, e um teste que falha se o texto disser uma nota diferente da gravada.
+Arquivos: `capitulos/02-o-primeiro-agente.mdx` (seis seções no formato, a IDE na 2.5, a nota gravada na 2.6, resumo
+e exercício), o capítulo 1 (sem o "em breve") e os testes de navegação. Evidência: o teste do formato passa no
+capítulo 2; as frases do modelo citadas no texto e a nota são conferidas contra a gravação; o 1 leva ao 2.
+Fica fora: a figura 2.1 (5b) e o placar (6).
 
 ## Registro
 
@@ -51,3 +54,4 @@ a nota com aposta no passo 10, e um teste que falha se o texto disser uma nota d
 | 2 | `d81c6bc` | a conferência para na chamada não gravada, sem chegar à rede; 5 testes da gravação | 24/10 |
 | 3 | `8a13c1a` | 21 chamadas ao GPT-6 Luna gravadas; nota 30% (passa 19 de 20); repetida sem chave, igual | 24/10 |
 | 4a | `59d2c4b` | o capítulo 2 abre com os 14 arquivos do fim do 1; o terminal diz de quando é a resposta gravada | 24/10 |
+| 4b | `3dedd8e` | erro de verdade no passo 6 com aposta; a nota com aposta; teste do texto contra a gravação | 24/10 |
