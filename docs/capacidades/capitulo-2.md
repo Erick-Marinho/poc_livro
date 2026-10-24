@@ -34,17 +34,18 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (5a) Frase do modelo citada no texto é a gravada, palavra por palavra, e um teste confere.
 - (5b) A figura do grafo não é desenhada à mão: as setas são gravadas do grafo real; grafo com ciclo para a figura.
 - (5b) O resultado (os caminhos) só aparece na 2.6, depois da aposta; na 2.1, só o desenho.
+- (6) O placar pergunta pelo capítulo seguinte ao da página (`proximos`), e não por um "próximo" único.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 5b
+## Etapa atual: 6
 
-Arquivos: `components/livro/GrafoAgente.astro` e `lib/grafoAgente.ts` (a figura), `figuras/grafo-02.json` (o que
-cada nó faz), o comando `grafo-02` (as setas do grafo real, gravadas) e o capítulo 2. Dois modos: o desenho na 2.1
-(clicar num nó) e os caminhos na 2.6 (clicar numa pergunta), para a figura não estragar a aposta do passo 10.
-Evidência: as setas e os nós batem com o grafo real; os caminhos somam 6 de 20; fotos no computador e no celular.
+Arquivos: `placar.json` (o marco do capítulo 2, lido da saída `r02-medir`; uma pergunta por capítulo seguinte), a
+página que monta o placar e `testes/placar.test.mjs`. Depois, com o ok: os pushes do livro e do repositório do
+leitor (o `main` avança, sem forçar, e entram as 12 tags do capítulo 2). Evidência: o capítulo 1 pergunta pelo 2
+com 25%; o 2 mostra 25% e 30%, esconde o 30% até a aposta, e pergunta pelo 3.
 
 ## Registro
 
@@ -58,3 +59,4 @@ Evidência: as setas e os nós batem com o grafo real; os caminhos somam 6 de 20
 | 4a | `59d2c4b` | o capítulo 2 abre com os 14 arquivos do fim do 1; o terminal diz de quando é a resposta gravada | 24/10 |
 | 4b | `3dedd8e` | erro de verdade no passo 6 com aposta; a nota com aposta; teste do texto contra a gravação | 24/10 |
 | 5a | `97aa2db` | o formato passa no capítulo 2; nota e frases citadas conferidas contra a gravação; 1 leva ao 2 | 24/10 |
+| 5b | `563a27d` | setas e nós batem com o grafo real; caminhos somam 6 de 20; computador e celular | 24/10 |

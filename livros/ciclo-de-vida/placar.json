@@ -1,7 +1,29 @@
 {
-  "sobre": "O placar do livro: a nota do agente, capítulo a capítulo. Cada marco aponta uma saída gravada (saidas.json); o número sai dela, nunca daqui. No capítulo em que o marco nasce, ele fica escondido até o leitor apostar no comando indicado (ou chegar ao fim do capítulo), para não estragar a aposta.",
+  "sobre": "O placar do livro: a nota do agente, capítulo a capítulo. Cada marco aponta uma saída gravada (saidas.json); o número sai dela, nunca daqui. No capítulo em que o marco nasce, ele fica escondido até o leitor apostar no comando indicado (ou chegar ao fim do capítulo), para não estragar a aposta. `proximos`: a pergunta que cada página faz sobre o capítulo seguinte, com {nota} trocado pela nota do último marco.",
   "marcos": [
-    { "capitulo": 1, "saida": "nota-de-partida", "rotulo": "nota de partida", "quem": "um \"agente\" que passa toda pergunta para uma pessoa", "revela_com": "r01-nota-de-partida" }
+    {
+      "capitulo": 1,
+      "saida": "nota-de-partida",
+      "rotulo": "nota de partida",
+      "quem": "um \"agente\" que passa toda pergunta para uma pessoa",
+      "revela_com": "r01-nota-de-partida"
+    },
+    {
+      "capitulo": 2,
+      "saida": "r02-medir",
+      "rotulo": "nota do agente",
+      "quem": "o grafo com o GPT-6 Luna, ainda sem os dados da loja",
+      "revela_com": "r02-medir"
+    }
   ],
-  "proximo": { "capitulo": 2, "pergunta": "O seu agente bate os {nota}?" }
+  "proximos": [
+    {
+      "capitulo": 2,
+      "pergunta": "O seu agente bate os {nota}?"
+    },
+    {
+      "capitulo": 3,
+      "pergunta": "Com as ferramentas, ele passa dos {nota} sem perder o cuidado?"
+    }
+  ]
 }
