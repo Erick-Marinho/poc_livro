@@ -1,0 +1,6 @@
+[project]
+name = "segundo-cerebro"
+version = "0.1.0"
+description = "Um segundo cérebro em cima de um cofre do Obsidian, sem dependência nenhuma"
+requires-python = ">=3.13"
+dependencies = []

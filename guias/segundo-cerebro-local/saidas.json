@@ -1,0 +1,188 @@
+{
+  "cofre": {
+    "comando": "find cofre -name '*.md' | sort",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "cofre/E-mails/2026-10-24 Ambiente de testes.md",
+        ""
+      ],
+      [
+        "cofre/E-mails/2026-11-06 Integração do SMS atrasou.md",
+        ""
+      ],
+      [
+        "cofre/E-mails/2026-11-07 Bianca confirma.md",
+        ""
+      ],
+      [
+        "cofre/Notas/Ideias de métrica.md",
+        ""
+      ],
+      [
+        "cofre/Pessoas/Bianca Teles.md",
+        ""
+      ],
+      [
+        "cofre/Pessoas/Otávio Reis.md",
+        ""
+      ],
+      [
+        "cofre/Pessoas/Rafael Souza.md",
+        ""
+      ],
+      [
+        "cofre/Projetos/Piloto da agenda.md",
+        ""
+      ],
+      [
+        "cofre/Reuniões/2026-10-20 Kickoff do piloto.md",
+        ""
+      ],
+      [
+        "cofre/Reuniões/2026-10-28 Revisão de design.md",
+        ""
+      ],
+      [
+        "cofre/Reuniões/2026-11-03 Status semanal.md",
+        ""
+      ],
+      [
+        "cofre/Reuniões/2026-11-10 Conversa com o Otávio.md",
+        ""
+      ]
+    ]
+  },
+  "prazo-sem-data": {
+    "comando": "uv run python cerebro.py --sem-data \"Quando é a entrega do piloto?\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "resposta: A entrega do piloto continua em 14/11.",
+        ""
+      ],
+      [
+        "fonte:    Reuniões/2026-11-03 Status semanal.md (03/11)",
+        ""
+      ]
+    ]
+  },
+  "prazo": {
+    "comando": "uv run python cerebro.py \"Quando é a entrega do piloto?\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "resposta: Nova data de entrega do piloto: 21/11.",
+        ""
+      ],
+      [
+        "fonte:    E-mails/2026-11-06 Integração do SMS atrasou.md (06/11)",
+        ""
+      ],
+      [
+        "antes:    A entrega do piloto continua em 14/11. (Reuniões/2026-11-03 Status semanal.md, 03/11)",
+        ""
+      ]
+    ]
+  },
+  "nota-sem-data": {
+    "comando": "uv run python medir.py --sem-data",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "✗ Quando é a entrega do piloto?  ->  A entrega do piloto continua em 14/11.",
+        ""
+      ],
+      [
+        "✗ Por qual canal vai o lembrete?  ->  A métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.",
+        ""
+      ],
+      [
+        "✓ Quando o ambiente de testes ficou pronto?  ->  De Rafael Souza: o ambiente de testes ficou pronto hoje, 24/10, e a clínica já pode entrar com o usuário de demonstração.",
+        ""
+      ],
+      [
+        "✗ Com quanto tempo de antecedência chega o lembrete?  ->  A métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.",
+        ""
+      ],
+      [
+        "✓ Quando o Otávio sai de férias?  ->  Otávio Reis sai de férias de 17/11 a 21/11.",
+        ""
+      ],
+      [
+        "✓ Até quando o Otávio entrega as telas de cancelamento?  ->  Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.",
+        ""
+      ],
+      [
+        "✓ Qual é a métrica do piloto?  ->  A métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.",
+        ""
+      ],
+      [
+        "✓ Por que a integração do SMS atrasou?  ->  De Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.",
+        ""
+      ],
+      [
+        "✓ Quem é a cliente do piloto?  ->  Gerente de operações da Clínica Aurora, a cliente do Piloto da agenda.",
+        ""
+      ],
+      [
+        "✓ Por que o lembrete não vai por WhatsApp?  ->  Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.",
+        ""
+      ],
+      [
+        "nota: 7 de 10 (70%)",
+        ""
+      ]
+    ]
+  },
+  "nota": {
+    "comando": "uv run python medir.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "✓ Quando é a entrega do piloto?  ->  Nova data de entrega do piloto: 21/11.",
+        ""
+      ],
+      [
+        "✗ Por qual canal vai o lembrete?  ->  Ela pede que o lembrete chegue 24 horas antes da consulta.",
+        ""
+      ],
+      [
+        "✓ Quando o ambiente de testes ficou pronto?  ->  De Rafael Souza: o ambiente de testes ficou pronto hoje, 24/10, e a clínica já pode entrar com o usuário de demonstração.",
+        ""
+      ],
+      [
+        "✓ Com quanto tempo de antecedência chega o lembrete?  ->  Ela pede que o lembrete chegue 24 horas antes da consulta.",
+        ""
+      ],
+      [
+        "✓ Quando o Otávio sai de férias?  ->  Otávio Reis sai de férias de 17/11 a 21/11.",
+        ""
+      ],
+      [
+        "✓ Até quando o Otávio entrega as telas de cancelamento?  ->  Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.",
+        ""
+      ],
+      [
+        "✓ Qual é a métrica do piloto?  ->  A métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.",
+        ""
+      ],
+      [
+        "✓ Por que a integração do SMS atrasou?  ->  De Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.",
+        ""
+      ],
+      [
+        "✓ Quem é a cliente do piloto?  ->  Gerente de operações da Clínica Aurora, a cliente do Piloto da agenda.",
+        ""
+      ],
+      [
+        "✓ Por que o lembrete não vai por WhatsApp?  ->  Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.",
+        ""
+      ],
+      [
+        "nota: 9 de 10 (90%)",
+        ""
+      ]
+    ]
+  }
+}

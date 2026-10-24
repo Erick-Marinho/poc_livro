@@ -1,0 +1,10 @@
+{
+  "pasta_do_leitor": "/home/voce/segundo-cerebro",
+  "comandos": {
+    "cofre": { "comando": "find cofre -name '*.md' | sort" },
+    "prazo-sem-data": { "comando": "uv run python cerebro.py --sem-data \"Quando é a entrega do piloto?\"" },
+    "prazo": { "comando": "uv run python cerebro.py \"Quando é a entrega do piloto?\"" },
+    "nota-sem-data": { "comando": "uv run python medir.py --sem-data" },
+    "nota": { "comando": "uv run python medir.py" }
+  }
+}
