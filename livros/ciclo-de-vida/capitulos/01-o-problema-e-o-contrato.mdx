@@ -24,6 +24,7 @@ import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import Classificador from "../../../src/components/livro/Classificador.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
+import Pendente from "../../../src/components/livro/Pendente.astro";
 import Rastro from "../../../src/components/livro/Rastro.astro";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
@@ -75,6 +76,8 @@ Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que f
 
 Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
 
+<Pendente o="Voz dos autores: uma vez em que vocês começaram pelo agente, e o que isso custou" parte="dos autores" />
+
 ## 1.3 As perguntas que chegam
 
 O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Imagine um dia de mensagens no atendimento dela:
@@ -97,6 +100,8 @@ Um agente precisa disso mais do que uma rotina comum. Numa função escrita à m
 O contrato também não é o prompt, e vale separar os dois desde já. O prompt é como você pede ao modelo que se comporte; o contrato é como você confere o que ele fez. Você vai trocar de prompt muitas vezes ao longo do livro, e de modelo também. O contrato fica, e é justamente por ficar que ele serve de régua.
 
 <Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
+
+<Pendente o="Voz dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
 As saídas saem do padrão da seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
 
@@ -147,6 +152,8 @@ O contrato vira código no arquivo `contrato.py`. Ele não nasce inteiro, e o ca
 <IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={9} numero="1.3" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
 
 O passo 6 é o que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
+
+<Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
 As duas regras do passo 8 são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Com elas, o mesmo arquivo para no passo 9, e o erro diz a linha. O `StrEnum` das decisões faz o mesmo papel desde o começo: é uma lista fechada, e uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida.
 
