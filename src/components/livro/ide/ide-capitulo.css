@@ -111,5 +111,9 @@
 }
 @media (max-width: 680px) {
   .ic .ide-corpo { grid-template-columns: 1fr }
-  .ic-status span:nth-child(n+4) { display: none }
+  .ic-status span:not(.ic-st-py):nth-child(n+4) { display: none }
 }
+.ic-digitando { display: flex !important; gap: 4px; width: 52px; padding: 11px 12px !important }
+.ic-digitando i { width: 6px; height: 6px; border-radius: 50%; background: var(--ide-fraco); animation: ic-pisca 1s infinite ease-in-out }
+.ic-digitando i:nth-child(2) { animation-delay: .15s } .ic-digitando i:nth-child(3) { animation-delay: .3s }
+@keyframes ic-pisca { 0%, 80%, 100% { opacity: .3 } 40% { opacity: 1 } }

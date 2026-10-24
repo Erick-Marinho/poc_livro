@@ -142,5 +142,11 @@ o caminho aparece na página.
   "a conversa foi escrita pelos autores do livro, não por um modelo". O "seguir" mora no chat.
 - (8c) O rodapé mostra o ramo do git (depois do `uv init`), os problemas do último comando e o Python do
   `.python-version`. A "sua vez" flutua sobre o editor; abaixo de 1000 px, o chat desce para baixo da IDE.
+- (8d) O chat é uma conversa de verdade: cada passo abre com a mensagem do autor (`pedido` no `passos/01.json`), a IA
+  conta o que vai fazer, faz ("Criei o…", "Rodei…") e explica bloco a bloco; o autor pede o próximo bloco, pergunta
+  as palavras e aposta. A resposta da IA "digita" um instante antes de aparecer (não no modo direto, nem com movimento
+  reduzido). Os 18 pedidos são rascunho do modelo até o autor revisar (`pedido_revisado`).
+- (8d) O rodapé mostra o Python que o uv achou ao criar o `.venv` (o da saída gravada), e antes disso o do
+  `.python-version`; no celular, o Python continua à vista.
 
 **Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.

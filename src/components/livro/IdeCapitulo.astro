@@ -11,10 +11,10 @@ import type { Entrada } from "../../lib/ideCapitulo.ts";
 
 type Props = Entrada & { numero: string; legenda: string };
 const { legenda, ...entrada } = Astro.props;
-const { acoes, passos, versoes } = await montarIde(entrada);
+const { acoes, passos, versoes, python } = await montarIde(entrada);
 ---
 <figure class="ide-capitulo">
-  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} />
+  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} />
   <figcaption><b>Figura {entrada.numero}</b> · {legenda}</figcaption>
 </figure>
 <style>

@@ -97,3 +97,17 @@ test("o ponto de volta só aparece com o repositório do leitor, e aponta a tag 
   assert.equal(ps[0].volta, undefined);   // o passo 1 começa da pasta vazia: não há para onde voltar
   assert.equal(ps[4].volta.tag, "cap-01/passo-04");
 });
+
+test("todo passo abre com a mensagem do autor ao chat, e o rascunho fica marcado até o autor revisar", async () => {
+  assert.ok(passos.every((p) => p.pedido.trim().length > 10), "todo passo tem o pedido");
+  const sem = entrada(); delete sem.capitulo.passos[3].pedido;
+  await assert.rejects(montarIde(sem), /não tem o pedido do autor/);
+  const revisado = entrada(); revisado.capitulo.passos[0].pedido_revisado = true;
+  assert.equal((await montarIde(revisado)).passos[0].rascunho, false);
+});
+
+test("o rodapé sabe o Python do projeto: o que o uv achou ao criar o .venv", async () => {
+  const { python } = await montarIde(entrada());
+  assert.match(python.versao, /^3\.13\.\d+$/);
+  assert.equal(acoes[python.desde].comando, "uv add pydantic");
+});

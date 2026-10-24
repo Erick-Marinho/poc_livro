@@ -31,7 +31,15 @@ function suaVez(a: AcaoIde): string {
 const iniciais = (nome: string) => nome.split(/\s+/).map((x) => x[0]).join("").slice(0, 2).toUpperCase();
 const primeiro = (nome: string) => nome.split(/\s+/)[0];
 
-export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[] }) {
+/* como a IA conta a ação que acabou de fazer */
+function feito(a: AcaoIde): string {
+  if (a.tipo === "rodar") return `Rodei \`${a.comando.length > 60 ? a.comando.slice(0, 57) + "…" : a.comando}\` no terminal.`;
+  if (a.tipo === "apagar") return `Apaguei o \`${a.arquivo}\`.`;
+  if (a.tipo === "copiar") return "Copiei a pasta `dados/` para o projeto.";
+  return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
+}
+
+export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[]; python: { versao: string; desde: number } | null }) {
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
@@ -158,57 +166,70 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   /* ===== a conversa do chat: tudo o que já aconteceu neste passo, como mensagens ===== */
   const [aba, setAba] = useState<"Claude Code" | "Codex">("Claude Code");
   const conversa = useRef<HTMLDivElement>(null);
-  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas]);
+  const [digitando, setDigitando] = useState(false);
+  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas, digitando]);
   const Ia = ({ children }: { children: React.ReactNode }) => <div className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha">{children}</div></div>;
   const Pessoa = ({ quem, children }: { quem: string; children: React.ReactNode }) => <div className="ic-msg ic-pessoa"><span className="ic-quem">{quem}</span><div className="ic-bolha">{children}</div></div>;
+  /* a conversa de verdade: o autor pede, a IA conta o que vai fazer, faz, e explica; a última mensagem "digita" antes */
+  useEffect(() => {
+    if (direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    setDigitando(true); const t = setTimeout(() => setDigitando(false), 450); return () => clearTimeout(t);
+  }, [q]);
+  const autor = passo.pensamento ? primeiro(passo.pensamento.autor) : "Erick";
   const daqui = quadros.map((x, i) => ({ x, i })).filter(({ x, i }) => x.p === quadro.p && i <= q);
-  const mensagens = daqui.map(({ x, i }) => {
+  const falas = (x: Quadro, i: number): React.ReactNode[] => {
     const atual = i === q;
-    if (x.tipo === "abre") return <Fragment key={i}>
-      <p className="ic-divisa">passo {passo.n} · {passo.titulo}</p>
-      {passo.pensamento
-        ? <Pessoa quem={primeiro(passo.pensamento.autor)}><p>{passo.pensamento.pergunta}</p><p className="ic-fraco">{passo.pensamento.por_que}</p>
-            {passo.pensamento.espero && !acoes.slice(passo.de - 1, passo.ate).some((a) => a.tipo === "rodar" && a.aposta) && <p className="ic-fraco">espero: {passo.pensamento.espero}</p>}</Pessoa>
-        : <p className="ic-pendente" data-pendente="pensamento">💭 o que o autor pensa neste passo: pendente</p>}
-      <Ia>{passo.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={passo.objetivo} /></p></Ia>
-    </Fragment>;
-    if (x.tipo === "fecha") return <Ia key={i}><p className="ic-temos">✓ <b>agora você tem:</b> <Md t={passo.temos} /></p>{passo.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</Ia>;
+    if (x.tipo === "abre") return [
+      <p key="d" className="ic-divisa">passo {passo.n} · {passo.titulo}</p>,
+      <Pessoa key="p" quem={autor}><p>{passo.pedido}</p>
+        {passo.pensamento && <><p>{passo.pensamento.pergunta}</p><p className="ic-fraco">{passo.pensamento.por_que}</p></>}</Pessoa>,
+      <Ia key="i">{passo.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={passo.objetivo} /></p></Ia>,
+      ...(!passo.pensamento ? [<p key="pend" className="ic-pendente" data-pendente="pensamento">💭 o que o autor pensa neste passo: pendente</p>] : []),
+    ];
+    if (x.tipo === "fecha") return [<Ia key="f"><p className="ic-temos">✓ <b>Pronto. Agora você tem:</b> <Md t={passo.temos} /></p>{passo.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</Ia>];
     const a = acoes[x.k];
     if (x.b === undefined || a.tipo !== "editar") {
       const aposta = a.tipo === "rodar" && a.aposta ? apostas[x.k] : undefined;
-      if (atual && esperando) return <Ia key={i}><p>Antes de rodar: o que você acha que vai acontecer? Aposte no terminal.</p></Ia>;
-      return <Fragment key={i}>
-        <Ia><p><Md t={a.nota} /></p></Ia>
-        {typeof aposta === "number" && passo.pensamento?.espero && <Pessoa quem={primeiro(passo.pensamento.autor)}><p>Eu tinha apostado: {passo.pensamento.espero}</p></Pessoa>}
-      </Fragment>;
+      if (atual && esperando) return [<Ia key="e"><p>Antes de eu rodar <code>{a.tipo === "rodar" ? a.comando.split(" ").slice(0, 3).join(" ") : ""}</code>: o que você acha que vai acontecer? Aposta comigo no terminal.</p></Ia>];
+      return [
+        ...(typeof aposta === "number" ? [<Pessoa key="ap" quem={autor}><p>Aposto: {(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.</p></Pessoa>] : []),
+        <Ia key="n"><p><Md t={feito(a)} /> <Md t={a.nota} /></p></Ia>,
+        ...(typeof aposta === "number" && passo.pensamento?.espero ? [<Pessoa key="es" quem={autor}><p>Eu tinha apostado: {passo.pensamento.espero}</p></Pessoa>] : []),
+      ];
     }
     const b = a.blocos[x.b], chave = `${x.k}:${x.b}`, r = respostas[chave];
-    return <Fragment key={i}>
-      <Ia>
-        {x.b === 0 && <p className="ic-fraco"><Md t={a.nota} /></p>}
+    const termoAqui = atual && termo ? b.termos.find((t) => t.chave === termo) : undefined;
+    return [
+      ...(x.b === 0 ? [<Ia key="n0"><p><Md t={feito(a)} /> <Md t={a.nota} /> Vamos por partes: são {a.blocos.length} {a.blocos.length === 1 ? "bloco" : "blocos"}.</p></Ia>] : [<Pessoa key="mais" quem={autor}><p>E o próximo?</p></Pessoa>]),
+      <Ia key="b">
         <p className="ic-bloco-titulo">bloco {x.b + 1} de {a.blocos.length} · {b.titulo} <span>(linhas {b.a}{b.z > b.a ? `–${b.z}` : ""})</span></p>
         <p><Md t={b.texto} /></p>
         {b.termos.length > 0 && <div className="ic-termos">{b.termos.map((t) => atual
           ? <button key={t.chave} type="button" aria-expanded={termo === t.chave} onClick={() => setTermo(termo === t.chave ? null : t.chave)}><code>{t.rotulo}</code></button>
           : <code key={t.chave} className="ic-termo-fixo">{t.rotulo}</code>)}</div>}
-      </Ia>
-      {atual && termo && b.termos.some((t) => t.chave === termo) && <>
-        <Pessoa quem="você"><p>O que é <code>{b.termos.find((t) => t.chave === termo)!.rotulo}</code>?</p></Pessoa>
-        <Ia><p>{b.termos.find((t) => t.chave === termo)!.texto}</p></Ia>
-      </>}
-      {b.pergunta && <>
-        <Ia><p><b>Antes de seguir:</b> {b.pergunta.texto}</p>
+      </Ia>,
+      ...(termoAqui ? [<Pessoa key="tq" quem={autor}><p>O que é <code>{termoAqui.rotulo}</code>?</p></Pessoa>, <Ia key="tr"><p>{termoAqui.texto}</p></Ia>] : []),
+      ...(b.pergunta ? [
+        <Ia key="pq"><p><b>Antes de seguir, me diz:</b> {b.pergunta.texto}</p>
           {r === undefined && atual && !direto && <div className="ic-opcoes">
             {b.pergunta.opcoes.map((o, j) => <button key={j} type="button" onClick={() => setRespostas((v) => ({ ...v, [chave]: j }))}>{o}</button>)}
-            <button type="button" className="ic-pular" onClick={() => setRespostas((v) => ({ ...v, [chave]: "pulou" }))}>só mostrar</button>
+            <button type="button" className="ic-pular" onClick={() => setRespostas((v) => ({ ...v, [chave]: "pulou" }))}>não sei, me mostra</button>
           </div>}
-        </Ia>
-        {r !== undefined && <>
-          <Pessoa quem="você"><p>{r === "pulou" ? "Me mostra." : b.pergunta.opcoes[r]}</p></Pessoa>
-          <Ia><p><b className={r === b.pergunta.certa ? "ic-ok" : "ic-nao"}>{r === b.pergunta.certa ? "Isso." : r === "pulou" ? `É "${b.pergunta.opcoes[b.pergunta.certa]}".` : `Não: é "${b.pergunta.opcoes[b.pergunta.certa]}".`}</b> {b.pergunta.porque}</p></Ia>
-        </>}
-      </>}
-    </Fragment>;
+        </Ia>,
+        ...(r !== undefined ? [
+          <Pessoa key="pr" quem={autor}><p>{r === "pulou" ? "Não sei, me mostra." : b.pergunta.opcoes[r]}</p></Pessoa>,
+          <Ia key="pp"><p><b className={r === b.pergunta.certa ? "ic-ok" : "ic-nao"}>{r === b.pergunta.certa ? "Isso." : r === "pulou" ? `É "${b.pergunta.opcoes[b.pergunta.certa]}".` : `Não: é "${b.pergunta.opcoes[b.pergunta.certa]}".`}</b> {b.pergunta.porque}</p></Ia>,
+        ] : []),
+      ] : []),
+    ];
+  };
+  /* o que já foi dito fica; do quadro atual, as falas do autor aparecem na hora, e a resposta da IA depois do "digitando" */
+  const mensagens = daqui.flatMap(({ x, i }) => {
+    const f = falas(x, i);
+    if (i !== q || !digitando) return f.map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>);
+    const ate = f.findIndex((n) => (n as React.ReactElement)?.type === Ia);
+    return [...f.slice(0, Math.max(ate, 0)).map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>),
+      <div key={`${i}-dig`} className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>];
   });
   const cartaoSuaVez = pausa && <>
     <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
@@ -220,7 +241,8 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const ultimoRodado = rodados.at(-1)?.a;
   const problemas = ultimoRodado?.tipo === "rodar" && ultimoRodado.erro ? 1 : 0;
   const pv = projeto.arquivos[".python-version"];
-  const python = pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
+  const pyRodape = python && feitaAte >= python.desde && (feitaAte > python.desde || respondida(python.desde) || quadro.tipo !== "acao") ? `${python.versao} ('.venv')`
+    : pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
 
   return <div className="ide ic" data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
@@ -314,7 +336,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
       <span className="ic-st-esp" />
       <span>passo {passo.n}/{passos.length}</span>
       <span>UTF-8</span><span>LF</span>
-      {python && <span>Python {python}</span>}
+      {pyRodape && <span className="ic-st-py">Python {pyRodape}</span>}
     </footer>
   </div>;
 }

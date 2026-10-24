@@ -1,5 +1,5 @@
 {
-  "sobre": "Os passos de construção do capítulo 1, na ordem. Cada um é um trecho do roteiro (de, ate). O Passo e a trilha leem daqui; `engano` marca o passo em que o comando dá certo e esconde um erro. `pensamento` é o que o autor pensa no passo, nas palavras dele: só os autores escrevem.",
+  "sobre": "Os passos de construção do capítulo 1, na ordem. Cada um é um trecho do roteiro (de, ate). O Passo e a trilha leem daqui; `engano` marca o passo em que o comando dá certo e esconde um erro. `pensamento` é o que o autor pensa no passo, nas palavras dele: só os autores escrevem. `pedido` é a mensagem do autor ao chat que abre o passo (rascunho do modelo até o autor revisar: `pedido_revisado`).",
   "autores": [
     "Erick Marinho",
     "Victor Fontela"
@@ -15,7 +15,8 @@
       "de": 1,
       "ate": 4,
       "objetivo": "uma pasta com o esqueleto do projeto, e só o que vamos usar.",
-      "temos": "o `atendimento-bemtevi`, com nome, descrição e README."
+      "temos": "o `atendimento-bemtevi`, com nome, descrição e README.",
+      "pedido": "Vamos começar o atendimento da Casa Bem-te-vi do zero. Cria o projeto com o uv."
     },
     {
       "id": "pydantic",
@@ -25,7 +26,8 @@
       "de": 5,
       "ate": 5,
       "objetivo": "a biblioteca que vai dar forma ao contrato, instalada e anotada no projeto.",
-      "temos": "o pydantic no `pyproject.toml` e no `uv.lock`."
+      "temos": "o pydantic no `pyproject.toml` e no `uv.lock`.",
+      "pedido": "Coloca o pydantic. Vou precisar dele para o contrato."
     },
     {
       "id": "pytest",
@@ -39,7 +41,8 @@
       "depois": [
         "O `pydantic` vai dar forma ao contrato; o `pytest` vai conferir se ele está sendo cumprido. Por enquanto, nada de modelo de linguagem: o modelo só entra no capítulo 2.",
         "As versões nas saídas são as publicadas até 15 de outubro de 2026, quando gravamos o livro. Na sua máquina, o `uv add` vai trazer as mais novas, e os números podem ser outros. Se quiser exatamente as do livro, rode com `UV_EXCLUDE_NEWER=2026-10-16 uv add pydantic`."
-      ]
+      ],
+      "pedido": "E o pytest, só para desenvolvimento."
     },
     {
       "id": "a-loja",
@@ -84,7 +87,8 @@
       "depois": [
         "A política é o texto que decide o que o agente pode e não pode fazer. Os prazos de devolução não são invenção: os 7 dias de arrependimento e os 90 dias para reclamar de defeito em produto durável vêm do Código de Defesa do Consumidor. O resto é regra da loja.",
         "E repare no `loja.json`: a loja tem uma data de hoje fixa. Se o agente calcula prazos com a data real do computador, a resposta certa de hoje vira errada daqui a um mês, e os testes começam a falhar sozinhos. Com o \"hoje\" fixo, um pedido entregue em 20 de outubro está sempre a 21 dias de distância, em qualquer dia em que você rodar o livro."
-      ]
+      ],
+      "pedido": "Traz os dados da loja inventada para dentro do projeto."
     },
     {
       "id": "decisoes",
@@ -100,7 +104,8 @@
       ],
       "depois": [
         "Um `StrEnum` é uma lista fechada de textos. Uma decisão escrita como `\"talvez\"` falha na hora, em vez de passar despercebida e aparecer semanas depois como um \"erro do agente\"."
-      ]
+      ],
+      "pedido": "Agora o contrato. Começa pelas quatro decisões e pelas fontes de onde vem a resposta."
     },
     {
       "id": "caso",
@@ -114,7 +119,8 @@
       "passador": "caso",
       "depois": [
         "Repare na volta ao topo antes do `Caso`: o import do pydantic só entrou quando o código precisou dele. Escrever todos os imports antes, \"por garantia\", é adivinhar o que o arquivo vai precisar."
-      ]
+      ],
+      "pedido": "Como fica um caso? Uma pergunta de referência, com a decisão que a gente espera."
     },
     {
       "id": "ler-arquivo",
@@ -124,7 +130,8 @@
       "de": 13,
       "ate": 15,
       "objetivo": "uma função lê as perguntas de referência do arquivo, uma por linha, e diz em que linha está o erro.",
-      "temos": "`carregar_referencia`, ainda sem nada para ler."
+      "temos": "`carregar_referencia`, ainda sem nada para ler.",
+      "pedido": "Preciso ler os casos de um arquivo, um por linha. E, se uma linha estiver errada, quero saber qual."
     },
     {
       "id": "tres-perguntas",
@@ -134,7 +141,8 @@
       "de": 16,
       "ate": 17,
       "objetivo": "o formato funcionando com perguntas de verdade, antes de escrever as vinte.",
-      "temos": "três casos que o contrato aceita."
+      "temos": "três casos que o contrato aceita.",
+      "pedido": "Escreve três perguntas para a gente ver o formato funcionando."
     },
     {
       "id": "caso-apressado",
@@ -148,7 +156,8 @@
       "engano": "carrega sem reclamar, e não devia",
       "depois": [
         "Este é o passo que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente \"errar\" esse caso, ninguém vai saber que o erro era do caso."
-      ]
+      ],
+      "pedido": "Acrescenta um caso rápido: alguém perguntando do pedido, sem dizer qual."
     },
     {
       "id": "contrato-se-protege",
@@ -161,7 +170,8 @@
       "temos": "um contrato que barra caso mal escrito antes de ele virar régua.",
       "depois": [
         "As duas regras são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono."
-      ]
+      ],
+      "pedido": "Isso não podia ter entrado. Faz o contrato barrar."
     },
     {
       "id": "vinte-perguntas",
@@ -184,7 +194,8 @@
       ],
       "depois": [
         "Carregar sem erro só prova que cada linha tem o formato certo. Para conferir se as perguntas fazem sentido com a loja, os testes vão precisar ler os pedidos e os clientes."
-      ]
+      ],
+      "pedido": "Agora as vinte perguntas de referência."
     },
     {
       "id": "le-a-loja",
@@ -194,7 +205,8 @@
       "de": 26,
       "ate": 29,
       "objetivo": "o código abre qualquer arquivo de dados da loja pelo nome.",
-      "temos": "`carregar`, que os testes vão usar."
+      "temos": "`carregar`, que os testes vão usar.",
+      "pedido": "Os testes vão precisar dos dados da loja. Como o contrato lê um arquivo de dados?"
     },
     {
       "id": "o-que-os-testes-leem",
@@ -204,7 +216,8 @@
       "de": 30,
       "ate": 30,
       "objetivo": "o começo do arquivo de testes: tudo o que os testes vão consultar, lido uma vez só.",
-      "temos": "os casos, os pedidos, os e-mails dos clientes, o \"hoje\" da loja e quem é dono de cada pedido."
+      "temos": "os casos, os pedidos, os e-mails dos clientes, o \"hoje\" da loja e quem é dono de cada pedido.",
+      "pedido": "Começa o arquivo de testes pelo que eles vão consultar."
     },
     {
       "id": "testes-de-formato",
@@ -218,7 +231,8 @@
       "engano": "os testes passam, e o R12 continua errado",
       "depois": [
         "Os quatro passaram, e o R12 continua errado. Teste de formato não pega engano de regra: para isso, a regra tem que virar teste."
-      ]
+      ],
+      "pedido": "Primeiro, os testes do formato do arquivo."
     },
     {
       "id": "regras-da-politica",
@@ -228,7 +242,8 @@
       "de": 33,
       "ate": 34,
       "objetivo": "cada regra da política vira um teste que a máquina confere.",
-      "temos": "dois testes vermelhos, e os dois apontam o R12."
+      "temos": "dois testes vermelhos, e os dois apontam o R12.",
+      "pedido": "Agora as regras da política, cada uma virando um teste."
     },
     {
       "id": "r12-corrigido",
@@ -242,7 +257,8 @@
       "depois": [
         "Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.",
         "Um teste que nunca falha não protege nada. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e rode `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca."
-      ]
+      ],
+      "pedido": "O R12 está errado. Corrige."
     },
     {
       "id": "agente-mais-simples",
@@ -255,7 +271,8 @@
       "temos": "`sempre_passar`, que responde passar a tudo.",
       "antes": [
         "Ainda não existe agente, mas já dá para medir um. O mais simples possível: um \"agente\" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém."
-      ]
+      ],
+      "pedido": "Antes de qualquer agente: qual é o mais simples possível?"
     },
     {
       "id": "a-regua",
@@ -268,7 +285,8 @@
       "temos": "a nota zero: o número que todo agente do livro tem que bater.",
       "depois": [
         "Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la."
-      ]
+      ],
+      "pedido": "E como a gente mede esse agente contra as vinte perguntas?"
     }
   ]
 }

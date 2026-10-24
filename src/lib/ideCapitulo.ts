@@ -23,6 +23,8 @@ export type AcaoIde = { nota: string } & (
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; pensamento?: Pensamento; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
+  /** a mensagem do autor ao chat que abre o passo; `rascunho` enquanto o autor não revisou */
+  pedido: string; rascunho: boolean;
   /** o ponto de volta: a tag do fim do passo anterior, no repositório do leitor (só quando ele existe) */
   volta?: { repositorio: string; tag: string } };
 
@@ -32,7 +34,7 @@ type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: R
   gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
 type DefPasso = { id: string; secao: string; titulo: string; curta: string; de: number; ate: number; objetivo: string; temos: string;
-  engano?: string; pensamento?: Pensamento; antes?: string[]; depois?: string[] };
+  engano?: string; pensamento?: Pensamento; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean };
 export type Entrada = {
   roteiro: { passos: PassoRoteiro[] };
   estados: Estado[];
@@ -138,7 +140,14 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     const sinal = !ultimo ? "nada" : p.engano ? "engano" : ultimo.tipo === "rodar" && ultimo.erro ? "erro" : "ok";
     return { n: i + 1, id: p.id, secao: p.secao, nomeSecao: secoes[p.secao], titulo: p.titulo, curta: p.curta, de: p.de, ate: p.ate,
       objetivo: p.objetivo, temos: p.temos, engano: p.engano, pensamento: p.pensamento, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
+    pedido: p.pedido ?? falhar(`o passo ${p.id} não tem o pedido do autor ao chat`), rascunho: !p.pedido_revisado,
     volta: capitulo.repositorio && i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` } : undefined };
   });
-  return { acoes, passos, versoes };
+  /* o Python do projeto, como o uv contou ao criar o ambiente (o .venv): é o que o rodapé da IDE mostra */
+  let python: { versao: string; desde: number } | null = null;
+  acoes.forEach((a, k) => {
+    if (python || a.tipo !== "rodar") return;
+    for (const t of a.saida) { const m = t.tipo === "linha" && t.l.match(/^Using CPython (\S+)/); if (m) { python = { versao: m[1], desde: k }; break; } }
+  });
+  return { acoes, passos, versoes, python };
 }
