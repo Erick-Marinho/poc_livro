@@ -20,6 +20,9 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 - (etapa 1) O leitor é "você" no chat, e o pedido de cada passo é ele quem envia: no começo e no fecho de cada passo,
   o compositor sugere o pedido do passo seguinte, e enviar abre o passo (no lugar do "próximo passo"). Responder onde
   faz o projeto não abre mais o primeiro passo sozinho: quem abre é o envio do primeiro pedido.
+- (etapa 2) O caminho é o compositor: toda passagem é uma fala do leitor, e a barra de baixo fica só com as setas, o
+  nome do passo e as perguntas do livro. As falas de passagem variam em quatro jeitos de dizer o mesmo, para não soar
+  como botão.
 
 ## Etapas
 
@@ -28,23 +31,23 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 3. A IA pergunta no chat o que hoje a barra pergunta (onde você faz o projeto; continuar de onde parou).
 4. Perguntas sugeridas por ação, escritas pelos autores, ao lado da fala que avança.
 
-## Etapa 1 (detalhe)
+## Etapa 2 (detalhe)
 
 - **Arquivos:** `src/components/livro/ide/IdeCapitulo.tsx` e `ide-capitulo.css`.
-- **Muda:** o rótulo da pessoa passa de "Erick" a "você" (o pedido, as apostas, as perguntas, as trocas); o compositor
-  ganha a caixa de mensagem com a fala sugerida e o enviar (↑); no começo do capítulo a conversa espera o primeiro
-  pedido; no fecho de cada passo, a sugestão é o pedido do próximo, e enviar faz o mesmo que "próximo passo". Fora
-  disso, a caixa fica vazia e o "seguir" da barra continua (a etapa 2 cuida).
-- **Evidência:** percurso do capítulo 1 no Chrome headless: os 18 pedidos enviados pelo compositor aparecem como
-  "você", nenhum "Erick" no chat; os cliques continuam 78 (o envio substitui o "próximo passo" e o primeiro "seguir"),
-  mais 1 para quem ainda não disse onde faz o projeto (responder já não abre o passo); captura do compositor no
-  computador e no celular.
-- **Fica fora:** as outras passagens (etapa 2), a pergunta de onde fazer no chat (etapa 3), perguntas novas (etapa 4).
+- **Muda:** cada passagem é uma fala que o leitor envia pelo compositor, e ela fica na conversa depois de enviada. Entre
+  blocos de código, "E o próximo?"; depois de uma ação, quem faz na própria IDE diz que fez ("Fiz na minha IDE." e
+  variações), quem faz aqui no livro diz para seguir ("E agora?" e variações); no fecho, o pedido do passo seguinte
+  (etapa 1). Quando o terminal ou o chat pedem algo (digitar, apostar, responder), a caixa diz o quê, sem envio. A
+  barra de baixo perde o botão "seguir": ficam as setas de voltar e avançar (para reler e para o teclado), o nome do
+  passo e as perguntas de onde fazer e de continuar (etapa 3).
+- **Evidência:** percurso do capítulo 1 só pelo compositor, nos três modos: o mesmo número de cliques (78, 78 e 58),
+  nenhum "seguir"; as falas de passagem na conversa como "você"; captura no computador e no celular.
+- **Fica fora:** a pergunta de onde fazer e o continuar no chat (etapa 3), perguntas novas (etapa 4).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `938c8d5` | percurso do capítulo 1: 18 pedidos enviados pelo compositor, 47 falas da pessoa, todas "você"; 78 cliques na minha IDE e 58 no direto, como antes; 79 para o leitor novo (1 para dizer onde faz). Capturas do compositor no computador e no celular | pendente |
+| 1 | `8824ff6` | percurso do capítulo 1: 18 pedidos enviados pelo compositor, 47 falas da pessoa, todas "você"; 78 cliques na minha IDE e 58 no direto, como antes; 79 para o leitor novo (1 para dizer onde faz). Capturas do compositor no computador e no celular | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
