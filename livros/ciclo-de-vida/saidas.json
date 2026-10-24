@@ -70,11 +70,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 10ms",
+        "Resolved 6 packages in 14ms",
         ""
       ],
       [
-        "Installed 5 packages in 102ms",
+        "Installed 5 packages in 56ms",
         ""
       ],
       [
@@ -104,11 +104,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 11ms",
+        "Resolved 12 packages in 16ms",
         ""
       ],
       [
-        "Installed 5 packages in 542ms",
+        "Installed 5 packages in 248ms",
         ""
       ],
       [
@@ -348,7 +348,7 @@
         ""
       ],
       [
-        "4 passed in 0.17s",
+        "4 passed in 0.11s",
         "okv"
       ]
     ]
@@ -442,7 +442,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fb6474e4820>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f9e45dcc820>)",
         "err"
       ],
       [
@@ -466,7 +466,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.16s",
+        "2 failed, 5 passed in 0.12s",
         "err"
       ]
     ]
@@ -526,11 +526,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 45 packages in 20ms",
+        "Resolved 45 packages in 26ms",
         ""
       ],
       [
-        "Installed 32 packages in 475ms",
+        "Installed 32 packages in 1.00s",
         ""
       ],
       [
@@ -672,7 +672,7 @@
         ""
       ],
       [
-        "11 passed in 0.73s",
+        "11 passed in 0.89s",
         "okv"
       ]
     ]
@@ -682,11 +682,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 50 packages in 23ms",
+        "Resolved 50 packages in 25ms",
         ""
       ],
       [
-        "Installed 5 packages in 364ms",
+        "Installed 5 packages in 1.67s",
         ""
       ],
       [
@@ -707,6 +707,88 @@
       ],
       [
         " + tiktoken==0.14.0",
+        ""
+      ]
+    ]
+  },
+  "r02-medir": {
+    "comando": "uv run python medir.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       0 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         1 de  5",
+        ""
+      ],
+      [
+        "passar          5 de  5",
+        ""
+      ],
+      [
+        "nota do agente: 6 de 20 (30%)",
+        ""
+      ],
+      [
+        "  R01: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R02: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R03: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R04: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R05: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R06: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R07: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R08: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R09: o contrato pede abrir_chamado, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R10: o contrato pede abrir_chamado, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R11: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R12: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R13: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R14: o contrato pede recusar, o agente decidiu passar",
         ""
       ]
     ]

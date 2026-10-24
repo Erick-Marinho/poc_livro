@@ -95,9 +95,14 @@ def alteradas(antes: str, depois: str) -> list[int]:
 def com_gravacao(env: dict, livro: str, id_: str) -> dict:
     """O ambiente de um comando com a gravação do modelo ligada: o sitecustomize da gravação entra no PYTHONPATH."""
     pasta = str(RAIZ / "scripts" / "gravacao")
-    return {**env, "PYTHONPATH": os.pathsep.join(p for p in (pasta, env.get("PYTHONPATH")) if p),
-            "LIVRO_GRAVACAO": str(RAIZ / "livros" / livro / "gravacoes" / f"{id_}.json"),
-            "LIVRO_GRAVACAO_MODO": os.environ.get("LIVRO_GRAVACAO_MODO", "repetir")}
+    modo = os.environ.get("LIVRO_GRAVACAO_MODO", "repetir")
+    novo = {**env, "PYTHONPATH": os.pathsep.join(p for p in (pasta, env.get("PYTHONPATH")) if p),
+            "LIVRO_GRAVACAO": str(RAIZ / "livros" / livro / "gravacoes" / f"{id_}.json"), "LIVRO_GRAVACAO_MODO": modo}
+    # o cliente da OpenAI exige uma chave já ao ser criado; repetindo, a chave é de mentira e nunca sai da máquina:
+    # a gravação recusa, antes da rede, qualquer chamada que não esteja gravada
+    if modo == "repetir":
+        novo["OPENAI_API_KEY"] = "sk-livro-repete-a-gravacao-sem-chamar"
+    return novo
 
 
 def ambiente(versoes_ate: str | None) -> dict:

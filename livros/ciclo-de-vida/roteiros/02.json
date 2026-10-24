@@ -52,6 +52,13 @@
         }
       ],
       "nota": "A régua do capítulo 1, agora com o agente de verdade: a nota e os casos que ele errou."
+    },
+    {
+      "acao": "rodar",
+      "id": "r02-medir",
+      "comando": "uv run python medir.py",
+      "espera": 0,
+      "nota": "O agente com o GPT-6 Luna, nas 20 perguntas, pela régua da nota de partida."
     }
   ]
 }
