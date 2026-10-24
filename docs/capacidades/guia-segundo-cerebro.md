@@ -44,5 +44,6 @@ compara a nota antes e depois.
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `4778c64` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | pendente |
 
 (redação: claude-opus-5-5)
