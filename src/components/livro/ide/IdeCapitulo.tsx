@@ -144,7 +144,6 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   passoAtual.current = quadro.p;
   useEffect(() => { setQ(quadros.findIndex((x) => x.tipo === "abre" && x.p === passoAtual.current)); }, [direto]);
   /* as setas do teclado avançam e voltam, quando o foco está na IDE */
-  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando;
   const teclas = (e: React.KeyboardEvent) => {
     if ((e.target as HTMLElement).closest("button.ic-opcao-aposta, .ide-opcoes, .ic-opcoes")) return;
     if (e.key === "ArrowRight" && podeSeguir) { setQ(q + 1); e.preventDefault(); }
@@ -167,14 +166,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   const [aba, setAba] = useState<"Claude Code" | "Codex">("Claude Code");
   const conversa = useRef<HTMLDivElement>(null);
   const [digitando, setDigitando] = useState(false);
-  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas, digitando]);
+  /* quantas falas do quadro atual já entraram (o resto ainda vai entrar, uma a uma) */
+  const [visiveis, setVisiveis] = useState(Number.POSITIVE_INFINITY);
+  const visiveisRef = useRef(Number.POSITIVE_INFINITY);
+  visiveisRef.current = visiveis;
+  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas, digitando, visiveis]);
   const Ia = ({ children }: { children: React.ReactNode }) => <div className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha">{children}</div></div>;
   const Pessoa = ({ quem, children }: { quem: string; children: React.ReactNode }) => <div className="ic-msg ic-pessoa"><span className="ic-quem">{quem}</span><div className="ic-bolha">{children}</div></div>;
-  /* a conversa de verdade: o autor pede, a IA conta o que vai fazer, faz, e explica; a última mensagem "digita" antes */
-  useEffect(() => {
-    if (direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
-    setDigitando(true); const t = setTimeout(() => setDigitando(false), 450); return () => clearTimeout(t);
-  }, [q]);
   const autor = passo.pensamento ? primeiro(passo.pensamento.autor) : "Erick";
   const daqui = quadros.map((x, i) => ({ x, i })).filter(({ x, i }) => x.p === quadro.p && i <= q);
   const falas = (x: Quadro, i: number): React.ReactNode[] => {
@@ -223,13 +221,37 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       ] : []),
     ];
   };
-  /* o que já foi dito fica; do quadro atual, as falas do autor aparecem na hora, e a resposta da IA depois do "digitando" */
+  /* o ritmo de uma conversa de verdade: as falas do quadro atual entram uma a uma; antes de cada fala da IA, o
+     "digitando". O que já foi dito fica. Voltar, o modo direto e quem pede menos movimento veem tudo de uma vez. */
+  const falasAgora = falas(quadro, q);
+  const tipos = falasAgora.map((n) => (n as React.ReactElement)?.type === Ia ? "i" : (n as React.ReactElement)?.type === Pessoa ? "p" : "x").join("");
+  const qAnterior = useRef(q);
+  useEffect(() => {
+    const calmo = direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const avancou = q > qAnterior.current, voltou = q < qAnterior.current;
+    qAnterior.current = q;
+    if (calmo || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); return; }
+    let j = avancou ? 0 : Math.min(visiveisRef.current, tipos.length);
+    if (j >= tipos.length) return;
+    setVisiveis(j);
+    const relogios: ReturnType<typeof setTimeout>[] = [];
+    const proxima = () => {
+      if (j >= tipos.length) { setDigitando(false); return; }
+      const ia = tipos[j] === "i";
+      setDigitando(ia);
+      relogios.push(setTimeout(() => { j += 1; setDigitando(false); setVisiveis(j); relogios.push(setTimeout(proxima, 140)); }, ia ? 1200 : tipos[j] === "p" ? 550 : 250));
+    };
+    proxima();
+    return () => relogios.forEach(clearTimeout);
+  }, [q, tipos, direto]);
+  const revelando = visiveis < tipos.length;
+  /* seguir espera a aposta, a resposta e a conversa terminar de entrar */
+  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !revelando;
   const mensagens = daqui.flatMap(({ x, i }) => {
-    const f = falas(x, i);
-    if (i !== q || !digitando) return f.map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>);
-    const ate = f.findIndex((n) => (n as React.ReactElement)?.type === Ia);
-    return [...f.slice(0, Math.max(ate, 0)).map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>),
-      <div key={`${i}-dig`} className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>];
+    const f = i === q ? falasAgora : falas(x, i);
+    const vistas = i === q ? f.slice(0, visiveis) : f;
+    return [...vistas.map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>),
+      ...(i === q && digitando ? [<div key={`${i}-dig`} className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>] : [])];
   });
   const cartaoSuaVez = pausa && <>
     <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
@@ -319,13 +341,6 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
         </div>
         <div className="ic-compositor">
           {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
-          <div className="ic-controles">
-            <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
-            <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-              {esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-              {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
-            </button>
-          </div>
           <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
         </div>
       </aside>
@@ -341,5 +356,15 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       {pyRodape && <span className="ic-st-py">Python {pyRodape}</span>}
     </footer>
     </div>
+
+    {/* os controles, fora da janela: são do livro, como a trilha em cima */}
+    <nav className="ic-guia" aria-label="Avançar no capítulo">
+      <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
+      <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
+      <button type="button" className="ic-seguir" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
+        {revelando ? "lendo…" : esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+        {!revelando && !esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
+      </button>
+    </nav>
   </div>;
 }

@@ -66,7 +66,7 @@
 /* ===== a barra da direita: o chat que guia ===== */
 .ic .ide-corpo { grid-template-columns: 190px minmax(0, 1fr) 330px }
 .ic .ide-editor { position: relative }
-.ic-chat { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; height: 100%; max-height: 600px; background: var(--ide-lateral); border-left: 1px solid var(--ide-linha) }
+.ic-chat { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; height: 100%; min-height: 0; background: var(--ide-lateral); border-left: 1px solid var(--ide-linha) }
 .ic-chat-abas { display: flex; border-bottom: 1px solid var(--ide-linha) }
 .ic-chat-abas button { border: 0; background: none; padding: 8px 12px; font: 600 12px var(--f-ui); color: var(--ide-fraco); border-bottom: 2px solid transparent; margin-bottom: -1px }
 .ic-chat-abas button[aria-selected="true"] { color: #fff; border-bottom-color: var(--ide-acento) }
@@ -113,7 +113,7 @@
 .ic-status .ic-st-erro { font-weight: 600 }
 @media (max-width: 1000px) {
   .ic .ide-corpo { grid-template-columns: 170px minmax(0, 1fr) }
-  .ic-chat { grid-column: 1 / -1; max-height: 460px; border-left: 0; border-top: 1px solid var(--ide-linha) }
+  .ic-chat { grid-column: 1 / -1; height: 460px; border-left: 0; border-top: 1px solid var(--ide-linha) }
   .ic-suavez-editor { display: none } .ic-suavez-chat { display: grid }
 }
 @media (max-width: 680px) {
@@ -124,3 +124,32 @@
 .ic-digitando i { width: 6px; height: 6px; border-radius: 50%; background: var(--ide-fraco); animation: ic-pisca 1s infinite ease-in-out }
 .ic-digitando i:nth-child(2) { animation-delay: .15s } .ic-digitando i:nth-child(3) { animation-delay: .3s }
 @keyframes ic-pisca { 0%, 80%, 100% { opacity: .3 } 40% { opacity: 1 } }
+
+/* ===== altura fixa: a janela não pula a cada "seguir" =====
+   a coluna do chat crescia com as mensagens e a linha das abas só existia depois do primeiro arquivo; agora a janela
+   tem altura própria em cada largura, o chat e o explorador rolam por dentro, e a linha das abas fica sempre reservada */
+.ic .ide-abas { min-height: 34px; box-sizing: border-box }
+.ic .ide-explorador { overflow-y: auto; min-height: 0 }
+.ic .ide-editor { min-height: 0 }
+@media (min-width: 1001px) {
+  .ic .ide-corpo { height: 620px }
+  .ic .ide-editor { grid-template-rows: auto minmax(0, 1fr) auto }
+  .ic .ide-codigo { height: auto; min-height: 0 }
+}
+@media (max-width: 680px) { .ic-chat { height: 420px } }
+
+/* ===== os controles, fora da janela, nas cores do livro (como a trilha) ===== */
+.ic-guia { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; background: var(--papel-2); border: 1px solid var(--linha) }
+.ic-guia button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 40px; border-radius: 10px; font: 600 14px var(--f-ui) }
+.ic-guia .ic-voltar { width: 40px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink) }
+.ic-guia .ic-seguir { min-width: 190px; padding: 0 18px; border: 1px solid var(--acento); background: var(--acento); color: var(--papel) }
+.ic-guia button:disabled { opacity: .5; cursor: default }
+.ic-guia .ic-seguir:disabled { background: transparent; color: var(--ink-2); border-color: var(--linha); opacity: 1 }
+.ic-onde { flex: 1; min-width: 0; font: 13.5px var(--f-ui); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.ic-onde b { color: var(--ink); font-weight: 600 }
+@media (max-width: 680px) { .ic-onde { display: none } .ic-guia .ic-seguir { flex: 1; min-width: 0 } }
+
+/* ===== cada fala entra, em vez de surgir ===== */
+.ic-conversa > .ic-msg, .ic-conversa > .ic-divisa, .ic-conversa > .ic-pendente { animation: ic-entra .32s ease-out both }
+@keyframes ic-entra { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+@media (prefers-reduced-motion: reduce) { .ic-conversa > * { animation: none !important } }
