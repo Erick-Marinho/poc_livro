@@ -156,3 +156,16 @@
 .ic-guia .ic-do-inicio { padding: 0 12px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink-2); font-weight: 500 }
 .ic-retomar b { color: var(--acento) }
 @media (max-width: 680px) { .ic-guia .ic-do-inicio { padding: 0 8px; font-size: 12.5px } }
+
+/* ===== modo foco: a IDE na tela inteira; a trilha em cima, a janela no meio, os controles embaixo ===== */
+.ic .ide-barra { position: relative }
+.ic-foco-botao { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 9px;
+  border: 1px solid #3a4150; border-radius: 6px; background: #2a2f38; color: #cfd4dc; font: 500 11.5px var(--f-ui) }
+.ic-foco-botao:hover { border-color: var(--ide-acento); color: #fff }
+.ic-luz-foco { cursor: pointer }
+.ic.ic-foco { position: fixed; inset: 0; z-index: 60; margin: 0; padding: 12px max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  background: var(--papel); grid-template-rows: auto minmax(0, 1fr) auto; gap: 10px; outline: none }
+.ic.ic-foco .ic-janela { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0 }
+.ic.ic-foco .ide-corpo { height: auto; min-height: 0 }
+/* em tela estreita, as partes da janela empilham com altura própria: a janela rola por dentro, em vez de espremer */
+@media (max-width: 1000px) { .ic.ic-foco .ic-janela { display: block; overflow-y: auto } .ic.ic-foco .ide-corpo { height: auto } }

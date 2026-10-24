@@ -5,7 +5,7 @@
  * aposta, ele aposta, e só então o terminal mostra a saída gravada do projeto real.
  */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, FileBraces, FileCode, FileText, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
 import { useDireto } from "../palco/direto";
 import type { Trecho } from "../../../lib/codigo.ts";
 import type { AcaoIde, PassoCap, VersaoIde } from "../../../lib/ideCapitulo.ts";
@@ -167,6 +167,18 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
     const atual = quadro.tipo === "fecha" ? Math.min(quadro.p + 1, passos.length - 1) : quadro.p;
     try { localStorage.setItem(chaveProgresso, JSON.stringify({ atual, feitos: [...feitos].sort((a, b) => a - b) })); } catch { /* sem armazenamento */ }
   }, [q]);
+  /* modo foco (etapa 4): a IDE toma a tela inteira, sem sumário, cabeçalho e pílula; Esc volta ao livro */
+  const raiz = useRef<HTMLDivElement>(null);
+  const [foco, setFoco] = useState(false);
+  useEffect(() => {
+    if (!foco) return;
+    const h = document.documentElement, antes = h.style.overflow;
+    h.style.overflow = "hidden"; h.classList.add("ic-em-foco");
+    raiz.current?.focus();
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setFoco(false); };
+    addEventListener("keydown", esc);
+    return () => { h.style.overflow = antes; h.classList.remove("ic-em-foco"); removeEventListener("keydown", esc); };
+  }, [foco]);
   const continuar = () => { if (retomar !== null) irPasso(retomar); setRetomar(null); };
   const doInicio = () => { setRetomar(null); setSalvos([]); try { localStorage.removeItem(chaveProgresso); } catch { /* sem armazenamento */ } };
   /* ao entrar ou sair do modo direto, a sequência muda: o leitor fica no mesmo passo */
@@ -301,7 +313,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   const pyRodape = python && feitaAte >= python.desde && (feitaAte > python.desde || respondida(python.desde) || quadro.tipo !== "acao") ? `${python.versao} ('.venv')`
     : pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
 
-  return <div className="ide ic" data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}>
+  return <div ref={raiz} className={`ide ic${foco ? " ic-foco" : ""}`} data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}
+    role={foco ? "dialog" : undefined} aria-modal={foco || undefined} aria-label={foco ? "IDE do capítulo, em tela cheia" : undefined}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
     <nav className="ic-trilha" aria-label="Passos do capítulo">
       {secoes.map((s) => <div key={s} className="ic-secao">
@@ -316,8 +329,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
     {/* a janela da IDE: separada da trilha, que é o mapa do livro e não parte da ferramenta */}
     <div className="ic-janela">
     <div className="ide-barra">
-      <span className="ide-luzes" aria-hidden="true"><i /><i /><i /></span>
+      {/* a luz verde maximiza, como numa janela de verdade; o botão da direita diz o mesmo em palavras */}
+      <span className="ide-luzes" aria-hidden="true"><i /><i /><i className="ic-luz-foco" onClick={() => setFoco(!foco)} title={foco ? "Sair do modo foco" : "Modo foco"} /></span>
       <span className="ide-titulo">atendimento-bemtevi{vista ? ` — ${vista}` : ""}</span>
+      <button type="button" className="ic-foco-botao" onClick={() => setFoco(!foco)} aria-pressed={foco}
+        aria-label={foco ? "Sair do modo foco (Esc)" : "Modo foco: a IDE na tela inteira"} title={foco ? "Sair do modo foco (Esc)" : "Modo foco"}>
+        {foco ? <Minimize2 size={14} /> : <Maximize2 size={14} />}<span>{foco ? "sair" : "foco"}</span>
+      </button>
     </div>
     <div className="ide-corpo">
       <nav className="ide-explorador" aria-label="Arquivos do projeto">
