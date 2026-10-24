@@ -2,7 +2,8 @@
 
     python3 scripts/saidas.py <livro>              grava livros/<livro>/saidas.json
     python3 scripts/saidas.py <livro> --conferir   roda de novo e falha se a saída mudou
-    python3 scripts/saidas.py <livro> --leitor DIR  grava, e gera em DIR o repositório do leitor (uma tag por passo)
+    python3 scripts/saidas.py <livro> --leitor DIR  gera em DIR o repositório do leitor (uma tag por passo); com
+                                                   --conferir junto (o npm run leitor), confere em vez de gravar
 
 Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto (ou da pasta
 em "em", como marcos/cap-01 para um comando do capítulo 1), depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
