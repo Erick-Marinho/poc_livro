@@ -54,6 +54,11 @@ o caminho aparece na página.
 - (6a) O que um comando cria ou muda (o `uv init`, o `uv add`) aparece depois da saída dele, como "o que o comando criou
   ou mudou"; o `uv.lock` aparece só pelo nome. Arquivo apagado (o `main.py` do exemplo) aparece riscado.
 - (6a) Arquivos de configuração (`.gitignore`, `.python-version`, `.lock`) contam como dados: não entram no limite.
+- (6b) O pensamento do autor fica no passo (`pensamento` no `passos/<n>.json`): **me pergunto**, **por que assim** e,
+  se houver, **espero**. Só os autores listados no arquivo podem assinar; o build falha com outro nome.
+- (6b) O **espero** não aparece antes da aposta do leitor: num passo com aposta, ele entra depois da saída, como
+  "Erick tinha apostado: …", para o leitor comparar a aposta dele com a do autor.
+- (6b) Passo sem pensamento mostra o marcador "pendente"; nenhum texto de exemplo vai para o livro.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -95,3 +100,4 @@ o caminho aparece na página.
 | 5c1 | `2e0e4b3` | `npm test` (17 testes, 3 novos); 1.7 e 1.8 em passos no ngrok; o placar se revela com a aposta | Erick, 23/10/2026 |
 | 5c2 | `32cfca7` | `npm test` (19 testes, 2 novos); trilha e projeto inteiro no ngrok; o build barrou um buraco entre dois passos | Erick, 23/10/2026 |
 | 5c3 | `f38d3f2` | `npm test` (21 testes, 2 novos); erro dobrado no ngrok, no celular; nenhuma linha em branco acesa | Erick, 23/10/2026 |
+| 6a | `e3c87a3`, `f9930ee` | `npm test` (22 testes) no computador e na máquina do Erick; a 1.5 da pasta vazia ao `uv add` no ngrok | Erick, 23/10/2026 |

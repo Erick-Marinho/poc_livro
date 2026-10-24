@@ -101,3 +101,11 @@ test("a 1.5 começa da pasta vazia: uv init, o main.py apagado, e os uv add most
   assert.match(add, /<code>uv\.lock<\/code> nasceu/);
   assert.doesNotMatch(t, /class="listagem"/);   // a política e a loja aparecem no passo, sem listagem repetida
 });
+
+test("todo passo tem o lugar do pensamento do autor: as palavras dele, ou o marcador de pendente", () => {
+  const t = trecho("s1-5");
+  const n = [...t.matchAll(/data-passo-id="/g)].length;
+  const feitos = [...t.matchAll(/data-pensamento>/g)].length, pendentes = [...t.matchAll(/data-pendente="pensamento"/g)].length;
+  assert.equal(feitos + pendentes, n);
+  assert.doesNotMatch(html, /EXEMPLO/);
+});

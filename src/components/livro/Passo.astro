@@ -23,17 +23,19 @@ interface Props {
   saidas: Record<string, Saida>;
   glossario: { termos: Record<string, unknown> };
   /** os passos do capítulo (livros/<livro>/passos/<n>.json); este passo é o de `id` */
-  capitulo: { passos: DefPasso[] };
+  capitulo: { autores?: string[]; passos: DefPasso[] };
   id: string;
   passadores?: Record<string, { codigo: string; dados: { arquivo: string; linhas: string; blocos: { linhas: string }[] } }>;
   pasta?: string;
 }
 /** `ver`: linhas que ficam à vista mesmo dobradas (números do arquivo no fim do passo), por arquivo */
-type DefPasso = { id: string; secao: string; titulo: string; de: number; ate: number; objetivo: string; temos: string; passador?: string; ver?: Record<string, number[]>; engano?: string };
+/** `pensamento`: o que o autor pensa no passo, nas palavras dele (só os autores escrevem; docs/PRINCIPIOS.md) */
+type Pensamento = { autor: string; pergunta: string; espero?: string; por_que: string; ajustes?: string };
+type DefPasso = { id: string; secao: string; titulo: string; de: number; ate: number; objetivo: string; temos: string; passador?: string; ver?: Record<string, number[]>; engano?: string; pensamento?: Pensamento };
 const { roteiro, estados, saidas, glossario, capitulo, id, passadores = {}, pasta = "~/atendimento-bemtevi" } = Astro.props;
 const indice = capitulo.passos.findIndex((p) => p.id === id);
 if (indice < 0) throw new Error(`Passo: "${id}" não está nos passos do capítulo`);
-const { secao, titulo, de, ate, objetivo, temos, ver = {} } = capitulo.passos[indice];
+const { secao, titulo, de, ate, objetivo, temos, ver = {}, pensamento } = capitulo.passos[indice];
 const n = indice + 1, total = capitulo.passos.length;
 const passador = capitulo.passos[indice].passador ? (passadores[capitulo.passos[indice].passador!] ?? (() => { throw new Error(`Passo ${id}: o passador "${capitulo.passos[indice].passador}" não foi passado`); })()) : undefined;
 /* arquivo de dados (perguntas, loja) não conta no limite: é para copiar, não para digitar; mostra só o começo e o que `ver` pedir */
@@ -43,6 +45,12 @@ const anterior = capitulo.passos[indice - 1];
 if (anterior && anterior.ate + 1 !== de) falhar(`o passo anterior termina no ${anterior.ate} do roteiro, e este começa no ${de}: nenhum pedaço do caminho pode sumir`);
 if (indice === total - 1 && ate !== roteiro.passos.length) falhar(`o último passo termina no ${ate}, e o roteiro tem ${roteiro.passos.length}`);
 if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos)`);
+if (pensamento) {
+  if (!capitulo.autores?.includes(pensamento.autor)) falhar(`o pensamento é de "${pensamento.autor}", que não está entre os autores do capítulo`);
+  if (!pensamento.pergunta?.trim() || !pensamento.por_que?.trim()) falhar("o pensamento precisa da pergunta e do porquê");
+}
+const iniciais = (nome: string) => nome.split(/\s+/).map((x) => x[0]).join("").slice(0, 2).toUpperCase();
+const primeiroNome = (nome: string) => nome.split(/\s+/)[0];
 
 /* o projeto antes e depois do trecho */
 /* `null` no conteúdo: arquivo longo demais para ler (o uv.lock); aparece no mapa, mas não abre */
@@ -71,6 +79,7 @@ for (const e of estados) {
     s: saidas[e.rodou] ?? falhar(`a saída ${e.rodou} não está no saidas.json`) });
 }
 if (!editados.length && !rodadas.length) falhar("o trecho não muda nenhum arquivo nem roda nada");
+const runDoEspero = pensamento?.espero ? rodadas.find((r) => r.aposta)?.id : undefined;
 
 /* as linhas que mudaram, por arquivo: uma comparação de linhas simples (os arquivos do livro são pequenos) */
 function mudadas(a: string[], b: string[]): Set<number> {
@@ -187,6 +196,20 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   <header class="ps-topo">
     <div class="ps-linha"><span class="ps-n">passo {n} de {total} · seção {secao}</span><button type="button" class="ps-ver-projeto" data-abrir-projeto>ver o projeto inteiro até aqui</button></div>
     <h3 class="ps-titulo">{titulo}</h3>
+    {pensamento ? (
+      <div class="ps-pensa" data-pensamento>
+        <span class="ps-autor" title={pensamento.autor}>{iniciais(pensamento.autor)}</span>
+        <div class="ps-pensa-txt">
+          <p class="ps-pensa-rot">o que eu penso · {primeiroNome(pensamento.autor)}</p>
+          <p><b>me pergunto:</b> {pensamento.pergunta}</p>
+          <p><b>por que assim:</b> {pensamento.por_que}</p>
+          {pensamento.espero && !runDoEspero && <p><b>espero:</b> {pensamento.espero}</p>}
+          {pensamento.ajustes && <p class="ps-ajustes">{pensamento.ajustes}</p>}
+        </div>
+      </div>
+    ) : (
+      <p class="ps-pensa-pendente" data-pendente="pensamento">💭 o que eu penso: <span>pendente · as palavras dos autores entram aqui</span></p>
+    )}
     <p class="ps-objetivo"><b>no fim deste passo:</b> <span set:html={md(objetivo)} /></p>
     <div class="ps-mapa" aria-label="O projeto neste passo">
       {doLeitor.map((k) => <span class:list={["ps-arq", { muda: editados.includes(k) }]}>{editados.includes(k) ? "●" : "○"} {k}{arquivos.find((x) => x.nome === k)?.novo && <i> novo</i>}</span>)}
@@ -221,6 +244,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
           : <span class="ps-dobra"><button type="button" data-dobra>⋯ {t.linhas.length} linhas do caminho do erro fora do seu código</button><span class="ps-dobrado">{t.linhas.map(([l, c]) => <span class={c || undefined}>{l}{"\n"}</span>)}</span></span>)}</pre>
       </div>
       <p class="ps-nota-run" hidden><span class="ps-veredito"></span> <span set:html={md(r.nota)} /></p>
+      {r.id === runDoEspero && <p class="ps-nota-run ps-apostou" hidden><span class="ps-autor">{iniciais(pensamento!.autor)}</span> <span><b>{primeiroNome(pensamento!.autor)} tinha apostado:</b> {pensamento!.espero}</span></p>}
       {arquivos.some((f) => f.por === r.id) && (
         <div class="ps-depois" hidden>
           <p class="ps-rot-depois">o que o comando criou ou mudou</p>
@@ -267,7 +291,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
     const mostrar = (r: HTMLElement) => {
       r.classList.add("rodou");
       (r.querySelector(".ps-saida") as HTMLElement).hidden = false;
-      (r.querySelector(".ps-nota-run") as HTMLElement).hidden = false;
+      r.querySelectorAll<HTMLElement>(".ps-nota-run").forEach((x) => (x.hidden = false));
       const depoisDe = r.querySelector<HTMLElement>(".ps-depois"); if (depoisDe) depoisDe.hidden = false;
       r.querySelector<HTMLElement>("[data-rodar-btn]")?.remove();
       fechar();
@@ -336,6 +360,17 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   .pj-codigo .line:not(.novo) { opacity: 1 }
   .pj-grande { padding: 14px; font: 14px var(--f-ui); color: #aaa }
   @media (max-width: 640px) { .pj-corpo { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); height: 80vh } .pj-arvore { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid #2a2a2a } }
+  .ps-pensa { display: flex; gap: 10px; align-items: flex-start; margin: 2px 0 4px; padding: 10px 12px; border-radius: 10px; background: var(--papel); border-left: 3px solid var(--aviso) }
+  .ps-autor { flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--aviso); color: var(--papel); font: 700 11.5px var(--f-ui) }
+  .ps-pensa-txt { display: grid; gap: 3px; min-width: 0 }
+  .ps-pensa-txt p { margin: 0; font: italic 16px/1.5 var(--f-texto) }
+  .ps-pensa-txt p b { font: 600 12.5px var(--f-ui); font-style: normal; color: var(--ink-2); margin-right: 2px }
+  .ps-pensa-txt .ps-pensa-rot { font: 600 10.5px var(--f-mono); font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: var(--aviso) }
+  .ps-pensa-txt .ps-ajustes { font: 12px var(--f-ui); color: var(--ink-2) }
+  .ps-pensa-pendente { margin: 0; font: 12.5px var(--f-ui); color: var(--ink-2) }
+  .ps-pensa-pendente span { font: 12px var(--f-mono) }
+  .ps-apostou { display: flex; gap: 8px; align-items: center }
+  .ps-apostou .ps-autor { width: 22px; height: 22px; font-size: 10px }
   .ps-n { font: 600 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--acento) }
   .ps-titulo { margin: 0; font: 700 22px/1.25 var(--f-texto); text-wrap: balance }
   .ps-objetivo { margin: 0; font: 15.5px/1.5 var(--f-ui) }
