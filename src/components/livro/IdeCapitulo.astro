@@ -1,0 +1,24 @@
+---
+/**
+ * A IDE do capítulo (ilha React: ide/IdeCapitulo.tsx): o projeto inteiro sendo construído numa janela só,
+ * da pasta vazia ao fim do roteiro. O leitor avança com o passador: cada passo abre dizendo o que vai existir
+ * no fim dele (e o que o autor pensa), segue ação por ação (arquivo que nasce, código que entra, comando que roda)
+ * e fecha com "agora você tem". O que ela mostra é montado em src/lib/ideCapitulo.ts.
+ */
+import IdeCapitulo from "./ide/IdeCapitulo";
+import { montarIde } from "../../lib/ideCapitulo.ts";
+import type { Entrada } from "../../lib/ideCapitulo.ts";
+
+type Props = Entrada & { numero: string; legenda: string };
+const { legenda, ...entrada } = Astro.props;
+const { acoes, passos, versoes } = await montarIde(entrada);
+---
+<figure class="ide-capitulo">
+  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} />
+  <figcaption><b>Figura {entrada.numero}</b> · {legenda}</figcaption>
+</figure>
+<style>
+  .ide-capitulo { margin-block: 1.8em 2em; width: min(1120px, 100vw - 32px); max-width: none; margin-left: calc(50% - min(560px, 50vw - 16px)) }
+  figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2); max-width: 680px; margin-inline: auto }
+  figcaption b { color: var(--ink); font-weight: 600 }
+</style>

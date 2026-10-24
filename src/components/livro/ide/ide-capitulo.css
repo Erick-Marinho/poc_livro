@@ -1,0 +1,42 @@
+/* A IDE do capítulo: em cima, o caminho (os passos por seção); no meio, a IDE; embaixo, o passador, no papel do livro. */
+.ic .ide-codigo { height: 340px }
+.ic .ide-terminal { height: 180px }
+.ic-trilha { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 9px 14px; background: var(--ide-lateral); border-bottom: 1px solid var(--ide-linha) }
+.ic-secao { display: flex; align-items: center; gap: 8px; min-width: 0 }
+.ic-secao-nome { font: 12px var(--f-ui); color: var(--ide-fraco); white-space: nowrap }
+.ic-secao-nome b { font: 600 11.5px var(--f-mono); color: var(--ide-acento); margin-right: 2px }
+.ic-pontos { display: flex; gap: 4px }
+.ic-ponto { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #3a4150; background: #22262e; font: 600 11px var(--f-mono) !important; color: var(--ide-fraco) !important; padding: 0 }
+.ic-ponto.ic-erro { border-color: #6b3a3a } .ic-ponto.ic-engano { border-color: #6b5a2e } .ic-ponto.ic-ok { border-color: #2e5a44 }
+.ic-ponto.ic-feito { background: #1f3b2e; color: var(--ide-verde) !important }
+.ic-ponto.ic-atual { border: 2px solid var(--ide-acento); color: #fff !important }
+.ic-vazio { margin: 4px 8px; font-size: 12px; color: var(--ide-fraco); font-style: italic }
+.ic-sem-arquivo { display: grid; place-items: center } .ic-sem-arquivo p { color: var(--ide-fraco); font-size: 13px }
+.ide-explorador li button.ic-apagado span { text-decoration: line-through } .ic-apagado .ide-git { color: var(--ide-vermelho) }
+.ic-dobra button { display: block; margin: 2px 0; border: 1px dashed #4a4f5a; background: #1c1f26; color: var(--ide-fraco); border-radius: 4px; padding: 0 8px; font: 12px var(--f-ui) }
+.ic-dobrado { opacity: .7 }
+/* o passador fica no papel do livro: é a voz do livro dentro da IDE */
+.ic-passador { display: grid; gap: 8px; padding: 14px 18px 14px; background: var(--papel-2); color: var(--ink); border-top: 1px solid var(--linha); font: 15px/1.55 var(--f-ui) }
+.ic-onde { margin: 0; font: 12px var(--f-mono); color: var(--ink-2) }
+.ic-onde b { font: 600 13px var(--f-ui); color: var(--acento) }
+.ic-quadro { display: grid; gap: 8px; min-height: 92px; align-content: start }
+.ic-quadro p { margin: 0 }
+.ic-texto { font: 16.5px/1.6 var(--f-texto); max-width: 78ch }
+.ic-quadro code { font: .86em var(--f-mono); background: var(--papel); padding: .05em .35em; border-radius: 4px }
+.ic-objetivo b, .ic-temos b { font-weight: 600 }
+.ic-temos { padding: 8px 12px; border-radius: 8px; background: var(--papel); border-left: 3px solid var(--ok) } .ic-temos b { color: var(--ok) }
+.ic-pensa { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: var(--papel); border-left: 3px solid var(--aviso) }
+.ic-pensa > div { display: grid; gap: 3px }
+.ic-pensa p { font: italic 16px/1.5 var(--f-texto) } .ic-pensa p b { font: 600 12.5px var(--f-ui); font-style: normal; color: var(--ink-2) }
+.ic-pensa .ic-pensa-rot { font: 600 10.5px var(--f-mono); font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: var(--aviso) }
+.ic-autor { flex: none; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--aviso); color: var(--papel); font: 700 11px var(--f-ui) }
+.ic-pendente { font: 12.5px var(--f-ui); color: var(--ink-2) } .ic-pendente span { font: 12px var(--f-mono) }
+.ic-apostou { display: flex; gap: 8px; align-items: center; font-size: 14.5px }
+.ic-controles { justify-content: flex-end }
+.ic-controles button { color: var(--ink); background: var(--papel); border-color: var(--linha) }
+.ic-controles .ide-proximo { background: var(--acento); border-color: var(--acento); color: var(--papel) }
+.ic[data-direto] .ic-controles { display: none }
+@media (max-width: 680px) {
+  .ic .ide-codigo { height: 280px } .ic .ide-terminal { height: 170px }
+  .ic-trilha { gap: 6px 12px } .ic-secao-nome { display: none }
+}

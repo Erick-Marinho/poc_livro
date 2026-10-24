@@ -1,19 +1,12 @@
-/** O passador do formato de um caso: monta, sublinha as palavras e não mente nas perguntas. Rode depois de `astro build`. */
+/** O passador do formato de um caso: o trecho é o do contrato.py real, e as perguntas não mentem. (Ele volta à página dentro da IDE, na etapa 7b.) */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
-const html = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html");
 const dados = JSON.parse(ler("livros/ciclo-de-vida/passadores/caso.json"));
 const contrato = ler("livros/ciclo-de-vida/projeto/contrato.py");
 const saidas = JSON.parse(ler("livros/ciclo-de-vida/saidas.json"));
-
-test("o passador sai com um painel por bloco, e as palavras do código sublinhadas", () => {
-  assert.equal([...html.matchAll(/class="pd-bloco"/g)].length, dados.blocos.length);
-  const sublinhadas = new Set([...html.matchAll(/data-termo="([^"]+)"/g)].map((m) => m[1]));
-  for (const t of ["class", "BaseModel", "Field", "pattern", "min_length", "None"]) assert.ok(sublinhadas.has(t), t);
-});
 
 test("o trecho do passador é o formato de um caso no contrato.py real", () => {
   const [de, ate] = dados.linhas.split("-").map(Number);

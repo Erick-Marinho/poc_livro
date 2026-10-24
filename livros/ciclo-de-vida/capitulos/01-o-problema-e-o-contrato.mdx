@@ -18,7 +18,6 @@ partida:
   tag: cap-01/inicio
 em_breve: Capítulo 2 · O primeiro agente
 ---
-import Listagem from "../../../src/components/livro/Listagem.astro";
 import Terminal from "../../../src/components/livro/Terminal.astro";
 import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
@@ -30,21 +29,12 @@ import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
 import referencia from "../projeto/referencia.jsonl?raw";
-import politica from "../projeto/dados/politica.md?raw";
-import loja from "../projeto/dados/loja.json?raw";
 import saidas from "../saidas.json";
-import IDE from "../../../src/components/livro/IDE.astro";
 import roteiro01 from "../roteiros/01.json";
 import estados01 from "../roteiros/01.estados.json";
-import contrato from "../projeto/contrato.py?raw";
-import Passador from "../../../src/components/livro/Passador.astro";
-import passadorCaso from "../passadores/caso.json";
-import glossario from "../glossario.json";
-import Passo from "../../../src/components/livro/Passo.astro";
-import Trilha from "../../../src/components/livro/Trilha.astro";
 import passos01 from "../passos/01.json";
+import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 
-export const base = { roteiro: roteiro01, estados: estados01, saidas, glossario, capitulo: passos01, passadores: { caso: { codigo: contrato, dados: passadorCaso } } };
 
 ## 1.1 O que é um agente
 
@@ -126,94 +116,19 @@ Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: 
 
 <Nota titulo="passar a vez não é falhar">Um agente que sabe a hora de chamar uma pessoa vale mais que um que tenta responder tudo. Passar a vez é uma decisão do contrato, com regra própria, e não um erro do agente. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
 
-## 1.5 O projeto
+## 1.5 Mão na massa
 
-Hora de abrir o terminal. Daqui até o fim do capítulo, o projeto se constrói em dezoito passos, do zero até a nota zero. Primeiro o projeto nasce e ganha as duas bibliotecas de que vai precisar; depois vem o contrato, as perguntas e a régua. Cada passo começa dizendo o que vai existir no fim dele e termina num comando que prova que existe.
+Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota zero em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
 
-<Trilha capitulo={passos01} roteiro={roteiro01} saidas={saidas} secoes={{ "1.5": "O projeto", "1.6": "O contrato em código", "1.7": "As perguntas de referência", "1.8": "A nota zero" }} numero="1.3" legenda="O caminho do capítulo, da pasta vazia à nota zero. Clique num passo para ir até ele; o sinal diz o que o comando do fim mostra, e ele é o do projeto real." />
+<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} secoes={{ "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota zero. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
-<Passo {...base} id="projeto-nasce" />
-
-<Passo {...base} id="pydantic" />
-
-<Passo {...base} id="pytest" />
-
-O `pydantic` vai dar forma ao contrato; o `pytest` vai conferir se ele está sendo cumprido. Por enquanto, nada de modelo de linguagem: o modelo só entra no capítulo 2.
-
-<Nota titulo="as versões que você vai ver">As versões nas saídas acima são as publicadas até 15 de outubro de 2026, quando gravamos o livro. Na sua máquina, o `uv add` vai trazer as mais novas, e os números podem ser outros. Se quiser exatamente as do livro, rode com `UV_EXCLUDE_NEWER=2026-10-16 uv add pydantic`.</Nota>
-
-<Passo {...base} id="a-loja" />
-
-A política é o texto que decide o que o agente pode e não pode fazer. Os prazos de devolução não são invenção: os 7 dias de arrependimento e os 90 dias para reclamar de defeito em produto durável vêm do Código de Defesa do Consumidor. O resto é regra da loja.
-
-E repare no `loja.json`: a loja tem uma data de hoje fixa. Se o agente calcula prazos com a data real do computador, a resposta certa de hoje vira errada daqui a um mês, e os testes começam a falhar sozinhos. Com o "hoje" fixo, um pedido entregue em 20 de outubro está sempre a 21 dias de distância, em qualquer dia em que você rodar o livro.
-
-## 1.6 O contrato em código
-
-O contrato vira código no arquivo `contrato.py`, em seis passos. O arquivo não nasce de cima para baixo: duas vezes você volta ao topo para acrescentar um import, como acontece na sua IDE. E um dos passos dá errado de propósito.
-
-
-<Passo {...base} id="decisoes" />
-
-Um `StrEnum` é uma lista fechada de textos. Uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida e aparecer semanas depois como um "erro do agente".
-
-<Passo {...base} id="caso" />
-
-Repare na volta ao topo antes do `Caso`: o import do pydantic só entrou quando o código precisou dele. Escrever todos os imports antes, "por garantia", é adivinhar o que o arquivo vai precisar.
-
-<Passo {...base} id="ler-arquivo" />
-
-<Passo {...base} id="tres-perguntas" />
-
-<Passo {...base} id="caso-apressado" />
-
-Este é o passo que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
-
-<Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
-
-<Passo {...base} id="contrato-se-protege" />
-
-As duas regras são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono.
+## 1.6 O que ficou de pé
 
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
 </PareEPense>
 
-## 1.7 As perguntas de referência
-
-O contrato diz como um caso deve ser. As perguntas de referência são os casos de verdade: um arquivo `referencia.jsonl`, com uma pergunta por linha, vinte ao todo: 8 de responder, 2 de abrir chamado, 5 de recusar e 5 de passar a vez. Entre elas está a do pedido da Ana perguntado pelo Bruno, que vai voltar no capítulo 6, quando a gente tentar quebrar o agente de propósito.
-
-Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
-
-<Passo {...base} id="vinte-perguntas" />
-
-Carregar sem erro só prova que cada linha tem o formato certo. Para conferir se as perguntas fazem sentido com a loja, os testes vão precisar ler os pedidos e os clientes.
-
-<Passo {...base} id="le-a-loja" />
-
-<Passo {...base} id="o-que-os-testes-leem" />
-
-<Passo {...base} id="testes-de-formato" />
-
-Os quatro passaram, e o R12 continua errado. Teste de formato não pega engano de regra: para isso, a regra tem que virar teste.
-
-<Passo {...base} id="regras-da-politica" />
-
-<Passo {...base} id="r12-corrigido" />
-
-Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
-
-<Nota titulo="teste do teste">Um teste que nunca falha não protege nada, e o passo 5 mostrou dois falhando pelo motivo certo. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e rode `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
-
-## 1.8 A nota zero
-
-Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
-
-<Passo {...base} id="agente-mais-simples" />
-
-<Passo {...base} id="a-regua" />
-
-Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
+<Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
 <PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota zero?">
 Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:

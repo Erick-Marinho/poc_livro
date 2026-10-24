@@ -59,6 +59,13 @@ o caminho aparece na página.
 - (6b) O **espero** não aparece antes da aposta do leitor: num passo com aposta, ele entra depois da saída, como
   "Erick tinha apostado: …", para o leitor comparar a aposta dele com a do autor.
 - (6b) Passo sem pensamento mostra o marcador "pendente"; nenhum texto de exemplo vai para o livro.
+- (7a) Mudança de rumo, a pedido do Erick: os passos espalhados no texto (`Passo`, `Trilha`) saem, e o capítulo é
+  construído numa **IDE só**, da pasta vazia à nota zero. O explorador ganha os arquivos na ordem em que nascem, o
+  terminal guarda tudo o que rodou, e o **passador** embaixo avança ação por ação: cada passo abre (o que vai existir
+  no fim, e o que o autor pensa), segue nas ações e fecha ("agora você tem").
+- (7a) O texto que ficava entre os passos vira `antes` e `depois` do passo, no `passos/01.json`, e aparece no passador.
+  Ficam fora da IDE só as perguntas e a conclusão (seção 1.6, "O que ficou de pé").
+- (7a) O que a IDE mostra é montado em `src/lib/ideCapitulo.ts`, puro, e o teste chama esse módulo direto.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -68,9 +75,10 @@ o caminho aparece na página.
 | `glossario.json` | as palavras difíceis, uma vez por livro | — | termos | nova |
 | `Passador.astro` | um trecho real, bloco a bloco, com palavras e perguntas | arquivo real + `passadores/*.json` + glossário | figura | nova |
 | `passadores/caso.json` | os 5 blocos do formato de um caso (`contrato.py`, 29–38) | — | blocos | nova |
-| `Passo.astro` | objetivo, mapa pequeno, código novo, rodar com aposta, "agora você tem" | roteiro + estados + saídas | figura | nova (5b2) |
-| `passos/01.json` | os 14 passos do capítulo, na ordem | — | passos | nova (5c2) |
-| `Trilha.astro` | o caminho do capítulo, clicável, com o sinal de cada passo e os feitos | passos + roteiro + saídas | figura | nova (5c2) |
+| `passos/01.json` | os 18 passos do capítulo: trecho do roteiro, fim do passo, pensamento, texto antes e depois | — | passos | em uso |
+| `lib/ideCapitulo.ts` | monta as ações, os passos e as versões dos arquivos, e barra o que não bate | roteiro + estados + saídas + passos | dados da IDE | nova (7a) |
+| `IdeCapitulo` | a IDE do capítulo: progresso, explorador, editor, terminal com aposta, e o passador | dados da IDE | figura | nova (7a) |
+| `Passo.astro`, `Trilha.astro`, `IDE.astro` | substituídos pela IDE do capítulo | — | — | apagados (7a) |
 
 ## Etapas
 
@@ -89,6 +97,10 @@ o caminho aparece na página.
 - **6a.** O projeto nasce no livro: `uv init`, `uv add`, a loja, nos passos 1 a 4 da seção 1.5.
 - **6b.** A camada "o que eu penso" no passo, na voz dos autores, com o marcador de pendente em todos os passos.
 - **6c.** A coleta com o Erick, passo a passo: três perguntas por passo, as palavras dele no passo.
+
+- **7a.** A IDE do capítulo, da pasta vazia à nota zero, com o passador; os passos espalhados saem.
+- **7b.** O código entra por blocos lógicos dentro do editor, com o balão de cada bloco e as palavras clicáveis.
+- **7c.** O celular (o explorador vira uma linha de arquivos), o modo direto e o acabamento.
 
 ## Registro
 
