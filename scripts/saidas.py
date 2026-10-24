@@ -8,12 +8,13 @@ depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tem
 "in 0.63s") e os endereços de memória (como "at 0x7f3a…") não contam na conferência. Saída 0: tudo certo. 1: alguma saída mudou. 2: uso errado.
 
 Os roteiros de construção (livros/<livro>/roteiros/*.json) contam o caminho do código na ordem em que se
-pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, escrever, inserir, trocar e
-rodar. Cada `rodar` grava a saída no estado em que o código está naquele passo, e no fim a pasta tem que
+pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, escrever, inserir, trocar, apagar e
+rodar (com `"onde": "acima"`, o comando roda na pasta de cima, como o `uv init`). Cada `rodar` grava a saída no estado em que o código está naquele passo, e no fim a pasta tem que
 ser igual ao projeto/, arquivo por arquivo. Um roteiro que não chega ao projeto real não monta o livro.
 """
 import difflib
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -23,7 +24,10 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 RUIDO = re.compile(r"^warning: The `UV_\w+` environment variable is deprecated")   # aviso do ambiente, não do projeto
-TEMPO = re.compile(r"\bin \d+\.\d+s\b")
+TEMPO = re.compile(r"\bin \d+(\.\d+)?m?s\b")
+# linhas do uv que dependem do que a máquina já tem (o Python instalado, o que já foi baixado): gravadas como saíram,
+# mas fora da conferência, para o livro não falhar só porque o cache de quem roda é outro
+VARIA = re.compile(r"^(Using CPython .* interpreter at: |Creating virtual environment at: |Downloading |\s*Downloaded |Prepared \d+ packages? in )")
 ENDERECO = re.compile(r"\bat 0x[0-9a-f]+\b")   # endereço de memória que o Python imprime: muda a cada execução
 
 
@@ -35,9 +39,10 @@ def classe(linha: str) -> str:
     return ""
 
 
-def executar(comando: str, pasta: Path, leitor: str) -> tuple[int, list]:
-    r = subprocess.run(["bash", "-c", comando], cwd=pasta, capture_output=True, text=True)
-    texto = (r.stdout + r.stderr).replace(str(pasta), leitor)
+def executar(comando: str, pasta: Path, leitor: str, env: dict | None = None, cwd: Path | None = None) -> tuple[int, list]:
+    r = subprocess.run(["bash", "-c", comando], cwd=cwd or pasta, capture_output=True, text=True, env=env)
+    # o caminho da máquina vira o do leitor: a pasta do projeto, e a pasta de cima dela (onde o `uv init` roda)
+    texto = (r.stdout + r.stderr).replace(str(pasta), leitor).replace(str(pasta.parent), str(Path(leitor).parent))
     linhas = [l for l in texto.rstrip("\n").split("\n") if not RUIDO.match(l)]
     return r.returncode, [[l, classe(l)] for l in linhas]
 
@@ -64,7 +69,7 @@ def montar_partes(partes: list, final: Path, onde: str) -> str:
 
 
 def arquivos(pasta: Path) -> dict[str, bytes]:
-    fora = {".venv", "__pycache__", ".pytest_cache", ".ruff_cache"}
+    fora = {".venv", "__pycache__", ".pytest_cache", ".ruff_cache", ".git"}
     return {str(p.relative_to(pasta)): p.read_bytes() for p in sorted(pasta.rglob("*"))
             if p.is_file() and not fora & set(p.relative_to(pasta).parts)}
 
@@ -78,16 +83,25 @@ def alteradas(antes: str, depois: str) -> list[int]:
     return novas
 
 
-def construir(livro: str, roteiro: Path, leitor: str) -> tuple[dict, list]:
+def ambiente(versoes_ate: str | None) -> dict:
+    """`versoes_ate`: o uv só enxerga versões publicadas até essa data, e o `uv add` dá sempre o mesmo resultado.
+    Vale também para o `uv sync` do projeto/, senão ele reescreve o uv.lock sem a data."""
+    return {**os.environ, **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
+
+
+def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = None) -> tuple[dict, list]:
     """Aplica um roteiro numa pasta vazia; devolve a saída de cada `rodar` e o estado do código depois de cada passo."""
     projeto = RAIZ / "livros" / livro / "projeto"
-    passos = json.loads(roteiro.read_text(encoding="utf-8"))["passos"]
-    saidas, estados, sincronizado = {}, [], False
+    dados_roteiro = json.loads(roteiro.read_text(encoding="utf-8"))
+    passos = dados_roteiro["passos"]
+    saidas, estados = {}, []
+    env = ambiente(dados_roteiro.get("versoes_ate", versoes_ate))
     with tempfile.TemporaryDirectory(prefix="roteiro-") as tmp:
-        pasta = Path(tmp)
+        pasta = Path(tmp) / Path(leitor).name   # só passa a existir quando o roteiro cria (o `uv init`, ou o primeiro arquivo)
         for n, passo in enumerate(passos, start=1):
             onde, acao = f"{roteiro.name}, passo {n} ({passo['acao']})", passo["acao"]
             if acao == "copiar":
+                pasta.mkdir(exist_ok=True)
                 for nome in passo["arquivos"]:
                     (pasta / nome).parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(projeto / nome, pasta / nome)
@@ -96,16 +110,34 @@ def construir(livro: str, roteiro: Path, leitor: str) -> tuple[dict, list]:
                                                         for nome in passo["arquivos"]}})
                 continue
             if acao == "rodar":
-                if not sincronizado:
-                    subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True)
-                    sincronizado = True
-                codigo, linhas = executar(passo["comando"], pasta, leitor)
+                cwd = pasta.parent if passo.get("onde") == "acima" else pasta
+                # comando do uv cuida do ambiente sozinho, e o leitor vê ele nascer; os outros precisam do ambiente pronto
+                if cwd == pasta and not passo["comando"].startswith("uv ") and (pasta / "pyproject.toml").exists() and not (pasta / ".venv").exists():
+                    subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True, env=env)
+                antes_de_rodar = arquivos(pasta) if pasta.exists() else {}
+                codigo, linhas = executar(passo["comando"], pasta, leitor, env, cwd)
                 if codigo != passo.get("espera", 0):
                     raise RoteiroErrado(f"{onde}: {passo['id']} saiu com {codigo}, o roteiro espera {passo.get('espera', 0)}\n"
                                         + "\n".join(f"    {l}" for l, _ in linhas))
                 saidas[passo["id"]] = {"comando": passo["comando"], "saiu_com": codigo, "saida": linhas}
-                estados.append({"passo": n, "rodou": passo["id"]})
+                # o que o comando criou ou mudou no projeto (o `uv init`, o `uv add`): a página mostra como qualquer edição
+                depois_de_rodar = arquivos(pasta) if pasta.exists() else {}
+                gerados = {k: (v.decode("utf-8") if len(v) < 16000 else None) for k, v in depois_de_rodar.items() if antes_de_rodar.get(k) != v}
+                estado = {"passo": n, "rodou": passo["id"]}
+                if gerados:
+                    estado["gerados"] = gerados
+                if apagados := sorted(set(antes_de_rodar) - set(depois_de_rodar)):
+                    estado["apagados"] = apagados
+                estados.append(estado)
                 continue
+            if acao == "apagar":
+                alvo = pasta / passo["arquivo"]
+                if not alvo.exists():
+                    raise RoteiroErrado(f"{onde}: {passo['arquivo']} não existe para apagar")
+                alvo.unlink()
+                estados.append({"passo": n, "apagado": passo["arquivo"]})
+                continue
+            pasta.mkdir(exist_ok=True)
             alvo = pasta / passo["arquivo"]
             final = projeto / passo["arquivo"]
             atual = alvo.read_text(encoding="utf-8") if alvo.exists() else ""
@@ -141,17 +173,18 @@ def rodar(livro: str) -> tuple[dict, dict]:
     base = RAIZ / "livros" / livro
     conf = json.loads((base / "comandos.json").read_text(encoding="utf-8"))
     projeto = base / "projeto"
-    subprocess.run(["uv", "sync", "--quiet"], cwd=projeto, check=True)
+    env = ambiente(conf.get("versoes_ate"))
+    subprocess.run(["uv", "sync", "--quiet"], cwd=projeto, check=True, env=env)
     saidas = {}
     for chave, c in conf["comandos"].items():
-        codigo, linhas = executar(c["comando"], projeto, conf["pasta_do_leitor"])
+        codigo, linhas = executar(c["comando"], projeto, conf["pasta_do_leitor"], env)
         saidas[chave] = {"comando": c["comando"], "saiu_com": codigo, "saida": linhas}
         esperado = c.get("saiu_com", 0)
         if codigo != esperado:
             print(f"aviso: {chave} saiu com {codigo}, o esperado era {esperado}", file=sys.stderr)
     estados = {}
     for roteiro in sorted(p for p in (base / "roteiros").glob("*.json") if not p.name.endswith(".estados.json")):
-        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"])
+        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"], conf.get("versoes_ate"))
         if repetidas := set(do_roteiro) & set(saidas):
             raise RoteiroErrado(f"{roteiro.name}: ids que já existem: {', '.join(sorted(repetidas))}")
         saidas.update(do_roteiro)
@@ -159,7 +192,8 @@ def rodar(livro: str) -> tuple[dict, dict]:
 
 
 def sem_tempo(saidas: dict) -> dict:
-    return {k: {**v, "saida": [[ENDERECO.sub("at 0x…", TEMPO.sub("in …s", l)), c] for l, c in v["saida"]]} for k, v in saidas.items()}
+    return {k: {**v, "saida": [[ENDERECO.sub("at 0x…", TEMPO.sub("in …s", l)), c] for l, c in v["saida"] if not VARIA.match(l)]}
+            for k, v in saidas.items()}
 
 
 def principal(argv: list[str]) -> int:

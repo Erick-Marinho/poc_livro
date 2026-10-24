@@ -3,19 +3,63 @@
   "sobre": "O caminho do código do capítulo 1, na ordem em que se pensa e não de cima para baixo, com os erros do caminho. O scripts/saidas.py aplica estes passos numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
   "passos": [
     {
+      "acao": "rodar",
+      "id": "r01-uv-init",
+      "onde": "acima",
+      "comando": "uv init atendimento-bemtevi",
+      "espera": 0,
+      "nota": "O uv cria a pasta e o esqueleto do projeto: o pyproject.toml, o README.md, o .python-version, o .gitignore, um main.py de exemplo e um repositório git."
+    },
+    {
+      "acao": "apagar",
+      "arquivo": "main.py",
+      "nota": "O main.py é o exemplo do uv. O nosso código começa pelo contrato, então ele sai."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "pyproject.toml",
+      "de": "description = \"Add your description here\"\n",
+      "para": [
+        {
+          "linhas": "4-4"
+        }
+      ],
+      "nota": "Uma frase que diz o que o projeto é, no lugar da que o uv deixou."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "README.md",
+      "partes": [
+        {
+          "linhas": "1-10"
+        }
+      ],
+      "nota": "O README diz o que é a loja e como rodar o que vai existir."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-uv-add-pydantic",
+      "comando": "uv add pydantic",
+      "espera": 0,
+      "nota": "O uv escolhe as versões, cria o ambiente do projeto (.venv), instala, e anota a dependência no pyproject.toml e no uv.lock."
+    },
+    {
+      "acao": "rodar",
+      "id": "r01-uv-add-pytest",
+      "comando": "uv add --dev pytest",
+      "espera": 0,
+      "nota": "O --dev separa o que só serve para conferir: o pytest não vai junto quando o agente for para o ar."
+    },
+    {
       "acao": "copiar",
       "arquivos": [
-        "pyproject.toml",
-        "uv.lock",
-        ".python-version",
-        "README.md",
         "dados/loja.json",
         "dados/clientes.json",
         "dados/pedidos.json",
         "dados/catalogo.json",
         "dados/politica.md"
       ],
-      "nota": "O projeto já existe (uv init, pydantic e pytest) e a loja inventada está em dados/. Ninguém aprende digitando CPF falso."
+      "nota": "A loja inventada: cinco arquivos de dados, copiados do repositório do livro. Ninguém aprende digitando CPF falso."
     },
     {
       "acao": "escrever",

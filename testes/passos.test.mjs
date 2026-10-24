@@ -10,10 +10,10 @@ const secao = html.slice(html.indexOf('id="s1-6"'), html.indexOf('id="s1-7"'));
 const MARCA = /data-passo data-passo-id="[^"]+" aria-label="/;
 const passos = secao.split(MARCA).slice(1);
 
-test("a 1.6 tem os seis primeiros passos, cada um com o fim do passo e o 'agora você tem'", () => {
+test("a 1.6 tem seis passos (do 5 ao 10), cada um com o fim do passo e o 'agora você tem'", () => {
   assert.equal(passos.length, 6);
   passos.forEach((p, i) => {
-    assert.ok(p.startsWith(`Passo ${i + 1} de 14`), p.slice(0, 40));
+    assert.ok(p.startsWith(`Passo ${i + 5} de 18`), p.slice(0, 40));
     assert.match(p, /no fim deste passo:/);
     assert.match(p, /agora você tem:/);
   });
@@ -41,8 +41,8 @@ const trecho = (de, ate) => html.slice(html.indexOf(`id="${de}"`), ate ? html.in
 const contar = (t) => [...t.matchAll(/data-passo-id="[^"]+" aria-label="Passo (\d+) de (\d+)/g)].map((m) => `${m[1]}/${m[2]}`);
 
 test("a 1.7 tem seis passos e a 1.8 tem dois, e o capítulo não tem mais a IDE no meio do texto", () => {
-  assert.deepEqual(contar(trecho("s1-7", "s1-8")), ["7/14", "8/14", "9/14", "10/14", "11/14", "12/14"]);
-  assert.deepEqual(contar(trecho("s1-8")), ["13/14", "14/14"]);
+  assert.deepEqual(contar(trecho("s1-7", "s1-8")), ["11/18", "12/18", "13/18", "14/18", "15/18", "16/18"]);
+  assert.deepEqual(contar(trecho("s1-8")), ["17/18", "18/18"]);
   assert.doesNotMatch(html, /class="ide-figura"/);
 });
 
@@ -57,10 +57,10 @@ test("o passo da nota zero avisa o placar quando o leitor aposta", () => {
   assert.match(html, /fontmar:apostou/);
 });
 
-test("a trilha leva aos 14 passos, e o sinal de cada um sai da saída gravada", () => {
+test("a trilha leva aos 18 passos, e o sinal de cada um sai da saída gravada", () => {
   const trilha = html.slice(html.indexOf("data-trilha"), html.indexOf("</figure>", html.indexOf("data-trilha")));
   const itens = [...trilha.matchAll(/data-ir-passo="([^"]+)"[^>]*>.*?class="tr-sinal (\w+)"/g)].map((m) => `${m[1]}:${m[2]}`);
-  assert.deepEqual(itens, ["decisoes:erro", "caso:erro", "ler-arquivo:nada", "tres-perguntas:ok", "caso-apressado:engano", "contrato-se-protege:erro",
+  assert.deepEqual(itens, ["projeto-nasce:ok", "pydantic:ok", "pytest:ok", "a-loja:nada", "decisoes:erro", "caso:erro", "ler-arquivo:nada", "tres-perguntas:ok", "caso-apressado:engano", "contrato-se-protege:erro",
     "vinte-perguntas:engano", "le-a-loja:ok", "o-que-os-testes-leem:nada", "testes-de-formato:engano", "regras-da-politica:erro", "r12-corrigido:ok",
     "agente-mais-simples:ok", "a-regua:ok"]);
   for (const m of trilha.matchAll(/href="#passo-([^"]+)"/g)) assert.match(html, new RegExp(`id="passo-${m[1]}"`));
@@ -87,4 +87,17 @@ test("o caminho do erro dobra o que passa por fora do código do leitor, e deixa
 test("linha em branco nova não acende", () => {
   for (const m of html.matchAll(/<span class="line novo[^"]*" data-n="\d+">(.*?)<\/span>(?=<span class="line|<\/code>)/g))
     assert.ok(m[1].replace(/<[^>]+>/g, "").trim(), m[0].slice(0, 80));
+});
+
+test("a 1.5 começa da pasta vazia: uv init, o main.py apagado, e os uv add mostrando o que mudaram", () => {
+  const t = trecho("s1-5", "s1-6");
+  assert.deepEqual(contar(t), ["1/18", "2/18", "3/18", "4/18"]);
+  assert.match(t, /voce@maquina:~\$<\/span> uv init atendimento-bemtevi/);
+  assert.match(t, /<code>main\.py<\/code> apagado/);
+  const add = t.slice(t.indexOf('data-id="r01-uv-add-pydantic"'), t.indexOf('data-id="r01-uv-add-pytest"'));
+  assert.match(add, /<div class="ps-depois" hidden>/);   // o que o comando mudou só aparece depois de rodar
+  const texto = add.replace(/<[^>]+>/g, "").replace(/&#x22;|&quot;/g, '"').replace(/&gt;/g, ">").replace(/&#x3C;|&lt;/g, "<");
+  assert.match(texto, /"pydantic>=2\.14\.1"/);
+  assert.match(add, /<code>uv\.lock<\/code> nasceu/);
+  assert.doesNotMatch(t, /class="listagem"/);   // a política e a loja aparecem no passo, sem listagem repetida
 });

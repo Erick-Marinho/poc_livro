@@ -44,6 +44,16 @@ o caminho aparece na página.
 - (5c3) No caminho do erro, os trechos de fora do código do leitor (bibliotecas, o Python, o `-c` do comando) dobram
   num botão; ficam à vista a linha `Traceback`, os trechos do `contrato.py` e a mensagem. Nada some: o botão abre.
 - (5c3) Linha em branco nova não acende no passo.
+- (6a) O projeto nasce no livro: o roteiro começa numa pasta vazia, com `uv init` (rodado na pasta de cima),
+  `uv add pydantic` e `uv add --dev pytest` de verdade. A seção 1.5 deixa de ter o bloco de comandos para ler.
+- (6a) As versões ficam presas a uma data (`versoes_ate` no `comandos.json`, que vira `UV_EXCLUDE_NEWER`), também no
+  `uv sync` do `projeto/`; o `uv.lock` do projeto guarda essa data. O livro avisa que na máquina do leitor elas podem ser
+  mais novas, e como pegar as mesmas.
+- (6a) Linhas do uv que dependem da máquina (o Python achado, o que já estava baixado) são gravadas como saíram, mas
+  ficam fora da conferência. O tempo em milissegundos também.
+- (6a) O que um comando cria ou muda (o `uv init`, o `uv add`) aparece depois da saída dele, como "o que o comando criou
+  ou mudou"; o `uv.lock` aparece só pelo nome. Arquivo apagado (o `main.py` do exemplo) aparece riscado.
+- (6a) Arquivos de configuração (`.gitignore`, `.python-version`, `.lock`) contam como dados: não entram no limite.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -71,6 +81,10 @@ o caminho aparece na página.
   - **5c2.** A trilha clicável do capítulo, e a IDE como botão "ver o projeto inteiro até aqui".
   - **5c3.** O caminho do erro dobrado no meio (fica a primeira e a última linha) e as linhas em branco sem destaque.
 
+- **6a.** O projeto nasce no livro: `uv init`, `uv add`, a loja, nos passos 1 a 4 da seção 1.5.
+- **6b.** A camada "o que eu penso" no passo, na voz dos autores, com o marcador de pendente em todos os passos.
+- **6c.** A coleta com o Erick, passo a passo: três perguntas por passo, as palavras dele no passo.
+
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
@@ -80,3 +94,4 @@ o caminho aparece na página.
 | 5b2 | `9a105c0` | `npm test` (14 testes, 4 novos); seis passos na 1.6 no ngrok, no computador e no celular; o build barrou um passo de 16 linhas | Erick, 23/10/2026 |
 | 5c1 | `2e0e4b3` | `npm test` (17 testes, 3 novos); 1.7 e 1.8 em passos no ngrok; o placar se revela com a aposta | Erick, 23/10/2026 |
 | 5c2 | `32cfca7` | `npm test` (19 testes, 2 novos); trilha e projeto inteiro no ngrok; o build barrou um buraco entre dois passos | Erick, 23/10/2026 |
+| 5c3 | `f38d3f2` | `npm test` (21 testes, 2 novos); erro dobrado no ngrok, no celular; nenhuma linha em branco acesa | Erick, 23/10/2026 |

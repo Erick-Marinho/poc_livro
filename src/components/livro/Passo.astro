@@ -13,8 +13,9 @@ import Passador from "./Passador.astro";
 
 const LIMITE = 15;   /* docs/capacidades/passo-a-passo.md: cerca de 12 linhas novas por passo; passou disso, o passo se divide */
 type Aposta = { pergunta: string; opcoes: string[]; certa: number };
-type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta };
-type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string };
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string };
+type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string;
+  gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
 interface Props {
   roteiro: { passos: PassoRoteiro[] };
@@ -36,7 +37,7 @@ const { secao, titulo, de, ate, objetivo, temos, ver = {} } = capitulo.passos[in
 const n = indice + 1, total = capitulo.passos.length;
 const passador = capitulo.passos[indice].passador ? (passadores[capitulo.passos[indice].passador!] ?? (() => { throw new Error(`Passo ${id}: o passador "${capitulo.passos[indice].passador}" não foi passado`); })()) : undefined;
 /* arquivo de dados (perguntas, loja) não conta no limite: é para copiar, não para digitar; mostra só o começo e o que `ver` pedir */
-const DADOS = /\.(jsonl?|md|toml)$/;
+const DADOS = /(\.(jsonl?|md|toml|lock)$|(^|\/)\.[^/]+$)/;   /* e os arquivos de configuração, como .gitignore */
 const falhar = (m: string): never => { throw new Error(`Passo ${n} (${id}): ${m}`); };
 const anterior = capitulo.passos[indice - 1];
 if (anterior && anterior.ate + 1 !== de) falhar(`o passo anterior termina no ${anterior.ate} do roteiro, e este começa no ${de}: nenhum pedaço do caminho pode sumir`);
@@ -44,20 +45,30 @@ if (indice === total - 1 && ate !== roteiro.passos.length) falhar(`o último pas
 if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos)`);
 
 /* o projeto antes e depois do trecho */
-const antes: Record<string, string> = {}, depois: Record<string, string> = {};
+/* `null` no conteúdo: arquivo longo demais para ler (o uv.lock); aparece no mapa, mas não abre */
+const antes: Record<string, string | null> = {}, depois: Record<string, string | null> = {};
 const prontos = new Set<string>();
 const editados: string[] = [], notas: Record<string, string[]> = {};
-const rodadas: { id: string; nota: string; aposta?: Aposta; s: Saida }[] = [];
+const porComando: Record<string, string> = {};   /* arquivo que um comando do passo criou ou mudou: aparece depois da saída dele */
+const apagadosAqui: { nome: string; nota: string }[] = [];
+const rodadas: { id: string; nota: string; aposta?: Aposta; s: Saida; onde: string }[] = [];
+const mexeu = (nome: string, nota?: string) => { if (!editados.includes(nome)) editados.push(nome); if (nota) (notas[nome] ??= []).push(nota); };
 for (const e of estados) {
   if (e.passo > ate) break;
-  const p = roteiro.passos[e.passo - 1];
-  if (e.arquivos) for (const [nome, texto] of Object.entries(e.arquivos)) { prontos.add(nome); depois[nome] = texto ?? ""; if (e.passo < de) antes[nome] = texto ?? ""; }
-  if (e.arquivo) {
-    depois[e.arquivo] = e.conteudo!;
-    if (e.passo < de) antes[e.arquivo] = e.conteudo!;
-    else { if (!editados.includes(e.arquivo)) editados.push(e.arquivo); (notas[e.arquivo] ??= []).push(p.nota); }
+  const p = roteiro.passos[e.passo - 1], aqui = e.passo >= de;
+  if (e.arquivos) for (const [nome, texto] of Object.entries(e.arquivos)) {
+    depois[nome] = texto;
+    if (!aqui) { prontos.add(nome); antes[nome] = texto; } else mexeu(nome);
   }
-  if (e.rodou && e.passo >= de) rodadas.push({ id: e.rodou, nota: p.nota, aposta: p.aposta, s: saidas[e.rodou] ?? falhar(`a saída ${e.rodou} não está no saidas.json`) });
+  if (e.arquivos && aqui) (notas[Object.keys(e.arquivos)[0]] ??= []).push(p.nota);
+  if (e.arquivo) { depois[e.arquivo] = e.conteudo!; if (!aqui) antes[e.arquivo] = e.conteudo!; else mexeu(e.arquivo, p.nota); }
+  for (const [nome, texto] of Object.entries(e.gerados ?? {})) { depois[nome] = texto; if (!aqui) antes[nome] = texto; else { mexeu(nome); porComando[nome] = e.rodou!; } }
+  for (const nome of [...(e.apagados ?? []), ...(e.apagado ? [e.apagado] : [])]) {
+    delete depois[nome]; delete antes[nome];
+    if (aqui) { const i = editados.indexOf(nome); if (i >= 0) editados.splice(i, 1); delete porComando[nome]; apagadosAqui.push({ nome, nota: p.nota }); }
+  }
+  if (e.rodou && aqui) rodadas.push({ id: e.rodou, nota: p.nota, aposta: p.aposta, onde: p.onde === "acima" ? pasta.replace(/\/[^/]+$/, "") || "~" : pasta,
+    s: saidas[e.rodou] ?? falhar(`a saída ${e.rodou} não está no saidas.json`) });
 }
 if (!editados.length && !rodadas.length) falhar("o trecho não muda nenhum arquivo nem roda nada");
 
@@ -78,10 +89,11 @@ const linhas = (s: string) => s.replace(/\n$/, "").split("\n");
 const LINGUA: Record<string, string> = { py: "python", jsonl: "json", json: "json", md: "markdown", toml: "toml" };
 
 type Pedaco = { tipo: "codigo"; html: string } | { tipo: "passador"; codigo: string; dados: NonNullable<Props["passador"]>["dados"] };
-const arquivos: { nome: string; novo: boolean; quantas: number; dados: boolean; notas: string[]; pedacos: Pedaco[] }[] = [];
+const arquivos: { nome: string; novo: boolean; quantas: number; dados: boolean; notas: string[]; pedacos: Pedaco[]; por?: string; grande?: boolean }[] = [];
 let totalNovas = 0;
 for (const nome of editados) {
-  const b = linhas(depois[nome]), a = nome in antes ? linhas(antes[nome]) : [];
+  if (depois[nome] === null) { arquivos.push({ nome, novo: !(nome in antes), quantas: 0, dados: true, notas: notas[nome] ?? [], pedacos: [], por: porComando[nome], grande: true }); continue; }
+  const b = linhas(depois[nome]!), a = nome in antes && antes[nome] !== null ? linhas(antes[nome]!) : [];
   const novas = mudadas(a, b);
   const quantas = [...novas].filter((k) => b[k - 1].trim()).length;
   const dado = DADOS.test(nome);
@@ -100,7 +112,7 @@ for (const nome of editados) {
     if (k < 0) falhar(`o trecho ${passador.dados.linhas} do passador não está em ${nome} no fim do passo`);
     const desloca = k + 1 - pa, mover = (s: string) => s.split("-").map((x) => Number(x) + desloca).join("-");
     faixa = [k + 1, k + alvo.length];
-    dadosPd = { tipo: "passador", codigo: depois[nome], dados: { ...passador.dados, linhas: mover(passador.dados.linhas), blocos: passador.dados.blocos.map((bl) => ({ ...bl, linhas: mover(bl.linhas) })) } };
+    dadosPd = { tipo: "passador", codigo: depois[nome]!, dados: { ...passador.dados, linhas: mover(passador.dados.linhas), blocos: passador.dados.blocos.map((bl) => ({ ...bl, linhas: mover(bl.linhas) })) } };
   }
   const pedacos: Pedaco[] = [];
   const realcar = async (de_: number, ate_: number) => {
@@ -122,21 +134,21 @@ for (const nome of editados) {
   };
   if (faixa) { await realcar(1, faixa[0] - 1); pedacos.push(dadosPd!); await realcar(faixa[1] + 1, b.length); }
   else await realcar(1, b.length);
-  arquivos.push({ nome, novo: !(nome in antes), quantas, dados: dado, notas: notas[nome], pedacos });
+  arquivos.push({ nome, novo: !(nome in antes), quantas, dados: dado, notas: notas[nome] ?? [], pedacos, por: porComando[nome] });
 }
 if (totalNovas > LIMITE) falhar(`${totalNovas} linhas novas; o limite é ${LIMITE}. Divida o passo.`);
 
 /* o mapa: os arquivos do leitor (os prontos ficam num grupo só) */
 const doLeitor = Object.keys(depois).filter((k) => !prontos.has(k)).sort();
-const grupoPronto = [...prontos].some((k) => k.startsWith("dados/")) ? `dados/ (${[...prontos].filter((k) => k.startsWith("dados/")).length}) e o pyproject.toml` : [...prontos].join(", ");
+const nDados = [...prontos].filter((k) => k.startsWith("dados/")).length;
+const grupoPronto = [...(nDados ? [`dados/ (${nDados})`] : []), ...[...prontos].filter((k) => !k.startsWith("dados/"))].join(", ");
 /* o projeto inteiro no fim do passo, para quem quiser ver o todo (abre por clique; o realce é guardado entre os passos) */
 const cache: Map<string, string> = ((globalThis as any).__realcePasso ??= new Map());
 const projeto: { nome: string; html: string | null; muda: boolean }[] = [];
 for (const nome of Object.keys(depois).sort((a, b) => Number(prontos.has(a)) - Number(prontos.has(b)) || a.localeCompare(b))) {
   const texto = depois[nome];
-  const grande = texto === "" && prontos.has(nome);
   let html: string | null = null;
-  if (!grande) {
+  if (texto !== null) {
     const chave = `${nome}\u0000${texto}`;
     if (!cache.has(chave)) cache.set(chave, await codeToHtml(texto.replace(/\n$/, ""), {
       lang: LINGUA[nome.split(".").pop() ?? ""] ?? "text", theme: "dark-plus",
@@ -178,11 +190,12 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
     <p class="ps-objetivo"><b>no fim deste passo:</b> <span set:html={md(objetivo)} /></p>
     <div class="ps-mapa" aria-label="O projeto neste passo">
       {doLeitor.map((k) => <span class:list={["ps-arq", { muda: editados.includes(k) }]}>{editados.includes(k) ? "●" : "○"} {k}{arquivos.find((x) => x.nome === k)?.novo && <i> novo</i>}</span>)}
+      {apagadosAqui.map((x) => <span class="ps-arq apagado">✕ {x.nome}</span>)}
       {prontos.size > 0 && <span class="ps-arq pronto">já pronto: {grupoPronto}</span>}
     </div>
   </header>
 
-  {arquivos.map((f) => (
+  {arquivos.filter((f) => !f.por).map((f) => (
     <div class="ps-arquivo" data-arquivo>
       <div class="ps-aba"><span class="ps-nome">{f.nome}</span><span class="ps-conta">{f.novo ? (f.dados ? `arquivo novo · ${f.quantas} linhas de dados, para copiar do repositório` : "arquivo novo") : `+${f.quantas} ${f.quantas === 1 ? "linha" : "linhas"}`}</span><button type="button" class="ps-inteiro" data-inteiro>ver o arquivo inteiro</button></div>
       <ol class="ps-notas">{f.notas.map((t) => <li set:html={md(t)} />)}</ol>
@@ -195,7 +208,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   {rodadas.map((r) => (
     <div class="ps-rodar" data-rodar data-id={r.id} data-certa={r.aposta?.certa}>
       <div class="ps-term">
-        <div class="ps-cmd"><span class="ps-prompt">voce@maquina:{pasta}$</span> {r.s.comando}</div>
+        <div class="ps-cmd"><span class="ps-prompt">voce@maquina:{r.onde}$</span> {r.s.comando}</div>
         {r.aposta && (
           <div class="ps-aposta">
             <p><b>◆ aposte antes de rodar:</b> {r.aposta.pergunta}</p>
@@ -208,8 +221,24 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
           : <span class="ps-dobra"><button type="button" data-dobra>⋯ {t.linhas.length} linhas do caminho do erro fora do seu código</button><span class="ps-dobrado">{t.linhas.map(([l, c]) => <span class={c || undefined}>{l}{"\n"}</span>)}</span></span>)}</pre>
       </div>
       <p class="ps-nota-run" hidden><span class="ps-veredito"></span> <span set:html={md(r.nota)} /></p>
+      {arquivos.some((f) => f.por === r.id) && (
+        <div class="ps-depois" hidden>
+          <p class="ps-rot-depois">o que o comando criou ou mudou</p>
+          {arquivos.filter((f) => f.por === r.id).map((f) => f.grande
+            ? <p class="ps-grande"><code>{f.nome}</code> {f.novo ? "nasceu" : "mudou"}: o uv anota aqui as versões exatas de tudo o que instalou. É longo, e quem escreve é o uv, não você.</p>
+            : (
+            <div class="ps-arquivo" data-arquivo>
+              <div class="ps-aba"><span class="ps-nome">{f.nome}</span><span class="ps-conta">{f.novo ? "arquivo novo" : `+${f.quantas} ${f.quantas === 1 ? "linha" : "linhas"}`}</span><button type="button" class="ps-inteiro" data-inteiro>ver o arquivo inteiro</button></div>
+              {f.notas.length > 0 && <ol class="ps-notas">{f.notas.map((t) => <li set:html={md(t)} />)}</ol>}
+              {f.pedacos.map((p) => p.tipo === "codigo" ? <div class="ps-codigo" set:html={p.html} /> : null)}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   ))}
+
+  {apagadosAqui.length > 0 && <ul class="ps-apagados">{apagadosAqui.map((x) => <li><code>{x.nome}</code> apagado: <span set:html={md(x.nota)} /></li>)}</ul>}
 
   <p class="ps-temos" data-temos hidden={rodadas.length > 0}>✓ <b>agora você tem:</b> <span set:html={md(temos)} /></p>
 
@@ -239,6 +268,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
       r.classList.add("rodou");
       (r.querySelector(".ps-saida") as HTMLElement).hidden = false;
       (r.querySelector(".ps-nota-run") as HTMLElement).hidden = false;
+      const depoisDe = r.querySelector<HTMLElement>(".ps-depois"); if (depoisDe) depoisDe.hidden = false;
       r.querySelector<HTMLElement>("[data-rodar-btn]")?.remove();
       fechar();
     };
@@ -314,6 +344,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   .ps-arq { font: 12.5px/1.6 var(--f-mono); padding: 1px 9px; border-radius: 999px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink-2) }
   .ps-arq.muda { color: var(--acento); border-color: var(--acento) }
   .ps-arq i { font-style: normal; font-family: var(--f-ui); font-size: 11.5px }
+  .ps-arq.apagado { text-decoration: line-through; opacity: .7 }
   .ps-arq.pronto { border-style: solid; opacity: .8; font-family: var(--f-ui) }
   .ps-arquivo { background: var(--ide-bg); color: var(--ide-ink) }
   .ps-arquivo + .ps-arquivo { border-top: 1px solid #333 }
@@ -359,7 +390,12 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   .ps-rodar.certo .ps-veredito { color: var(--ok); font-weight: 600 }
   .ps-rodar.errado .ps-veredito { color: var(--aviso); font-weight: 600 }
   .ps-temos { margin: 12px 18px 16px; padding: 8px 12px; border-radius: 8px; background: var(--papel); border-left: 3px solid var(--ok); font: 15px/1.5 var(--f-ui) }
-  .ps-temos[hidden], .ps-saida[hidden], .ps-nota-run[hidden] { display: none }
+  .ps-temos[hidden], .ps-saida[hidden], .ps-nota-run[hidden], .ps-depois[hidden] { display: none }
+  .ps-depois { margin: 10px -18px 0; border-top: 1px solid var(--linha) }
+  .ps-rot-depois { margin: 0; padding: 8px 18px 6px; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+  .ps-grande { margin: 0; padding: 8px 18px 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .ps-apagados { margin: 12px 0 0; padding: 8px 18px 0 36px; font: 14px/1.5 var(--f-ui); color: var(--ink-2); border-top: 1px solid var(--linha) }
+  .ps-apagados code { text-decoration: line-through }
   .ps-temos b { color: var(--ok); font-weight: 600 }
   .passo > :last-child:not(.ps-temos) { margin-bottom: 16px }
   html[data-direto] .ps-aposta { display: none }
