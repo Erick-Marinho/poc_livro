@@ -1,26 +1,45 @@
 ---
 import { getCollection, render } from "astro:content";
 import Capitulo from "../../layouts/Capitulo.astro";
+import type { ItemSumario } from "../../components/livro/Navegacao.astro";
 
 /** Um texto do livro por página. Anterior e próximo saem da ordem dos textos, não de um campo escrito à mão. */
 export async function getStaticPaths() {
+  /* o sumário de cada livro: os capítulos planejados, escritos ou não (livros/<livro>/sumario.json).
+     Fica aqui dentro porque o getStaticPaths do Astro não enxerga variáveis de fora dele. */
+  const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../../livros/*/sumario.json", { eager: true, import: "default" });
   const todos = await getCollection("capitulos");
   const livroDe = (e: (typeof todos)[number]) => e.id.split("/")[0];
   const endereco = (e: (typeof todos)[number]) => `/${livroDe(e)}/${e.id.split("/").pop()}/`;
   const rotulo = (e: (typeof todos)[number]) => (e.data.tipo === "capitulo" ? `Capítulo ${e.data.numero} · ${e.data.titulo}` : e.data.titulo);
   return todos.map((entrada) => {
-    const doLivro = todos.filter((e) => livroDe(e) === livroDe(entrada)).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
+    const livro = livroDe(entrada);
+    const doLivro = todos.filter((e) => livroDe(e) === livro).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
     const i = doLivro.indexOf(entrada);
     const vizinho = (e?: (typeof todos)[number]) => (e ? { href: endereco(e), rotulo: rotulo(e) } : undefined);
+    /* sumário: o que já está escrito tem link; o resto aparece como "em breve". Título divergente não monta. */
+    const planejados = Object.entries(sumarios).find(([p]) => p.includes(`/livros/${livro}/`))?.[1].capitulos ?? [];
+    const escritos = doLivro.filter((e) => e.data.tipo === "capitulo");
+    for (const e of escritos) {
+      const p = planejados.find((x) => x.numero === e.data.numero);
+      if (planejados.length && p?.titulo !== e.data.titulo) throw new Error(`sumario.json de ${livro}: o capítulo ${e.data.numero} se chama "${e.data.titulo}" no texto e "${p?.titulo ?? "(nada)"}" no sumário`);
+    }
+    const itens: ItemSumario[] = [
+      ...doLivro.filter((e) => e.data.tipo !== "capitulo").map((e) => ({ titulo: e.data.titulo, href: endereco(e), atual: e === entrada })),
+      ...(planejados.length ? planejados : escritos.map((e) => ({ numero: e.data.numero!, titulo: e.data.titulo }))).map((p) => {
+        const e = escritos.find((x) => x.data.numero === p.numero);
+        return { numero: p.numero, titulo: p.titulo, href: e && endereco(e), atual: e === entrada };
+      }),
+    ];
     return {
-      params: { livro: livroDe(entrada), capitulo: entrada.id.split("/").pop()! },
-      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]) },
+      params: { livro, capitulo: entrada.id.split("/").pop()! },
+      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens },
     };
   });
 }
-const { entrada, anterior, proximo } = Astro.props;
+const { entrada, anterior, proximo, itens } = Astro.props;
 const { Content, headings } = await render(entrada);
 ---
-<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo}>
+<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo} itens={itens}>
   <Content />
 </Capitulo>

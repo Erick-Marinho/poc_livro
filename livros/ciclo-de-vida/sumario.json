@@ -1,0 +1,12 @@
+{
+  "capitulos": [
+    { "numero": 1, "titulo": "O problema e o contrato" },
+    { "numero": 2, "titulo": "O primeiro agente" },
+    { "numero": 3, "titulo": "As ferramentas" },
+    { "numero": 4, "titulo": "Avaliar" },
+    { "numero": 5, "titulo": "Observar" },
+    { "numero": 6, "titulo": "Quando dá errado" },
+    { "numero": 7, "titulo": "Governar" },
+    { "numero": 8, "titulo": "Evoluir" }
+  ]
+}

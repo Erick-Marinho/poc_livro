@@ -6,10 +6,16 @@
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
   --ide-bg: #1e1e1e; --ide-tabs: #2d2d2d; --ide-ink: #d4d4d4; --ide-term: #181818; --ide-new: rgba(0, 122, 204, .18);
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+/* Três aparências, escolhidas nas configurações: papel (a de cima), claro e escuro.
+   Sem escolha guardada, segue o sistema: escuro se o sistema for escuro, papel se não. */
+:root { color-scheme: light }
+:root[data-theme="claro"] {
+  --papel: #ffffff; --papel-2: #f2f3f5; --ink: #1d2125; --ink-2: #5d6570; --linha: #e1e4e8; --acento: #2a4fb5;
+  --ok: #1f7a4c; --aviso: #9a5b00; --nota: #f6f7f9 }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) {
   --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff;
   --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark } }
-:root[data-theme="dark"] {
+:root[data-theme="escuro"] {
   --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff;
   --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark }
 
