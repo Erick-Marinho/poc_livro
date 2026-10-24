@@ -1,7 +1,6 @@
 # A vitrine para a landing
 
-**Problema.** A landing do FontMar.ai vai mostrar os guias, os livros e, depois, os cursos, que moram em outros
-repositórios. A pergunta era se isso pedia backend.
+**Problema.** A landing do FontMar.ai vai mostrar os guias e os livros, que moram em outro repositório. A pergunta era se isso pedia backend.
 
 **Regra que não muda.** A landing mostra o que o site tem, e só isso: os JSON saem do mesmo código que monta as páginas.
 
@@ -12,6 +11,7 @@ repositórios. A pergunta era se isso pedia backend.
 - (1) Um domínio só: a landing repassa ao site dos livros tudo que não é dela (proxy do Vite, no FontMarAI); sem CORS, e um túnel só no ngrok.
 - (1) O repasse lê o site montado (`npm run site`): o `astro dev` serve arquivos do Vite com os mesmos caminhos dos da landing.
 - (1) Backend só quando entrarem login, venda dos livros ou progresso do leitor.
+- (24/10/2026, Erick) Não teremos cursos: saem da landing e dos planos.
 
 ## Peças
 
@@ -22,7 +22,6 @@ repositórios. A pergunta era se isso pedia backend.
 | `testes/vitrine.test.mjs` | os JSON mostram o mesmo que as páginas, e os links abrem | `dist/` | `npm test` | nova |
 | `npm run site` | o site montado, servido para a landing | build | http://localhost:4321 | nova |
 | proxy e seções da landing (FontMarAI) | repassa o que não é dela; mostra guias recentes e livros | os JSON | a landing | nova |
-| JSON dos cursos | os cursos na landing | repo de cursos | `/cursos/index.json` | depois |
 
 ## Etapas
 
