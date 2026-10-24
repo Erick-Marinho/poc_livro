@@ -11,6 +11,7 @@ import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import "@xyflow/react/dist/base.css";
 import { Abas, Controles, Conversa, IC, Icone, LinhaDoTempo } from "../palco/Palco";
 import type { Mensagem } from "../palco/Palco";
+import { lerDireto, useDireto } from "../palco/direto";
 import "./agente.css";
 import { ARESTAS, DECISOES, avancar, conversa, estadoAresta, estadoNo, final, memoria, selo, ultimo } from "./cena";
 import type { Cenario, Escolha, Estado, EstadoNo } from "./cena";
@@ -317,6 +318,7 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
   useEffect(() => {
     const reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;
     setCalmo(reduz);
+    if (lerDireto()) return;   /* modo direto: fica no fim do R01, como o servidor desenhou */
     r.definir({ cen: 0, passo: 0, t: 0, tocando: false, sequencia: !reduz });
     if (reduz || !("IntersectionObserver" in window)) return;
     const alvo = raiz.current?.querySelector(".aav-grafo");
@@ -342,6 +344,8 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
     return () => cancelAnimationFrame(quadro);
   }, [s.tocando, r]);
 
+  const direto = useDireto();
+  useEffect(() => { if (direto) r.definir(final(r.get().cen, cenarios[r.get().cen])); }, [direto, r, cenarios]);
   const c = cenarios[s.cen];
   /* o servidor desenha o grafo do primeiro cenário já terminado: é o que fica para quem lê sem JS */
   const inicio = useMemo(() => montar(cenarios[0], PAISAGEM), [cenarios]);
@@ -355,7 +359,7 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
   }, []);
   const anunciar = (passo: number) => setAnuncio(`Passo ${passo + 1} de ${c.passos.length}: ${c.passos[passo].texto}`);
   const ir = useCallback((i: number) => { r.definir({ passo: i, t: 0, tocando: false, sequencia: false }); anunciar(i); }, [r, c]);
-  const escolher = (cen: number) => { r.definir({ cen, passo: 0, t: 0, tocando: !calmo, sequencia: false }); setAnuncio(`Cenário: ${DECISOES[cenarios[cen].decisao]}.`); };
+  const escolher = (cen: number) => { r.definir(direto ? final(cen, cenarios[cen]) : { cen, passo: 0, t: 0, tocando: !calmo, sequencia: false }); setAnuncio(`Cenário: ${DECISOES[cenarios[cen].decisao]}.`); };
   const fim = s.passo === ultimo(c) && s.t >= c.passos[ultimo(c)].duracao;
   const alternar = () => {
     if (s.tocando) { r.definir({ tocando: false, sequencia: false }); return; }

@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
 import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, X } from "lucide-react";
+import { definirDireto, useDireto } from "../palco/direto";
 import "./comandos.css";
 
 type Vizinho = { href: string; rotulo: string };
@@ -30,6 +31,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
   const [recolhida, setRecolhida] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [tema, setTema] = useState<Tema>("papel");
+  const direto = useDireto();
   const x = useMotionValue(0);
   const sumindo = useTransform(x, [0, 160], [1, 0.35]);
   const painel = useRef<HTMLDivElement>(null);
@@ -160,6 +162,10 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
                 </button>
               ))}
             </div>
+            <p className="cm-titulo cm-titulo-2">Leitura</p>
+            <button type="button" role="switch" aria-checked={direto} className="cm-chave cm-chave-2" onClick={() => definirDireto(!direto)}>
+              <span>Modo direto<small>sem passo a passo: código, saídas e respostas já abertos</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
+            </button>
             {/* o mesmo que arrastar a pílula, para quem usa teclado ou leitor de tela */}
             <p className="cm-titulo cm-titulo-2">Navegação</p>
             <button type="button" role="switch" aria-checked={recolhida} className="cm-chave" onClick={() => recolher(!recolhida)}>

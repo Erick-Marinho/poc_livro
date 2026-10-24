@@ -49,7 +49,6 @@ const marcar: ShikiTransformer = {
     if (n <= recolher) this.addClassToHast(no, "recolhida");
     const i = ordem.indexOf(n);
     if (i >= 0) no.children.push({ type: "element", tagName: "span", properties: { class: "chave", title: notas[n] }, children: [{ type: "text", value: String(i + 1) }] });
-    if (n >= de) no.properties.style = `--d:${n - de}`;
   },
 };
 ---
@@ -63,12 +62,8 @@ const marcar: ShikiTransformer = {
 </div>
 
 <script>
-  /* as linhas novas entram quando o leitor chega na listagem; o botão mostra o código já escrito */
-  const ver = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) { e.target.classList.add("toca"); ver?.unobserve(e.target); }
-  }), { threshold: 0.35 }) : null;
+  /* o botão mostra o código já escrito. As linhas novas não "entram" animadas: o destaque basta (docs/PRINCIPIOS.md, enfeite) */
   document.querySelectorAll<HTMLElement>("[data-listagem]").forEach((el) => {
-    ver ? ver.observe(el) : el.classList.add("toca");
     el.querySelector(".abrir")?.addEventListener("click", (ev) => {
       el.classList.add("aberta"); (ev.currentTarget as HTMLElement).parentElement?.remove();
     });
@@ -90,9 +85,6 @@ const marcar: ShikiTransformer = {
   .listagem.aberta .line.recolhida { display: block }
   .listagem .line.novo { background: var(--ide-new) }
   .listagem .line.novo::before { color: #cfcfcf }
-  .listagem.toca .line.novo { animation: digita .4s ease-out both; animation-delay: calc(var(--d) * 45ms) }
-  @keyframes digita { from { opacity: 0; transform: translateX(-8px) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: reduce) { .listagem.toca .line.novo { animation: none } }
   .listagem .rodape { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 6px 14px; background: #252526; font: 12px var(--f-ui); color: #9d9d9d }
   .listagem .rodape button { background: none; border: 0; color: #9cdcfe; cursor: pointer; padding: 0; font: inherit }
   .listagem .chave { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #3794ff; color: #fff; font: 700 11px var(--f-ui); margin: 0 4px 0 10px; vertical-align: 1px }

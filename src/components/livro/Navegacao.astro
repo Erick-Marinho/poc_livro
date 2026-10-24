@@ -78,6 +78,14 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve } = Astro.props;
     links.forEach((a) => a.classList.toggle("aqui", a.dataset.secao === atual));
   };
   addEventListener("scroll", ver, { passive: true }); ver();
+
+  /* modo direto (palco/direto.ts): as respostas do "pare e pense" ficam abertas */
+  const abrirRespostas = () => {
+    const direto = document.documentElement.hasAttribute("data-direto");
+    document.querySelectorAll<HTMLDetailsElement>(".pense details").forEach((d) => { d.open = direto; });
+  };
+  addEventListener("fontmar:direto", abrirRespostas);
+  if (document.documentElement.hasAttribute("data-direto")) abrirRespostas();
 </script>
 
 <style is:global>
@@ -113,5 +121,8 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve } = Astro.props;
   @media (min-width: 1280px) { .sm-veu { display: none } .topo .marca { display: none } .topo .nome { padding-left: 0; border-left: 0 } }
   @media (prefers-reduced-motion: reduce) { .sumario { transition: none } }
 
+  /* modo direto: o classificador mostra o que o contrato diz, sem pedir a escolha */
+  html[data-direto] .cls-resposta { display: block !important }
+  html[data-direto] .cls-veredito, html[data-direto] .cls-placar { display: none }
   @media print { .sumario, .sm-veu { display: none } body { padding-left: 0 } }
 </style>

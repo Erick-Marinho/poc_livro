@@ -10,6 +10,7 @@ import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import "@xyflow/react/dist/base.css";
 import { Abas, Controles, Conversa, IC, Icone, LinhaDoTempo } from "../palco/Palco";
 import type { Mensagem } from "../palco/Palco";
+import { lerDireto, useDireto } from "../palco/direto";
 import "./rastro.css";
 
 export type Quem = "cliente" | "codigo" | "modelo" | "ferramenta" | "resposta";
@@ -239,7 +240,11 @@ export default function RastroAoVivo({ dados, inicio = 0 }: { dados: DadosRastro
   const [anuncio, setAnuncio] = useState("");
   const [desenho, setDesenho] = useState<Desenho>(PAISAGEM);
   /* ao hidratar, volta ao primeiro passo: quem lê avança no próprio ritmo */
-  useEffect(() => { r.definir({ passo: 0, t: 0, tocando: false }); }, [r]);
+  useEffect(() => { if (!lerDireto()) r.definir({ passo: 0, t: 0, tocando: false }); }, [r]);
+  /* modo direto: cada caminho aparece inteiro */
+  const direto = useDireto();
+  const fimDe = (modo: number, perg: number) => caminho(dados, { ...r.get(), modo, perg }).length - 1;
+  useEffect(() => { if (direto) { const s0 = r.get(); r.definir({ passo: fimDe(s0.modo, s0.perg), t: 0, tocando: false }); } }, [direto, r]);
   useEffect(() => {
     const mq = matchMedia("(max-width: 639px)");
     const ver = () => setDesenho(mq.matches ? RETRATO : PAISAGEM);
@@ -265,8 +270,8 @@ export default function RastroAoVivo({ dados, inicio = 0 }: { dados: DadosRastro
   const ir = (i: number) => { r.definir({ passo: i, t: 0, tocando: false }); setAnuncio(`Passo ${i + 1} de ${passos.length}: ${ROTULO[passos[i].quem]}. ${passos[i].texto}`); };
   const fim = s.passo === ultimo && s.t >= passos[ultimo].duracao;
   const alternar = () => r.definir(s.tocando ? { tocando: false } : fim || s.passo === ultimo ? { passo: 0, t: 0, tocando: true } : { tocando: true });
-  const escolherModo = (modo: number) => { r.definir({ modo, passo: 0, t: 0, tocando: false }); setAnuncio(`${dados.modos[modo].nome}: quem decide é ${dados.modos[modo].quem_decide}.`); };
-  const escolherPergunta = (perg: number) => { r.definir({ perg, passo: 0, t: 0, tocando: false }); setAnuncio(`Pergunta: ${dados.perguntas[perg].texto}`); };
+  const escolherModo = (modo: number) => { r.definir({ modo, passo: direto ? fimDe(modo, r.get().perg) : 0, t: 0, tocando: false }); setAnuncio(`${dados.modos[modo].nome}: quem decide é ${dados.modos[modo].quem_decide}.`); };
+  const escolherPergunta = (perg: number) => { r.definir({ perg, passo: direto ? fimDe(r.get().modo, perg) : 0, t: 0, tocando: false }); setAnuncio(`Pergunta: ${dados.perguntas[perg].texto}`); };
   const modo = dados.modos[s.modo];
 
   return <Ctx.Provider value={r}>
