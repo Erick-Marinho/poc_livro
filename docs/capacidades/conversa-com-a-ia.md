@@ -25,6 +25,8 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
   como botão.
 - (etapa 3) O começo também é conversa: a IA pergunta onde o leitor vai fazer o projeto e se continua de onde parou;
   a resposta de onde fazer vai junto com o primeiro pedido, numa fala só.
+- (etapa 4) Poucas dúvidas, onde o leitor costuma travar, escritas no roteiro com a resposta; o modelo redige, os
+  autores revisam. Começa por seis lugares do capítulo 1; a leitura em voz alta com o Victor diz onde faltou.
 
 ## Etapas
 
@@ -33,18 +35,18 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 3. A IA pergunta no chat o que hoje a barra pergunta (onde você faz o projeto; continuar de onde parou).
 4. Perguntas sugeridas por ação, escritas pelos autores, ao lado da fala que avança.
 
-## Etapa 3 (detalhe)
+## Etapa 4 (detalhe)
 
-- **Arquivos:** `src/components/livro/ide/IdeCapitulo.tsx` e `ide-capitulo.css`.
-- **Muda:** as duas perguntas do livro saem da barra e viram falas da IA no começo da conversa, com as respostas como
-  sugestões rápidas no compositor. "Você parou no passo N. Continuo de lá?" (continuar, ou começar do início). "Onde
-  você vai fazer o projeto?" (na minha IDE, ou aqui no livro; a sugestão em destaque é a do aparelho). A resposta de
-  onde fazer já leva o primeiro pedido junto ("Na minha IDE, ao lado do livro. Vamos começar…"), e o leitor novo volta
-  aos mesmos cliques de quem já respondeu. A barra fica só com as setas e o nome do passo.
-- **Evidência:** percurso do capítulo 1 só pelo compositor: leitor novo com 78 cliques (era 79), a resposta e o
-  pedido na mesma fala; quem volta ao livro continua do passo em que parou pelo chat; nenhuma pergunta na barra;
-  captura no computador e no celular.
-- **Fica fora:** perguntas novas por ação (etapa 4).
+- **Arquivos:** `livros/ciclo-de-vida/roteiros/01.json` (o campo `duvidas` em seis ações), `src/lib/ideCapitulo.ts`
+  (passa e confere), `IdeCapitulo.tsx` e `ide-capitulo.css`, e um teste em `testes/ide-capitulo.test.mjs`.
+- **Muda:** depois que a ação foi toda mostrada, as dúvidas dela aparecem como respostas rápidas acima da caixa, ao
+  lado da fala que segue. Tocar numa põe a pergunta na conversa como fala do leitor, e a IA responde; a dúvida sai das
+  opções. Não segura ninguém: quem não pergunta segue com o mesmo clique. Seis lugares no capítulo 1: o `uv add
+  pydantic` (pydantic ou dataclass; o uv.lock), o `--dev`, o erro do id torto (por onde ler um erro), a regra de pedido
+  e e-mail (por que no contrato), os testes do R12 (carregou, mas falhou) e a nota de partida (por que 25%).
+- **Evidência:** o teste confere que as dúvidas chegam às ações certas; percurso do capítulo 1 sem perguntar, com os
+  mesmos cliques; perguntando todas, cada pergunta e resposta na conversa; captura.
+- **Fica fora:** responder pergunta escrita pelo leitor (pediria um modelo de verdade, pago, com o ok dos autores).
 
 ## Registro
 
@@ -52,6 +54,6 @@ escritas pelos autores (ou gravadas de um modelo, com o ok deles), e a tela diz 
 |---|---|---|---|
 | 1 | `8824ff6` | percurso do capítulo 1: 18 pedidos enviados pelo compositor, 47 falas da pessoa, todas "você"; 78 cliques na minha IDE e 58 no direto, como antes; 79 para o leitor novo (1 para dizer onde faz). Capturas do compositor no computador e no celular | Erick, 24/10/2026 |
 | 2 | `0e398ae` | percurso do capítulo 1 só pelo compositor, nenhum "seguir": 78 envios na minha IDE (18 pedidos, 20 "E o próximo?", 40 "Fiz…" em quatro jeitos), 78 cliques aqui no livro mais 1 para dizer onde faz, 58 no direto; 87 falas da pessoa, todas "você"; a caixa avisa quando é para digitar, apostar ou responder. Capturas no computador e no celular. De carona: as opções das perguntas do chat estavam com a cor da página (quase pretas no fundo escuro) | Erick, 24/10/2026 |
-| 3 | `0765ce1` | percurso do capítulo 1 só pelo chat: leitor novo com 78 cliques (era 79), "Aqui no livro mesmo." e o primeiro pedido numa fala só; quem volta vê "Você parou no passo 5. Continuo de lá?" e continua dali (67 cliques) ou começa do início e responde onde fazer (79); direto, 58; a barra só com as duas setas. Capturas no computador e no celular (no celular, "Aqui no livro" em destaque) | pendente |
+| 3 | `0765ce1` | percurso do capítulo 1 só pelo chat: leitor novo com 78 cliques (era 79), "Aqui no livro mesmo." e o primeiro pedido numa fala só; quem volta vê "Você parou no passo 5. Continuo de lá?" e continua dali (67 cliques) ou começa do início e responde onde fazer (79); direto, 58; a barra só com as duas setas. Capturas no computador e no celular (no celular, "Aqui no livro" em destaque) | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
