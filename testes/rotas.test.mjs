@@ -21,3 +21,19 @@ test("o que não existe mostra a página em construção, com o caminho para os 
   assert.match(html, /href="\/livros\/"/);
   assert.match(html, /href="\/guias\/"/);
 });
+
+test("em toda página a marca leva à home, e as páginas do site têm o Início no mesmo endereço", async () => {
+  const { readdirSync } = await import("node:fs");
+  const { parse } = await import("node-html-parser");
+  const paginas = readdirSync(new URL("dist/", raiz), { recursive: true }).filter((f) => f.endsWith(".html"));
+  const homes = new Set();
+  for (const f of paginas) {
+    const doc = parse(ler(`/${f}`));
+    if (doc.querySelector('meta[http-equiv="refresh"]')) continue;
+    const marcas = doc.querySelectorAll("a.marca, a.sm-marca");
+    assert.ok(marcas.length, `${f}: sem a marca`);
+    for (const a of marcas) homes.add(a.getAttribute("href"));
+    for (const a of doc.querySelectorAll(".topo-site a")) if (a.text === "Início") homes.add(a.getAttribute("href"));
+  }
+  assert.equal(homes.size, 1, `a marca e o Início apontam para lugares diferentes: ${[...homes].join(", ")}`);
+});

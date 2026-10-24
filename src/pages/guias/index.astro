@@ -2,6 +2,7 @@
 import "../../styles/livro.css";
 import "../../styles/guias.css";
 import { getCollection } from "astro:content";
+import TopoSite from "../../components/TopoSite.astro";
 import { dataCurta } from "../../lib/guias";
 
 /* o mais novo em cima; no mesmo dia, a ordem do título */
@@ -20,7 +21,7 @@ const guias = (await getCollection("guias")).sort((a, b) => b.data.data.localeCo
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><b>Guias</b></span><span class="esp"></span><a href="/livros/">Livros</a></div></header>
+    <TopoSite atual="guias" nome="Guias" />
     <main class="livro">
       <section class="guias-topo">
         <h1>Guias</h1>

@@ -2,6 +2,7 @@
 import "../../styles/livro.css";
 import "../../styles/guias.css";
 import { getCollection } from "astro:content";
+import TopoSite from "../../components/TopoSite.astro";
 
 /* um card por livro, montado do que o livro já tem: o título e o lide do prefácio, os autores da assinatura,
    e os capítulos escritos contra os planejados no sumario.json. Nada aqui é escrito à mão. */
@@ -32,7 +33,7 @@ const livros = ids.map((id) => {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><b>Livros</b></span><span class="esp"></span><a href="/guias/">Guias</a></div></header>
+    <TopoSite atual="livros" nome="Livros" />
     <main class="livro">
       <section class="guias-topo">
         <h1>Livros</h1>

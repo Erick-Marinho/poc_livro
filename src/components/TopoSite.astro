@@ -1,0 +1,17 @@
+---
+/** O cabeçalho das páginas do site (estante, guias, em construção): a marca e o "Início" levam à home do FontMar.ai. */
+import { INICIO } from "../lib/site";
+
+interface Props { atual?: "livros" | "guias"; nome?: string; nomeHref?: string }
+const { atual, nome, nomeHref } = Astro.props;
+const secoes = [{ id: "livros", rotulo: "Livros", href: "/livros/" }, { id: "guias", rotulo: "Guias", href: "/guias/" }] as const;
+---
+<header class="topo"><div class="in">
+  <a class="marca" href={INICIO} aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a>
+  {nome && <span class="nome">{nomeHref ? <a href={nomeHref}><b>{nome}</b></a> : <b>{nome}</b>}<slot /></span>}
+  <span class="esp"></span>
+  <nav class="topo-site" aria-label="Seções do site">
+    <a href={INICIO}>Início</a>
+    {secoes.map((s) => <a href={s.href} aria-current={s.id === atual ? "page" : undefined}>{s.rotulo}</a>)}
+  </nav>
+</div></header>

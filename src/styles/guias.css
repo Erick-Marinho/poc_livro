@@ -54,4 +54,8 @@
 .em-construcao p { color: var(--ink-2); font: 17px/1.6 var(--f-ui) }
 .em-construcao .links { display: flex; gap: 20px; justify-content: center; margin-top: 24px }
 .em-construcao .links a { color: var(--acento); font-weight: 600; text-decoration: none }
-.topo .in > a:not(.marca) { margin-left: 16px }
+
+/* a navegação do site no cabeçalho (TopoSite.astro): Início, Livros, Guias; a seção atual fica marcada */
+.topo-site { display: flex; gap: 16px }
+.topo-site a[aria-current="page"] { color: var(--ink); font-weight: 600 }
+.topo-site a:hover { color: var(--acento) }

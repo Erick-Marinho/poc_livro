@@ -17,6 +17,10 @@ está escrito sai dos capítulos contra o `sumario.json`.
   escrever, um link errado) mostra a página "em construção" (`404.astro`), com o caminho para os livros e os guias.
 - (2) Os redirecionamentos são imediatos (`Redirecionar.astro`): o `Astro.redirect` estático espera 2 s numa página em inglês.
 - (2) No FontMar.ai, Cursos, Newsletter, Ferramentas e Entrar deixam de ser links mortos: levam à página "em construção".
+- (24/10/2026, Erick) Faltava como voltar à home; a marca também leva à home.
+- (3) A home é a do FontMar.ai, em `PUBLIC_URL_INICIO` (`src/lib/site.ts`); o `npm run dev` aponta para http://localhost:5173/,
+  e sem a variável vale "/" (os dois sites no mesmo domínio). Marca e "Início" usam o mesmo endereço em toda página.
+- (3) Estante, guias e "em construção" têm um cabeçalho só (`TopoSite.astro`): marca, Início, Livros, Guias, com a seção atual marcada.
 
 ## Peças
 
@@ -31,6 +35,7 @@ está escrito sai dos capítulos contra o `sumario.json`.
 
 1. A estante com o card do primeiro livro, e os links do FontMar.ai apontando para ela.
 2. As rotas: nenhum endereço dá em nada; onde não tem conteúdo, "em construção".
+3. Voltar à home: a marca e o "Início" levam ao FontMar.ai em toda página.
 
 ## Etapa 1, detalhada
 

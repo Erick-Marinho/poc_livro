@@ -1,4 +1,5 @@
 ---
+import { INICIO } from "../../lib/site";
 import Comandos from "./comandos/Comandos";
 /**
  * A navegação do livro: o sumário à esquerda e, embaixo, os comandos fixos (ilha React: comandos/Comandos.tsx).
@@ -23,7 +24,7 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro
 ---
 <aside id="sumario" class="sumario" aria-label="Sumário do livro" data-sumario>
   <div class="sm-topo">
-    <a class="sm-marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a>
+    <a class="sm-marca" href={INICIO} aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a>
     <button type="button" class="sm-fechar" data-fechar aria-label="Fechar o sumário">
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
     </button>
