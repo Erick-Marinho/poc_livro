@@ -126,7 +126,7 @@
 /* ===== altura fixa: a janela não pula a cada "seguir" =====
    a coluna do chat crescia com as mensagens e a linha das abas só existia depois do primeiro arquivo; agora a janela
    tem altura própria em cada largura, o chat e o explorador rolam por dentro, e a linha das abas fica sempre reservada */
-.ic .ide-abas { min-height: 34px; box-sizing: border-box }
+.ic .ide-abas { min-height: 34px; box-sizing: border-box; padding-right: 96px }
 .ic .ide-explorador { overflow-y: auto; min-height: 0 }
 .ic .ide-editor { min-height: 0 }
 @media (min-width: 1001px) {
@@ -212,3 +212,31 @@
 .ic-menu-troca code { font: 13px var(--f-mono); background: none; padding: 0; color: inherit }
 .ic-menu-troca small { font: 11.5px var(--f-ui); color: var(--ide-fraco) }
 .ic-menu-troca svg { margin-left: auto; color: var(--ide-acento) }
+
+/* as abas fecham, como numa IDE: o x aparece na aba ativa e quando o mouse passa; o botão do meio também fecha */
+.ic .ide-abas .ic-aba { display: flex; align-items: center; border-right: 1px solid var(--ide-linha) }
+.ic .ide-abas .ic-aba button { border-right: 0 }
+.ic .ide-abas .ic-aba > button[role="tab"] { padding-right: 4px }
+.ic .ide-abas .ic-aba[data-ativa] { background: var(--ide-fundo); box-shadow: inset 0 1px 0 var(--ide-acento) }
+.ic .ide-abas .ic-fechar-aba { display: grid; place-items: center; width: 22px; height: 22px; margin-right: 6px; padding: 0; border-radius: 5px; color: var(--ide-fraco); opacity: 0 }
+.ic .ide-abas .ic-aba[data-ativa] .ic-fechar-aba, .ic .ide-abas .ic-aba:hover .ic-fechar-aba, .ic .ide-abas .ic-fechar-aba:focus-visible { opacity: 1 }
+.ic .ide-abas .ic-fechar-aba:hover { background: #2f343d; color: var(--ide-texto) }
+@media (hover: none) { .ic .ide-abas .ic-fechar-aba { opacity: 1 } }
+
+/* copiar o arquivo à vista: discreto, no canto do editor, para quem prefere colar a digitar */
+.ic-copiar { position: absolute; z-index: 2; top: 5px; right: 10px; display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid #3a4150;
+  border-radius: 7px; background: rgba(37, 42, 51, .92); color: var(--ide-fraco); font: 12px var(--f-ui); cursor: pointer }
+.ic-copiar:hover { color: var(--ide-texto); border-color: var(--ide-acento) }
+@media (max-width: 680px) { .ic-copiar { top: 8px } }
+
+/* os problemas do último comando; o que aponta uma linha leva até ela, e a linha fica marcada */
+.ic .ic-problemas { height: 180px; box-sizing: border-box }
+@media (max-width: 680px) { .ic .ic-problemas { height: 170px } }
+.ic .ic-problemas .ic-problemas-de { margin: 4px 6px 6px; font: 12px var(--f-ui) }
+.ic .ic-problemas .ic-problemas-de code { font: 11.5px var(--f-mono); background: none; color: var(--ide-texto) }
+.ic .ic-problemas button { color: var(--ide-texto); font-family: var(--f-mono); font-size: 12.5px; cursor: pointer }
+.ic .ic-problemas button:disabled { cursor: default; opacity: 1 }
+.ic .ic-problemas button:disabled:hover { background: none }
+.ide-codigo .line.ic-linha-problema { background: rgba(255, 107, 107, .14); box-shadow: inset 2px 0 0 var(--ide-vermelho) }
+.ic-st-problemas { border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer }
+.ic-st-problemas:hover { text-decoration: underline }

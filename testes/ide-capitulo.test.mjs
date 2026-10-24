@@ -177,3 +177,12 @@ test("modificar antes de criar: as variantes trazem a saída gravada de cada tro
   assert.deepEqual(talvez.opcoes.map((o) => [o.comando.includes(o.rotulo), o.saida.at(-1).l]),
     [[true, "responder"], [true, "ValueError: 'RESPONDER' is not a valid Decisao"]]);
 });
+
+test("a aba de problemas sai da saída gravada: arquivo e linha quando a saída diz, só a mensagem quando não diz", () => {
+  const de = (id) => acoes.find((a) => a.tipo === "rodar" && a.id === id).problemas;
+  assert.deepEqual(de("r01-testes-pegam-o-r12").map((p) => `${p.arquivo}:${p.linha}`), ["test_referencia.py:33", "test_referencia.py:38"]);
+  assert.match(de("r01-testes-pegam-o-r12")[0].mensagem, /R12: o e-mail não é do dono do pedido/);
+  assert.deepEqual(de("r01-caso-sem-pedido-barrado").map((p) => [p.arquivo, p.linha]), [["contrato.py", 56]]);   // o .venv é biblioteca, fica de fora
+  assert.deepEqual(de("r01-decisao-talvez"), [{ mensagem: "ValueError: 'talvez' is not a valid Decisao" }]);
+  assert.deepEqual(de("r01-testes-passam"), []);
+});

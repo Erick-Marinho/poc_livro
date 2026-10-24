@@ -8,12 +8,12 @@
  * (modificar antes de criar, etapa 6).
  */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, CircleAlert, Copy, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
 import { useDireto } from "../palco/direto";
 import { definirOnde, sugestaoOnde, useOnde } from "../palco/onde";
 import type { Onde } from "../palco/onde";
 import type { Trecho } from "../../../lib/codigo.ts";
-import type { AcaoIde, Aposta, PassoCap, VersaoIde } from "../../../lib/ideCapitulo.ts";
+import type { AcaoIde, Aposta, PassoCap, ProblemaIde, VersaoIde } from "../../../lib/ideCapitulo.ts";
 import "./ide.css";
 import "./ide-capitulo.css";
 
@@ -97,6 +97,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const [q, setQ] = useState(0);
   const [apostas, setApostas] = useState<Record<number, number | "pulou">>({});
   const [aberto, setAberto] = useState<string | null>(abreCom);
+  /* as abas que o leitor fechou para focar; um arquivo volta quando ele o abre, ou quando a ação da vez mexe nele */
+  const [fechadas, setFechadas] = useState<Set<string>>(new Set());
+  const abrir = (a: string) => { setFechadas((s) => { if (!s.has(a)) return s; const n = new Set(s); n.delete(a); return n; }); setAberto(a); };
+  /* o painel de baixo, como o da IDE: o terminal, ou os problemas do último comando; e a linha que um problema apontou */
+  const [painel, setPainel] = useState<"terminal" | "problemas">("terminal");
+  const [apontada, setApontada] = useState<{ arquivo: string; linha: number } | null>(null);
+  const [copiado, setCopiado] = useState(false);
   const [abertas, setAbertas] = useState<Set<string>>(new Set());   /* dobras do caminho do erro abertas */
   const [perguntados, setPerguntados] = useState<Record<string, string[]>>({});   /* as palavras que o leitor perguntou, por "ação:bloco" */
   const [respostas, setRespostas] = useState<Record<string, number | "pulou">>({});   /* as perguntas dos blocos, por "ação:bloco" */
@@ -160,15 +167,24 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   /* o arquivo à vista: o da ação, ou o primeiro que o comando criou ou mudou, ou o que o leitor abriu */
   const daAcao = !acao ? null : acao.tipo === "editar" ? acao.arquivo : acao.tipo === "copiar" ? acao.arquivos[0].nome
     : acao.tipo === "rodar" && !esperando ? acao.gerados.find((g) => versoes[g.versao].html)?.nome ?? null : null;
-  useEffect(() => { if (daAcao) setAberto(daAcao); }, [q, daAcao]);
+  useEffect(() => { if (daAcao) abrir(daAcao); }, [q, daAcao]);
   const nomes = Object.keys(projeto.arquivos).sort((a, b) => Number(a.includes("/")) - Number(b.includes("/")) || a.localeCompare(b));
-  const vista = aberto && projeto.arquivos[aberto] !== undefined ? aberto : nomes.find((n) => versoes[projeto.arquivos[n]].html) ?? null;
+  /* as abas: o que nasceu ou mudou neste passo, e o que o leitor abriu; menos as que ele fechou */
+  const legivel = (a: string) => projeto.arquivos[a] !== undefined && !!versoes[projeto.arquivos[a]].html;
+  const abertoValido = aberto && projeto.arquivos[aberto] !== undefined && !fechadas.has(aberto) ? aberto : null;
+  const abas = [...projeto.marcas.keys()].filter((a) => legivel(a) && !fechadas.has(a));
+  if (abertoValido && !abas.includes(abertoValido) && legivel(abertoValido)) abas.push(abertoValido);
+  /* sem nada aberto: no começo, o primeiro arquivo; depois que o leitor fechou tudo, o editor fica vazio */
+  const vista = abertoValido ?? abas[0] ?? (fechadas.size ? null : nomes.find(legivel) ?? null);
+  const fecharAba = (a: string) => {
+    const i = abas.indexOf(a), resto = abas.filter((x) => x !== a);
+    setFechadas((s) => new Set(s).add(a));
+    if (a === vista) setAberto(resto[Math.min(i, resto.length - 1)] ?? null);
+  };
   const trocado = !!troca && troca.versao !== undefined && variar?.arquivo === vista;
   const versao = vista ? versoes[trocado ? troca!.versao! : projeto.arquivos[vista]] : null;
   const alteradas = trocado ? troca!.alteradas ?? [] : !acao ? [] : acao.tipo === "editar" && acao.arquivo === vista ? acao.alteradas
     : acao.tipo === "rodar" && !esperando ? acao.gerados.find((g) => g.nome === vista)?.alteradas ?? [] : [];
-  const abas = [...projeto.marcas.keys()].filter((a) => projeto.arquivos[a] !== undefined && versoes[projeto.arquivos[a]].html);
-  if (vista && !abas.includes(vista) && versao?.html) abas.push(vista);
 
   /* destaca as linhas da ação (e, no bloco, as do bloco), marca as palavras do bloco e leva o editor até elas */
   const blocoVisto = bloco && acao?.tipo === "editar" && acao.arquivo === vista ? bloco : null;
@@ -194,10 +210,12 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       const linhaV = el.querySelector<HTMLElement>(`.line[data-n="${noArquivo.linha}"]`), sp = linhaV && palavraNaLinha(linhaV, palavra);
       if (sp) { sp.classList.add("ic-varia"); sp.setAttribute("role", "button"); sp.tabIndex = 0; sp.setAttribute("aria-haspopup", "menu"); sp.setAttribute("aria-label", `Trocar ${palavra}`); }
     }
-    const alvo = blocoVisto?.a ?? alteradas[0] ?? noArquivo?.linha;
+    const naLinha = apontada?.arquivo === vista ? apontada.linha : undefined;
+    el.querySelectorAll<HTMLElement>(".line").forEach((l) => l.classList.toggle("ic-linha-problema", Number(l.dataset.n) === naLinha));
+    const alvo = naLinha ?? blocoVisto?.a ?? alteradas[0] ?? noArquivo?.linha;
     const linha = alvo ? el.querySelector<HTMLElement>(`.line[data-n="${alvo}"]`) : null;
     el.scrollTo({ top: linha ? Math.max(linha.offsetTop - 60, 0) : 0 });
-  }, [versao, alteradas.join(","), blocoVisto, variar, troca]);
+  }, [versao, alteradas.join(","), blocoVisto, variar, troca, apontada]);
   /* perguntar o que é uma palavra: vira mais uma fala da conversa, e fica nela */
   const perguntar = (chave: string) => setPerguntados((v) => (v[chaveBloco] ?? []).includes(chave) ? v : { ...v, [chaveBloco]: [...(v[chaveBloco] ?? []), chave] });
   const clicarCodigo = (e: React.MouseEvent) => {
@@ -223,7 +241,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     if (quadro.tipo !== "acao" || !variar) return;
     setTrocaAtual(id);
     if (id) setTentadas((t) => (t[quadro.k] ?? []).includes(id) ? t : { ...t, [quadro.k]: [...(t[quadro.k] ?? []), id] });
-    if (variar.arquivo) setAberto(variar.arquivo);
+    if (variar.arquivo) abrir(variar.arquivo);
   };
   useEffect(() => {
     if (!menu) return;
@@ -244,7 +262,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   useEffect(() => { const t = requestAnimationFrame(() => { const el = terminal.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, apostas, rodou, tentativas, tentadas, apostasTroca]);
 
   /* cada comando começa com a linha limpa; se o leitor está na IDE, o cursor já vai para o terminal (sem rolar a página) */
-  useEffect(() => { setTentativas([]); setEntrada(""); setTrocaAtual(null); setMenu(null); }, [q]);
+  useEffect(() => { setTentativas([]); setEntrada(""); setTrocaAtual(null); setMenu(null); setApontada(null); }, [q]);
+  /* quando o terminal pede alguma coisa (digitar, apostar), ele volta para a frente */
+  useEffect(() => { if (esperando || apostandoTroca) setPainel("terminal"); }, [esperando, apostandoTroca]);
   useEffect(() => { if (aDigitar && raiz.current?.contains(document.activeElement)) campo.current?.focus({ preventScroll: true }); }, [q, aDigitar]);
   const rodarComando = (quem: "leitor" | "pediu") => { if (quadro.tipo === "acao") setRodou((r) => ({ ...r, [quadro.k]: quem })); };
   /* o que o terminal do livro responde ao que o leitor digita: o comando da vez roda; o resto ganha uma dica do livro */
@@ -477,7 +497,15 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   /* o rodapé: o git existe depois do uv init; os problemas são os do último comando à vista; o Python, o do .python-version */
   const temGit = iniciais.length > 0 || (feitaAte >= 0 && rodados.length > 0);
   const ultimoRodado = rodados.at(-1)?.a;
-  const problemas = ultimoRodado?.tipo === "rodar" && ultimoRodado.erro ? 1 : 0;
+  const fonteProblemas = troca ?? (ultimoRodado?.tipo === "rodar" ? ultimoRodado : null);
+  const listaProblemas: ProblemaIde[] = fonteProblemas?.problemas ?? [];
+  const problemas = listaProblemas.length;
+  const irProblema = (p: ProblemaIde) => { if (p.arquivo && projeto.arquivos[p.arquivo] !== undefined) { abrir(p.arquivo); setApontada({ arquivo: p.arquivo, linha: p.linha! }); } };
+  /* copiar o arquivo à vista, para quem não quer digitar: o texto do que o editor mostra */
+  const copiar = () => {
+    const texto = [...(codigo.current?.querySelectorAll<HTMLElement>(".line") ?? [])].map((l) => l.textContent).join("\n") + "\n";
+    navigator.clipboard?.writeText(texto).then(() => { setCopiado(true); setTimeout(() => setCopiado(false), 1600); }, () => {});
+  };
   const pv = projeto.arquivos[".python-version"];
   const pyRodape = python && feitaAte >= python.desde && (feitaAte > python.desde || respondida(python.desde) || quadro.tipo !== "acao") ? `${python.versao} ('.venv')`
     : pv !== undefined ? versoes[pv].html?.replace(/<[^>]+>/g, "").trim() || null : null;
@@ -512,7 +540,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         {nomes.length === 0 ? <p className="ic-vazio">pasta vazia</p> : <ul>
           {nomes.map((a) => {
             const pode = !!versoes[projeto.arquivos[a]].html, marca = projeto.marcas.get(a);
-            return <li key={a}><button type="button" disabled={!pode} aria-current={a === vista || undefined} onClick={() => setAberto(a)}>
+            return <li key={a}><button type="button" disabled={!pode} aria-current={a === vista || undefined} onClick={() => abrir(a)}>
               {icone(a)}<span>{a}</span>{marca && <i className={`ide-git ide-git-${marca}`} title={marca === "U" ? "novo neste passo" : "mudou neste passo"}>{marca}</i>}
             </button></li>;
           })}
@@ -521,8 +549,14 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       </nav>
       <div className="ide-editor" ref={editor}>
         <div className="ide-abas" role="tablist" aria-label="Arquivos abertos">
-          {abas.map((a) => <button key={a} type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>)}
+          {abas.map((a) => <span key={a} className="ic-aba" data-ativa={a === vista || undefined}
+            onAuxClick={(e) => { if (e.button === 1) { e.preventDefault(); fecharAba(a); } }}>
+            <button type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>
+            <button type="button" className="ic-fechar-aba" onClick={() => fecharAba(a)} aria-label={`Fechar ${a}`} title="Fechar"><X size={13} /></button>
+          </span>)}
         </div>
+        {versao?.html && <button type="button" className="ic-copiar" onClick={copiar} aria-label={`Copiar o conteúdo de ${vista}`} title="Copiar o arquivo">
+          {copiado ? <><Check size={13} /> copiado</> : <><Copy size={13} /> copiar</>}</button>}
         {pausa && <div className="ic-suavez ic-suavez-editor" role="note">{cartaoSuaVez}</div>}
         {versao?.html
           ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} onKeyDown={teclaCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
@@ -535,13 +569,22 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
             </button>))}
         </div>}
         <div className="ide-painel">
-          <div className="ide-painel-abas"><button type="button" aria-selected="true">terminal</button>
+          <div className="ide-painel-abas" role="tablist">
+            <button type="button" role="tab" aria-selected={painel === "terminal"} onClick={() => setPainel("terminal")}>terminal</button>
+            <button type="button" role="tab" aria-selected={painel === "problemas"} onClick={() => setPainel("problemas")}>problemas{problemas > 0 && <i className="ide-conta">{problemas}</i>}</button>
             {/* onde o leitor faz o projeto, à mão para trocar: na IDE dele, o comando roda sozinho aqui; no livro, ele digita */}
             {!direto && fazer !== undefined && <span className="ic-term-modos" role="radiogroup" aria-label="Onde você faz o projeto">
               {LUGARES.map((l) => <button key={l.id} type="button" role="radio" aria-checked={fazer === l.id} onClick={() => definirOnde(l.id)}>{l.nome}</button>)}
             </span>}
           </div>
-          <div className="ide-terminal" ref={terminal} aria-live="polite" onClick={() => aDigitar && campo.current?.focus({ preventScroll: true })}>
+          {painel === "problemas" && <div className="ide-problemas ic-problemas" role="tabpanel" aria-label="Problemas">
+            {listaProblemas.length === 0 ? <p>Nenhum problema no último comando.</p> : <>
+              <p className="ic-problemas-de">do último comando: <code>{fonteProblemas!.comando.length > 70 ? fonteProblemas!.comando.slice(0, 67) + "…" : fonteProblemas!.comando}</code></p>
+              {listaProblemas.map((p, i) => <button key={i} type="button" disabled={!p.arquivo} onClick={() => irProblema(p)}>
+                <CircleAlert size={14} /><span>{p.mensagem}</span>{p.arquivo && <small>{p.arquivo} [Ln {p.linha}]</small>}
+              </button>)}</>}
+          </div>}
+          <div className="ide-terminal" hidden={painel !== "terminal"} ref={terminal} aria-live="polite" onClick={() => aDigitar && campo.current?.focus({ preventScroll: true })}>
             {rodados.map(({ a, k }) => a.tipo === "rodar" && <div key={k}>{k === quadro.k && errados}<div>{prompt(a.onde)}{a.comando}</div>{saida(a.saida, k)}
               {/* o veredito da aposta do comando da vez, logo depois da saída (antes das trocas que o leitor fizer) */}
               {k === quadro.k && apostaFeita !== null && a.aposta && veredito(a.aposta, apostaFeita)}
@@ -590,7 +633,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     {/* o rodapé, como o da IDE: o ramo do git, os problemas do último comando e o Python do projeto */}
     <footer className="ic-status">
       {temGit && <span>⎇ main</span>}
-      <span className={problemas ? "ic-st-erro" : undefined}>⊗ {problemas} ⚠ 0</span>
+      <button type="button" className={`ic-st-problemas${problemas ? " ic-st-erro" : ""}`} onClick={() => setPainel("problemas")} aria-label={`${problemas} problemas: abrir a aba`}>⊗ {problemas} ⚠ 0</button>
       <span className="ic-st-esp" />
       <span>passo {passo.n}/{passos.length}</span>
       <span>UTF-8</span><span>LF</span>

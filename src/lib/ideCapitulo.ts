@@ -17,8 +17,10 @@ export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porq
 export type BlocoIde = { a: number; z: number; titulo: string; texto: string; termos: TermoIde[]; pergunta?: PerguntaIde };
 /** o que um modelo de verdade respondeu num comando, gravado uma vez e repetido no livro (scripts/gravacao) */
 export type GravacaoIde = { quando: string; modelo: string; chamadas: number };
+/** um problema que o comando mostrou: a mensagem, e onde no código do leitor (quando a saída diz) */
+export type ProblemaIde = { mensagem: string; arquivo?: string; linha?: number };
 /** modificar antes de criar: uma troca do trecho (no arquivo ou no comando), com a saída que ela gravou de verdade */
-export type OpcaoVariar = { id: string; rotulo: string; comando: string; saida: Trecho[]; erro: boolean; nota: string; aposta?: Aposta;
+export type OpcaoVariar = { id: string; rotulo: string; comando: string; saida: Trecho[]; erro: boolean; problemas: ProblemaIde[]; nota: string; aposta?: Aposta;
   versao?: number; alteradas?: number[] };
 /** `linha`: onde o trecho está no arquivo (sem `arquivo`, o trecho está no comando); `original`: a palavra do livro */
 export type VariarIde = { arquivo?: string; linha?: number; trecho: string; original: string; convite: string; por: string; opcoes: OpcaoVariar[] };
@@ -26,7 +28,7 @@ export type AcaoIde = { nota: string } & (
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
-  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta; gravacao?: GravacaoIde; variar?: VariarIde;
+  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; problemas: ProblemaIde[]; aposta?: Aposta; gravacao?: GravacaoIde; variar?: VariarIde;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
@@ -70,6 +72,34 @@ export function resumirGravacao(itens: Record<string, { quando: string; modelo: 
   const modelos = new Set(lista.map(nome));
   const dias = lista.map((i) => i.quando).sort();
   return { quando: dias.at(-1) ?? "", modelo: [...modelos].join(", "), chamadas: lista.length };
+}
+
+/**
+ * Os problemas de uma saída gravada, como a aba "problemas" da IDE mostra: tirados do que o comando imprimiu, sem
+ * inventar nada. No pytest, cada falha dá o arquivo e a linha (`test_x.py:33: AssertionError`) e a primeira linha `E`
+ * dela; num traceback, a mensagem final e o último trecho que é do projeto (o que está no .venv é biblioteca); sem
+ * nenhum dos dois, a linha de erro que sobrou, sem lugar.
+ */
+export function problemasDe(saida: [string, string][], pasta = "~/atendimento-bemtevi"): ProblemaIde[] {
+  const linhas = saida.map(([l]) => l), raiz = `${pasta.replace(/^~/, "/home/voce")}/`;
+  const curta = (m: string) => m.trim().replace(/^([\w.]+\.)(\w+(Error|Exception)\b)/, "$2");
+  const achados: ProblemaIde[] = [];
+  linhas.forEach((l, i) => {
+    const m = l.match(/^([\w./-]+\.py):(\d+): \w+/);
+    if (!m || m[1].startsWith("/")) return;
+    let e = i - 1;
+    while (e >= 0 && !/^_{3,}/.test(linhas[e])) e--;
+    const msg = linhas.slice(e + 1, i).find((x) => x.startsWith("E "));
+    achados.push({ mensagem: curta(msg ? msg.slice(1) : l), arquivo: m[1], linha: Number(m[2]) });
+  });
+  if (achados.length) return achados;
+  if (linhas.some((l) => l.startsWith("Traceback"))) {
+    const final = [...linhas].reverse().find((l) => /^([\w.]+\.)?\w+(Error|Exception)\b/.test(l));
+    const quadro = [...linhas].reverse().map((l) => l.match(/^\s*File "([^"]+)", line (\d+)/)).find((m) => m && m[1].startsWith(raiz) && !m[1].includes("/.venv/"));
+    if (final) return [{ mensagem: curta(final), ...(quadro ? { arquivo: quadro[1].slice(raiz.length), linha: Number(quadro[2]) } : {}) }];
+  }
+  const resto = [...saida].reverse().find(([l, c]) => c === "err" && !/^\d+ (failed|errors?)\b|^FAILED|^ERROR/.test(l) && /(Error|Exception)\b/.test(l));
+  return resto ? [{ mensagem: curta(resto[0].replace(/^E\s+/, "")) }] : [];
 }
 
 /** O projeto como os estados deixaram: o conteúdo de cada arquivo (null: grande demais para mostrar). */
@@ -168,13 +198,14 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
           if (op.aposta && !op.aposta.opcoes[op.aposta.certa]) falhar(`a aposta da variante ${op.id} não tem a resposta certa entre as opções`);
           if (!op.por.includes(op.rotulo)) falhar(`a variante ${op.id}: o rótulo (${op.rotulo}) não está no que entra (${op.por})`);
           opcoes.push({ id: op.id, rotulo: op.rotulo, comando: so.comando, saida: dobrarErro(so.saida), erro: so.saiu_com !== 0 || so.saida.some(([, c]) => c === "err"),
+            problemas: problemasDe(so.saida, pasta),
             nota: op.nota, aposta: op.aposta, ...(v.arquivo ? { versao: await versao(v.arquivo, est.conteudo!), alteradas: est.alteradas } : {}) });
         }
         const linha = v.arquivo ? texto.slice(0, texto.indexOf(v.trecho)).split("\n").length : undefined;
         variar = { arquivo: v.arquivo, linha, trecho: v.trecho, original: v.original, convite: v.convite, por: v.opcoes[0].por, opcoes };
       }
       acoes.push({ tipo: "rodar", nota: p.nota, id: e.rodou, comando: s.comando, onde: cwdLeitor(p.onde), saida: dobrarErro(s.saida),
-        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), aposta: p.aposta, gravacao: gravacoes[e.rodou], variar, gerados, apagados: e.apagados ?? [] });
+        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), problemas: problemasDe(s.saida, pasta), aposta: p.aposta, gravacao: gravacoes[e.rodou], variar, gerados, apagados: e.apagados ?? [] });
     } else if (e.arquivos) {
       const arquivos = [];
       for (const [nome, texto] of Object.entries(e.arquivos)) { arquivos.push({ nome, versao: await versao(nome, texto) }); atual[nome] = texto; }
