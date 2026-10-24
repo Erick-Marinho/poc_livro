@@ -54,5 +54,6 @@ compara a nota antes e depois.
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 (primeira versão) | `4778c64` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | refeita: faltou o padrão (a IDE com o chat, as figuras), Erick, 24/10/2026 |
+| 1 | `1b4ef33` | o roteiro aplicado numa pasta vazia chega ao `projeto/` e grava 8 saídas (e as 2 da troca do limite), conferidas no `npm test` (41 testes). A IDE no guia, percorrida no Chrome headless: 6 passos, 31 envios, 3 apostas, 2 perguntas, dúvidas em 3 lugares; aqui no guia, 6 comandos digitados. O prazo sai 14/11 e depois 21/11 com o velho ao lado; a régua dá 7 e 9 de 10; tocar no `1.0` e escolher 0.6 pede a aposta e dá 8 de 10, com a do WhatsApp quebrada. A IDE diz "guia" onde diria livro; o capítulo 1 continua com 78 cliques. Capturas do cofre e da nota escrita por blocos | pendente |
 
 (redação: claude-opus-5-5)
