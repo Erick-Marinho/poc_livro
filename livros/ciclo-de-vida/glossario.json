@@ -1,0 +1,19 @@
+{
+  "sobre": "As palavras do código que podem travar quem está começando, explicadas em palavras do dia a dia. Uma vez por livro; o passador mostra as do bloco. `marca` é o texto exato que fica sublinhado no código, quando ele aparece sozinho.",
+  "termos": {
+    "class": { "marca": "class", "texto": "Cria um molde. Cada caso do arquivo vai virar um objeto feito com esse molde, com os mesmos campos." },
+    "BaseModel": { "marca": "BaseModel", "texto": "O molde do pydantic. Ele confere os dados na entrada: se um campo faltar ou vier com o tipo errado, dá erro na hora e diz qual campo." },
+    "docstring": { "rotulo": "\"\"\"…\"\"\"", "texto": "Um texto de explicação logo abaixo da classe ou da função. O Python guarda, mas não executa: é para quem lê o código." },
+    "nome: tipo": { "texto": "O que vem depois dos dois-pontos diz o tipo do campo. Em Python comum, é só um aviso para quem lê. Num BaseModel, o pydantic confere de verdade." },
+    "Field": { "marca": "Field", "texto": "Acrescenta regras a um campo, além do tipo: um padrão que o texto tem que seguir, um tamanho mínimo, um valor inicial." },
+    "pattern": { "marca": "pattern", "texto": "O texto do campo tem que seguir este padrão. O padrão é escrito como expressão regular, uma pequena linguagem para descrever textos." },
+    "r\"…\"": { "texto": "Texto cru. A barra invertida fica como está, em vez de virar um caractere especial. Por isso quase todo padrão em Python começa com r." },
+    "^R\\d{2}$": { "texto": "O padrão do id: começa (^) com R maiúsculo, depois exatamente dois dígitos (\\d{2}), e acaba ($). R07 passa; R7, r07 e R007 não." },
+    "min_length": { "marca": "min_length", "texto": "Pelo menos esse número de caracteres. Com 5, uma pergunta vazia ou um \"oi\" não entram." },
+    "description": { "marca": "description", "texto": "Uma explicação do campo, para quem lê e para ferramentas que geram documentação. Não muda a conferência." },
+    "list[…]": { "texto": "Uma lista em que todo item é do tipo entre colchetes. list[Fonte] aceita pedidos, politica e catalogo, e nada além disso." },
+    "= []": { "texto": "O valor do campo quando o caso não diz nada: lista vazia. No pydantic isso é seguro, porque cada caso ganha a sua lista. Numa função comum do Python, lista como valor padrão é uma armadilha conhecida: a mesma lista é usada em toda chamada." },
+    "str | None": { "texto": "Texto ou nada. A barra | quer dizer \"ou\": o campo aceita um texto, ou None." },
+    "None": { "marca": "None", "texto": "O valor do Python para \"não tem\". Diferente de texto vazio: \"\" é um texto sem letras; None é a ausência do texto." }
+  }
+}

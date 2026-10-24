@@ -39,6 +39,9 @@ import saidas from "../saidas.json";
 import IDE from "../../../src/components/livro/IDE.astro";
 import roteiro01 from "../roteiros/01.json";
 import estados01 from "../roteiros/01.estados.json";
+import Passador from "../../../src/components/livro/Passador.astro";
+import passadorCaso from "../passadores/caso.json";
+import glossario from "../glossario.json";
 
 ## 1.1 O que é um agente
 
@@ -147,9 +150,13 @@ Se o agente calcula prazos com a data real do computador, a resposta certa de ho
 
 ## 1.6 O contrato em código
 
-O contrato vira código no arquivo `contrato.py`. Ele não nasce inteiro, e o caminho importa: a primeira versão é a mais simples que funciona, e a segunda nasce de um erro. Avance você mesmo e, antes de cada comando, aposte no que vai acontecer.
+O contrato vira código no arquivo `contrato.py`. O coração dele é o formato de um caso: o que toda pergunta de referência tem que trazer. Antes de ver o arquivo crescer, leia esse formato bloco a bloco, e abra as palavras que não conhecer.
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={9} numero="1.3" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
+<Passador codigo={contrato} dados={passadorCaso} glossario={glossario} numero="1.3" legenda="O formato de um caso, no contrato.py real. Avance pelos blocos, ou clique numa linha; as palavras sublinhadas abrem a explicação." />
+
+O arquivo não nasce inteiro, e o caminho importa: a primeira versão é a mais simples que funciona, e a segunda nasce de um erro. Avance você mesmo e, antes de cada comando, aposte no que vai acontecer.
+
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={9} numero="1.4" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
 
 O passo 6 é o que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
 
