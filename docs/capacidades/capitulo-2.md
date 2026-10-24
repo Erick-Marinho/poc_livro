@@ -29,13 +29,12 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 2
+## Etapa atual: 3
 
-Arquivos: `scripts/gravacao/` (o cache que lê e grava um arquivo, e o `sitecustomize.py` que o liga), o gravador
-(todo comando roda com a gravação ligada) e `testes/test_gravacao.py`. Modos: `repetir` (o padrão, no build: chamada
-que não está gravada para o comando) e `gravar` (chama o modelo no que falta, e só roda com o ok e a chave do Erick).
-Modelos falsos (os dos testes) passam direto. Evidência: os testes da gravação com um modelo de mentira (grava,
-repete sem chamar, recusa a chamada não gravada) e a conferência do livro verde. Fica fora: a rodada paga.
+Arquivos: `uv add langchain-anthropic`, `projeto/medir.py` (o agente com Claude contra as 20 perguntas, a nota e os
+casos errados), o roteiro 02 e `gravacoes/r02-medir.json`. Duas partes: 3a sem custo (o código e o roteiro, até o
+comando que mede) e 3b paga (`npm run gravar` na máquina do Erick, com a chave dele no ambiente). Evidência: a nota
+do agente gravada, os casos que ele errou, e a conferência repetindo tudo sem chamar o modelo. Fica fora: IDE e texto.
 
 ## Registro
 
@@ -44,3 +43,4 @@ repete sem chamar, recusa a chamada não gravada) e a conferência do livro verd
 | 0a | `1a38db6` | o teste do formato falha no capítulo 1 (partes repetiam 1.6) e passa depois | 24/10 |
 | 0b | `0a6551c` | o gravador recusa arquivo sem roteiro; roteiro 02 de teste parte do fim do 01 | 24/10 |
 | 1 | `081b73d` | testes do grafo sem internet e sem chave; sem o caminho `passar`, o teste falha | 24/10 |
+| 2 | `d81c6bc` | a conferência para na chamada não gravada, sem chegar à rede; 5 testes da gravação | 24/10 |

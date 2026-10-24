@@ -70,11 +70,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 9ms",
+        "Resolved 6 packages in 17ms",
         ""
       ],
       [
-        "Installed 5 packages in 75ms",
+        "Installed 5 packages in 254ms",
         ""
       ],
       [
@@ -104,11 +104,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 10ms",
+        "Resolved 12 packages in 20ms",
         ""
       ],
       [
-        "Installed 5 packages in 292ms",
+        "Installed 5 packages in 552ms",
         ""
       ],
       [
@@ -348,7 +348,7 @@
         ""
       ],
       [
-        "4 passed in 0.09s",
+        "4 passed in 0.25s",
         "okv"
       ]
     ]
@@ -442,7 +442,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f95f88e4660>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fd2980dc820>)",
         "err"
       ],
       [
@@ -480,7 +480,7 @@
         ""
       ],
       [
-        "7 passed in 0.11s",
+        "7 passed in 0.12s",
         "okv"
       ]
     ]
@@ -526,11 +526,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 45 packages in 24ms",
+        "Resolved 45 packages in 21ms",
         ""
       ],
       [
-        "Installed 32 packages in 989ms",
+        "Installed 32 packages in 2.41s",
         ""
       ],
       [
@@ -672,8 +672,42 @@
         ""
       ],
       [
-        "11 passed in 1.00s",
+        "11 passed in 0.71s",
         "okv"
+      ]
+    ]
+  },
+  "r02-uv-add-anthropic": {
+    "comando": "uv add langchain-anthropic",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Resolved 50 packages in 23ms",
+        ""
+      ],
+      [
+        "Installed 5 packages in 435ms",
+        ""
+      ],
+      [
+        " + anthropic==1.15.0",
+        ""
+      ],
+      [
+        " + docstring-parser==0.18.0",
+        ""
+      ],
+      [
+        " + jiter==0.17.0",
+        ""
+      ],
+      [
+        " + langchain-anthropic==1.7.6",
+        ""
+      ],
+      [
+        " + opentelemetry-api==1.45.1",
+        ""
       ]
     ]
   }

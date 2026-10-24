@@ -140,5 +140,51 @@
  {
   "passo": 4,
   "rodou": "r02-pytest"
+ },
+ {
+  "passo": 5,
+  "rodou": "r02-uv-add-anthropic",
+  "gerados": {
+   "pyproject.toml": "[project]\nname = \"atendimento-bemtevi\"\nversion = \"0.1.0\"\ndescription = \"O agente de atendimento da Casa Bem-te-vi, uma loja inventada para o livro\"\nreadme = \"README.md\"\nrequires-python = \">=3.13\"\ndependencies = [\n    \"langchain-anthropic>=1.7.6\",\n    \"langgraph>=1.2.15\",\n    \"pydantic>=2.14.1\",\n]\n\n[dependency-groups]\ndev = [\n    \"pytest>=9.1.1\",\n]\n",
+   "uv.lock": null
+  }
+ },
+ {
+  "passo": 6,
+  "arquivo": "medir.py",
+  "conteudo": "\"\"\"A nota do agente: o grafo do capítulo 2, com Claude, contra as 20 perguntas de referência.\n\nPrecisa da chave da Anthropic no ambiente (ANTHROPIC_API_KEY). Cada pergunta passa pelo agente inteiro: ele decide e,\nquando a decisão pede, escreve a resposta. A régua é a mesma da nota de partida.\n\"\"\"\nfrom langchain_anthropic import ChatAnthropic\n\nfrom agente import montar\nfrom baseline import avaliar\nfrom contrato import carregar_referencia\n\nMODELO = \"claude-haiku-5-5\"\n\n\nif __name__ == \"__main__\":\n    agente = montar(ChatAnthropic(model=MODELO, temperature=0, max_tokens=1024))\n    casos = carregar_referencia()\n    decidiu = {}\n\n    def decidir(pergunta: str):\n        decidiu[pergunta] = agente.invoke({\"pergunta\": pergunta})[\"decisao\"]\n        return decidiu[pergunta]\n\n    placar = avaliar(decidir, casos)\n    for d, (certos, total) in placar.items():\n        print(f\"{d:<14} {certos:>2} de {total:>2}\")\n    acertos = sum(c for c, _ in placar.values())\n    print(f\"nota do agente: {acertos} de {len(casos)} ({acertos / len(casos):.0%})\")\n    for c in casos:\n        if decidiu[c.pergunta] != c.decisao:\n            print(f\"  {c.id}: o contrato pede {c.decisao}, o agente decidiu {decidiu[c.pergunta]}\")\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31
+  ]
  }
 ]
