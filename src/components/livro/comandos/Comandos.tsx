@@ -5,6 +5,7 @@
  * O sumário (Navegacao.astro) ouve o botão de menu por delegação: aqui o botão só carrega data-abrir.
  */
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
 import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
 import { definirDireto, useDireto } from "../palco/direto";
@@ -45,6 +46,8 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const engrenagem = useRef<HTMLButtonElement>(null);
   /* o lembrete da IDE: fixo no canto de cima; depois de lido, encolhe para só o ícone */
   const [porQue, setPorQue] = useState(false);
+  const [alvoTopo, setAlvoTopo] = useState<HTMLElement | null>(null);
+  useEffect(() => { setAlvoTopo(document.getElementById("topo-comandos")); }, []);
   const [ideVisto, setIdeVisto] = useState(false);
   const fecharPorQue = useRef<HTMLButtonElement>(null);
   const lembrete = useRef<HTMLButtonElement>(null);
@@ -123,7 +126,9 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
     (e.currentTarget.parentElement?.querySelectorAll<HTMLElement>("[role='radio']")[prox % n])?.focus();
   };
 
-  return <MotionConfig reducedMotion="user"><LayoutGroup>
+  /* o lembrete da IDE e o placar moram na barra do topo da página (um portal para #topo-comandos, no layout):
+     fixos por cima do texto, eles cobriam a trilha da IDE e o próprio texto */
+  const topo = <>
     <button ref={lembrete} type="button" className={`cm-ide${ideVisto ? " cm-ide-visto" : ""}`} onClick={() => setPorQue(true)}
       aria-haspopup="dialog" aria-label="Este livro rende mais com uma IDE aberta: por quê" title="Leia com a IDE aberta">
       <Laptop size={16} /><span>Leia com a IDE aberta</span>
@@ -155,6 +160,10 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
         </AnimatePresence>
       </div>
     )}
+  </>;
+
+  return <MotionConfig reducedMotion="user"><LayoutGroup>
+    {alvoTopo && createPortal(<>{topo}</>, alvoTopo)}
     <AnimatePresence>
       {porQue && (
         <motion.div key="veu" className="cm-veu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={fechar}>
