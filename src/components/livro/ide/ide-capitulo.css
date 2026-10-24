@@ -240,3 +240,16 @@
 .ide-codigo .line.ic-linha-problema { background: rgba(255, 107, 107, .14); box-shadow: inset 2px 0 0 var(--ide-vermelho) }
 .ic-st-problemas { border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer }
 .ic-st-problemas:hover { text-decoration: underline }
+
+/* o compositor do chat (docs/capacidades/conversa-com-a-ia.md): a caixa de mensagem com a fala sugerida; um toque envia */
+.ic-caixa { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 7px 7px 7px 12px; box-sizing: border-box; border: 1px solid #3a4150;
+  border-radius: 12px; background: #1b1e24; color: var(--ide-texto); font: 13.5px/1.4 var(--f-ui); text-align: left; cursor: pointer }
+.ic-caixa span { flex: 1; min-width: 0 }
+.ic-caixa .ic-enviar { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--ide-acento); color: #06111f; font-style: normal; align-self: flex-end }
+button.ic-caixa:hover { border-color: var(--ide-acento) }
+button.ic-caixa:disabled { cursor: default; color: var(--ide-fraco) }
+button.ic-caixa:disabled .ic-enviar, .ic-caixa-vazia .ic-enviar { background: #2a2f38; color: var(--ide-fraco) }
+.ic-caixa-vazia { cursor: default; color: var(--ide-fraco) }
+.ic-caixa-dica { margin: -2px 2px 0; font: 11.5px var(--f-ui); color: var(--ide-ambar) }
+/* no celular, a barra do painel não cabe o seletor de onde fazer junto das duas abas: ele fica nas configurações */
+@media (max-width: 680px) { .ic .ic-term-modos { display: none } }

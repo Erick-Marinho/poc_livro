@@ -8,7 +8,7 @@
  * (modificar antes de criar, etapa 6).
  */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, CircleAlert, Copy, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
+import { ArrowUp, Check, ChevronLeft, ChevronRight, CircleAlert, Copy, FileBraces, FileCode, FileText, Maximize2, Minimize2, X } from "lucide-react";
 import { useDireto } from "../palco/direto";
 import { definirOnde, sugestaoOnde, useOnde } from "../palco/onde";
 import type { Onde } from "../palco/onde";
@@ -53,8 +53,8 @@ function palavraNaLinha(linha: HTMLElement, palavra: string): HTMLElement | null
   dona.after(nova, resto);
   return nova;
 }
-/* quem fala com a IA no chat: o autor, construindo junto com o leitor */
-const AUTOR = "Erick";
+/* quem fala com a IA no chat: o leitor, que pede, pergunta e segue (docs/capacidades/conversa-com-a-ia.md) */
+const AUTOR = "você";
 const LUGARES: { id: Onde; nome: string }[] = [{ id: "ide", nome: "na minha IDE" }, { id: "livro", nome: "aqui no livro" }];
 const junta = (s: string) => s.trim().replace(/\s+/g, " ");
 
@@ -381,8 +381,13 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   visiveisRef.current = visiveis;
   const ia = (chave: string, corpo: React.ReactNode): Fala => ({ chave, quem: "ia", corpo });
   const pessoa = (chave: string, corpo: React.ReactNode): Fala => ({ chave, quem: "pessoa", corpo });
+  /* o capítulo começa com a conversa esperando o primeiro pedido do leitor; quem o envia é ele, no compositor */
+  const [comecou, setComecou] = useState(false);
+  const esperaPedido = q === 0 && !comecou && !direto;
+  const enviou = useRef(false);
   const falas = (x: Quadro, i: number): Fala[] => {
     const atual = i === q, ps = passos[x.p];
+    if (x.tipo === "abre" && i === 0 && esperaPedido) return [{ chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> }];
     if (x.tipo === "abre") return [
       { chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> },
       pessoa("p", <p>{ps.pedido}</p>),
@@ -454,11 +459,11 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   const qAnterior = useRef(q);
   const calmo = () => direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
   useEffect(() => {
-    const avancou = q > qAnterior.current, voltou = q < qAnterior.current;
-    qAnterior.current = q;
+    const avancou = q > qAnterior.current, voltou = q < qAnterior.current, pediu = enviou.current;
+    qAnterior.current = q; enviou.current = false;
     /* a abertura de um passo não pede nada ao leitor: quando ele avança até ela, a conversa emenda sozinha na primeira
        ação (docs/capacidades/imersao-ide.md, etapa 2). Voltando, ela fica parada, para reler. */
-    const emendar = avancou && quadros[q].tipo === "abre" && q < quadros.length - 1;
+    const emendar = (avancou || pediu) && quadros[q].tipo === "abre" && q < quadros.length - 1;
     const relogios: ReturnType<typeof setTimeout>[] = [];
     const seguirSozinho = (ms: number) => relogios.push(setTimeout(() => setQ((x) => (x === q ? x + 1 : x)), ms));
     if (calmo() || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); if (emendar) seguirSozinho(0); return () => relogios.forEach(clearTimeout); }
@@ -476,6 +481,11 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   }, [q, tipos, direto, quadros]);
   /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
   const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !apostandoTroca && !(perguntaOnde && q === 0);
+  /* o compositor: a fala sugerida ao leitor, que ele envia. Por ora, o pedido que abre cada passo (no começo e no fecho
+     do anterior); as outras passagens ainda vão pelo "seguir" (etapa 2) */
+  const sugestao: { texto: string; pronto: boolean; enviar: () => void } | null = esperaPedido
+    ? { texto: passos[0].pedido, pronto: !perguntaOnde, enviar: () => { enviou.current = true; setVisiveis(1); setComecou(true); } }
+    : quadro.tipo === "fecha" && q < quadros.length - 1 ? { texto: passos[quadro.p + 1].pedido, pronto: true, enviar: () => setQ(q + 1) } : null;
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
     const f = i === q ? falasAgora.slice(0, visiveis) : falas(x, i);
     return f.map((y) => <Mensagem key={`${i}:${y.chave}`} f={y} ia={aba} />);
@@ -625,6 +635,11 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         </div>
         <div className="ic-compositor">
           {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
+          {sugestao
+            ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} disabled={!sugestao.pronto} aria-label={`Enviar: ${sugestao.texto}`}>
+                <span>{sugestao.texto}</span><i className="ic-enviar"><ArrowUp size={15} /></i></button>
+            : <div className="ic-caixa ic-caixa-vazia" aria-hidden="true"><span>Mensagem para o {aba}</span><i className="ic-enviar"><ArrowUp size={15} /></i></div>}
+          {sugestao && !sugestao.pronto && <p className="ic-caixa-dica">Antes, diga abaixo onde você vai fazer o projeto.</p>}
           <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
         </div>
       </aside>
@@ -648,7 +663,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         <span className="ic-pergunta-onde"><b>Onde você vai fazer o projeto?</b>
           <small>Na sua IDE, os comandos rodam sozinhos aqui e você os repete na sua máquina. Aqui no livro, você os digita no terminal acima.</small></span>
         {LUGARES.map((l) => <button key={l.id} type="button" className={l.id === sugestaoOnde() ? "ic-seguir" : "ic-do-inicio"}
-          onClick={() => { definirOnde(l.id); if (retomar === null) setQ(1); }}>{l.nome}</button>)}
+          onClick={() => definirOnde(l.id)}>{l.nome}</button>)}
       </> : retomar !== null && q === 0 ? <>
         <span className="ic-onde ic-retomar">Você parou no <b>passo {retomar + 1}</b> · {passos[retomar].titulo}</span>
         <button type="button" className="ic-do-inicio" onClick={doInicio}>começar do início</button>
