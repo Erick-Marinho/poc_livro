@@ -1,0 +1,111 @@
+{
+  "capitulo": 1,
+  "sobre": "O caminho do código do capítulo 1, na ordem em que se pensa e não de cima para baixo, com os erros do caminho. O scripts/saidas.py aplica estes passos numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
+  "passos": [
+    {
+      "acao": "copiar",
+      "arquivos": ["pyproject.toml", "uv.lock", ".python-version", "README.md", "dados/loja.json", "dados/clientes.json", "dados/pedidos.json", "dados/catalogo.json", "dados/politica.md"],
+      "nota": "O projeto já existe (uv init, pydantic e pytest) e a loja inventada está em dados/. Ninguém aprende digitando CPF falso."
+    },
+    {
+      "acao": "escrever", "arquivo": "contrato.py",
+      "partes": [{ "linhas": "1-5" }, { "texto": "from pydantic import BaseModel, Field\n" }, { "linhas": "7-38" }, { "linhas": "47-59" }],
+      "nota": "Primeiro o mínimo: as quatro decisões, as fontes, o formato de um caso e a função que lê o arquivo."
+    },
+    {
+      "acao": "escrever", "arquivo": "referencia.jsonl",
+      "partes": [{ "linhas": "1-3" }],
+      "nota": "Três perguntas de referência, para ver o formato funcionando antes de escrever as vinte."
+    },
+    {
+      "acao": "rodar", "id": "r01-tres-casos",
+      "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+      "espera": 0,
+      "nota": "Carrega."
+    },
+    {
+      "acao": "inserir", "arquivo": "referencia.jsonl", "no_fim": true,
+      "partes": [{ "texto": "{\"id\": \"R04\", \"pergunta\": \"Cadê o meu pedido?\", \"decisao\": \"responder\", \"motivo\": \"tem pedido no meio\", \"precisa\": [\"pedidos\"]}\n" }],
+      "nota": "Um caso escrito com pressa: precisa dos pedidos, mas não diz qual pedido nem de quem."
+    },
+    {
+      "acao": "rodar", "id": "r01-caso-sem-pedido-passa",
+      "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+      "espera": 0,
+      "nota": "Carregou sem reclamar. Esse é o erro: um caso que não tem resposta certa entrou no contrato, e ninguém avisou."
+    },
+    {
+      "acao": "trocar", "arquivo": "contrato.py",
+      "de": "from pydantic import BaseModel, Field\n",
+      "para": [{ "linhas": "6-6" }],
+      "nota": "De volta ao topo do arquivo: a regra nova precisa do model_validator."
+    },
+    {
+      "acao": "inserir", "arquivo": "contrato.py", "depois": "    email: str | None = None\n",
+      "partes": [{ "linhas": "39-46" }],
+      "nota": "O contrato passa a se proteger: pedido e e-mail andam juntos, e quem precisa dos pedidos diz qual."
+    },
+    {
+      "acao": "rodar", "id": "r01-caso-sem-pedido-barrado",
+      "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+      "espera": 1,
+      "nota": "Agora o mesmo arquivo não carrega, e o erro diz a linha: a 4."
+    },
+    {
+      "acao": "escrever", "arquivo": "referencia.jsonl",
+      "partes": [{ "linhas": "1-20" }],
+      "nota": "O caso apressado sai, e entram as vinte perguntas."
+    },
+    {
+      "acao": "trocar", "arquivo": "referencia.jsonl",
+      "de": "\"decisao\": \"recusar\", \"motivo\": \"o pedido é de outra cliente: pedido e e-mail não batem\"",
+      "para": [{ "texto": "\"decisao\": \"responder\", \"motivo\": \"tem número de pedido e tem e-mail: o status está nos dados\"" }],
+      "nota": "O engano mais fácil do capítulo: o R12 tem pedido e tem e-mail, então parece um caso de responder."
+    },
+    {
+      "acao": "rodar", "id": "r01-vinte-casos",
+      "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+      "espera": 0,
+      "nota": "As vinte carregam. Carregar só prova o formato; não prova que as perguntas fazem sentido com a loja."
+    },
+    {
+      "acao": "inserir", "arquivo": "contrato.py", "no_fim": true,
+      "partes": [{ "linhas": "60-64" }],
+      "nota": "Os testes vão precisar ler os dados da loja."
+    },
+    {
+      "acao": "escrever", "arquivo": "test_referencia.py",
+      "partes": [{ "linhas": "1-53" }],
+      "nota": "Cada teste é uma regra da política escrita de um jeito que a máquina confere."
+    },
+    {
+      "acao": "rodar", "id": "r01-testes-pegam-o-r12",
+      "comando": "uv run pytest -q",
+      "espera": 1,
+      "nota": "Dois testes falham, e os dois apontam o R12: o pedido BT-1001 é da Ana, e quem pergunta é o Bruno."
+    },
+    {
+      "acao": "trocar", "arquivo": "referencia.jsonl",
+      "de": "\"decisao\": \"responder\", \"motivo\": \"tem número de pedido e tem e-mail: o status está nos dados\"",
+      "para": [{ "texto": "\"decisao\": \"recusar\", \"motivo\": \"o pedido é de outra cliente: pedido e e-mail não batem\"" }],
+      "nota": "O R12 é recusar: responder ali seria mostrar a compra de uma pessoa para outra."
+    },
+    {
+      "acao": "rodar", "id": "r01-testes-passam",
+      "comando": "uv run pytest -q",
+      "espera": 0,
+      "nota": "Os sete passam."
+    },
+    {
+      "acao": "escrever", "arquivo": "baseline.py",
+      "partes": [{ "linhas": "1-30" }],
+      "nota": "Um \"agente\" que passa tudo para uma pessoa: a nota que todo agente depois tem que bater."
+    },
+    {
+      "acao": "rodar", "id": "r01-nota-zero",
+      "comando": "uv run python baseline.py",
+      "espera": 0,
+      "nota": "Nota zero: 5 de 20."
+    }
+  ]
+}

@@ -17,6 +17,12 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 - (etapa 3) O caminho do código é um **roteiro de construção** por capítulo: criar arquivo, inserir, trocar,
   rodar. O `saidas.py` aplica o roteiro numa cópia vazia, roda cada comando no estado em que ele aparece
   (inclusive os que falham de propósito), grava a saída e confere que o fim é igual ao `projeto/`.
+- (etapa 3) Formato do roteiro (`roteiros/01.json`): `copiar`, `escrever`, `inserir` (no fim, ou depois de uma linha
+  que aparece uma vez só), `trocar` (um trecho que aparece uma vez só) e `rodar` (com o código de saída esperado).
+  O texto vem de faixas de linhas do arquivo final ou é literal, para os estados errados. Cada passo tem uma `nota`
+  curta, que a IDE vai mostrar. O roteiro não monta se: a âncora não for única, um comando sair com outro código,
+  ou o fim não for igual ao `projeto/`. As saídas entram no mesmo `saidas.json`, com ids `r01-…`.
+- (etapa 3) A conferência ignora endereços de memória (`at 0x…`), como já ignorava os tempos.
 
 ## Peças
 
@@ -42,5 +48,6 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `fb7a34d` | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
+| 2 | `f6fddab` | `npm test`; sessão interativa conferida no DOM (ls, comando incompleto, Tab, Enter, ↑); capturas no computador e no celular | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)

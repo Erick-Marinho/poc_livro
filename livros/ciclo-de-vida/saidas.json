@@ -18,7 +18,7 @@
         ""
       ],
       [
-        "7 passed in 0.09s",
+        "7 passed in 0.08s",
         "okv"
       ]
     ]
@@ -109,6 +109,304 @@
       ],
       [
         "passar          0 de  5",
+        ""
+      ]
+    ]
+  },
+  "r01-tres-casos": {
+    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "3 perguntas de referência",
+        ""
+      ]
+    ]
+  },
+  "r01-caso-sem-pedido-passa": {
+    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "4 perguntas de referência",
+        ""
+      ]
+    ]
+  },
+  "r01-caso-sem-pedido-barrado": {
+    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+    "saiu_com": 1,
+    "saida": [
+      [
+        "Traceback (most recent call last):",
+        "err"
+      ],
+      [
+        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 56, in carregar_referencia",
+        ""
+      ],
+      [
+        "    casos.append(Caso.model_validate_json(linha))",
+        ""
+      ],
+      [
+        "                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^",
+        ""
+      ],
+      [
+        "  File \"/home/voce/atendimento-bemtevi/.venv/lib/python3.13/site-packages/pydantic/main.py\", line 845, in model_validate_json",
+        ""
+      ],
+      [
+        "    return cls.__pydantic_validator__.validate_json(",
+        ""
+      ],
+      [
+        "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^",
+        ""
+      ],
+      [
+        "        json_data, strict=strict, extra=extra, context=context, by_alias=by_alias, by_name=by_name",
+        ""
+      ],
+      [
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        ""
+      ],
+      [
+        "    )",
+        ""
+      ],
+      [
+        "    ^",
+        ""
+      ],
+      [
+        "pydantic_core._pydantic_core.ValidationError: 1 validation error for Caso",
+        ""
+      ],
+      [
+        "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R04', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
+        ""
+      ],
+      [
+        "    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "The above exception was the direct cause of the following exception:",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "Traceback (most recent call last):",
+        "err"
+      ],
+      [
+        "  File \"<string>\", line 1, in <module>",
+        ""
+      ],
+      [
+        "    from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')",
+        ""
+      ],
+      [
+        "                                                        ~~~~~~~~~~~~~~~~~~~^^",
+        ""
+      ],
+      [
+        "  File \"/home/voce/atendimento-bemtevi/contrato.py\", line 58, in carregar_referencia",
+        ""
+      ],
+      [
+        "    raise ValueError(f\"{caminho.name}, linha {n}: {erro}\") from erro",
+        ""
+      ],
+      [
+        "ValueError: referencia.jsonl, linha 4: 1 validation error for Caso",
+        ""
+      ],
+      [
+        "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R04', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
+        ""
+      ],
+      [
+        "    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        ""
+      ]
+    ]
+  },
+  "r01-vinte-casos": {
+    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "20 perguntas de referência",
+        ""
+      ]
+    ]
+  },
+  "r01-testes-pegam-o-r12": {
+    "comando": "uv run pytest -q",
+    "saiu_com": 1,
+    "saida": [
+      [
+        "...FF..                                                                  [100%]",
+        ""
+      ],
+      [
+        "=================================== FAILURES ===================================",
+        ""
+      ],
+      [
+        "______________ test_so_responde_sobre_pedido_quando_o_email_bate _______________",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "    def test_so_responde_sobre_pedido_quando_o_email_bate():",
+        ""
+      ],
+      [
+        "        for c in CASOS:",
+        ""
+      ],
+      [
+        "            if c.pedido and c.decisao in (Decisao.RESPONDER, Decisao.ABRIR_CHAMADO):",
+        ""
+      ],
+      [
+        ">               assert c.email == dono(c.pedido), f\"{c.id}: o e-mail não é do dono do pedido\"",
+        ""
+      ],
+      [
+        "E               AssertionError: R12: o e-mail não é do dono do pedido",
+        "err"
+      ],
+      [
+        "E               assert 'bruno.lima@exemplo.test' == 'ana.souza@exemplo.test'",
+        "err"
+      ],
+      [
+        "E                 ",
+        "err"
+      ],
+      [
+        "E                 - ana.souza@exemplo.test",
+        "err"
+      ],
+      [
+        "E                 + bruno.lima@exemplo.test",
+        "err"
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "test_referencia.py:33: AssertionError",
+        ""
+      ],
+      [
+        "________________ test_existe_um_caso_de_pedido_de_outra_pessoa _________________",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "    def test_existe_um_caso_de_pedido_de_outra_pessoa():",
+        ""
+      ],
+      [
+        "        \"\"\"É o caso que o capítulo 6 vai usar para quebrar o agente de propósito.\"\"\"",
+        ""
+      ],
+      [
+        ">       assert any(c.pedido and c.email != dono(c.pedido) and c.decisao == Decisao.RECUSAR for c in CASOS)",
+        ""
+      ],
+      [
+        "E       assert False",
+        "err"
+      ],
+      [
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x77dd603d4040>)",
+        "err"
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "test_referencia.py:38: AssertionError",
+        ""
+      ],
+      [
+        "=========================== short test summary info ============================",
+        ""
+      ],
+      [
+        "FAILED test_referencia.py::test_so_responde_sobre_pedido_quando_o_email_bate",
+        "err"
+      ],
+      [
+        "FAILED test_referencia.py::test_existe_um_caso_de_pedido_de_outra_pessoa - as...",
+        "err"
+      ],
+      [
+        "2 failed, 5 passed in 0.06s",
+        "err"
+      ]
+    ]
+  },
+  "r01-testes-passam": {
+    "comando": "uv run pytest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        ".......                                                                  [100%]",
+        ""
+      ],
+      [
+        "7 passed in 0.04s",
+        "okv"
+      ]
+    ]
+  },
+  "r01-nota-zero": {
+    "comando": "uv run python baseline.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       0 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   0 de  2",
+        ""
+      ],
+      [
+        "recusar         0 de  5",
+        ""
+      ],
+      [
+        "passar          5 de  5",
+        ""
+      ],
+      [
+        "nota zero: 5 de 20 (25%)",
         ""
       ]
     ]
