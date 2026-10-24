@@ -41,6 +41,9 @@ o caminho aparece na página.
 - (5c2) O sinal de cada passo na trilha sai da saída gravada: ✗ quando o comando sai com erro ou mostra uma linha de
   erro; ! quando o passo tem `engano` (dá certo e esconde um erro); ✓ quando dá certo; • quando não roda nada.
 - (5c2) "Ver o projeto inteiro até aqui" abre num diálogo os arquivos do fim daquele passo; ele só é montado no clique.
+- (5c3) No caminho do erro, os trechos de fora do código do leitor (bibliotecas, o Python, o `-c` do comando) dobram
+  num botão; ficam à vista a linha `Traceback`, os trechos do `contrato.py` e a mensagem. Nada some: o botão abre.
+- (5c3) Linha em branco nova não acende no passo.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -76,3 +79,4 @@ o caminho aparece na página.
 | 5b1 | `11d272c` | contagem de linhas novas por passo (todas ≤ 13 no `contrato.py`); 2 saídas novas gravadas e conferidas | Erick, 23/10/2026 |
 | 5b2 | `9a105c0` | `npm test` (14 testes, 4 novos); seis passos na 1.6 no ngrok, no computador e no celular; o build barrou um passo de 16 linhas | Erick, 23/10/2026 |
 | 5c1 | `2e0e4b3` | `npm test` (17 testes, 3 novos); 1.7 e 1.8 em passos no ngrok; o placar se revela com a aposta | Erick, 23/10/2026 |
+| 5c2 | `32cfca7` | `npm test` (19 testes, 2 novos); trilha e projeto inteiro no ngrok; o build barrou um buraco entre dois passos | Erick, 23/10/2026 |

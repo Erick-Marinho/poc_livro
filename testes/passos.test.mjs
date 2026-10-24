@@ -73,3 +73,18 @@ test("cada passo abre o projeto inteiro até ali, com os arquivos daquele moment
   assert.match(p6, /model_validator/);   // no fim do passo 6, o contrato já tem a regra
   assert.doesNotMatch(passos[0].slice(passos[0].indexOf("<template data-projeto>")), /test_referencia\.py/);   // no passo 1 ainda não há testes
 });
+
+test("o caminho do erro dobra o que passa por fora do código do leitor, e deixa à vista o contrato.py e a mensagem", () => {
+  const i = html.indexOf('data-id="r01-caso-sem-pedido-barrado"');
+  const pre = html.slice(html.indexOf('<pre class="ps-saida"', i), html.indexOf("</pre>", i));
+  const visivel = pre.replace(/<span class="ps-dobrado">[\s\S]*?<\/span><\/span>/g, "");
+  assert.match(visivel, /contrato\.py&quot;, line 54/);
+  assert.match(visivel, /ValueError: referencia\.jsonl, linha 4/);
+  assert.doesNotMatch(visivel, /site-packages\/pydantic\/main\.py/);
+  assert.match(pre, /site-packages\/pydantic\/main\.py/);   // dobrado, mas não some
+});
+
+test("linha em branco nova não acende", () => {
+  for (const m of html.matchAll(/<span class="line novo[^"]*" data-n="\d+">(.*?)<\/span>(?=<span class="line|<\/code>)/g))
+    assert.ok(m[1].replace(/<[^>]+>/g, "").trim(), m[0].slice(0, 80));
+});

@@ -111,7 +111,7 @@ for (const nome of editados) {
         line(no, i) {
           const k = de_ + i - 1;
           no.properties["data-n"] = String(k);
-          if (novas.has(k)) this.addClassToHast(no, "novo");
+          if (novas.has(k) && b[k - 1].trim()) this.addClassToHast(no, "novo");   /* linha em branco nova não acende: é ruído */
           if (!vista.has(k)) this.addClassToHast(no, "dobrada");
           else if (k > de_ && !vista.has(k - 1)) this.addClassToHast(no, "depois-da-dobra");
         },
@@ -145,6 +145,28 @@ for (const nome of Object.keys(depois).sort((a, b) => Number(prontos.has(a)) - N
     html = cache.get(chave)!;
   }
   projeto.push({ nome, html, muda: editados.includes(nome) });
+}
+/* o caminho do erro: os trechos que passam por dentro de bibliotecas (ou do -c) dobram; ficam à vista a linha
+   "Traceback", os trechos do código do leitor e a mensagem do erro */
+type Trecho = { tipo: "linha"; l: string; c: string } | { tipo: "dobra"; linhas: [string, string][] };
+function dobrarErro(saida: [string, string][]): Trecho[] {
+  const fora: Trecho[] = [];
+  let dentro = false, quadro: [string, string][] = [], doLeitor = false;
+  const fechar = () => {
+    if (!quadro.length) return;
+    if (doLeitor) quadro.forEach(([l, c]) => fora.push({ tipo: "linha", l, c }));
+    else { const ult = fora.at(-1); if (ult?.tipo === "dobra") ult.linhas.push(...quadro); else fora.push({ tipo: "dobra", linhas: quadro }); }
+    quadro = [];
+  };
+  for (const [l, c] of saida) {
+    if (/^Traceback \(most recent call last\):/.test(l)) { dentro = true; fora.push({ tipo: "linha", l, c }); continue; }
+    if (dentro && /^  File "/.test(l)) { fechar(); doLeitor = !/\/\.venv\/|"<string>"|\/lib\/python\d/.test(l); quadro.push([l, c]); continue; }
+    if (dentro && /^\s/.test(l)) { quadro.push([l, c]); continue; }
+    if (dentro) { fechar(); dentro = false; }
+    fora.push({ tipo: "linha", l, c });
+  }
+  fechar();
+  return fora;
 }
 const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
 const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
@@ -181,7 +203,9 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
           </div>
         )}
         {!r.aposta && <button type="button" class="ps-btn-rodar" data-rodar-btn>▶ Rodar</button>}
-        <pre class="ps-saida" hidden>{r.s.saida.map(([l, c]) => <span class={c || undefined}>{l}{"\n"}</span>)}</pre>
+        <pre class="ps-saida" hidden>{dobrarErro(r.s.saida).map((t) => t.tipo === "linha"
+          ? <span class={t.c || undefined}>{t.l}{"\n"}</span>
+          : <span class="ps-dobra"><button type="button" data-dobra>⋯ {t.linhas.length} linhas do caminho do erro fora do seu código</button><span class="ps-dobrado">{t.linhas.map(([l, c]) => <span class={c || undefined}>{l}{"\n"}</span>)}</span></span>)}</pre>
       </div>
       <p class="ps-nota-run" hidden><span class="ps-veredito"></span> <span set:html={md(r.nota)} /></p>
     </div>
@@ -229,6 +253,7 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
         mostrar(r);
       }));
     });
+    sec.querySelectorAll<HTMLButtonElement>("[data-dobra]").forEach((b) => b.addEventListener("click", () => b.parentElement!.classList.toggle("aberta")));
     sec.querySelectorAll<HTMLElement>("[data-arquivo]").forEach((f) => f.querySelector("[data-inteiro]")!.addEventListener("click", (e) => {
       const aberto = f.classList.toggle("inteiro");
       (e.currentTarget as HTMLElement).textContent = aberto ? "só o que mudou" : "ver o arquivo inteiro";
@@ -325,6 +350,11 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   .ps-opcoes button.escolhida:not(.e-a-certa) { opacity: 1; border-color: #e0a440; color: #e0a440 }
   .ps-saida { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; border-top: 1px solid #333; padding-top: 8px }
   .ps-saida .okv { color: #3fd68b } .ps-saida .err { color: #ff6b6b }
+  .ps-dobra { display: block }
+  .ps-dobra > button { display: block; margin: 2px 0; background: #262626; border: 1px dashed #555; color: #9d9d9d; border-radius: 4px; padding: 1px 8px; font: 12px var(--f-ui); cursor: pointer; text-align: left }
+  .ps-dobra > button:hover { color: #ddd }
+  .ps-dobrado { display: none; opacity: .7 }
+  .ps-dobra.aberta .ps-dobrado { display: inline }
   .ps-nota-run { margin: 8px 2px 0; font: 15px/1.5 var(--f-ui) }
   .ps-rodar.certo .ps-veredito { color: var(--ok); font-weight: 600 }
   .ps-rodar.errado .ps-veredito { color: var(--aviso); font-weight: 600 }
