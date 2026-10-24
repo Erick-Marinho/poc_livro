@@ -4,6 +4,8 @@
     "Erick Marinho",
     "Victor Fontela"
   ],
+  "repositorio": "https://github.com/Erick-Marinho/atendimento-bemtevi",
+  "prefixo_tag": "cap-01",
   "passos": [
     {
       "id": "projeto-nasce",
