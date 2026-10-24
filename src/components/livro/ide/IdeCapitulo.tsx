@@ -19,6 +19,15 @@ const icone = (nome: string) => nome.endsWith(".py") ? <FileCode size={14} /> : 
 const SINAL = { ok: "✓", erro: "✗", engano: "!", nada: "•" };
 /* texto curto do livro: `assim` vira código */
 const Md = ({ t }: { t: string }) => <>{t.split(/(`[^`]+`)/).map((x, i) => x.startsWith("`") && x.endsWith("`") ? <code key={i}>{x.slice(1, -1)}</code> : <Fragment key={i}>{x}</Fragment>)}</>;
+/* "sua vez": o que o leitor faz na IDE dele depois de ver a ação aqui */
+const DADO = /(\.(jsonl?|md|toml)$|(^|\/)\.[^/]+$)/;
+function suaVez(a: AcaoIde): string {
+  if (a.tipo === "rodar") return `Rode o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
+  if (a.tipo === "apagar") return `Apague o \`${a.arquivo}\` no seu projeto.`;
+  if (a.tipo === "copiar") return "Copie a pasta `dados/` do repositório do livro para o seu projeto. Digitar dado inventado não ensina nada.";
+  if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do livro vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
+  return a.novo ? `Crie o \`${a.arquivo}\` na sua IDE e digite este código. Digitar, e não colar, é o que faz perceber o que não ficou claro.` : `Digite as linhas novas no seu \`${a.arquivo}\`, no mesmo lugar em que elas aparecem aqui.`;
+}
 const iniciais = (nome: string) => nome.split(/\s+/).map((x) => x[0]).join("").slice(0, 2).toUpperCase();
 const primeiro = (nome: string) => nome.split(/\s+/)[0];
 
@@ -54,6 +63,9 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const perguntando = !!bloco?.pergunta && !direto && respostas[chaveBloco] === undefined;
   useEffect(() => setTermo(null), [q]);
   const esperando = acao?.tipo === "rodar" && !respondida(quadro.k as number);
+  /* a pausa para fazer na própria IDE: quando a ação já foi toda mostrada aqui (o último bloco, ou a saída depois da aposta) */
+  const ultimoBloco = !bloco || (acao?.tipo === "editar" && quadro.tipo === "acao" && quadro.b === acao.blocos.length - 1);
+  const pausa = !direto && quadro.tipo === "acao" && !!acao && !esperando && !perguntando && ultimoBloco ? suaVez(acao) : null;
 
   /* o projeto depois da ação feitaAte: a versão de cada arquivo, e o que nasceu ou mudou neste passo */
   const projeto = useMemo(() => {
@@ -254,6 +266,11 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
         </>}
       </div>}
 
+      {pausa && <div className="ic-suavez" role="note">
+        <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
+        <span><Md t={pausa} /></span>
+      </div>}
+
       {quadro.tipo === "fecha" && <div className="ic-quadro">
         <p className="ic-temos">✓ <b>agora você tem:</b> <Md t={passo.temos} /></p>
         {passo.depois.map((t, i) => <p key={i} className="ic-texto"><Md t={t} /></p>)}
@@ -262,7 +279,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
       {<div className="ide-controles ic-controles">
         <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
         <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-          {esperando ? "aposte para seguir" : perguntando ? "responda para seguir" : q === quadros.length - 1 ? "fim do capítulo" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+          {esperando ? "aposte para seguir" : perguntando ? "responda para seguir" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
           {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
         </button>
       </div>}

@@ -126,4 +126,12 @@ o caminho aparece na página.
 | 7b | `d1514b1` | `npm test` (16 testes) no computador e na máquina do Erick; 30 blocos no ngrok; o build barrou bloco fora do arquivo e palavra fora do glossário | Erick, 24/10/2026 |
 | 7c | `1a86408` | `npm test` (16 testes) no computador e na máquina do Erick; celular, modo direto e teclado conferidos no navegador | Erick, 24/10/2026 |
 
+## Depois do fechamento
+
+- (8a) **Sua vez**: quando a ação já foi toda mostrada (o último bloco, ou a saída depois da aposta), o passador para e
+  diz o que fazer na IDE do leitor (digitar, rodar, copiar, apagar), e o botão vira "fiz na minha IDE". No modo direto,
+  não para.
+- (8b) **Ponto de volta**: `git checkout` numa tag por passo, num repositório do leitor gerado pelo roteiro. Só aparece
+  na IDE quando o repositório existir de verdade: o livro não mostra comando que não funciona.
+
 **Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.

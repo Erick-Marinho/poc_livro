@@ -68,3 +68,9 @@
 .ic-opcoes button.ic-errada { opacity: 1; border-color: var(--aviso); color: var(--aviso) }
 .ic-opcoes .ic-pular { border-style: dashed; color: var(--ink-2); font-family: var(--f-ui) }
 .ic-porque b { font-weight: 600 }
+/* "sua vez": a pausa para fazer na IDE do leitor; tem a cor da IDE, porque é lá que ele vai */
+.ic-suavez { display: grid; gap: 4px; padding: 10px 14px; border-radius: 10px; background: #13243a; border: 1px solid #2c5a8f; color: #e6edf6; font: 15px/1.5 var(--f-ui) }
+.ic-suavez b { display: flex; align-items: center; gap: 6px; font: 600 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: #8ec5ff }
+.ic-suavez b svg { width: 11px; height: 11px; fill: currentColor }
+.ic-suavez code { background: #1d3552; color: #e6edf6; padding: .05em .35em; border-radius: 4px; font: .88em var(--f-mono) }
+.ic-suavez .ic-volta { font-size: 13.5px; color: #9fb4cc }
