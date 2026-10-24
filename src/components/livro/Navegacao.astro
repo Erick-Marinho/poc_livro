@@ -6,7 +6,7 @@ import Comandos from "./comandos/Comandos";
  * A partir de 1280 px ele fica aberto ao lado do texto; abaixo disso vira gaveta, aberta pelo botão da pílula.
  */
 export type ItemSumario = { numero?: number; titulo: string; href?: string; atual: boolean };
-export type Marco = { capitulo: number; rotulo: string; quem: string; acertos: number; total: number; nota: string; comando: string; revelaEm?: string };
+export type Marco = { capitulo: number; rotulo: string; quem: string; acertos: number; total: number; nota: string; comando: string; revelaCom?: string };
 export type Placar = { marcos: Marco[]; proximo?: { capitulo: number; pergunta: string } };
 type Vizinho = { href: string; rotulo: string };
 interface Props {

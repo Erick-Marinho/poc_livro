@@ -42,23 +42,24 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const [ideVisto, setIdeVisto] = useState(false);
   const fecharPorQue = useRef<HTMLButtonElement>(null);
   const lembrete = useRef<HTMLButtonElement>(null);
-  /* o placar: a nota mais recente; no capítulo em que ela nasce, "?" até o leitor chegar à seção dela */
+  /* o placar: a nota mais recente; no capítulo em que ela nasce, "?" até o leitor apostar no comando que a mede
+     (a IDE avisa com o evento fontmar:apostou), chegar ao fim do capítulo, ou estar no modo direto */
   const [placarAberto, setPlacarAberto] = useState(false);
   const atualMarco = placar?.marcos[placar.marcos.length - 1];
-  const [revelado, setRevelado] = useState(!atualMarco?.revelaEm);
+  const [revelado, setRevelado] = useState(!atualMarco?.revelaCom);
   const botaoPlacar = useRef<HTMLButtonElement>(null), painelPlacar = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const id = atualMarco?.revelaEm;
+    const id = atualMarco?.revelaCom;
     if (!id) return;
     const chave = `fontmar:placar:${atualMarco.capitulo}`;
     try { if (localStorage.getItem(chave) === "visto") { setRevelado(true); return; } } catch { /* sem armazenamento */ }
-    const ver = () => {
-      const el = document.getElementById(id);
-      if (el && el.getBoundingClientRect().top < innerHeight * 0.8) { setRevelado(true); guardar(chave, "visto"); removeEventListener("scroll", ver); }
-    };
-    addEventListener("scroll", ver, { passive: true }); ver();
-    return () => removeEventListener("scroll", ver);
-  }, [atualMarco?.revelaEm]);
+    const revelar = () => { setRevelado(true); guardar(chave, "visto"); removeEventListener("scroll", fim); removeEventListener("fontmar:apostou", apostou); };
+    const apostou = (e: Event) => { if ((e as CustomEvent<string>).detail === id) revelar(); };
+    const fim = () => { const h = document.documentElement; if (h.scrollTop + h.clientHeight >= h.scrollHeight - 40) revelar(); };
+    if (document.documentElement.hasAttribute("data-direto")) { revelar(); return; }
+    addEventListener("fontmar:apostou", apostou); addEventListener("scroll", fim, { passive: true });
+    return () => { removeEventListener("fontmar:apostou", apostou); removeEventListener("scroll", fim); };
+  }, [atualMarco?.revelaCom]);
   useEffect(() => {
     if (!placarAberto) return;
     const fora = (e: PointerEvent) => { if (!painelPlacar.current?.contains(e.target as Node) && !botaoPlacar.current?.contains(e.target as Node)) setPlacarAberto(false); };
@@ -126,7 +127,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
               initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: .16 }}>
               <p className="cm-titulo">o placar do agente</p>
               {!atualMarco ? <p className="cm-placar-texto">Ainda não há nota. Ela nasce no capítulo 1, antes de existir agente, e cada capítulo depois tenta empurrar o número.</p>
-                : !revelado ? <p className="cm-placar-texto">A primeira nota deste livro sai neste capítulo. Ela aparece aqui quando você chegar lá, e não antes: primeiro você aposta.</p>
+                : !revelado ? <p className="cm-placar-texto">A primeira nota deste livro sai neste capítulo. Ela aparece aqui depois que você apostar nela, e não antes.</p>
                 : <>
                   <ol className="cm-marcos">
                     {placar.marcos.map((m) => (

@@ -65,7 +65,7 @@ for (const e of estados) {
       const total = texto.replace(/\n$/, "").split("\n").length;
       if (!(1 <= p.marca.linha && p.marca.linha <= total)) falhar(`a marca de ${e.rodou} aponta a linha ${p.marca.linha} de ${p.marca.arquivo}, que tem ${total}.`);
     }
-    passos.push({ ...base, tipo: "rodar", comando: s.comando, saida: s.saida, saiuCom: s.saiu_com, aposta: p.aposta, marca: p.marca });
+    passos.push({ ...base, tipo: "rodar", id: e.rodou, comando: s.comando, saida: s.saida, saiuCom: s.saiu_com, aposta: p.aposta, marca: p.marca });
   } else if (e.arquivo) {
     passos.push({ ...base, tipo: "editar", arquivo: e.arquivo, versao: atual[e.arquivo], alteradas: e.alteradas ?? [], novo: !(e.arquivo in inicio) && !passos.some((x) => x.tipo === "editar" && x.arquivo === e.arquivo) });
   } else {

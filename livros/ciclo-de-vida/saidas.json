@@ -1,28 +1,4 @@
 {
-  "contar-casos": {
-    "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
-    "saiu_com": 0,
-    "saida": [
-      [
-        "20 perguntas de referência",
-        ""
-      ]
-    ]
-  },
-  "testes": {
-    "comando": "uv run pytest -q",
-    "saiu_com": 0,
-    "saida": [
-      [
-        ".......                                                                  [100%]",
-        ""
-      ],
-      [
-        "7 passed in 0.05s",
-        "okv"
-      ]
-    ]
-  },
   "nota-zero": {
     "comando": "uv run python baseline.py",
     "saiu_com": 0,
@@ -45,48 +21,6 @@
       ],
       [
         "nota zero: 5 de 20 (25%)",
-        ""
-      ]
-    ]
-  },
-  "caso-sem-pedido": {
-    "comando": "uv run python -c \"from contrato import Caso; Caso(id='R99', pergunta='Cadê o meu pedido?', decisao='responder', motivo='tem pedido no meio', precisa=['pedidos'])\"",
-    "saiu_com": 1,
-    "saida": [
-      [
-        "Traceback (most recent call last):",
-        "err"
-      ],
-      [
-        "  File \"<string>\", line 1, in <module>",
-        ""
-      ],
-      [
-        "    from contrato import Caso; Caso(id='R99', pergunta='Cadê o meu pedido?', decisao='responder', motivo='tem pedido no meio', precisa=['pedidos'])",
-        ""
-      ],
-      [
-        "                               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-        ""
-      ],
-      [
-        "  File \"/home/voce/atendimento-bemtevi/.venv/lib/python3.13/site-packages/pydantic/main.py\", line 280, in __init__",
-        ""
-      ],
-      [
-        "    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)",
-        ""
-      ],
-      [
-        "pydantic_core._pydantic_core.ValidationError: 1 validation error for Caso",
-        ""
-      ],
-      [
-        "  Value error, um caso que precisa dos pedidos tem que dizer qual pedido [type=value_error, input_value={'id': 'R99', 'pergunta':... 'precisa': ['pedidos']}, input_type=dict]",
-        ""
-      ],
-      [
-        "    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
         ""
       ]
     ]
@@ -342,7 +276,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7c6836df8040>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fa6d39c4040>)",
         "err"
       ],
       [
@@ -366,7 +300,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.08s",
+        "2 failed, 5 passed in 0.06s",
         "err"
       ]
     ]
@@ -380,7 +314,7 @@
         ""
       ],
       [
-        "7 passed in 0.05s",
+        "7 passed in 0.04s",
         "okv"
       ]
     ]

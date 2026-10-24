@@ -15,7 +15,7 @@ type Marca = { arquivo: string; linha: number; texto: string };
 export type PassoIde = { n: number; nota: string } & (
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
-  | { tipo: "rodar"; comando: string; saida: [string, string][]; saiuCom: number; aposta?: Aposta; marca?: Marca });
+  | { tipo: "rodar"; id: string; comando: string; saida: [string, string][]; saiuCom: number; aposta?: Aposta; marca?: Marca });
 
 const icone = (nome: string) => nome.endsWith(".py") ? <FileCode size={14} /> : nome.endsWith(".json") || nome.endsWith(".jsonl") ? <FileBraces size={14} /> : <FileText size={14} />;
 
@@ -76,7 +76,10 @@ export default function IdeAoVivo({ passos, inicio, versoes, pasta }: { passos: 
   /* o terminal fica à vista depois da aposta (é onde está a saída e o veredito); os problemas ganham só o número na aba */
   useEffect(() => { setPainel("terminal"); }, [i]);
 
-  const apostar = (op: number | "pulou") => { setApostas((a) => ({ ...a, [i]: op })); setPainel("terminal"); };
+  const apostar = (op: number | "pulou") => {
+    setApostas((a) => ({ ...a, [i]: op })); setPainel("terminal");
+    if (passo.tipo === "rodar") dispatchEvent(new CustomEvent("fontmar:apostou", { detail: passo.id }));   /* o placar espera por isto */
+  };
   const prompt = <><span className="ide-pr">voce@maquina</span>:<span className="ide-cwd">{pasta}</span>$ </>;
 
   return <div className="ide" data-direto={direto || undefined}>

@@ -9,7 +9,7 @@ export async function getStaticPaths() {
      Fica aqui dentro porque o getStaticPaths do Astro não enxerga variáveis de fora dele. */
   const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../../livros/*/sumario.json", { eager: true, import: "default" });
   /* o placar (livros/<livro>/placar.json): cada marco aponta uma saída gravada, e o número sai dela */
-  type MarcoBruto = { capitulo: number; saida: string; rotulo: string; quem: string; revela_em?: string };
+  type MarcoBruto = { capitulo: number; saida: string; rotulo: string; quem: string; revela_com?: string };
   const placares = import.meta.glob<{ marcos: MarcoBruto[]; proximo?: { capitulo: number; pergunta: string } }>("../../../livros/*/placar.json", { eager: true, import: "default" });
   const todasSaidas = import.meta.glob<Record<string, { comando: string; saida: [string, string][] }>>("../../../livros/*/saidas.json", { eager: true, import: "default" });
   const doLivroArq = <T,>(mapa: Record<string, T>, livro: string) => Object.entries(mapa).find(([p]) => p.includes(`/livros/${livro}/`))?.[1];
@@ -46,7 +46,7 @@ export async function getStaticPaths() {
         const achado = linha?.match(/(\d+) de (\d+) \((\d+)%\)/);
         if (!achado) throw new Error(`placar.json de ${livro}: a saída "${m.saida}" não tem "X de Y (Z%)"; rode npm run saidas`);
         return { capitulo: m.capitulo, rotulo: m.rotulo, quem: m.quem, acertos: +achado[1], total: +achado[2], nota: `${achado[3]}%`, comando: saidas[m.saida].comando,
-          revelaEm: m.capitulo === entrada.data.numero ? m.revela_em : undefined };
+          revelaCom: m.capitulo === entrada.data.numero ? m.revela_com : undefined };
       }).filter((m) => entrada.data.tipo === "capitulo" && m.capitulo <= (entrada.data.numero ?? 0));
       const ultimo = marcos[marcos.length - 1];
       placar = { marcos, proximo: bruto.proximo && ultimo ? { capitulo: bruto.proximo.capitulo, pergunta: bruto.proximo.pergunta.replace("{nota}", ultimo.nota) } : undefined };

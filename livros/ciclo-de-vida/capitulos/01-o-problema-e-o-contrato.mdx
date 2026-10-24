@@ -29,10 +29,7 @@ import Rastro from "../../../src/components/livro/Rastro.astro";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
-import contrato from "../projeto/contrato.py?raw";
 import referencia from "../projeto/referencia.jsonl?raw";
-import teste from "../projeto/test_referencia.py?raw";
-import baseline from "../projeto/baseline.py?raw";
 import politica from "../projeto/dados/politica.md?raw";
 import loja from "../projeto/dados/loja.json?raw";
 import saidas from "../saidas.json";
@@ -163,37 +160,23 @@ Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, 
 
 ## 1.7 As perguntas de referência
 
-O contrato diz como um caso deve ser. As perguntas de referência são os casos de verdade: um arquivo `referencia.jsonl`, com uma pergunta por linha. As três primeiras:
+O contrato diz como um caso deve ser. As perguntas de referência são os casos de verdade: um arquivo `referencia.jsonl`, com uma pergunta por linha, vinte ao todo: 8 de responder, 2 de abrir chamado, 5 de recusar e 5 de passar a vez. Entre elas está a do pedido da Ana perguntado pelo Bruno, que vai voltar no capítulo 6, quando a gente tentar quebrar o agente de propósito.
 
-<Listagem codigo={referencia} nome="referencia.jsonl" linhas="1-3" />
+Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
 
-São 20 ao todo: 8 de responder, 2 de abrir chamado, 5 de recusar e 5 de passar a vez. Entre elas está a do pedido da Ana perguntado pelo Bruno, que vai voltar no capítulo 6, quando a gente tentar quebrar o agente de propósito. Confira que o arquivo carrega:
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={10} ate={17} numero="1.4" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
 
-<Terminal saida={saidas["contar-casos"]} pasta="~/atendimento-bemtevi" />
+Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
 
-Carregar sem erro só prova que cada linha tem o formato certo. Não prova que as perguntas fazem sentido com os dados da loja. Para isso serve o teste:
-
-<Listagem codigo={teste} nome="test_referencia.py" linhas="1-16" notas={{ 8: "as 20 perguntas", 11: "o \"hoje\" fixo da loja" }} />
-
-<Listagem codigo={teste} nome="test_referencia.py" linhas="17-53" notas={{ 30: "só fala de pedido com quem é dono", 36: "o caso do capítulo 6 tem que existir", 41: "chamado só dentro dos 90 dias" }} />
-
-Cada teste é uma regra da política, escrita de um jeito que a máquina confere. Rode:
-
-<Terminal saida={saidas.testes} pasta="~/atendimento-bemtevi" />
-
-<Nota titulo="teste do teste">Um teste que nunca falha não protege nada. Experimente trocar o e-mail da primeira pergunta para o da Ana e rodar de novo: o teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
+<Nota titulo="teste do teste">Um teste que nunca falha não protege nada, e a figura mostrou um falhando pelo motivo certo. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e rode `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca.</Nota>
 
 ## 1.8 A nota zero
 
-Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe.
+Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
 
-<Listagem codigo={baseline} nome="baseline.py" notas={{ 11: "o agente mais simples: passa tudo", 15: "conta acertos por decisão" }} />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={18} ate={19} numero="1.5" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
 
-Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Rode e veja a nota dele:
-
-<Terminal saida={saidas["nota-zero"]} pasta="~/atendimento-bemtevi" />
-
-Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente.
+Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
 
 <PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota zero?">
 Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
