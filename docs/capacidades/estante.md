@@ -12,6 +12,11 @@ está escrito sai dos capítulos contra o `sumario.json`.
 - (1) A estante fica em `/livros/` no poc_livro, ao lado de `/guias/`; o FontMar.ai aponta para ela.
 - (1) O card leva ao prefácio (o primeiro texto do livro) e mostra "em andamento" enquanto faltar capítulo do sumário.
 - (1) A capa é tipográfica (o título sobre o acento) até existir uma capa desenhada.
+- (24/10/2026, Erick) As rotas estavam confusas: onde não tem nada, entra "em construção".
+- (2) A raiz `/` leva à estante; `/<livro>/` abre o primeiro texto do livro; qualquer outro endereço (um capítulo por
+  escrever, um link errado) mostra a página "em construção" (`404.astro`), com o caminho para os livros e os guias.
+- (2) Os redirecionamentos são imediatos (`Redirecionar.astro`): o `Astro.redirect` estático espera 2 s numa página em inglês.
+- (2) No FontMar.ai, Cursos, Newsletter, Ferramentas e Entrar deixam de ser links mortos: levam à página "em construção".
 
 ## Peças
 
@@ -25,6 +30,7 @@ está escrito sai dos capítulos contra o `sumario.json`.
 ## Etapas
 
 1. A estante com o card do primeiro livro, e os links do FontMar.ai apontando para ela.
+2. As rotas: nenhum endereço dá em nada; onde não tem conteúdo, "em construção".
 
 ## Etapa 1, detalhada
 

@@ -1,0 +1,16 @@
+---
+/** Leva na hora para outra página do site. O Astro.redirect, no site estático, espera 2 segundos numa página em inglês. */
+interface Props { para: string }
+const { para } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${para}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={para} />
+    <title>FonteMar.ai</title>
+  </head>
+  <body><a href={para}>Continuar</a></body>
+</html>

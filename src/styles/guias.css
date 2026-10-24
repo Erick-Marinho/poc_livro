@@ -46,3 +46,12 @@
   .card-livro { grid-template-columns: 1fr }
   .card-livro .capa { aspect-ratio: auto; min-height: 120px }
 }
+
+/* o que ainda não existe (404.astro): diz que está sendo feito e leva para o que já está no ar */
+.em-construcao { text-align: center; padding-top: 48px }
+.em-construcao .estado { font: 600 12px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--aviso) }
+.em-construcao h1 { font: 700 40px/1.12 var(--f-texto); letter-spacing: -.02em; margin: 10px 0 14px; text-wrap: balance }
+.em-construcao p { color: var(--ink-2); font: 17px/1.6 var(--f-ui) }
+.em-construcao .links { display: flex; gap: 20px; justify-content: center; margin-top: 24px }
+.em-construcao .links a { color: var(--acento); font-weight: 600; text-decoration: none }
+.topo .in > a:not(.marca) { margin-left: 16px }
