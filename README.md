@@ -7,21 +7,21 @@ O capítulo é escrito em MDX (Markdown com componentes); o Astro monta o site.
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321, só os livros e os experimentos
-npm run local    # http://localhost:4321, com a landing do FontMar.ai junto, como no túnel
+npm run dev        # http://localhost:4321: a landing do FontMar.ai, os livros e os experimentos, num endereço só
+npm run dev:livro  # http://localhost:4321, só os livros e os experimentos
 npm test         # monta o site e confere as saídas do livro
 npm run saidas   # roda os comandos do livro no projeto e grava as saídas
 npm run site     # monta e serve o site em http://localhost:4321, como a landing do FontMar.ai o lê
 ```
 
 O build publica `/livros/index.json` e `/experimentos/index.json` (`src/lib/vitrine.ts`), que a landing do FontMar.ai mostra.
-A marca e o "Início" levam a `PUBLIC_URL_INICIO`: no `npm run dev`, o FontMar.ai local; sem a variável, `/`.
+A marca e o "Início" levam a `PUBLIC_URL_INICIO`; sem a variável, `/`, que no `npm run dev` é a landing.
 
-O `npm run local` sobe tudo num endereço só, para navegar como o leitor: o livro em `astro dev` (recarrega quando você
+O `npm run dev` sobe tudo num endereço só, para navegar como o leitor: o livro em `astro dev` (recarrega quando você
 edita) e a landing ([FontMarAI](https://github.com/Erick-Marinho/FontMarAI), clonada ao lado deste repositório, ou em
 `LANDING=caminho`) montada, e montada de novo quando ela muda. O `astro dev` repassa para a landing o que é dela (`/`, a
-newsletter, as páginas em construção e os arquivos dela: `astro.config.mjs`). Pare antes outro `npm run dev` deste
-projeto: o Astro só deixa um por projeto. Ctrl+C para tudo.
+newsletter, as páginas em construção e os arquivos dela: `astro.config.mjs`). O Astro só deixa um `astro dev` por
+projeto: se já houver um rodando, o `npm run dev` para ele antes e avisa. Ctrl+C para tudo.
 
 Para o projeto do livro (Python): [uv](https://docs.astral.sh/uv/).
 

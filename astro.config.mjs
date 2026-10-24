@@ -4,7 +4,7 @@ import react from "@astrojs/react";
 import { unified } from "@astrojs/markdown-remark";
 import { secoesNumeradas } from "./src/lib/secoes.mjs";
 
-/* no desenvolvimento com a landing (npm run local): o que é dela vai para ela, o resto é deste site, num endereço só,
+/* no desenvolvimento com a landing (npm run dev): o que é dela vai para ela, o resto é deste site, num endereço só,
    como no túnel. As páginas dela estão em FontMarAI/src/rotas.ts; os arquivos dela, em assets/ e favicon.svg */
 const landing = process.env.URL_LANDING;
 const daLanding = "^/(?:$|\\?|assets/|favicon\\.svg|newsletter|ferramentas|entrar)";
