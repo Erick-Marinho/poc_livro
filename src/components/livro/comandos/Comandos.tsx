@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
-import { BookOpen, Check, ChevronLeft, ChevronRight, Menu, Moon, ScrollText, Settings, Sun } from "lucide-react";
+import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, X } from "lucide-react";
 import "./comandos.css";
 
 type Vizinho = { href: string; rotulo: string };
@@ -16,7 +16,7 @@ const TEMAS: { id: Tema; nome: string; Icone: typeof Sun }[] = [
   { id: "papel", nome: "Papel", Icone: ScrollText },
   { id: "escuro", nome: "Escuro", Icone: Moon },
 ];
-const CHAVE_TEMA = "fontmar:tema", CHAVE_PILULA = "fontmar:pilula";
+const CHAVE_TEMA = "fontmar:tema", CHAVE_PILULA = "fontmar:pilula", CHAVE_IDE = "fontmar:ide";
 const guardar = (k: string, v: string | null) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sem armazenamento: vale só nesta visita */ } };
 const temaAtual = (): Tema => {
   const t = document.documentElement.dataset.theme as Tema | undefined;
@@ -34,13 +34,32 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
   const sumindo = useTransform(x, [0, 160], [1, 0.35]);
   const painel = useRef<HTMLDivElement>(null);
   const engrenagem = useRef<HTMLButtonElement>(null);
+  /* o lembrete da IDE: fixo no canto de cima; depois de lido, encolhe para só o ícone */
+  const [porQue, setPorQue] = useState(false);
+  const [ideVisto, setIdeVisto] = useState(false);
+  const fecharPorQue = useRef<HTMLButtonElement>(null);
+  const lembrete = useRef<HTMLButtonElement>(null);
 
   /* ao hidratar: lê o que o script do <head> já aplicou */
   useEffect(() => {
     setTema(temaAtual());
     setRecolhida(document.documentElement.classList.contains("pilula-recolhida"));
     document.documentElement.classList.remove("pilula-recolhida");
+    try { setIdeVisto(localStorage.getItem(CHAVE_IDE) === "visto"); } catch { /* sem armazenamento */ }
+    /* qualquer botão com data-abrir-ide (o do prefácio, por exemplo) abre a fundamentação */
+    const abrir = (e: MouseEvent) => { if ((e.target as Element).closest?.("[data-abrir-ide]")) setPorQue(true); };
+    document.addEventListener("click", abrir);
+    return () => document.removeEventListener("click", abrir);
   }, []);
+
+  useEffect(() => {
+    if (!porQue) return;
+    fecharPorQue.current?.focus();
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") fechar(); };
+    addEventListener("keydown", esc);
+    return () => removeEventListener("keydown", esc);
+  }, [porQue]);
+  const fechar = () => { setPorQue(false); setIdeVisto(true); guardar(CHAVE_IDE, "visto"); lembrete.current?.focus(); };
 
   /* o painel fecha com Esc ou com um clique fora dele */
   useEffect(() => {
@@ -64,6 +83,37 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve }: {
   };
 
   return <MotionConfig reducedMotion="user"><LayoutGroup>
+    <button ref={lembrete} type="button" className={`cm-ide${ideVisto ? " cm-ide-visto" : ""}`} onClick={() => setPorQue(true)}
+      aria-haspopup="dialog" aria-label="Este livro rende mais com uma IDE aberta: por quê" title="Leia com a IDE aberta">
+      <Laptop size={16} /><span>Leia com a IDE aberta</span>
+    </button>
+    <AnimatePresence>
+      {porQue && (
+        <motion.div key="veu" className="cm-veu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={fechar}>
+          <motion.div className="cm-porque" role="dialog" aria-modal="true" aria-labelledby="cm-porque-titulo" onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: 16, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: .2 }}>
+            <button ref={fecharPorQue} type="button" className="cm-fechar" onClick={fechar} aria-label="Fechar"><X size={18} /></button>
+            <p className="cm-titulo"><GraduationCap size={14} /> o que a pesquisa diz</p>
+            <h2 id="cm-porque-titulo">Por que ler com a IDE aberta</h2>
+            <p>Ler sobre código e escrever código são atividades diferentes, e só a segunda deixa claro o que você não entendeu.
+              Uma meta-análise de 225 estudos em cursos de ciência, engenharia e matemática comparou aulas expositivas com aprendizagem ativa:
+              as notas subiram em média 0,47 desvio-padrão, e quem só assistia tinha cerca de 1,5 vez mais chance de reprovar <cite>(Freeman et al., 2014)</cite>.</p>
+            <p>Em programação, a ordem que funciona é conhecida: prever o que o código faz, rodar, investigar, modificar, e só então criar o seu.
+              Numa avaliação com 493 estudantes de 13 escolas, quem aprendeu nessa ordem foi melhor no teste final do que o grupo de controle
+              <cite> (Sentance, Waite e Kallia, 2019)</cite>. O livro segue esse caminho: o "pare e pense" pede a previsão, e a IDE e o terminal são onde você roda e investiga.</p>
+            <p>Errar também ensina, desde que o erro seja corrigido logo depois. Errar e receber a correção fixa mais do que acertar de primeira <cite>(Metcalfe, 2017)</cite>,
+              e tentar resolver antes de receber a explicação melhora a compreensão <cite>(Kapur, 2008)</cite>. Por isso o código deste livro erra de propósito no caminho, como erra o de qualquer projeto de verdade.</p>
+            <ol className="cm-refs">
+              <li>Freeman, S. et al. (2014). Active learning increases student performance in science, engineering, and mathematics. <i>PNAS</i>, 111(23), 8410–8415. <a href="https://doi.org/10.1073/pnas.1319030111">doi:10.1073/pnas.1319030111</a></li>
+              <li>Sentance, S., Waite, J. e Kallia, M. (2019). Teaching computer programming with PRIMM: a sociocultural perspective. <i>Computer Science Education</i>, 29(2–3), 136–176. <a href="https://doi.org/10.1080/08993408.2019.1608781">doi:10.1080/08993408.2019.1608781</a></li>
+              <li>Metcalfe, J. (2017). Learning from errors. <i>Annual Review of Psychology</i>, 68, 465–489. <a href="https://doi.org/10.1146/annurev-psych-010416-044022">doi:10.1146/annurev-psych-010416-044022</a></li>
+              <li>Kapur, M. (2008). Productive failure. <i>Cognition and Instruction</i>, 26(3), 379–424. <a href="https://doi.org/10.1080/07370000802212669">doi:10.1080/07370000802212669</a></li>
+            </ol>
+            <button type="button" className="cm-entendi" onClick={fechar}>Vou abrir a IDE</button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
     <div className="cm-trilho">
       <AnimatePresence initial={false}>
         {!recolhida && (

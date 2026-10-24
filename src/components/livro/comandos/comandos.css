@@ -53,3 +53,29 @@
 /* no celular, a pílula deixa lugar para a engrenagem (e para o círculo, quando houver) */
 @media (max-width: 760px) { .cm-trilho { justify-content: flex-start; padding-right: 70px } .cm-onde small { display: none } }
 @media print { .cm-trilho, .cm-canto { display: none } }
+
+/* o lembrete da IDE: fixo embaixo do cabeçalho, à direita; depois de lido, só o ícone */
+.cm-ide { position: fixed; z-index: 24; top: calc(62px + env(safe-area-inset-top, 0px)); right: calc(14px + env(safe-area-inset-right, 0px));
+  display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 13px 0 11px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--linha); background: color-mix(in srgb, var(--papel) 88%, transparent); color: var(--ink); backdrop-filter: blur(6px);
+  font: 500 13px var(--f-ui); box-shadow: 0 4px 14px rgba(20, 14, 4, .08) }
+.cm-ide svg { color: var(--acento) }
+.cm-ide:hover { border-color: var(--acento) }
+.cm-ide-visto { width: 34px; padding: 0; justify-content: center }
+.cm-ide-visto span { display: none }
+.cm-veu { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(15, 12, 8, .45); backdrop-filter: blur(2px) }
+.cm-porque { position: relative; width: min(600px, 100%); max-height: min(86vh, 760px); overflow-y: auto; box-sizing: border-box; padding: 26px 28px 24px;
+  border-radius: 18px; background: var(--papel); color: var(--ink); border: 1px solid var(--linha); box-shadow: 0 30px 80px rgba(15, 10, 4, .35); font: 16px/1.6 var(--f-texto) }
+.cm-porque h2 { margin: 2px 0 12px; font: 700 26px/1.2 var(--f-texto) }
+.cm-porque .cm-titulo { display: flex; align-items: center; gap: 6px; color: var(--acento); opacity: 1 }
+.cm-porque p { margin: 0 0 .9em; hyphens: auto }
+.cm-porque cite { font-style: normal; color: var(--ink-2); font-family: var(--f-ui); font-size: .88em }
+.cm-refs { margin: 16px 0 18px; padding: 14px 0 0 18px; border-top: 1px solid var(--linha); font: 13px/1.5 var(--f-ui); color: var(--ink-2); display: grid; gap: 6px }
+.cm-refs a { color: var(--acento); overflow-wrap: anywhere }
+.cm-fechar { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--papel-2); color: var(--ink); cursor: pointer }
+.cm-entendi { border: 0; border-radius: 999px; padding: 10px 18px; background: var(--ink); color: var(--papel); font: 600 14px var(--f-ui); cursor: pointer }
+.cm-porque :focus-visible, .cm-ide:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
+/* o botão que abre a fundamentação de dentro do texto */
+.link-ide { border: 0; background: none; padding: 0; color: var(--acento); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px }
+@media (max-width: 640px) { .cm-porque { padding: 22px 18px 18px } .cm-porque h2 { font-size: 22px } .cm-ide { top: calc(58px + env(safe-area-inset-top, 0px)) } }
+@media print { .cm-ide, .cm-veu { display: none } }
