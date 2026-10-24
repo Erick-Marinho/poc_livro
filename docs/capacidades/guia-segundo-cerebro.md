@@ -29,6 +29,12 @@ compara a nota antes e depois.
 - (1) O que não roda no build fica como "sua vez", sem saída inventada: instalar o Obsidian, abrir o cofre, instalar
   o Ollama e baixar o modelo. O que roda (o projeto, a busca, a régua, a resposta do modelo) é gravado e conferido.
 - (1) O cérebro começa sem modelo, com um BM25 em Python puro: a parte que decide roda e se mede em qualquer máquina.
+- (3) A régua confere fatos, não frases: cada pergunta lista o que a resposta certa tem que trazer (`["24/10"]`), sem
+  acento e sem caixa. Um modelo escreve com as palavras dele; conferir por pedaço de texto é grosseiro, e o guia diz isso.
+- (3) A régua confere também a fonte: o fato tem que estar na nota citada. Acertar a resposta com a fonte errada é sorte.
+- (3) As notas vão numeradas ao modelo, e ele devolve o número: copiando o nome, o llama3.2:3b escreveu "Reunióes" e
+  "IntegraÎao", e a fonte não batia. Com o número, o modelo sozinho fez 10 de 10, gravado e em duas rodadas ao vivo
+  (cerca de 7 s por pergunta na CPU); a dica da regra da data, testada, não acrescentou nada medível e saiu.
 
 ## Etapas
 
@@ -40,20 +46,18 @@ compara a nota antes e depois.
    notas achadas, gravada; a régua diz se ele acerta o canal sem perder as outras (precisa do ok para baixar aqui).
 4. Os links e o fecho: o que uma pessoa ficou de fazer, seguindo os `[[links]]`; o que fica local, e quando um app.
 
-## Etapa 2 (detalhe)
+## Etapa 3 (detalhe)
 
-- **Arquivos:** `guias/segundo-cerebro-local/figuras/rastro.py` (o caminho de uma pergunta, tirado do próprio
-  `cerebro.py` e conferido contra ele), `comandos.json` (grava o rastro), `src/components/livro/cerebro/` (as duas
-  figuras), `guia.mdx`, e o teste dos guias passa a olhar as saídas em qualquer figura da página.
-- **Muda:** no topo, "o que vamos construir": a pergunta do prazo atravessando o cérebro, etapa por etapa (as
-  palavras, a nota do BM25 de cada uma das doze notas, as frases candidatas, a resposta sem e com a data, a régua),
-  com os números do rastro gravado. Responde: o que acontece entre a pergunta e a resposta? Depois, "o cofre no
-  tempo": as notas surgindo na ordem das datas, ligadas pelos `[[links]]`, e o prazo que o cofre diz mudando de 14/11
-  para 21/11, enquanto o resumo do projeto continua dizendo 14/11. Responde: por que uma busca devolveria a data velha?
-  As duas tocam sozinhas, param, voltam; no modo direto, aparecem no estado final.
-- **Evidência:** o rastro gravado e conferido (`npm test`), e falhando se ele divergir do `cerebro.py`; as duas
-  figuras tocadas no Chrome headless; capturas no computador e no celular.
-- **Fica fora:** o modelo (3), os links de pessoa e o fecho (4).
+- **Arquivos:** `projeto/modelo.py` (novo), `medir.py` e `perguntas.jsonl`, `pyproject.toml` e `uv.lock`
+  (langchain-ollama), `roteiros/01.json`, `passos/01.json` e `glossario.json` (as partes "O modelo local" e "Juntos"),
+  `gravacoes/` (as respostas do modelo, gravadas uma vez), `guia.mdx`; no `scripts/saidas.py`, a gravação de um guia
+  vai para a pasta dele, e a IDE lê essas gravações.
+- **Muda:** o leitor instala o Ollama e baixa o `llama3.2:3b` (sua vez, na máquina dele); o `modelo.py` usa a busca
+  do `cerebro.py`, entrega as cinco notas numeradas ao modelo e confere a fonte que ele cita, com apostas no canal e
+  no prazo; a régua (que agora confere também a fonte) mede os três cérebros: 7, 9 e 10 de 10.
+- **Evidência:** a gravação com o modelo de verdade (Ollama 0.40.10, na CPU desta máquina), repetida no `npm test`
+  sem chamar o modelo; o percurso da IDE até o fim; capturas.
+- **Fica fora:** os links de pessoa e o fecho (4).
 
 ## Registro
 

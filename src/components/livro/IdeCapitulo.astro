@@ -13,7 +13,7 @@ import { livroDe, pastaDoLeitor } from "../../lib/livroDaPagina.ts";
 type Props = Omit<Entrada, "pasta" | "gravacoes"> & { numero: string; legenda: string };
 const { legenda, ...entrada } = Astro.props;
 /* o que cada comando gravou do modelo (scripts/gravacao): o terminal diz quando e com qual modelo */
-const arquivos = import.meta.glob<{ default: Record<string, { quando: string; modelo: string }> }>("../../../livros/*/gravacoes/*.json", { eager: true });
+const arquivos = import.meta.glob<{ default: Record<string, { quando: string; modelo: string }> }>(["../../../livros/*/gravacoes/*.json", "../../../guias/*/gravacoes/*.json"], { eager: true });
 const gravacoes: Record<string, GravacaoIde> = Object.fromEntries(
   Object.entries(arquivos).map(([caminho, m]) => [caminho.split("/").pop()!.replace(/\.json$/, ""), resumirGravacao(m.default)]));
 /* a pasta do projeto é a do livro desta página (comandos.json): o título da janela e o prompt do terminal dizem o nome dele */

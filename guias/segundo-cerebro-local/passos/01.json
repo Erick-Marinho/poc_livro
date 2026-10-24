@@ -86,6 +86,34 @@
       "depois": [
         "A que sobrou errada é a próxima parte do guia: um modelo rodando na sua máquina, medido com esta mesma régua."
       ]
+    },
+    {
+      "id": "modelo",
+      "secao": "4",
+      "titulo": "O modelo local",
+      "curta": "o modelo",
+      "de": 20,
+      "ate": 23,
+      "objetivo": "um modelo rodando na sua máquina, que lê as notas achadas e escreve a resposta.",
+      "temos": "o `modelo.py`: o Ollama escreve, e o código confere a fonte.",
+      "pedido": "Agora quero um modelo de verdade, rodando aqui na minha máquina, escrevendo a resposta.",
+      "antes": [
+        "Nada sai da sua máquina: a busca é a do cerebro.py, e o modelo roda no Ollama, aí do seu lado."
+      ]
+    },
+    {
+      "id": "regua-modelo",
+      "secao": "4",
+      "titulo": "A régua com o modelo",
+      "curta": "o modelo na régua",
+      "de": 24,
+      "ate": 26,
+      "objetivo": "a mesma régua, agora para o modelo, conferindo também a fonte.",
+      "temos": "três cérebros medidos pela mesma régua: 7, 9 e 10 de 10.",
+      "pedido": "E na régua, como ele fica?",
+      "depois": [
+        "Mais acerto, mais custo: a régua é o que deixa a escolha ser sua, com número."
+      ]
     }
   ]
 }

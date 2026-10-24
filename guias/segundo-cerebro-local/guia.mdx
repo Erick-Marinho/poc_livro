@@ -25,9 +25,9 @@ Aqui você faz o caminho contrário: constrói o mecanismo, vê ele errar do jei
 
 ## O que vamos construir
 
-Um cérebro pequeno, que você consegue ler inteiro. Ele faz quatro coisas com uma pergunta: tira dela as palavras que contam, acha as notas do cofre que mais se parecem com ela, escolhe a frase que responde e diz de qual nota ela veio. A régua, no fim, diz quantas perguntas ele acerta. Acompanhe a pergunta que importa neste guia atravessando o cérebro, com os números que ele calculou de verdade:
+Um cérebro pequeno, que você consegue ler inteiro. Ele faz quatro coisas com uma pergunta: tira dela as palavras que contam, acha as notas do cofre que mais se parecem com ela, escolhe a frase que responde e diz de qual nota ela veio. A régua, no fim, diz quantas perguntas ele acerta; e, quando um modelo local entra para escrever a resposta, a mesma régua diz se ele vale o que custa. Acompanhe a pergunta que importa neste guia atravessando o cérebro, com os números que ele calculou de verdade:
 
-<FiguraCaminho saidas={saidas} rastro="rastro-prazo" regua={["sc-nota-ingenua", "sc-nota"]} numero="1" legenda="O caminho de uma pergunta pelo cérebro que você vai construir. Os números são os do rastro gravado do próprio cerebro.py, conferido contra ele a cada vez que o site é montado." />
+<FiguraCaminho saidas={saidas} rastro="rastro-prazo" regua={["sc-nota-ingenua", "sc-nota", "sc-nota-modelo"]} numero="1" legenda="O caminho de uma pergunta pelo cérebro que você vai construir. Os números são os do rastro gravado do próprio cerebro.py, conferido contra ele a cada vez que o site é montado." />
 
 Repare no meio do caminho: quatro frases respondem igualmente bem, e três delas dizem a data velha. Sem olhar a data, o cérebro devolve uma delas com toda a segurança.
 
@@ -51,10 +51,10 @@ O problema não está na busca, está no cofre. As notas foram escritas ao longo
 
 ## Mão na massa
 
-O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. Antes de cada comando que importa, você aposta no que vai sair.
+O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno rodando no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você aposta no que vai sair.
 
-<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia, gravados ao montar o site." />
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua", "4": "O modelo" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia. As respostas do modelo (llama3.2:3b, no Ollama) foram gravadas uma vez e são repetidas pelo site." />
 
 <Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não roda ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
 
-<Nota titulo="em construção">Este guia está sendo escrito. A próxima parte sobe o Ollama, um modelo pequeno rodando na sua máquina, e mede com a mesma régua se ele acerta a pergunta do canal sem perder as outras.</Nota>
+<Nota titulo="em construção">Este guia está sendo escrito. Falta a última parte: o que uma pessoa ficou de fazer, seguindo os `[[links]]`, e o que fica de fato local num segundo cérebro.</Nota>

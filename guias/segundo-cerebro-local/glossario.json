@@ -43,6 +43,18 @@
       "rotulo": ".jsonl",
       "texto": "Um JSON por linha. Dá para acrescentar uma pergunta nova à régua sem mexer nas outras."
     },
+    "ChatOllama": {
+      "marca": "ChatOllama",
+      "texto": "O modelo de chat do Ollama, pela LangChain. Ele conversa com o servidor do Ollama que roda na sua máquina (localhost:11434): nada vai para a internet."
+    },
+    "temperature=0": {
+      "rotulo": "temperature=0",
+      "texto": "Sem sorteio na escolha das palavras: a mesma pergunta tende a dar a mesma resposta. Tende: o modelo ainda pode variar de uma versão para outra, e por isso o livro grava a resposta uma vez."
+    },
+    "with_structured_output": {
+      "marca": "with_structured_output",
+      "texto": "Pede ao modelo uma resposta no formato da classe (aqui, a frase e o arquivo), em vez de texto livre. O código recebe um objeto, não um texto para adivinhar."
+    },
     "f-string": {
       "rotulo": "f\"…\"",
       "texto": "Um texto com valores dentro das chaves. O :.0% mostra a fração como porcentagem, sem casas decimais."

@@ -20,10 +20,10 @@ const titulo = (arquivo: string) => arquivo.split("/").pop()!.replace(/\.md$/, "
 /* a data dentro da frase, marcada */
 const comData = (f: string) => f.split(/(\d{2}\/\d{2})/).map((p, i) => i % 2 ? <mark key={i}>{p}</mark> : p);
 
-export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: string; comando: string; regua: { sem: string; com: string } }) {
+export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: string; comando: string; regua: { sem: string; com: string; modelo?: string } }) {
   const r: Rastro = JSON.parse(bruto);
   const nota = (l: string) => l.match(/(\d+) de (\d+)/)!.slice(1).map(Number);
-  const [semA, total] = nota(regua.sem), [comA] = nota(regua.com);
+  const [semA, total] = nota(regua.sem), [comA] = nota(regua.com), modA = regua.modelo ? nota(regua.modelo)[0] : null;
   const empatadas = r.frases.filter((f) => f.palavras === r.topo);
   const ordemBusca = (f: Frase) => r.notas.findIndex((n) => n.arquivo === f.nota);
   const maior = Math.max(...r.notas.map((n) => n.pontos));
@@ -34,7 +34,7 @@ export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: st
     { no: 2, duracao: 5200, texto: `Nas notas achadas, as frases com mais palavras da pergunta: ${empatadas.length} empatam.` },
     { no: 3, duracao: 5200, texto: `Sem a data, vale a frase da nota mais parecida: ${r.sem_data.frase.match(/\d{2}\/\d{2}/)?.[0]}, de uma nota de ${r.sem_data.data}.` },
     { no: 3, duracao: 5800, texto: `Com a data, entre as que empatam, vale a mais nova: ${r.com_data.frase.match(/\d{2}\/\d{2}/)?.[0]}, de ${r.com_data.data}, com a velha ao lado.` },
-    { no: 4, duracao: 4800, texto: `A régua: sem a data, ${semA} de ${total}; com ela, ${comA} de ${total}.` },
+    { no: 4, duracao: 5600, texto: `A régua: sem a data, ${semA} de ${total}; com ela, ${comA} de ${total}${modA !== null ? `; com um modelo local, ${modA} de ${total}` : ""}.` },
   ];
   const p = usePasseio(passos.map((x) => x.duracao));
   const atual = passos[p.passo];
@@ -91,7 +91,7 @@ export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: st
               })}
             </ul><p className="cdp-regra">{p.passo >= 4 ? "ordenadas pela data da nota, a mais nova em cima" : "na ordem da busca: a nota mais parecida em cima"}</p></LayoutGroup>}
             {atual.no === 4 && <div className="cdp-regua">
-              {[{ rotulo: "sem a data", n: semA }, { rotulo: "com a data", n: comA }].map((x, i) => <div key={x.rotulo}>
+              {[{ rotulo: "sem a data", n: semA }, { rotulo: "com a data", n: comA }, ...(modA !== null ? [{ rotulo: "com o modelo", n: modA }] : [])].map((x, i) => <div key={x.rotulo}>
                 <span>{x.rotulo}</span>
                 <span className="cdp-barra"><motion.i initial={{ width: 0 }} animate={{ width: `${(x.n / total) * 100}%` }} transition={{ delay: i * .4, duration: .7 }} /></span>
                 <b>{x.n} de {total}</b>

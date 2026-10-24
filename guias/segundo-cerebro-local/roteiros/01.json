@@ -1,5 +1,6 @@
 {
   "guia": "segundo-cerebro-local",
+  "versoes_ate": "2026-10-16T00:00:00Z",
   "sobre": "O caminho do projeto do guia, da pasta vazia à nota, na ordem em que se pensa. O scripts/saidas.py aplica numa pasta vazia, roda cada comando no estado em que ele aparece e confere que o fim é igual ao projeto/.",
   "passos": [
     {
@@ -311,13 +312,19 @@
       "arquivo": "medir.py",
       "partes": [
         {
-          "linhas": "1-21"
+          "linhas": "1-5"
+        },
+        {
+          "linhas": "7-25"
+        },
+        {
+          "linhas": "29-37"
         }
       ],
       "nota": "O medir.py faz as dez perguntas, marca cada uma e dá a nota.",
       "blocos": [
         {
-          "linhas": "16-21",
+          "linhas": "32-37",
           "titulo": "pergunta por pergunta",
           "texto": "Para cada caso, a resposta, se ela traz o pedaço certo, e a linha com ✓ ou ✗. No fim, a nota.",
           "termos": [
@@ -398,6 +405,137 @@
           }
         ]
       }
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-uv-add-ollama",
+      "comando": "uv add langchain-ollama",
+      "espera": 0,
+      "nota": "A primeira dependência do projeto: a ponte da LangChain para o Ollama. Ela fala com o modelo que roda na sua máquina, sem nada sair dela.",
+      "suavez": "Antes, instale o Ollama (ollama.com/download; no Linux, o script de instalação do site) e baixe o modelo com `ollama pull llama3.2:3b`. São uns 2 GB, e roda sem placa de vídeo, só mais devagar. Depois rode o comando na pasta do projeto."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "modelo.py",
+      "partes": [
+        {
+          "linhas": "1-57"
+        }
+      ],
+      "nota": "O modelo.py usa a busca do cerebro.py para achar as cinco notas e entrega as cinco, numeradas, com o arquivo e a data, a um modelo pequeno rodando no Ollama.",
+      "blocos": [
+        {
+          "linhas": "15-18",
+          "titulo": "o modelo e a instrução",
+          "texto": "Um modelo de 3 bilhões de parâmetros, rodando na sua máquina, com temperatura zero. A instrução diz o que ele pode usar (só as notas) e o que vale quando elas discordam.",
+          "termos": [
+            "ChatOllama",
+            "temperature=0"
+          ]
+        },
+        {
+          "linhas": "21-23",
+          "titulo": "a forma da resposta",
+          "texto": "Em vez de texto solto, uma frase e o número da nota. O código pede essa forma e o modelo devolve nela.",
+          "termos": [
+            "with_structured_output"
+          ]
+        },
+        {
+          "linhas": "37-39",
+          "titulo": "as notas, numeradas",
+          "texto": "Cada nota vai com um número, o arquivo e a data. O modelo devolve o número, e o código sabe qual arquivo é: montando este guia, o modelo, copiando o nome, escreveu Reunióes no lugar de Reuniões."
+        },
+        {
+          "linhas": "41-42",
+          "titulo": "conferir a fonte",
+          "texto": "O número que o modelo devolve tem que ser de uma das notas que ele leu. Modelo também inventa fonte.",
+          "pergunta": {
+            "texto": "O modelo respondeu certo, mas citou uma nota que não diz o que ele respondeu. A resposta conta?",
+            "opcoes": [
+              "conta: a resposta está certa",
+              "não conta: a fonte não sustenta a resposta"
+            ],
+            "certa": 1,
+            "porque": "Um cérebro que diz de onde tirou a resposta vale pela fonte. Resposta certa com fonte errada é sorte, e a régua vai contar como erro."
+          }
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-modelo-canal",
+      "comando": "uv run python modelo.py \"Por qual canal vai o lembrete?\"",
+      "espera": 0,
+      "nota": "A que a busca por palavras nunca acertou. O modelo sabe que canal do lembrete e o lembrete vai por SMS falam da mesma coisa, e cita a revisão de design.",
+      "aposta": {
+        "pergunta": "A busca por palavras nunca acertou esta: nenhuma nota diz canal. O modelo lê as mesmas cinco notas. Ele acerta?",
+        "opcoes": [
+          "Acerta: SMS",
+          "Erra: WhatsApp",
+          "Diz que as notas não falam disso"
+        ],
+        "certa": 0
+      }
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-modelo-prazo",
+      "comando": "uv run python modelo.py \"Quando é a entrega do piloto?\"",
+      "espera": 0,
+      "nota": "Acerta, cita o e-mail e ainda conta a história: estava em 14/11 e foi para 21/11. O aviso mostra que o 14/11 veio de outra nota, não da citada: ele juntou duas notas numa frase. Aqui, certo; é o tipo de coisa que a régua precisa olhar.",
+      "aposta": {
+        "pergunta": "Cada nota vai com a data, e a instrução diz que vale a mais recente. Ele acerta o prazo?",
+        "opcoes": [
+          "Acerta: 21/11",
+          "Erra: 14/11"
+        ],
+        "certa": 0
+      }
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "medir.py",
+      "depois": "    uv run python medir.py --sem-data   # a busca ingênua\n",
+      "partes": [
+        {
+          "linhas": "6-6"
+        }
+      ],
+      "nota": "A régua aprende a medir o modelo também."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "medir.py",
+      "depois": "com_data = \"--sem-data\" not in sys.argv\n",
+      "partes": [
+        {
+          "linhas": "26-28"
+        }
+      ],
+      "nota": "Com --modelo, a régua pergunta ao modelo.py, e confere do mesmo jeito: os fatos na resposta e na nota citada."
+    },
+    {
+      "acao": "rodar",
+      "id": "sc-nota-modelo",
+      "comando": "uv run python medir.py --modelo",
+      "espera": 0,
+      "nota": "10 de 10, com a fonte certa em todas. Mais um que a regra da data, e a que faltava era a do canal. O preço está no relógio: uns 7 segundos por pergunta, nesta máquina, sem placa de vídeo, com o modelo já carregado, e 2 GB de modelo. A busca com a data acerta 9 na hora, em qualquer máquina.",
+      "aposta": {
+        "pergunta": "A régua agora confere a fonte também. O modelo, nas dez perguntas:",
+        "opcoes": [
+          "10 de 10",
+          "9 de 10, como a regra da data",
+          "menos que 9"
+        ],
+        "certa": 0
+      },
+      "duvidas": [
+        {
+          "pergunta": "Então é só usar o modelo?",
+          "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 7 segundos por pergunta na CPU; e, montando o guia, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
+        }
+      ]
     }
   ]
 }

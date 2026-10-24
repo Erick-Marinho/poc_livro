@@ -1,0 +1,104 @@
+{
+ "27ebe620963ede3c": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Reuniões/2026-11-03 Status semanal.md (03/11)\nA entrega do piloto continua em 14/11. Rafael Souza ficou de terminar a integração do SMS até 07/11.\n\n[2] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[3] E-mails/2026-11-06 Integração do SMS atrasou.md (06/11)\nDe Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana. Nova data de entrega do piloto: 21/11.\n\n[4] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\n[5] Pessoas/Otávio Reis.md (20/10)\nDesigner do Piloto da agenda.\n\nPergunta: Quando é a entrega do piloto?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS\", \"nota\": 3 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T17:59:20.461223309Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 17721773418,
+      "load_duration": 1167149,
+      "prompt_eval_count": 457,
+      "prompt_eval_duration": 13127744000,
+      "eval_count": 46,
+      "eval_duration": 4547004000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS\", \"nota\": 3 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T17:59:20.461223309Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 17721773418,
+        "load_duration": 1167149,
+        "prompt_eval_count": 457,
+        "prompt_eval_duration": 13127744000,
+        "eval_count": 46,
+        "eval_duration": 4547004000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f10-ed4f-72e2-aa24-b90caf52cdfa-0",
+       "usage_metadata": {
+        "input_tokens": 457,
+        "output_tokens": 46,
+        "total_tokens": 503
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ }
+}

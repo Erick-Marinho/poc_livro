@@ -1,0 +1,1022 @@
+{
+ "04dd586e1ef1c092": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Reuniões/2026-11-10 Conversa com o Otávio.md (10/11)\nOtávio Reis sai de férias de 17/11 a 21/11. Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.\n\n[2] Reuniões/2026-11-03 Status semanal.md (03/11)\nA entrega do piloto continua em 14/11. Rafael Souza ficou de terminar a integração do SMS até 07/11.\n\n[3] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\n[4] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\n[5] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\nPergunta: Até quando o Otávio entrega as telas de cancelamento?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"frase\": \"At\\u00e9 \\u00e0 14/11\", \"nota\": 1}",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:00:26.649069098Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 13623164309,
+      "load_duration": 1258236,
+      "prompt_eval_count": 505,
+      "prompt_eval_duration": 10836076000,
+      "eval_count": 27,
+      "eval_duration": 2745313000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"frase\": \"At\\u00e9 \\u00e0 14/11\", \"nota\": 1}",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:00:26.649069098Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 13623164309,
+        "load_duration": 1258236,
+        "prompt_eval_count": 505,
+        "prompt_eval_duration": 10836076000,
+        "eval_count": 27,
+        "eval_duration": 2745313000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-ffe1-7202-90f6-8f9ac07f86cc-0",
+       "usage_metadata": {
+        "input_tokens": 505,
+        "output_tokens": 27,
+        "total_tokens": 532
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "05d3dd383786aeb1": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Pessoas/Bianca Teles.md (20/10)\nGerente de operações da Clínica Aurora, a cliente do Piloto da agenda.\n\n[2] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[3] Pessoas/Otávio Reis.md (20/10)\nDesigner do Piloto da agenda.\n\n[4] Pessoas/Rafael Souza.md (20/10)\nDesenvolvedor responsável pelo Piloto da agenda. Prefere combinar as coisas por e-mail.\n\n[5] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\nPergunta: Quem é a cliente do piloto?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"A cliente do piloto é a Gerente de operações da Clínica Aurora, a Bianca Teles.\",\"nota\": 1 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:01:03.079461056Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 13825892761,
+      "load_duration": 1083924,
+      "prompt_eval_count": 405,
+      "prompt_eval_duration": 9973443000,
+      "eval_count": 37,
+      "eval_duration": 3823695000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"A cliente do piloto é a Gerente de operações da Clínica Aurora, a Bianca Teles.\",\"nota\": 1 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:01:03.079461056Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 13825892761,
+        "load_duration": 1083924,
+        "prompt_eval_count": 405,
+        "prompt_eval_duration": 9973443000,
+        "eval_count": 37,
+        "eval_duration": 3823695000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f12-8d64-70a2-b363-b89cffd4522f-0",
+       "usage_metadata": {
+        "input_tokens": 405,
+        "output_tokens": 37,
+        "total_tokens": 442
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "27ebe620963ede3c": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Reuniões/2026-11-03 Status semanal.md (03/11)\nA entrega do piloto continua em 14/11. Rafael Souza ficou de terminar a integração do SMS até 07/11.\n\n[2] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[3] E-mails/2026-11-06 Integração do SMS atrasou.md (06/11)\nDe Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana. Nova data de entrega do piloto: 21/11.\n\n[4] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\n[5] Pessoas/Otávio Reis.md (20/10)\nDesigner do Piloto da agenda.\n\nPergunta: Quando é a entrega do piloto?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS\", \"nota\": 3 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T17:59:36.675752993Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 5400182783,
+      "load_duration": 848183,
+      "prompt_eval_count": 457,
+      "prompt_eval_duration": 720467000,
+      "eval_count": 46,
+      "eval_duration": 4674480000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS\", \"nota\": 3 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T17:59:36.675752993Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 5400182783,
+        "load_duration": 848183,
+        "prompt_eval_count": 457,
+        "prompt_eval_duration": 720467000,
+        "eval_count": 46,
+        "eval_duration": 4674480000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-5cc8-7872-b527-cdfa5da32b1a-0",
+       "usage_metadata": {
+        "input_tokens": 457,
+        "output_tokens": 46,
+        "total_tokens": 503
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "3ba56759a86f1f82": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Notas/Ideias de métrica.md (30/10)\nA métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\n\n[2] E-mails/2026-11-07 Bianca confirma.md (07/11)\nDe Bianca Teles: tudo bem com 21/11. Ela pede que o lembrete chegue 24 horas antes da consulta.\n\n[3] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\n[4] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[5] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\nPergunta: Com quanto tempo de antecedência chega o lembrete?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\" : \"O lembrete chega 24 horas antes da consulta.\",\"nota\": 2 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T17:59:57.274236012Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 3739806297,
+      "load_duration": 981401,
+      "prompt_eval_count": 485,
+      "prompt_eval_duration": 916822000,
+      "eval_count": 28,
+      "eval_duration": 2774531000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\" : \"O lembrete chega 24 horas antes da consulta.\",\"nota\": 2 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T17:59:57.274236012Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 3739806297,
+        "load_duration": 981401,
+        "prompt_eval_count": 485,
+        "prompt_eval_duration": 916822000,
+        "eval_count": 28,
+        "eval_duration": 2774531000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-b3bd-7952-8700-1827681567d8-0",
+       "usage_metadata": {
+        "input_tokens": 485,
+        "output_tokens": 28,
+        "total_tokens": 513
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "4560ba6ed4209ad3": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Reuniões/2026-11-10 Conversa com o Otávio.md (10/11)\nOtávio Reis sai de férias de 17/11 a 21/11. Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.\n\n[2] Pessoas/Otávio Reis.md (20/10)\nDesigner do Piloto da agenda.\n\n[3] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\n[4] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[5] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\nPergunta: Quando o Otávio sai de férias?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\" : \"O Otávio sai de férias de 17/11 a 21/11.\",\"nota\" : 1}",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:00:13.021491666Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 15743813661,
+      "load_duration": 956460,
+      "prompt_eval_count": 472,
+      "prompt_eval_duration": 12067631000,
+      "eval_count": 36,
+      "eval_duration": 3635615000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\" : \"O Otávio sai de férias de 17/11 a 21/11.\",\"nota\" : 1}",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:00:13.021491666Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 15743813661,
+        "load_duration": 956460,
+        "prompt_eval_count": 472,
+        "prompt_eval_duration": 12067631000,
+        "eval_count": 36,
+        "eval_duration": 3635615000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-c25c-7232-82bc-f17bf3efb004-0",
+       "usage_metadata": {
+        "input_tokens": 472,
+        "output_tokens": 36,
+        "total_tokens": 508
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "6a8d53fb86271b80": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\n[2] Notas/Ideias de métrica.md (30/10)\nA métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\n\n[3] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[4] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\n[5] E-mails/2026-11-07 Bianca confirma.md (07/11)\nDe Bianca Teles: tudo bem com 21/11. Ela pede que o lembrete chegue 24 horas antes da consulta.\n\nPergunta: Por que o lembrete não vai por WhatsApp?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"O lembrete não vai por WhatsApp porque a conta comercial do WhatsApp custa caro para um piloto.\",\"nota\": 1 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:01:19.195716473Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 16111973464,
+      "load_duration": 1209391,
+      "prompt_eval_count": 482,
+      "prompt_eval_duration": 12424663000,
+      "eval_count": 37,
+      "eval_duration": 3651589000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"O lembrete não vai por WhatsApp porque a conta comercial do WhatsApp custa caro para um piloto.\",\"nota\": 1 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:01:19.195716473Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 16111973464,
+        "load_duration": 1209391,
+        "prompt_eval_count": 482,
+        "prompt_eval_duration": 12424663000,
+        "eval_count": 37,
+        "eval_duration": 3651589000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f12-c36a-7d02-ba77-dac1a785ef16-0",
+       "usage_metadata": {
+        "input_tokens": 482,
+        "output_tokens": 37,
+        "total_tokens": 519
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "b7026bc78fa5c857": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] E-mails/2026-10-24 Ambiente de testes.md (24/10)\nDe Rafael Souza: o ambiente de testes ficou pronto hoje, 24/10, e a clínica já pode entrar com o usuário de demonstração.\n\n[2] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\n[3] Reuniões/2026-11-03 Status semanal.md (03/11)\nA entrega do piloto continua em 14/11. Rafael Souza ficou de terminar a integração do SMS até 07/11.\n\n[4] Reuniões/2026-11-10 Conversa com o Otávio.md (10/11)\nOtávio Reis sai de férias de 17/11 a 21/11. Ele ficou de entregar as telas de cancelamento até 14/11, antes das férias.\n\nPergunta: Quando o ambiente de testes ficou pronto?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"O ambiente de testes ficou pronto em 24/10\", \"nota\": 1 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T17:59:53.530027218Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 12221945671,
+      "load_duration": 955720,
+      "prompt_eval_count": 385,
+      "prompt_eval_duration": 9415043000,
+      "eval_count": 27,
+      "eval_duration": 2766382000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"O ambiente de testes ficou pronto em 24/10\", \"nota\": 1 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T17:59:53.530027218Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 12221945671,
+        "load_duration": 955720,
+        "prompt_eval_count": 385,
+        "prompt_eval_duration": 9415043000,
+        "eval_count": 27,
+        "eval_duration": 2766382000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-83fa-73e2-b3ec-076ed22abffe-0",
+       "usage_metadata": {
+        "input_tokens": 385,
+        "output_tokens": 27,
+        "total_tokens": 412
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "bbcd869602fe7568": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Notas/Ideias de métrica.md (30/10)\nA métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\n\n[2] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[3] Pessoas/Otávio Reis.md (20/10)\nDesigner do Piloto da agenda.\n\n[4] Pessoas/Bianca Teles.md (20/10)\nGerente de operações da Clínica Aurora, a cliente do Piloto da agenda.\n\n[5] Pessoas/Rafael Souza.md (20/10)\nDesenvolvedor responsável pelo Piloto da agenda. Prefere combinar as coisas por e-mail.\n\nPergunta: Qual é a métrica do piloto?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"A métrica do piloto é a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\",\"nota\": 1 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:00:38.183682949Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 11531310805,
+      "load_duration": 1089803,
+      "prompt_eval_count": 359,
+      "prompt_eval_duration": 6884186000,
+      "eval_count": 47,
+      "eval_duration": 4597246000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"A métrica do piloto é a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\",\"nota\": 1 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:00:38.183682949Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 11531310805,
+        "load_duration": 1089803,
+        "prompt_eval_count": 359,
+        "prompt_eval_duration": 6884186000,
+        "eval_count": 47,
+        "eval_duration": 4597246000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f12-351b-7a42-9f63-3fb1fe5a4eae-0",
+       "usage_metadata": {
+        "input_tokens": 359,
+        "output_tokens": 47,
+        "total_tokens": 406
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "e33e96f840d2ace3": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] E-mails/2026-11-06 Integração do SMS atrasou.md (06/11)\nDe Rafael Souza: o provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana. Nova data de entrega do piloto: 21/11.\n\n[2] Reuniões/2026-11-03 Status semanal.md (03/11)\nA entrega do piloto continua em 14/11. Rafael Souza ficou de terminar a integração do SMS até 07/11.\n\n[3] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\nPergunta: Por que a integração do SMS atrasou?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"frase\": \"O provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.\", \"nota\": 1}",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T18:00:49.250321247Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 11062323967,
+      "load_duration": 1036779,
+      "prompt_eval_count": 304,
+      "prompt_eval_duration": 6889436000,
+      "eval_count": 43,
+      "eval_duration": 4139520999,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"frase\": \"O provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.\", \"nota\": 1}",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T18:00:49.250321247Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 11062323967,
+        "load_duration": 1036779,
+        "prompt_eval_count": 304,
+        "prompt_eval_duration": 6889436000,
+        "eval_count": 43,
+        "eval_duration": 4139520999,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f12-622a-7830-87db-542cf9f06df6-0",
+       "usage_metadata": {
+        "input_tokens": 304,
+        "output_tokens": 43,
+        "total_tokens": 347
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "ef4e25d77130ed9c": {
+  "quando": "2026-10-24",
+  "modelo": "[('_type', 'chat-ollama'), ('format', {'properties': {'frase': {'description': 'a resposta, em uma frase', 'title': 'Frase', 'type': 'string'}, 'nota': {'description': 'o número da nota de onde veio a resposta', 'title': 'Nota', 'type': 'integer'}}, 'required': ['frase', 'nota'], 'title': 'Saida', 'type': 'object'}), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você responde perguntas sobre as notas de trabalho de uma pessoa. Use só as notas abaixo, numeradas. Se as notas discordam, vale a mais recente. Responda em português, em uma frase, e diga o número da nota de onde tirou a resposta.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Notas:\n\n[1] Notas/Ideias de métrica.md (30/10)\nA métrica do piloto vai ser a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.\n\n[2] E-mails/2026-11-07 Bianca confirma.md (07/11)\nDe Bianca Teles: tudo bem com 21/11. Ela pede que o lembrete chegue 24 horas antes da consulta.\n\n[3] Reuniões/2026-10-28 Revisão de design.md (28/10)\nOtávio Reis mostrou as telas de marcação. Decisão: o lembrete vai por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\n\n[4] Projetos/Piloto da agenda.md (20/10)\nPiloto do app de agendamento online para a Clínica Aurora, com a Bianca Teles do lado da clínica. O piloto cobre a marcação de consulta pelo celular e um lembrete por WhatsApp na véspera. Entrega prevista do piloto: 14/11. Equipe: Rafael Souza no desenvolvimento e Otávio Reis no design.\n\n[5] Reuniões/2026-10-20 Kickoff do piloto.md (20/10)\nCom Bianca Teles, Rafael Souza e Otávio Reis. A clínica quer que o paciente marque a consulta pelo celular e receba um lembrete por WhatsApp na véspera. A entrega do piloto fica para 14/11. Rafael Souza ficou de montar o ambiente de testes até 24/10.\n\nPergunta: Por qual canal vai o lembrete?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{ \"frase\": \"O lembrete vai ser enviado por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\",\"nota\": 3 }",
+     "generation_info": {
+      "model": "llama3.2:3b",
+      "created_at": "2026-10-24T17:59:41.303198712Z",
+      "done": true,
+      "done_reason": "stop",
+      "total_duration": 4622418358,
+      "load_duration": 1025536,
+      "prompt_eval_count": 480,
+      "prompt_eval_duration": 106672000,
+      "eval_count": 44,
+      "eval_duration": 4466920000,
+      "logprobs": null,
+      "model_name": "llama3.2:3b",
+      "model_provider": "ollama"
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{ \"frase\": \"O lembrete vai ser enviado por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.\",\"nota\": 3 }",
+       "response_metadata": {
+        "model": "llama3.2:3b",
+        "created_at": "2026-10-24T17:59:41.303198712Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 4622418358,
+        "load_duration": 1025536,
+        "prompt_eval_count": 480,
+        "prompt_eval_duration": 106672000,
+        "eval_count": 44,
+        "eval_duration": 4466920000,
+        "logprobs": null,
+        "model_name": "llama3.2:3b",
+        "model_provider": "ollama"
+       },
+       "type": "ai",
+       "id": "lc_run--01a16f11-71e7-70c0-8f12-f1f2be57e958-0",
+       "usage_metadata": {
+        "input_tokens": 480,
+        "output_tokens": 44,
+        "total_tokens": 524
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ }
+}

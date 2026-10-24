@@ -74,7 +74,13 @@ export type Entrada = {
 export function resumirGravacao(itens: Record<string, { quando: string; modelo: string }>): GravacaoIde {
   const lista = Object.values(itens);
   /* o nome do modelo, como a LangChain guarda (a OpenAI usa model_name; outros, model) */
-  const nome = (i: { modelo: string }) => { const k = JSON.parse(i.modelo.split("---")[0]).kwargs ?? {}; return k.model ?? k.model_name ?? "modelo desconhecido"; };
+  /* a LangChain descreve o modelo em JSON (OpenAI) ou como uma lista do Python (Ollama: [('_type', 'chat-ollama'), …]),
+     e nesta o nome do modelo nem sempre vem: aí fica o tipo */
+  const nome = (i: { modelo: string }) => {
+    if (i.modelo.startsWith("[(")) return i.modelo.match(/\('model', '([^']+)'\)/)?.[1] ?? i.modelo.match(/\('_type', '([^']+)'\)/)?.[1] ?? "modelo desconhecido";
+    const k = JSON.parse(i.modelo.split("---")[0]).kwargs ?? {};
+    return k.model ?? k.model_name ?? "modelo desconhecido";
+  };
   const modelos = new Set(lista.map(nome));
   const dias = lista.map((i) => i.quando).sort();
   return { quando: dias.at(-1) ?? "", modelo: [...modelos].join(", "), chamadas: lista.length };

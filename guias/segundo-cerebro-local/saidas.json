@@ -268,5 +268,241 @@
         ""
       ]
     ]
+  },
+  "sc-uv-add-ollama": {
+    "comando": "uv add langchain-ollama",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Resolved 37 packages in 59ms",
+        ""
+      ],
+      [
+        "Installed 35 packages in 27ms",
+        ""
+      ],
+      [
+        " + annotated-types==0.8.0",
+        ""
+      ],
+      [
+        " + anyio==4.15.1",
+        ""
+      ],
+      [
+        " + certifi==2026.7.22",
+        ""
+      ],
+      [
+        " + charset-normalizer==3.5.2",
+        ""
+      ],
+      [
+        " + distro==1.9.0",
+        ""
+      ],
+      [
+        " + h11==0.16.0",
+        ""
+      ],
+      [
+        " + httpcore==1.0.9",
+        ""
+      ],
+      [
+        " + httpcore2==2.13.1",
+        ""
+      ],
+      [
+        " + httpx==0.28.1",
+        ""
+      ],
+      [
+        " + httpx2==2.13.1",
+        ""
+      ],
+      [
+        " + idna==3.20",
+        ""
+      ],
+      [
+        " + jsonpatch==1.35",
+        ""
+      ],
+      [
+        " + jsonpointer==3.2.1",
+        ""
+      ],
+      [
+        " + langchain-core==1.6.11",
+        ""
+      ],
+      [
+        " + langchain-ollama==1.1.0",
+        ""
+      ],
+      [
+        " + langchain-protocol==0.0.19",
+        ""
+      ],
+      [
+        " + langsmith==0.14.9",
+        ""
+      ],
+      [
+        " + ollama==0.6.3",
+        ""
+      ],
+      [
+        " + orjson==3.13.0",
+        ""
+      ],
+      [
+        " + packaging==26.3",
+        ""
+      ],
+      [
+        " + pydantic==2.14.1",
+        ""
+      ],
+      [
+        " + pydantic-core==2.50.1",
+        ""
+      ],
+      [
+        " + pyyaml==6.0.3",
+        ""
+      ],
+      [
+        " + requests==2.34.2",
+        ""
+      ],
+      [
+        " + requests-toolbelt==1.0.0",
+        ""
+      ],
+      [
+        " + sniffio==1.3.1",
+        ""
+      ],
+      [
+        " + tenacity==9.2.1",
+        ""
+      ],
+      [
+        " + truststore==0.10.5",
+        ""
+      ],
+      [
+        " + typing-extensions==4.16.0",
+        ""
+      ],
+      [
+        " + typing-inspection==0.4.4",
+        ""
+      ],
+      [
+        " + urllib3==2.8.0",
+        ""
+      ],
+      [
+        " + uuid-utils==0.17.1",
+        ""
+      ],
+      [
+        " + websockets==17.2",
+        ""
+      ],
+      [
+        " + xxhash==4.0.1",
+        ""
+      ],
+      [
+        " + zstandard==0.25.0",
+        ""
+      ]
+    ]
+  },
+  "sc-modelo-canal": {
+    "comando": "uv run python modelo.py \"Por qual canal vai o lembrete?\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "resposta: O lembrete vai ser enviado por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.",
+        ""
+      ],
+      [
+        "fonte:    Reuniões/2026-10-28 Revisão de design.md (28/10)",
+        ""
+      ]
+    ]
+  },
+  "sc-modelo-prazo": {
+    "comando": "uv run python modelo.py \"Quando é a entrega do piloto?\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "resposta: A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS",
+        ""
+      ],
+      [
+        "fonte:    E-mails/2026-11-06 Integração do SMS atrasou.md (06/11)",
+        ""
+      ],
+      [
+        "atenção:  a nota citada não diz 14/11",
+        ""
+      ]
+    ]
+  },
+  "sc-nota-modelo": {
+    "comando": "uv run python medir.py --modelo",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "✓ Quando é a entrega do piloto?  ->  A entrega do piloto está prevista para 14/11, mas foi atrasada para 21/11 devido à integração do SMS",
+        ""
+      ],
+      [
+        "✓ Por qual canal vai o lembrete?  ->  O lembrete vai ser enviado por SMS, e não por WhatsApp, porque a conta comercial do WhatsApp custa caro para um piloto.",
+        ""
+      ],
+      [
+        "✓ Quando o ambiente de testes ficou pronto?  ->  O ambiente de testes ficou pronto em 24/10",
+        ""
+      ],
+      [
+        "✓ Com quanto tempo de antecedência chega o lembrete?  ->  O lembrete chega 24 horas antes da consulta.",
+        ""
+      ],
+      [
+        "✓ Quando o Otávio sai de férias?  ->  O Otávio sai de férias de 17/11 a 21/11.",
+        ""
+      ],
+      [
+        "✓ Até quando o Otávio entrega as telas de cancelamento?  ->  Até à 14/11",
+        ""
+      ],
+      [
+        "✓ Qual é a métrica do piloto?  ->  A métrica do piloto é a taxa de faltas: quantos pacientes marcam e não aparecem, antes e depois do lembrete.",
+        ""
+      ],
+      [
+        "✓ Por que a integração do SMS atrasou?  ->  O provedor de SMS pediu a documentação da empresa antes de liberar o envio, e a integração atrasa uma semana.",
+        ""
+      ],
+      [
+        "✓ Quem é a cliente do piloto?  ->  A cliente do piloto é a Gerente de operações da Clínica Aurora, a Bianca Teles.",
+        ""
+      ],
+      [
+        "✓ Por que o lembrete não vai por WhatsApp?  ->  O lembrete não vai por WhatsApp porque a conta comercial do WhatsApp custa caro para um piloto.",
+        ""
+      ],
+      [
+        "nota: 10 de 10 (100%)",
+        ""
+      ]
+    ]
   }
 }

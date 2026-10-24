@@ -4,4 +4,6 @@ version = "0.1.0"
 description = "Um segundo cérebro em cima de um cofre do Obsidian, que responde dizendo de onde tirou"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "langchain-ollama>=1.1.0",
+]

@@ -47,9 +47,9 @@
 .cdp-regra { margin: 4px 0 0; font: italic 12.5px var(--f-ui); color: var(--palco-fraco); text-align: center }
 
 .cdp-regua { display: grid; gap: 18px; padding: 60px 4% }
-.cdp-regua div { display: grid; grid-template-columns: 8em 1fr 5em; gap: 12px; align-items: center }
+.cdp-regua div { display: grid; grid-template-columns: 8em 1fr 6em; gap: 12px; align-items: center }
 .cdp-regua .cdp-barra { height: 14px; border-radius: 7px }
-.cdp-regua b { font: 600 15px var(--f-mono); text-align: right }
+.cdp-regua b { font: 600 15px var(--f-mono); text-align: right; white-space: nowrap }
 .cdp-fonte { margin: 0; padding: 0 14px 12px; font: 11.5px var(--f-ui); color: var(--palco-apagado) }
 .cdp-fonte code { font: 11px var(--f-mono); color: var(--palco-fraco); background: none }
 
