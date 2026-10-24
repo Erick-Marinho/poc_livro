@@ -151,3 +151,8 @@
 .ic-conversa > .ic-msg, .ic-conversa > .ic-divisa { animation: ic-entra .32s ease-out both }
 @keyframes ic-entra { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
 @media (prefers-reduced-motion: reduce) { .ic-conversa > * { animation: none !important } }
+
+/* continuar de onde parou */
+.ic-guia .ic-do-inicio { padding: 0 12px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink-2); font-weight: 500 }
+.ic-retomar b { color: var(--acento) }
+@media (max-width: 680px) { .ic-guia .ic-do-inicio { padding: 0 8px; font-size: 12.5px } }

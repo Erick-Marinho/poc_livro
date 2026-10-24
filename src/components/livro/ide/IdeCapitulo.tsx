@@ -146,8 +146,29 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
     dispatchEvent(new CustomEvent("fontmar:apostou", { detail: acao.id }));   /* o placar espera por isto */
   };
   const irPasso = (i: number) => setQ(quadros.findIndex((x) => x.tipo === "abre" && x.p === i));
-  /* passo feito: o leitor já chegou ao "fecha" dele */
-  const feitos = new Set(quadros.slice(0, q + 1).filter((x) => x.tipo === "fecha").map((x) => x.p));
+  /* continuar de onde parou (docs/capacidades/imersao-ide.md, etapa 3): o passo em que o leitor está e os passos que
+     ele já fechou ficam no navegador, por página; ao voltar, o livro oferece continuar dali */
+  const chaveProgresso = typeof location === "undefined" ? "" : `fontmar:ide:${location.pathname}`;
+  const [salvos, setSalvos] = useState<number[]>([]);
+  const [retomar, setRetomar] = useState<number | null>(null);
+  useEffect(() => {
+    try {
+      const g = JSON.parse(localStorage.getItem(chaveProgresso) || "null") as { atual: number; feitos: number[] } | null;
+      if (!g) return;
+      setSalvos(g.feitos.filter((n) => n >= 0 && n < passos.length));
+      if (g.atual > 0 && g.atual < passos.length) setRetomar(g.atual);
+    } catch { /* sem armazenamento: começa do começo */ }
+  }, []);
+  /* passo feito: o leitor já chegou ao "fecha" dele, agora ou numa visita anterior */
+  const feitos = new Set([...salvos, ...quadros.slice(0, q + 1).filter((x) => x.tipo === "fecha").map((x) => x.p)]);
+  useEffect(() => {
+    if (q === 0 && retomar !== null) return;   /* ainda não decidiu se continua: não apaga o que estava guardado */
+    /* no fecho de um passo, o lugar de voltar já é o próximo */
+    const atual = quadro.tipo === "fecha" ? Math.min(quadro.p + 1, passos.length - 1) : quadro.p;
+    try { localStorage.setItem(chaveProgresso, JSON.stringify({ atual, feitos: [...feitos].sort((a, b) => a - b) })); } catch { /* sem armazenamento */ }
+  }, [q]);
+  const continuar = () => { if (retomar !== null) irPasso(retomar); setRetomar(null); };
+  const doInicio = () => { setRetomar(null); setSalvos([]); try { localStorage.removeItem(chaveProgresso); } catch { /* sem armazenamento */ } };
   /* ao entrar ou sair do modo direto, a sequência muda: o leitor fica no mesmo passo */
   const passoAtual = useRef(0);
   passoAtual.current = quadro.p;
@@ -374,12 +395,18 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
 
     {/* os controles, fora da janela: são do livro, como a trilha em cima */}
     <nav className="ic-guia" aria-label="Avançar no capítulo">
+      {retomar !== null && q === 0 ? <>
+        <span className="ic-onde ic-retomar">Você parou no <b>passo {retomar + 1}</b> · {passos[retomar].titulo}</span>
+        <button type="button" className="ic-do-inicio" onClick={doInicio}>começar do início</button>
+        <button type="button" className="ic-seguir" onClick={continuar}>continuar do passo {retomar + 1}<ChevronRight size={16} /></button>
+      </> : <>
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
       <button type="button" className="ic-seguir" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
         {esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
         {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
       </button>
+      </>}
     </nav>
   </div>;
 }
