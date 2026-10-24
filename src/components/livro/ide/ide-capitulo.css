@@ -16,7 +16,7 @@
 .ic-dobra button { display: block; margin: 2px 0; border: 1px dashed #4a4f5a; background: #1c1f26; color: var(--ide-fraco); border-radius: 4px; padding: 0 8px; font: 12px var(--f-ui) }
 .ic-dobrado { opacity: .7 }
 /* o passador fica no papel do livro: é a voz do livro dentro da IDE */
-.ic-passador { display: grid; gap: 8px; padding: 14px 18px 14px; background: var(--papel-2); color: var(--ink); border-top: 1px solid var(--linha); font: 15px/1.55 var(--f-ui) }
+.ic-passador { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; min-height: 250px; padding: 14px 18px 14px; background: var(--papel-2); color: var(--ink); border-top: 1px solid var(--linha); font: 15px/1.55 var(--f-ui) }
 .ic-onde { margin: 0; font: 12px var(--f-mono); color: var(--ink-2) }
 .ic-onde b { font: 600 13px var(--f-ui); color: var(--acento) }
 .ic-quadro { display: grid; gap: 8px; min-height: 92px; align-content: start }
@@ -35,10 +35,17 @@
 .ic-controles { justify-content: flex-end }
 .ic-controles button { color: var(--ink); background: var(--papel); border-color: var(--linha) }
 .ic-controles .ide-proximo { background: var(--acento); border-color: var(--acento); color: var(--papel) }
-.ic[data-direto] .ic-controles { display: none }
 @media (max-width: 680px) {
   .ic .ide-codigo { height: 280px } .ic .ide-terminal { height: 170px }
   .ic-trilha { gap: 6px 12px } .ic-secao-nome { display: none }
+  /* no celular, o explorador vira uma linha de arquivos, que rola para o lado: os arquivos continuam nascendo à vista */
+  .ic .ide-explorador { display: block; padding: 6px; border-right: 0; border-bottom: 1px solid var(--ide-linha) }
+  .ic .ide-explorador small { display: none }
+  .ic .ide-explorador ul { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin }
+  .ic .ide-explorador li button { width: auto; white-space: nowrap; padding: 3px 8px; border: 1px solid #2b2f37 }
+  .ic .ide-explorador li button span { overflow: visible }
+  .ic .ide-abas { display: none }
+  .ic-passador { min-height: 300px; padding: 12px 14px }
 }
 /* o bloco lógico: as linhas dele acendem, as outras apagam um pouco; as palavras dele ficam sublinhadas */
 .ic .ide-codigo.ic-com-bloco .line:not(.ic-bloco) { opacity: .45 }

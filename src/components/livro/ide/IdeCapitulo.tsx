@@ -25,13 +25,17 @@ const primeiro = (nome: string) => nome.split(/\s+/)[0];
 export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[] }) {
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
-  const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => [
+  const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
+    { tipo: "abre", p: i },
+    ...acoes.slice(p.de - 1, p.ate).map((_, j): Quadro => ({ tipo: "acao", p: i, k: p.de - 1 + j })),
+    { tipo: "fecha", p: i },
+  ] : [
     { tipo: "abre", p: i },
     ...acoes.slice(p.de - 1, p.ate).flatMap((a, j): Quadro[] => a.tipo === "editar" && a.blocos.length
       ? a.blocos.map((_, b) => ({ tipo: "acao", p: i, k: p.de - 1 + j, b }))
       : [{ tipo: "acao", p: i, k: p.de - 1 + j }]),
     { tipo: "fecha", p: i },
-  ]), [acoes, passos]);
+  ]), [acoes, passos, direto]);
   const [q, setQ] = useState(0);
   const [apostas, setApostas] = useState<Record<number, number | "pulou">>({});
   const [aberto, setAberto] = useState<string | null>(null);
@@ -115,7 +119,17 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const irPasso = (i: number) => setQ(quadros.findIndex((x) => x.tipo === "abre" && x.p === i));
   /* passo feito: o leitor já chegou ao "fecha" dele */
   const feitos = new Set(quadros.slice(0, q + 1).filter((x) => x.tipo === "fecha").map((x) => x.p));
-  useEffect(() => { if (direto) setQ(quadros.length - 1); }, [direto]);
+  /* ao entrar ou sair do modo direto, a sequência muda: o leitor fica no mesmo passo */
+  const passoAtual = useRef(0);
+  passoAtual.current = quadro.p;
+  useEffect(() => { setQ(quadros.findIndex((x) => x.tipo === "abre" && x.p === passoAtual.current)); }, [direto]);
+  /* as setas do teclado avançam e voltam, quando o foco está na IDE */
+  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando;
+  const teclas = (e: React.KeyboardEvent) => {
+    if ((e.target as HTMLElement).closest("button.ic-opcao-aposta, .ide-opcoes, .ic-opcoes")) return;
+    if (e.key === "ArrowRight" && podeSeguir) { setQ(q + 1); e.preventDefault(); }
+    if (e.key === "ArrowLeft" && q > 0) { setQ(q - 1); e.preventDefault(); }
+  };
 
   const prompt = (onde: string) => <><span className="ide-pr">voce@maquina</span>:<span className="ide-cwd">{onde}</span>$ </>;
   const saida = (t: Trecho[], k: number) => t.map((x, j) => x.tipo === "linha" ? <div key={j} className={x.c || undefined}>{x.l || " "}</div> : (
@@ -129,7 +143,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const secoes = [...new Set(passos.map((p) => p.secao))];
   const apostaFeita = acao?.tipo === "rodar" && acao.aposta && typeof apostas[quadro.k as number] === "number" ? apostas[quadro.k as number] as number : null;
 
-  return <div className="ide ic" data-direto={direto || undefined}>
+  return <div className="ide ic" data-direto={direto || undefined} onKeyDown={teclas} tabIndex={-1}>
     {/* o caminho: os passos do capítulo, por seção; clique para ir */}
     <nav className="ic-trilha" aria-label="Passos do capítulo">
       {secoes.map((s) => <div key={s} className="ic-secao">
@@ -245,9 +259,9 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
         {passo.depois.map((t, i) => <p key={i} className="ic-texto"><Md t={t} /></p>)}
       </div>}
 
-      {!direto && <div className="ide-controles ic-controles">
+      {<div className="ide-controles ic-controles">
         <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
-        <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={q === quadros.length - 1 || esperando || perguntando}>
+        <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
           {esperando ? "aposte para seguir" : perguntando ? "responda para seguir" : q === quadros.length - 1 ? "fim do capítulo" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
           {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
         </button>

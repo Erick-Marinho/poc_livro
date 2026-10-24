@@ -72,6 +72,10 @@ o caminho aparece na página.
 - (7b) No bloco, as linhas dele acendem e as outras apagam um pouco; as palavras dele ficam sublinhadas no código e
   como botões no passador, e as duas abrem a mesma explicação. Pergunta de bloco segura o "seguir" até a resposta
   (ou "só mostrar"), como a aposta.
+- (7c) No celular, o explorador vira uma linha de arquivos que rola para o lado, no lugar das abas: os arquivos
+  continuam nascendo à vista. O passador tem altura mínima, para o "seguir" não pular de lugar a cada quadro.
+- (7c) Modo direto: um quadro por ação, sem os blocos; nada segura o "seguir" (as saídas aparecem sem aposta), e o
+  leitor continua no mesmo passo ao ligar ou desligar. As setas do teclado avançam e voltam quando o foco está na IDE.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -119,3 +123,4 @@ o caminho aparece na página.
 | 5c3 | `f38d3f2` | `npm test` (21 testes, 2 novos); erro dobrado no ngrok, no celular; nenhuma linha em branco acesa | Erick, 23/10/2026 |
 | 6a | `e3c87a3`, `f9930ee` | `npm test` (22 testes) no computador e na máquina do Erick; a 1.5 da pasta vazia ao `uv add` no ngrok | Erick, 23/10/2026 |
 | 7a | `63e936f` | `npm test` (15 testes) no computador e na máquina do Erick; a IDE do capítulo no ngrok | Erick, 23/10/2026 |
+| 7b | `d1514b1` | `npm test` (16 testes) no computador e na máquina do Erick; 30 blocos no ngrok; o build barrou bloco fora do arquivo e palavra fora do glossário | Erick, 24/10/2026 |
