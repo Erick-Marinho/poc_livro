@@ -46,18 +46,17 @@ compara a nota antes e depois.
    notas achadas, gravada; a régua diz se ele acerta o canal sem perder as outras (precisa do ok para baixar aqui).
 4. Os links e o fecho: o que uma pessoa ficou de fazer, seguindo os `[[links]]`; o que fica local, e quando um app.
 
-## Etapa 3 (detalhe)
+## Etapa 4 (detalhe)
 
-- **Arquivos:** `projeto/modelo.py` (novo), `medir.py` e `perguntas.jsonl`, `pyproject.toml` e `uv.lock`
-  (langchain-ollama), `roteiros/01.json`, `passos/01.json` e `glossario.json` (as partes "O modelo local" e "Juntos"),
-  `gravacoes/` (as respostas do modelo, gravadas uma vez), `guia.mdx`; no `scripts/saidas.py`, a gravação de um guia
-  vai para a pasta dele, e a IDE lê essas gravações.
-- **Muda:** o leitor instala o Ollama e baixa o `llama3.2:3b` (sua vez, na máquina dele); o `modelo.py` usa a busca
-  do `cerebro.py`, entrega as cinco notas numeradas ao modelo e confere a fonte que ele cita, com apostas no canal e
-  no prazo; a régua (que agora confere também a fonte) mede os três cérebros: 7, 9 e 10 de 10.
-- **Evidência:** a gravação com o modelo de verdade (Ollama 0.40.10, na CPU desta máquina), repetida no `npm test`
-  sem chamar o modelo; o percurso da IDE até o fim; capturas.
-- **Fica fora:** os links de pessoa e o fecho (4).
+- **Arquivos:** `projeto/pessoas.py` (novo), `perguntas.jsonl`, `roteiros/01.json`, `passos/01.json`,
+  `glossario.json`, `guia.mdx` (o fecho), e a figura do cofre, se ajudar a mostrar os backlinks de uma pessoa.
+- **Muda:** a pergunta-bandeira do artigo ("o que a Sarah ficou de fazer?"), feita do nosso jeito: "o que o Rafael
+  ficou de fazer?". Os `[[links]]` dão as notas que citam a pessoa (os backlinks do Obsidian); nelas, as frases com
+  "ficou de", com data e fonte; e o que veio depois, nas notas dele. Sem modelo. Uma aposta, e duas perguntas novas na
+  régua. No fim do guia, o fecho: o que fica de fato local aqui (o cofre, a busca, o modelo) e o que deixaria de
+  ficar se você ligasse o e-mail e a agenda, como o artigo faz; e quando um app como o Rowboat vale o que custa.
+- **Evidência:** as saídas novas gravadas e conferidas no `npm test`; a IDE do guia até o fim; capturas.
+- **Fica fora:** a voz dos autores (fica com `Pendente`).
 
 ## Registro
 
@@ -66,6 +65,6 @@ compara a nota antes e depois.
 | 1 (primeira versão) | `bb0740d` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | refeita: faltou o padrão (a IDE com o chat, as figuras), Erick, 24/10/2026 |
 | 1 | `1457d26` | o roteiro aplicado numa pasta vazia chega ao `projeto/` e grava 8 saídas (e as 2 da troca do limite), conferidas no `npm test` (41 testes). A IDE no guia, percorrida no Chrome headless: 6 passos, 31 envios, 3 apostas, 2 perguntas, dúvidas em 3 lugares; aqui no guia, 6 comandos digitados. O prazo sai 14/11 e depois 21/11 com o velho ao lado; a régua dá 7 e 9 de 10; tocar no `1.0` e escolher 0.6 pede a aposta e dá 8 de 10, com a do WhatsApp quebrada. A IDE diz "guia" onde diria livro; o capítulo 1 continua com 78 cliques. Capturas do cofre e da nota escrita por blocos | Erick, 24/10/2026 |
 | 2 | `58537a3` | o rastro da pergunta do prazo gravado e conferido (falha se divergir do `cerebro.py`); figura 1: o fluxo de 5 etapas com os números reais (2 palavras, 5 de 12 notas, 4 frases empatadas, a regra da data reordenando as 4 com 21/11 em cima, 7 e 9 de 10); figura 2: as notas surgindo pela data, ligadas pelos links, "o cofre diz" indo de 14/11 a 21/11 e o resumo marcado como parado. Achei e corrigi um erro na figura 2 ("entregar as telas" contava como entrega); um teste novo pega esse erro. `npm test` com 43 testes; capturas no computador e no celular | pendente |
-| 3 | `c2be024` | Ollama 0.40.10 e llama3.2:3b nesta máquina, na CPU; 3 comandos com o modelo gravados (12 respostas) e repetidos com o Ollama desligado (`npm test`, 51 testes). A régua passou a conferir a fonte: busca 7, regra da data 9, modelo 10 de 10 (e 10 nas duas rodadas ao vivo, 73 s as dez). Achados no caminho: o modelo estropiou nomes com acento (as notas foram numeradas) e respondeu diferente quando o pedido mudou; a dica da regra da data não acrescentou nada e saiu. IDE do guia até o passo 8 (43 envios, 6 apostas); capturas | pendente |
+| 3 | `c2be024` | Ollama 0.40.10 e llama3.2:3b nesta máquina, na CPU; 3 comandos com o modelo gravados (12 respostas) e repetidos com o Ollama desligado (`npm test`, 51 testes). A régua passou a conferir a fonte: busca 7, regra da data 9, modelo 10 de 10 (e 10 nas duas rodadas ao vivo, 73 s as dez). Achados no caminho: o modelo estropiou nomes com acento (as notas foram numeradas) e respondeu diferente quando o pedido mudou; a dica da regra da data não acrescentou nada e saiu. IDE do guia até o passo 8 (43 envios, 6 apostas); capturas | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
