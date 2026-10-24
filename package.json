@@ -6,9 +6,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "astro build && npm run saidas:conferir && node --test \"testes/*.test.mjs\" && npm run gravacao:testar",
+    "test": "astro build && npm run saidas:conferir && npm run guias:conferir && node --test \"testes/*.test.mjs\" && npm run gravacao:testar",
     "saidas": "python3 scripts/saidas.py ciclo-de-vida",
     "saidas:conferir": "python3 scripts/saidas.py ciclo-de-vida --conferir",
+    "guias": "for g in guias/*/; do python3 scripts/saidas.py \"${g%/}\" || exit 1; done",
+    "guias:conferir": "for g in guias/*/; do python3 scripts/saidas.py \"${g%/}\" --conferir || exit 1; done",
     "leitor": "python3 scripts/saidas.py ciclo-de-vida --conferir --leitor .leitor/atendimento-bemtevi",
     "gravacao:testar": "uv run --frozen --project livros/ciclo-de-vida/projeto pytest -q -p no:cacheprovider testes/test_gravacao.py",
     "gravar": "LIVRO_GRAVACAO_MODO=gravar python3 scripts/saidas.py ciclo-de-vida"

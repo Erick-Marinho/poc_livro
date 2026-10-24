@@ -23,6 +23,10 @@ for (const c of capitulos) {
     <main class="livro">
       <section class="abertura"><div class="cap">poc</div><h1>Livros que Rodam</h1>
         <p class="lide">Livros técnicos em que o código se monta e o terminal roda no meio do texto.</p></section>
+      <section>
+        <h2><a href="/guias/">Guias</a></h2>
+        <p>Tutoriais curtos, um por dia, no mesmo padrão: o código e a saída de verdade.</p>
+      </section>
       {[...livros].map(([id, l]) => (
         <section>
           <h2>{l.titulo}</h2>

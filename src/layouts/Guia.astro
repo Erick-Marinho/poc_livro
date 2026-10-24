@@ -1,0 +1,35 @@
+---
+import "../styles/livro.css";
+import "../styles/guias.css";
+import { dataLonga } from "../lib/guias";
+
+/** A página de um guia: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta. */
+interface Props { titulo: string; lide: string; data: string; etiqueta: string }
+const { titulo, lide, data, etiqueta } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- antes de pintar: as escolhas do leitor guardadas no navegador, as mesmas do livro (comandos/Comandos.tsx) -->
+    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;if(localStorage.getItem("fontmar:direto")==="sim")document.documentElement.setAttribute("data-direto","");var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
+    <title>{titulo} · Guias</title>
+    <meta name="description" content={lide} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  </head>
+  <body>
+    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><a href="/guias/"><b>Guias</b></a> · um tutorial que roda</span><span class="esp"></span></div></header>
+    <main class="livro">
+      <section class="abertura-guia">
+        <div class="linha"><span class="etiqueta">{etiqueta}</span><time class="quando" datetime={data}>{dataLonga(data)}</time></div>
+        <h1>{titulo}</h1>
+        <p class="lide">{lide}</p>
+      </section>
+      <div class="corpo"><slot /></div>
+      <nav class="proximo" aria-label="Navegação entre guias"><a href="/guias/">← Todos os guias</a><span /></nav>
+    </main>
+  </body>
+</html>

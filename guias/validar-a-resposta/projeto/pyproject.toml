@@ -1,0 +1,8 @@
+[project]
+name = "validar-a-resposta"
+version = "0.1.0"
+description = "O guia FontMar: conferir a resposta do modelo antes de agir"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.14.1",
+]

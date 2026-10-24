@@ -1,0 +1,8 @@
+{
+  "versoes_ate": "2026-10-16T00:00:00Z",
+  "pasta_do_leitor": "/home/voce/validar-a-resposta",
+  "comandos": {
+    "certa": { "comando": "uv run python resposta.py exemplos/certa.json" },
+    "inventada": { "comando": "uv run python resposta.py exemplos/inventada.json", "saiu_com": 1 }
+  }
+}

@@ -31,4 +31,18 @@ const capitulos = defineCollection({
     }),
 });
 
-export const collections = { capitulos };
+/**
+ * Cada guia é guias/<guia>/guia.mdx, com o projeto real ao lado (projeto/, comandos.json, saidas.json).
+ * Tutorial curto do dia: título, lide, a data em que sai e a etiqueta do assunto. Sem um deles, não monta.
+ */
+const guias = defineCollection({
+  loader: glob({ pattern: "*/guia.mdx", base: "./guias", generateId: ({ entry }) => entry.split("/")[0] }),
+  schema: z.object({
+    titulo: z.string(),
+    lide: z.string(),
+    data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data no formato AAAA-MM-DD"),
+    etiqueta: z.string(),
+  }),
+});
+
+export const collections = { capitulos, guias };

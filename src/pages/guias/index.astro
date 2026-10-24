@@ -1,0 +1,41 @@
+---
+import "../../styles/livro.css";
+import "../../styles/guias.css";
+import { getCollection } from "astro:content";
+import { dataCurta } from "../../lib/guias";
+
+/* o mais novo em cima; no mesmo dia, a ordem do título */
+const guias = (await getCollection("guias")).sort((a, b) => b.data.data.localeCompare(a.data.data) || a.data.titulo.localeCompare(b.data.titulo));
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
+    <title>Guias · FonteMar.ai</title>
+    <meta name="description" content="Tutoriais curtos de engenharia de IA, um por dia, com código que roda de verdade." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" />
+  </head>
+  <body>
+    <header class="topo"><div class="in"><a class="marca" href="/" aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><b>Guias</b></span><span class="esp"></span></div></header>
+    <main class="livro">
+      <section class="guias-topo">
+        <h1>Guias</h1>
+        <p>Um problema por dia, resolvido de ponta a ponta, com o código e a saída de verdade.</p>
+      </section>
+      <ul class="guias">
+        {guias.map((g) => (
+          <li>
+            <span class="etiqueta">{g.data.etiqueta}</span>
+            <h2><a href={`/guias/${g.id}/`}>{g.data.titulo}</a></h2>
+            <p class="lide">{g.data.lide}</p>
+            <time class="quando" datetime={g.data.data}>{dataCurta(g.data.data)}</time>
+          </li>
+        ))}
+      </ul>
+    </main>
+  </body>
+</html>

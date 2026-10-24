@@ -4,6 +4,7 @@
     python3 scripts/saidas.py <livro> --conferir   roda de novo e falha se a saída mudou
     python3 scripts/saidas.py <livro> --leitor DIR  gera em DIR o repositório do leitor (uma tag por passo); com
                                                    --conferir junto (o npm run leitor), confere em vez de gravar
+    python3 scripts/saidas.py guias/<guia>         o mesmo para um guia: a pasta dele no lugar de livros/<livro>
 
 Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto (ou da pasta
 em "em", como marcos/cap-01 para um comando do capítulo 1), depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
@@ -41,6 +42,11 @@ TEMPO = re.compile(r"\bin \d+(\.\d+)?m?s\b")
 # mas fora da conferência, para o livro não falhar só porque o cache de quem roda é outro
 VARIA = re.compile(r"^(Using CPython |Creating virtual environment at: |Downloading |\s*Downloaded |Prepared \d+ packages? in )")
 ENDERECO = re.compile(r"\bat 0x[0-9a-f]+\b")   # endereço de memória que o Python imprime: muda a cada execução
+
+
+def pasta_de(livro: str) -> Path:
+    """Um livro (livros/<livro>) ou um guia (guias/<guia>): o mesmo motor, a mesma conferência."""
+    return RAIZ / livro if "/" in livro else RAIZ / "livros" / livro
 
 
 def classe(linha: str) -> str:
@@ -100,7 +106,7 @@ def com_gravacao(env: dict, livro: str, id_: str) -> dict:
     pasta = str(RAIZ / "scripts" / "gravacao")
     modo = os.environ.get("LIVRO_GRAVACAO_MODO", "repetir")
     novo = {**env, "PYTHONPATH": os.pathsep.join(p for p in (pasta, env.get("PYTHONPATH")) if p),
-            "LIVRO_GRAVACAO": str(RAIZ / "livros" / livro / "gravacoes" / f"{id_}.json"), "LIVRO_GRAVACAO_MODO": modo}
+            "LIVRO_GRAVACAO": str(pasta_de(livro) / "gravacoes" / f"{id_}.json"), "LIVRO_GRAVACAO_MODO": modo}
     # o cliente da OpenAI exige uma chave já ao ser criado; repetindo, a chave é de mentira e nunca sai da máquina:
     # a gravação recusa, antes da rede, qualquer chamada que não esteja gravada
     if modo == "repetir":
@@ -121,8 +127,8 @@ IGNORAR = shutil.ignore_patterns(".venv", "__pycache__", ".pytest_cache", ".ruff
 
 def fim_do_capitulo(livro: str, roteiro: Path) -> Path:
     """Onde o roteiro NN tem que chegar: o marco do capítulo, se ele já fechou; senão, o projeto/."""
-    marco = RAIZ / "livros" / livro / "marcos" / f"cap-{roteiro.stem}"
-    return marco if marco.is_dir() else RAIZ / "livros" / livro / "projeto"
+    marco = pasta_de(livro) / "marcos" / f"cap-{roteiro.stem}"
+    return marco if marco.is_dir() else pasta_de(livro) / "projeto"
 
 
 def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Path | None = None,
@@ -139,7 +145,7 @@ def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Pa
     marcos, num = {}, roteiro.stem
     # um capítulo ainda sem passos (livros/<livro>/passos/<n>.json) está em construção: roda, mas não entra no
     # repositório do leitor, que fica no fim do último capítulo com passos
-    passos_cap = RAIZ / "livros" / livro / "passos" / roteiro.name
+    passos_cap = pasta_de(livro) / "passos" / roteiro.name
     repositorio = repositorio and passos_cap.exists()
     if repositorio:
         cap = json.loads(passos_cap.read_text(encoding="utf-8"))
@@ -300,7 +306,7 @@ def etiquetar(pasta: Path, tag: str, mensagem: str, cap: int, n: int) -> None:
 
 
 def rodar(livro: str, repositorio: Path | None = None) -> tuple[dict, dict]:
-    base = RAIZ / "livros" / livro
+    base = pasta_de(livro)
     conf = json.loads((base / "comandos.json").read_text(encoding="utf-8"))
     projeto = base / "projeto"
     env = ambiente(conf.get("versoes_ate"))
@@ -346,7 +352,7 @@ def tags_esperadas(livro: str, roteiros: list[Path]) -> set[str]:
     """As tags que o livro promete: uma por passo, o fim de cada capítulo e o início de cada um a partir do 2."""
     tags = set()
     for i, roteiro in enumerate(roteiros):
-        if not (arquivo := RAIZ / "livros" / livro / "passos" / roteiro.name).exists():
+        if not (arquivo := pasta_de(livro) / "passos" / roteiro.name).exists():
             continue
         cap = json.loads(arquivo.read_text(encoding="utf-8"))
         tags |= {f"cap-{roteiro.stem}/passo-{j:02d}" for j in range(1, len(cap["passos"]) + 1)} | {f"cap-{roteiro.stem}/fim"}
@@ -366,7 +372,7 @@ def principal(argv: list[str]) -> int:
         return 2
     livro, conferir = argv[0], "--conferir" in argv
     repositorio = Path(argv[argv.index("--leitor") + 1]).resolve() if "--leitor" in argv else None
-    arquivo = RAIZ / "livros" / livro / "saidas.json"
+    arquivo = pasta_de(livro) / "saidas.json"
     try:
         novas, estados = rodar(livro, repositorio)
     except RoteiroErrado as erro:

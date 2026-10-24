@@ -1,0 +1,26 @@
+/* Os guias: a lista (o mais novo em cima) e a abertura de um guia. O resto da página é o do livro (livro.css). */
+.etiqueta { display: inline-block; border: 1px solid var(--ink-2); border-radius: 999px; padding: 1px 10px; font: 500 12px/1.6 var(--f-ui); color: var(--ink) }
+.quando { font: 500 12px var(--f-ui); letter-spacing: .06em; color: var(--ink-2) }
+
+.guias-topo { text-align: center; margin: 24px auto 40px }
+.guias-topo h1 { font: 700 48px/1.08 var(--f-texto); letter-spacing: -.02em; margin: 0 0 10px }
+.guias-topo p { margin: 0; color: var(--ink-2); font: italic calc(20px * var(--escala))/1.5 var(--f-texto) }
+
+.guias { list-style: none; margin: 0 auto; padding: 0 }
+.guias li { border-bottom: 1px solid var(--linha); padding: 26px 0 }
+.guias li:first-child { padding-top: 0 }
+.guias h2 { font: 700 24px/1.25 var(--f-texto); letter-spacing: -.01em; margin: 10px 0 6px }
+.guias h2 a { color: var(--ink); text-decoration: none }
+.guias h2 a:hover { color: var(--acento) }
+.guias .lide { margin: 0 0 8px; font: 16px/1.55 var(--f-ui); color: var(--ink-2) }
+
+.abertura-guia { margin-bottom: 2.4em }
+.abertura-guia .linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.abertura-guia h1 { font: 700 42px/1.12 var(--f-texto); letter-spacing: -.02em; margin: 14px 0 14px; text-wrap: balance }
+.abertura-guia .lide { font-size: calc(20px * var(--escala)); line-height: 1.55; color: var(--ink-2); margin: 0 }
+
+@media (max-width: 640px) {
+  .guias-topo h1 { font-size: 36px }
+  .abertura-guia h1 { font-size: 32px }
+  .guias h2 { font-size: 21px }
+}
