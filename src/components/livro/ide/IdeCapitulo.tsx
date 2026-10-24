@@ -55,6 +55,9 @@ function palavraNaLinha(linha: HTMLElement, palavra: string): HTMLElement | null
 }
 /* quem fala com a IA no chat: o leitor, que pede, pergunta e segue (docs/capacidades/conversa-com-a-ia.md) */
 const AUTOR = "você";
+/* as falas de passagem (etapa 2): quatro jeitos de dizer o mesmo, para a conversa não soar como um botão apertado */
+const FIZ = ["Fiz na minha IDE.", "Feito aqui também.", "Pronto, fiz.", "Fiz. Pode seguir."];
+const SEGUE = ["E agora?", "Pode seguir.", "Certo, e depois?", "Entendi. Próximo?"];
 const LUGARES: { id: Onde; nome: string }[] = [{ id: "ide", nome: "na minha IDE" }, { id: "livro", nome: "aqui no livro" }];
 const junta = (s: string) => s.trim().replace(/\s+/g, " ");
 
@@ -416,7 +419,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     const b = a.blocos[x.b], chave = `${x.k}:${x.b}`, r = respostas[chave];
     const ja = perguntados[chave] ?? [];
     return [
-      ...(x.b === 0 ? [ia("n0", <p><Md t={feito(a)} /> <Md t={a.nota} /> Vamos por partes: são {a.blocos.length} {a.blocos.length === 1 ? "bloco" : "blocos"}.</p>)] : [pessoa("mais", <p>E o próximo?</p>)]),
+      ...(x.b === 0 ? [ia("n0", <p><Md t={feito(a)} /> <Md t={a.nota} /> Vamos por partes: são {a.blocos.length} {a.blocos.length === 1 ? "bloco" : "blocos"}.</p>)] : []),
       ia("b", <>
         <p className="ic-bloco-titulo">bloco {x.b + 1} de {a.blocos.length} · {b.titulo} <span>(linhas {b.a}{b.z > b.a ? `–${b.z}` : ""})</span></p>
         <p><Md t={b.texto} /></p>
@@ -481,13 +484,25 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   }, [q, tipos, direto, quadros]);
   /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
   const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !apostandoTroca && !(perguntaOnde && q === 0);
-  /* o compositor: a fala sugerida ao leitor, que ele envia. Por ora, o pedido que abre cada passo (no começo e no fecho
-     do anterior); as outras passagens ainda vão pelo "seguir" (etapa 2) */
+  /* o que o leitor diz para sair de um quadro: entre blocos, pede o próximo; depois de uma ação, quem faz na própria IDE
+     diz que fez, quem faz aqui pede para seguir; no fecho, o pedido do passo seguinte (que entra na abertura dele) */
+  const passagem = (x: Quadro, i: number): string | null => {
+    if (x.tipo === "fecha") return i < quadros.length - 1 ? passos[x.p + 1].pedido : null;
+    if (x.tipo === "abre") return "Pode começar.";
+    const a = acoes[x.k];
+    if (a.tipo === "editar" && x.b !== undefined && x.b < a.blocos.length - 1) return "E o próximo?";
+    return (!direto && fazer !== "livro" ? FIZ : SEGUE)[i % 4];
+  };
+  /* o compositor: a fala sugerida, que o leitor envia; quando o terminal ou o chat pedem outra coisa, a caixa diz o quê */
+  const aguardando = aDigitar ? "Digite o comando no terminal." : esperando || apostandoTroca ? "Aposte no terminal antes de ver a saída."
+    : perguntando ? "Responda a pergunta acima." : null;
   const sugestao: { texto: string; pronto: boolean; enviar: () => void } | null = esperaPedido
     ? { texto: passos[0].pedido, pronto: !perguntaOnde, enviar: () => { enviou.current = true; setVisiveis(1); setComecou(true); } }
-    : quadro.tipo === "fecha" && q < quadros.length - 1 ? { texto: passos[quadro.p + 1].pedido, pronto: true, enviar: () => setQ(q + 1) } : null;
+    : aguardando || q === quadros.length - 1 ? null : { texto: passagem(quadro, q)!, pronto: true, enviar: () => setQ(q + 1) };
+  const vazia = aguardando ?? (q === quadros.length - 1 ? "Fim do capítulo." : `Mensagem para o ${aba}`);
+  /* a conversa até aqui: o que já passou leva a fala com que o leitor saiu de cada ação */
   const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
-    const f = i === q ? falasAgora.slice(0, visiveis) : falas(x, i);
+    const f = i === q ? falasAgora.slice(0, visiveis) : [...falas(x, i), ...(x.tipo === "acao" ? [pessoa("passa", <p>{passagem(x, i)}</p>)] : [])];
     return f.map((y) => <Mensagem key={`${i}:${y.chave}`} f={y} ia={aba} />);
   });
   /* desce a conversa quando entra fala nova; se o leitor subiu para reler, só desce quando ele avança */
@@ -638,7 +653,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
           {sugestao
             ? <button type="button" className="ic-caixa" onClick={sugestao.enviar} disabled={!sugestao.pronto} aria-label={`Enviar: ${sugestao.texto}`}>
                 <span>{sugestao.texto}</span><i className="ic-enviar"><ArrowUp size={15} /></i></button>
-            : <div className="ic-caixa ic-caixa-vazia" aria-hidden="true"><span>Mensagem para o {aba}</span><i className="ic-enviar"><ArrowUp size={15} /></i></div>}
+            : <div className="ic-caixa ic-caixa-vazia" aria-hidden="true"><span>{vazia}</span><i className="ic-enviar"><ArrowUp size={15} /></i></div>}
           {sugestao && !sugestao.pronto && <p className="ic-caixa-dica">Antes, diga abaixo onde você vai fazer o projeto.</p>}
           <p className="ic-simulacao">simulação: a conversa foi escrita pelos autores do livro, não por um modelo</p>
         </div>
@@ -671,10 +686,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       </> : <>
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
-      <button type="button" className="ic-seguir" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-        {aDigitar ? "rode no terminal" : esperando || apostandoTroca ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-        {!esperando && !perguntando && !apostandoTroca && q < quadros.length - 1 && <ChevronRight size={16} />}
-      </button>
+      {/* seguir é uma fala no chat (etapa 2); aqui fica só a seta, para reler e para o teclado */}
+      <button type="button" className="ic-avancar" onClick={() => setQ(q + 1)} disabled={!podeSeguir} aria-label="Avançar"><ChevronRight size={18} /></button>
       </>}
     </nav>
   </div>;
