@@ -56,5 +56,6 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 | 1 | `fb7a34d` | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
 | 2 | `f6fddab` | `npm test`; sessão interativa conferida no DOM (ls, comando incompleto, Tab, Enter, ↑); capturas no computador e no celular | Erick, 23/10/2026 |
 | 3 | `7dab392` | `npm test` com 12 saídas; conferência estável em duas rodadas; o build falha com âncora errada, código de saída errado, sem a correção do R12 e sem o baseline.py | Erick, 23/10/2026 |
+| 4 | `3059027` | `npm test`; sessão conferida no DOM (aposta bloqueia o avanço, nota só depois da aposta, veredito, linhas 6 e 40-47 destacadas, erro na linha 4 com 1 problema); capturas no computador e no celular | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)
