@@ -40,20 +40,26 @@ compara a nota antes e depois.
    notas achadas, gravada; a régua diz se ele acerta o canal sem perder as outras (precisa do ok para baixar aqui).
 4. Os links e o fecho: o que uma pessoa ficou de fazer, seguindo os `[[links]]`; o que fica local, e quando um app.
 
-## Etapa 1 (detalhe)
+## Etapa 2 (detalhe)
 
-- **Arquivos:** `src/lib/livroDaPagina.ts`; `guias/segundo-cerebro-local/` (`roteiros/01.json`, `passos/01.json`,
-  `glossario.json`, `comandos.json`, `guia.mdx`, e o `projeto/` como o `uv init` deixa: `.gitignore`, `README.md`).
-- **Evidência:** `npm run guias:conferir` aplica o roteiro numa pasta vazia, grava cada saída no estado em que o
-  código está e chega ao `projeto/`; a IDE no guia, percorrida até o fim no Chrome headless (aposta do prazo, régua,
-  troca do limite); capturas; `npm test`.
-- **Fica fora:** figuras (2), modelo (3), links e fecho (4); a voz dos autores fica com `Pendente`.
+- **Arquivos:** `guias/segundo-cerebro-local/figuras/rastro.py` (o caminho de uma pergunta, tirado do próprio
+  `cerebro.py` e conferido contra ele), `comandos.json` (grava o rastro), `src/components/livro/cerebro/` (as duas
+  figuras), `guia.mdx`, e o teste dos guias passa a olhar as saídas em qualquer figura da página.
+- **Muda:** no topo, "o que vamos construir": a pergunta do prazo atravessando o cérebro, etapa por etapa (as
+  palavras, a nota do BM25 de cada uma das doze notas, as frases candidatas, a resposta sem e com a data, a régua),
+  com os números do rastro gravado. Responde: o que acontece entre a pergunta e a resposta? Depois, "o cofre no
+  tempo": as notas surgindo na ordem das datas, ligadas pelos `[[links]]`, e o prazo que o cofre diz mudando de 14/11
+  para 21/11, enquanto o resumo do projeto continua dizendo 14/11. Responde: por que uma busca devolveria a data velha?
+  As duas tocam sozinhas, param, voltam; no modo direto, aparecem no estado final.
+- **Evidência:** o rastro gravado e conferido (`npm test`), e falhando se ele divergir do `cerebro.py`; as duas
+  figuras tocadas no Chrome headless; capturas no computador e no celular.
+- **Fica fora:** o modelo (3), os links de pessoa e o fecho (4).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 (primeira versão) | `4778c64` | 12 notas inventadas no cofre; 5 saídas gravadas e conferidas no `npm test` (41 testes). Com `--sem-data`, o prazo sai 14/11, citando o status de 03/11; com a data, 21/11, com o 14/11 de antes ao lado. Régua: 7 de 10 sem a data, 9 de 10 com ela; a do canal erra nos dois (a palavra não está nas notas). Trocar `PARECIDA` faz a conferência sair com 1, e voltar, com 0. Capturas no computador e no celular | refeita: faltou o padrão (a IDE com o chat, as figuras), Erick, 24/10/2026 |
-| 1 | `1b4ef33` | o roteiro aplicado numa pasta vazia chega ao `projeto/` e grava 8 saídas (e as 2 da troca do limite), conferidas no `npm test` (41 testes). A IDE no guia, percorrida no Chrome headless: 6 passos, 31 envios, 3 apostas, 2 perguntas, dúvidas em 3 lugares; aqui no guia, 6 comandos digitados. O prazo sai 14/11 e depois 21/11 com o velho ao lado; a régua dá 7 e 9 de 10; tocar no `1.0` e escolher 0.6 pede a aposta e dá 8 de 10, com a do WhatsApp quebrada. A IDE diz "guia" onde diria livro; o capítulo 1 continua com 78 cliques. Capturas do cofre e da nota escrita por blocos | pendente |
+| 1 | `1b4ef33` | o roteiro aplicado numa pasta vazia chega ao `projeto/` e grava 8 saídas (e as 2 da troca do limite), conferidas no `npm test` (41 testes). A IDE no guia, percorrida no Chrome headless: 6 passos, 31 envios, 3 apostas, 2 perguntas, dúvidas em 3 lugares; aqui no guia, 6 comandos digitados. O prazo sai 14/11 e depois 21/11 com o velho ao lado; a régua dá 7 e 9 de 10; tocar no `1.0` e escolher 0.6 pede a aposta e dá 8 de 10, com a do WhatsApp quebrada. A IDE diz "guia" onde diria livro; o capítulo 1 continua com 78 cliques. Capturas do cofre e da nota escrita por blocos | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)

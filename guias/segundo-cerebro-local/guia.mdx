@@ -5,6 +5,8 @@ data: "2026-10-24"
 etiqueta: "IA local"
 ---
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
+import FiguraCaminho from "../../src/components/livro/FiguraCaminho.astro";
+import FiguraCofre from "../../src/components/livro/FiguraCofre.astro";
 import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import roteiro from "./roteiros/01.json";
@@ -21,11 +23,37 @@ Aqui você faz o caminho contrário: constrói o mecanismo, vê ele errar do jei
 
 <Pendente o="A voz dos autores: por que desconfiar de um cérebro que não diz de onde tirou a resposta" parte="abertura do guia" />
 
+## O que vamos construir
+
+Um cérebro pequeno, que você consegue ler inteiro. Ele faz quatro coisas com uma pergunta: tira dela as palavras que contam, acha as notas do cofre que mais se parecem com ela, escolhe a frase que responde e diz de qual nota ela veio. A régua, no fim, diz quantas perguntas ele acerta. Acompanhe a pergunta que importa neste guia atravessando o cérebro, com os números que ele calculou de verdade:
+
+<FiguraCaminho saidas={saidas} rastro="rastro-prazo" regua={["sc-nota-ingenua", "sc-nota"]} numero="1" legenda="O caminho de uma pergunta pelo cérebro que você vai construir. Os números são os do rastro gravado do próprio cerebro.py, conferido contra ele a cada vez que o site é montado." />
+
+Repare no meio do caminho: quatro frases respondem igualmente bem, e três delas dizem a data velha. Sem olhar a data, o cérebro devolve uma delas com toda a segurança.
+
+## Por que o prazo engana
+
+O problema não está na busca, está no cofre. As notas foram escritas ao longo de três semanas, e cada uma estava certa no dia em que foi escrita. Veja o cofre crescer:
+
+<FiguraCofre guia="segundo-cerebro-local" numero="2" legenda="O cofre no tempo, desenhado a partir das notas: a data das propriedades, os [[links]] e a data de entrega que cada nota diz. No Obsidian, os mesmos links aparecem no grafo e no painel de backlinks."
+  narracoes={{
+    "2026-10-20": "Kickoff: a entrega fica para 14/11. O resumo do projeto, escrito no mesmo dia, também diz 14/11.",
+    "2026-10-24": "O ambiente de testes fica pronto. Nada muda no prazo.",
+    "2026-10-28": "Revisão de design: o lembrete troca o WhatsApp pelo SMS.",
+    "2026-10-30": "Uma ideia de métrica: a taxa de faltas.",
+    "2026-11-03": "Status semanal: a entrega continua em 14/11. São três notas dizendo 14/11.",
+    "2026-11-06": "O e-mail: a integração atrasou e a entrega vai para 21/11. Só esta nota diz isso; o resumo continua em 14/11.",
+    "2026-11-07": "A clínica confirma 21/11, sem repetir a palavra entrega.",
+    "2026-11-10": "Hoje: três notas dizem 14/11 e uma diz 21/11. Quem procura o mais parecido acha mais 14/11 do que 21/11.",
+  }} />
+
+É a tese do artigo, agora com as notas na mão: um resumo escrito uma vez não acompanha o que mudou depois. A saída não é escrever menos notas, é o cérebro saber de quando é cada uma.
+
 ## Mão na massa
 
 O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. Antes de cada comando que importa, você aposta no que vai sair.
 
-<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua" }} numero="1" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia, gravados ao montar o site." />
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do guia, gravados ao montar o site." />
 
 <Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não roda ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
 

@@ -1,4 +1,8 @@
 {
   "pasta_do_leitor": "/home/voce/segundo-cerebro",
-  "comandos": {}
+  "comandos": {
+    "rastro-prazo": {
+      "comando": "uv run python ../figuras/rastro.py \"Quando é a entrega do piloto?\""
+    }
+  }
 }

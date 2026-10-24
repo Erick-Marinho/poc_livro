@@ -14,12 +14,12 @@ test("a lista tem um link para cada guia, e cada link abre uma página montada",
   for (const href of links) assert.ok(existsSync(new URL(`dist${href}index.html`, raiz)), href);
 });
 
-test("cada saída gravada do guia aparece na página, linha por linha: no terminal, ou nos dados da IDE do guia", () => {
+test("cada saída gravada do guia aparece na página, linha por linha: no terminal, ou nos dados da IDE e das figuras", () => {
   for (const g of guias) {
     const html = pagina(`/guias/${g}/`);
     const texto = html.querySelector("main").text;
-    /* a IDE é uma ilha React: o que o terminal dela mostra vai nos dados da ilha, como texto JSON */
-    const ide = html.querySelectorAll("astro-island").filter((i) => /IdeCapitulo/.test(i.getAttribute("component-url") ?? "")).map((i) => i.getAttribute("props") ?? "").join("");
+    /* a IDE e as figuras são ilhas React: o que elas mostram vai nos dados da ilha, como texto JSON */
+    const ide = html.querySelectorAll("astro-island").map((i) => i.getAttribute("props") ?? "").join("");
     const esta = (t) => texto.includes(t) || ide.includes(JSON.stringify(t).slice(1, -1));
     const saidas = JSON.parse(readFileSync(new URL(`guias/${g}/saidas.json`, raiz), "utf8"));
     for (const [id, s] of Object.entries(saidas)) {
