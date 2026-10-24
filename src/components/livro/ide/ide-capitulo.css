@@ -102,9 +102,9 @@
 .ic-controles .ide-proximo { flex: 1; justify-content: center; background: var(--ide-acento); border-color: var(--ide-acento); color: #06111f; font-weight: 600 }
 .ic-controles button:disabled { opacity: .45; cursor: default }
 .ic-simulacao { margin: 0; font: 10.5px/1.4 var(--f-ui); color: var(--ide-fraco); text-align: center }
-/* "sua vez": flutua sobre o editor, como na IDE do clima; no chat, só no celular */
-.ic-suavez-editor { position: absolute; right: 14px; bottom: 214px; z-index: 3; max-width: 420px; box-shadow: 0 10px 30px rgba(0, 0, 0, .45) }
-.ic-suavez-chat { display: none }
+/* "sua vez": no chat, logo acima da caixa de mensagem, que é onde a conversa diz o que fazer agora. Ficava sobre o
+   editor e cobria o código; com altura limitada, um texto longo (instalar o Obsidian) rola sem espremer a conversa */
+.ic-suavez-chat { max-height: 190px; overflow-y: auto; font-size: 14px; scrollbar-width: thin }
 /* ===== o rodapé de status ===== */
 .ic-status { display: flex; gap: 14px; align-items: center; height: 24px; padding: 0 10px; background: #0b6bcb; color: #fff; font: 12px var(--f-ui) }
 .ic-status .ic-st-esp { flex: 1 }
@@ -112,7 +112,6 @@
 @media (max-width: 1000px) {
   .ic .ide-corpo { grid-template-columns: 170px minmax(0, 1fr) }
   .ic-chat { grid-column: 1 / -1; height: 460px; border-left: 0; border-top: 1px solid var(--ide-linha) }
-  .ic-suavez-editor { display: none } .ic-suavez-chat { display: grid }
 }
 @media (max-width: 680px) {
   .ic .ide-corpo { grid-template-columns: 1fr }

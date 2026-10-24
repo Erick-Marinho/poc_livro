@@ -641,7 +641,6 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
         </div>
         {versao?.html && <button type="button" className="ic-copiar" onClick={copiar} aria-label={`Copiar o conteúdo de ${vista}`} title="Copiar o arquivo">
           {copiado ? <><Check size={13} /> copiado</> : <><Copy size={13} /> copiar</>}</button>}
-        {pausa && <div className="ic-suavez ic-suavez-editor" role="note">{cartaoSuaVez}</div>}
         {versao?.html
           ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} onKeyDown={teclaCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
           : <div className="ide-codigo ic-sem-arquivo" ref={codigo}><p>{nomes.length ? "Abra um arquivo no explorador." : "Nenhum arquivo ainda: o projeto começa no terminal."}</p></div>}

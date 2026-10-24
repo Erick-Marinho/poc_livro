@@ -63,7 +63,7 @@ export default function CofreNoTempo({ notas, narracoes }: { notas: NotaCofre[];
         {notas.filter(visivel).flatMap((n) => n.links.filter((l) => pos.has(l) && l !== n.titulo).map((l) => {
           const a = pos.get(n.titulo)!, b = pos.get(l)!;
           return <motion.path key={`${n.titulo}>${l}`} d={`M${a.x},${a.y} C${a.x},${(a.y + b.y) / 2} ${b.x},${(a.y + b.y) / 2} ${b.x},${b.y}`}
-            className="cnt-link" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: .7 }} />;
+            className="cnt-link" initial={p.vivo ? { pathLength: 0, opacity: 0 } : false} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: .7 }} />;
         }))}
         {notas.map((n) => {
           const c = pos.get(n.titulo)!, ve = visivel(n), centro = !(n.pasta in RAIAS);

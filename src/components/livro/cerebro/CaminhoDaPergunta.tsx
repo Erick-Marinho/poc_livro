@@ -59,22 +59,22 @@ export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: st
       </ol>
       <div className="cdp-palco" aria-live="polite">
         {/* cada etapa entra no lugar da anterior (sem esperar a outra sair: a troca é imediata e não trava) */}
-          <motion.div key={atual.no} className="cdp-cena" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .25 }}>
+          <motion.div key={atual.no} className="cdp-cena" initial={p.vivo ? { opacity: 0, y: 8 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .25 }}>
             {atual.no === 0 && <div className="cdp-palavras">
               {r.pergunta.replace(/[?.,!]/g, "").split(/\s+/).map((w, i) => {
                 const fica = r.palavras.includes(sem(w));
-                return <motion.span key={i} className={fica ? "cdp-fica" : "cdp-sai"} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .18 }}>{w}</motion.span>;
+                return <motion.span key={i} className={fica ? "cdp-fica" : "cdp-sai"} initial={p.vivo ? { opacity: 0, y: 6 } : false} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .18 }}>{w}</motion.span>;
               })}
             </div>}
             {atual.no === 1 && <ul className="cdp-notas">
               {r.notas.map((n, i) => <li key={n.arquivo} data-achada={n.achada || undefined}>
                 <span className="cdp-nome">{n.titulo}<small>{n.data}</small></span>
-                <span className="cdp-barra"><motion.i initial={{ width: 0 }} animate={{ width: `${(n.pontos / maior) * 100}%` }} transition={{ delay: i * .08, duration: .5 }} /></span>
+                <span className="cdp-barra"><motion.i initial={p.vivo ? { width: 0 } : false} animate={{ width: `${(n.pontos / maior) * 100}%` }} transition={{ delay: i * .08, duration: .5 }} /></span>
                 <span className="cdp-pontos">{n.pontos.toFixed(2)}</span>
               </li>)}
             </ul>}
             {atual.no === 2 && <ul className="cdp-frases">
-              {r.frases.slice(0, 7).map((f, i) => <motion.li key={i} data-empata={f.palavras === r.topo || undefined} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * .12 }}>
+              {r.frases.slice(0, 7).map((f, i) => <motion.li key={i} data-empata={f.palavras === r.topo || undefined} initial={p.vivo ? { opacity: 0, x: -8 } : false} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * .12 }}>
                 <span className="cdp-k">{f.palavras}</span><span>{comData(f.frase)}<small>{titulo(f.nota)} · {f.data}</small></span>
               </motion.li>)}
             </ul>}
@@ -93,7 +93,7 @@ export default function CaminhoDaPergunta({ bruto, comando, regua }: { bruto: st
             {atual.no === 4 && <div className="cdp-regua">
               {[{ rotulo: "sem a data", n: semA }, { rotulo: "com a data", n: comA }, ...(modA !== null ? [{ rotulo: "com o modelo", n: modA }] : [])].map((x, i) => <div key={x.rotulo}>
                 <span>{x.rotulo}</span>
-                <span className="cdp-barra"><motion.i initial={{ width: 0 }} animate={{ width: `${(x.n / total) * 100}%` }} transition={{ delay: i * .4, duration: .7 }} /></span>
+                <span className="cdp-barra"><motion.i initial={p.vivo ? { width: 0 } : false} animate={{ width: `${(x.n / total) * 100}%` }} transition={{ delay: i * .4, duration: .7 }} /></span>
                 <b>{x.n} de {total}</b>
               </div>)}
             </div>}
