@@ -35,6 +35,17 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   livro: string; onde: string; anterior?: Vizinho; proximo?: Vizinho; emBreve?: string; placar?: Placar;
 }) {
   const [recolhida, setRecolhida] = useState(false);
+  /* a pílula dá licença: enquanto os controles de uma figura (a barra da IDE do capítulo) estão à vista, ela vira o
+     círculo, para não ficar por cima deles; quando eles saem da tela, ela volta. Não fica guardado. */
+  const [licenca, setLicenca] = useState(false);
+  useEffect(() => {
+    const alvos = [...document.querySelectorAll<HTMLElement>(".ic-guia")];
+    if (!alvos.length) return;
+    /* pela rolagem, como o sumário e o placar: a barra está na faixa de baixo da tela, onde a pílula fica */
+    const ver = () => setLicenca(alvos.some((a) => { const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }));
+    addEventListener("scroll", ver, { passive: true }); addEventListener("resize", ver); ver();
+    return () => { removeEventListener("scroll", ver); removeEventListener("resize", ver); };
+  }, []);
   const [aberto, setAberto] = useState(false);
   const [tema, setTema] = useState<Tema>("papel");
   const [fonte, setFonte] = useState<Fonte>("serifada");
@@ -193,7 +204,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
     </AnimatePresence>
     <div className="cm-trilho">
       <AnimatePresence initial={false}>
-        {!recolhida && (
+        {!recolhida && !licenca && (
           <motion.nav key="pilula" layoutId="cm-pilula" className="cm-pilula" aria-label="Navegação entre capítulos"
             drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={{ left: 0, right: 0.8 }} dragSnapToOrigin style={{ x, opacity: sumindo }}
             onDragEnd={(_, info) => { if (info.offset.x > 90 || info.velocity.x > 600) recolher(true); }}
@@ -214,8 +225,8 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
 
     <div className="cm-canto">
       <AnimatePresence initial={false}>
-        {recolhida && (
-          <motion.button key="circulo" layoutId="cm-pilula" type="button" className="cm-circulo" onClick={() => recolher(false)}
+        {(recolhida || licenca) && (
+          <motion.button key="circulo" layoutId="cm-pilula" type="button" className="cm-circulo" onClick={() => { setLicenca(false); recolher(false); }}
             aria-label={`Mostrar a navegação (${curto})`} title={curto} transition={{ type: "spring", stiffness: 420, damping: 34 }}>
             <svg className="cm-anel" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" /><circle className="cm-anel-lido" cx="22" cy="22" r="19" /></svg>
             {numero ? <b>{numero}</b> : <BookOpen size={18} />}
