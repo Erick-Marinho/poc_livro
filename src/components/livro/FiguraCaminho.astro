@@ -1,9 +1,10 @@
 ---
 /**
- * A figura "o que vamos construir" de um experimento de busca nas notas (cerebro/CaminhoDaPergunta.tsx): o caminho de uma
- * pergunta pelo cérebro, com os números do rastro gravado e as notas da régua, saídas reais do projeto do experimento.
+ * A figura "o que vamos construir" de um experimento de busca nas notas, em vídeo (cerebro/FiguraCaminhoVideo.tsx): o
+ * caminho de uma pergunta pelo cérebro, com os números do rastro gravado e as notas da régua, saídas reais do projeto
+ * do experimento.
  */
-import CaminhoDaPergunta from "./cerebro/CaminhoDaPergunta";
+import FiguraCaminhoVideo from "./cerebro/FiguraCaminhoVideo";
 
 type Saida = { comando: string; saida: [string, string][] };
 interface Props { saidas: Record<string, Saida>; rastro: string; regua: [string, string] | [string, string, string]; numero: string; legenda: string }
@@ -13,7 +14,7 @@ const linha = (id: string, padrao: RegExp) => saidas[id]?.saida.map(([l]) => l).
 const bruto = linha(rastro, /^\{/);
 ---
 <figure class="figura-cerebro largo">
-  <CaminhoDaPergunta client:visible bruto={bruto} comando={saidas[rastro].comando} regua={{ sem: linha(regua[0], /^nota:/), com: linha(regua[1], /^nota:/), ...(regua[2] ? { modelo: linha(regua[2], /^nota:/) } : {}) }} />
+  <FiguraCaminhoVideo client:visible bruto={bruto} comando={saidas[rastro].comando} regua={{ sem: linha(regua[0], /^nota:/), com: linha(regua[1], /^nota:/), ...(regua[2] ? { modelo: linha(regua[2], /^nota:/) } : {}) }} />
   <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
 </figure>
 <style>
