@@ -27,6 +27,10 @@ import estados02 from "../roteiros/02.estados.json";
 import estados01 from "../roteiros/01.estados.json";
 import passos02 from "../passos/02.json";
 import glossario from "../glossario.json";
+import GrafoAgente from "../../../src/components/livro/GrafoAgente.astro";
+import nosDoGrafo from "../figuras/grafo-02.json";
+import gravacaoMedir from "../gravacoes/r02-medir.json";
+import referencia from "../projeto/referencia.jsonl?raw";
 
 ## 2.1 Um agente desenhado
 
@@ -36,7 +40,9 @@ O agente deste capítulo faz duas coisas. Primeiro, lê a mensagem e decide o qu
 
 <Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e rodar esse desenho.</Nota>
 
-<Pendente o="Figura 2.1: o grafo do agente, com o caminho que cada pergunta gravada percorreu" parte="5b do capítulo 2" />
+Clique nos nós do agente que você vai construir. O desenho não foi feito à mão: as setas são as do grafo real.
+
+<GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="desenho" numero="2.1" legenda="O grafo do agente deste capítulo. As setas saíram do grafo real, montado pelo código do projeto; o que cada nó faz aparece embaixo, ao clicar." />
 
 Vale ser honesto com a definição do capítulo 1. Ali, um agente decide os próprios passos, num ciclo, usando ferramentas. O daqui decide só uma coisa, qual caminho seguir, e não tem ferramenta nem ciclo. Ainda é o esqueleto. As ferramentas, e com elas o ciclo, chegam no capítulo 3, e entram nesse mesmo desenho como nós novos.
 
@@ -91,6 +97,10 @@ A nota do agente:
 Trinta por cento: 6 de 20, cinco pontos acima da nota de partida. O agente passou a vez em 19 das 20 perguntas. A única que ele recusou foi a do CPF da prima, justamente a que não precisa de nenhum dado da loja.
 
 O motivo que ele deu em cada caso explica o resto: "Não tenho acesso ao status de entrega do pedido BT-1001", "A política da loja não informa o prazo para reclamar de um defeito". Ele seguiu ao pé da letra a última linha da instrução, quando a política não diz, não prometa: passe a vez. Sem dados, a política nunca diz nada.
+
+Veja o caminho de cada pergunta no mesmo desenho da figura 2.1. Comece pelo R12, o do Bruno perguntando do pedido da Ana:
+
+<GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="caminhos" gravacao={gravacaoMedir} referencia={referencia} numero="2.3" legenda="O caminho de cada pergunta de referência no grafo do agente. O número em cada caminho é quantas perguntas foram por ele." />
 
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
 Pela nota, sim. Pelo tipo de erro, não. O que respondia tudo "respondeu" a pergunta do Bruno sobre o pedido da Ana, e mostrou a compra de uma pessoa para outra. Este errou sempre para o lado seguro: passou a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.

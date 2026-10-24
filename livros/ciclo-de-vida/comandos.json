@@ -9,6 +9,9 @@
     "sempre-responder": {
       "em": "marcos/cap-01",
       "comando": "uv run python -c \"from baseline import avaliar; from contrato import Decisao, carregar_referencia; p = avaliar(lambda q: Decisao.RESPONDER, carregar_referencia()); [print(f'{d:<14} {c:>2} de {t:>2}') for d, (c, t) in p.items()]\""
+    },
+    "grafo-02": {
+      "comando": "uv run python -c \"from agente import montar; from test_agente import falso; from contrato import Decisao; g = montar(falso(Decisao.PASSAR)).get_graph(); print(*sorted(f'{a.source} -> {a.target}' + (' (escolhe)' if a.conditional else '') for a in g.edges), sep=chr(10))\""
     }
   }
 }

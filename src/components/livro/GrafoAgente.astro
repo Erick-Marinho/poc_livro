@@ -1,0 +1,131 @@
+---
+/**
+ * Figura interativa: o grafo do agente, montado das setas do grafo real (a saída gravada do comando grafo-02).
+ * Dois modos. "desenho": o leitor clica num nó e vê o que ele faz, se chama o modelo e o que põe no estado.
+ * "caminhos": depois da nota, o leitor clica numa das perguntas de referência e vê o caminho que ela percorreu,
+ * com a decisão e o motivo gravados do modelo. O que a figura conta dos nós vem de figuras/grafo-NN.json.
+ */
+import { setas, camadas, caminhosDaGravacao } from "../../lib/grafoAgente.ts";
+import { resumirGravacao } from "../../lib/ideCapitulo.ts";
+
+type Info = { rotulo?: string; papel: string; modelo?: "decide" | "escreve" | "não"; escreve?: string[] };
+interface Props {
+  arestas: { saida: [string, string][] };
+  nos: { nos: Record<string, Info> };
+  modo: "desenho" | "caminhos";
+  gravacao?: Record<string, any>;
+  referencia?: string;
+  numero: string;
+  legenda: string;
+}
+const { arestas, nos, modo, gravacao, referencia, numero, legenda } = Astro.props;
+const s = setas(arestas.saida);
+const niveis = camadas(s);
+const todos = niveis.flat();
+const faltam = todos.filter((n) => !nos.nos[n]), sobram = Object.keys(nos.nos).filter((n) => !todos.includes(n));
+if (faltam.length || sobram.length) throw new Error(`GrafoAgente: a figura e o grafo não batem (faltam ${faltam.join(", ") || "nenhum"}; sobram ${sobram.join(", ") || "nenhum"})`);
+const caminhos = modo === "caminhos" ? caminhosDaGravacao(gravacao!, referencia!) : [];
+const resumo = modo === "caminhos" ? resumirGravacao(gravacao!) : null;
+const rotulo = (n: string) => nos.nos[n].rotulo ?? n;
+const DECISAO: Record<string, string> = { responder: "responder", abrir_chamado: "abrir chamado", recusar: "recusar", passar: "passar a vez" };
+const contagem = (n: string) => caminhos.filter((c) => c.decidiu === n).length;
+const escolheNa = (i: number) => s.some((x) => x.escolhe && niveis[i].includes(x.para));
+const dados = { modo, nos: Object.fromEntries(todos.map((n) => [n, { ...nos.nos[n], rotulo: rotulo(n) }])), caminhos, decisao: DECISAO };
+---
+<figure class="grafo-agente largo" data-grafo data-modo={modo}>
+  <div class="ga-quadro">
+    {modo === "caminhos" && (
+      <div class="ga-perguntas" role="group" aria-label="As perguntas de referência">
+        {caminhos.map((c) => (
+          <button type="button" data-id={c.id} class={c.decidiu === c.esperado ? "ga-certo" : "ga-errado"} aria-pressed="false"
+            title={c.pergunta}>{c.id}<i aria-hidden="true">{c.decidiu === c.esperado ? "✓" : "✗"}</i></button>
+        ))}
+      </div>
+    )}
+    <div class="ga-grafo">
+      {niveis.map((camada, i) => (
+        <>
+          {i > 0 && <div class="ga-seta" aria-hidden="true">{escolheNa(i) ? <span>a seta que escolhe: um caminho só, pela decisão</span> : "↓"}</div>}
+          <div class="ga-camada">
+            {camada.map((n) => (
+              <button type="button" class="ga-no" data-no={n} data-modelo={nos.nos[n].modelo ?? ""} disabled={modo === "caminhos"}>
+                <b>{rotulo(n)}</b>
+                {nos.nos[n].modelo && nos.nos[n].modelo !== "não" && <small>{nos.nos[n].modelo === "decide" ? "o modelo decide" : "o modelo escreve"}</small>}
+                {nos.nos[n].modelo === "não" && <small>frase fixa</small>}
+                {modo === "caminhos" && n in DECISAO && <em>{contagem(n)}</em>}
+              </button>
+            ))}
+          </div>
+        </>
+      ))}
+    </div>
+    <div class="ga-painel" aria-live="polite" data-painel></div>
+  </div>
+  <figcaption><b>Figura {numero}</b> · {legenda}{resumo && <> Decisões e motivos do {resumo.modelo}, gravados em {resumo.quando.split("-").reverse().join("/")}.</>}</figcaption>
+  <script type="application/json" data-dados set:html={JSON.stringify(dados).replace(/</g, "\\u003c")} />
+</figure>
+
+<script>
+  type Caminho = { id: string; pergunta: string; esperado: string; decidiu: string; motivo: string; escrita: string | null };
+  type Dados = { modo: string; nos: Record<string, { rotulo: string; papel: string; modelo?: string; escreve?: string[] }>; caminhos: Caminho[]; decisao: Record<string, string> };
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+  document.querySelectorAll<HTMLElement>("[data-grafo]").forEach((fig) => {
+    const d: Dados = JSON.parse(fig.querySelector("[data-dados]")!.textContent!);
+    const painel = fig.querySelector<HTMLElement>("[data-painel]")!;
+    const nos = [...fig.querySelectorAll<HTMLButtonElement>(".ga-no")];
+    const MODELO: Record<string, string> = { decide: "chama o modelo, para decidir", escreve: "chama o modelo, para escrever", "não": "não chama o modelo" };
+    const verNo = (n: string) => {
+      const i = d.nos[n];
+      nos.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.no === n)));
+      painel.innerHTML = `<p class="ga-titulo">${esc(i.rotulo)}</p><p>${esc(i.papel)}</p>`
+        + (i.modelo ? `<p class="ga-fato">${MODELO[i.modelo]}</p>` : "")
+        + (i.escreve ? `<p class="ga-fato">põe no estado: <code>${i.escreve.map(esc).join("</code>, <code>")}</code></p>` : "");
+    };
+    const verCaminho = (c: Caminho) => {
+      fig.querySelectorAll<HTMLButtonElement>(".ga-perguntas button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.id === c.id)));
+      const caminho = new Set(["__start__", "decidir", c.decidiu, "__end__"]);
+      nos.forEach((b) => b.classList.toggle("ga-no-caminho", caminho.has(b.dataset.no!)));
+      const certo = c.decidiu === c.esperado;
+      painel.innerHTML = `<p class="ga-titulo">${c.id} · “${esc(c.pergunta)}”</p>`
+        + `<p class="${certo ? "ga-ok" : "ga-nao"}">${certo ? "✓" : "✗"} O contrato pede <b>${d.decisao[c.esperado]}</b>; o agente decidiu <b>${d.decisao[c.decidiu]}</b>.</p>`
+        + `<p class="ga-fato">o motivo que o modelo deu: “${esc(c.motivo)}”</p>`
+        + `<p class="ga-fato">${c.escrita ? `o que ele escreveu ao cliente: “${esc(c.escrita)}”` : "a resposta ao cliente é a frase fixa do caminho, sem chamar o modelo"}</p>`;
+    };
+    if (d.modo === "desenho") {
+      nos.forEach((b) => b.addEventListener("click", () => verNo(b.dataset.no!)));
+      verNo("decidir");
+    } else {
+      fig.querySelectorAll<HTMLButtonElement>(".ga-perguntas button").forEach((b) => b.addEventListener("click", () => verCaminho(d.caminhos.find((c) => c.id === b.dataset.id)!)));
+      verCaminho(d.caminhos.find((c) => c.id === "R12") ?? d.caminhos[0]);
+    }
+  });
+</script>
+
+<style is:global>
+  .grafo-agente { margin: 1.6em auto 2em; max-width: 920px }
+  .ga-quadro { display: grid; gap: 14px; padding: 18px; border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); font: 15px/1.5 var(--f-ui) }
+  .ga-perguntas { display: flex; flex-wrap: wrap; gap: 6px }
+  .ga-perguntas button { display: inline-flex; gap: 4px; align-items: center; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--linha); background: var(--papel); font: 500 13px var(--f-mono); cursor: pointer }
+  .ga-perguntas button i { font-style: normal }
+  .ga-perguntas .ga-certo i { color: var(--ok) } .ga-perguntas .ga-errado i { color: var(--aviso) }
+  .ga-perguntas button[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .ga-grafo { display: grid; gap: 4px; justify-items: center }
+  .ga-camada { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px }
+  .ga-seta { color: var(--ink-2); font: 13px var(--f-ui); text-align: center; line-height: 1.3 }
+  .ga-seta span { display: inline-block; padding: 2px 10px; border: 1px dashed var(--linha); border-radius: 999px }
+  .ga-no { display: grid; justify-items: center; gap: 1px; min-width: 120px; padding: 7px 14px; border-radius: 10px; border: 1px solid var(--linha); background: var(--papel); color: var(--ink); cursor: pointer; position: relative }
+  .ga-no:disabled { cursor: default; opacity: 1 }
+  .ga-no b { font-weight: 600 } .ga-no small { font-size: 12px; color: var(--ink-2) }
+  .ga-no[data-modelo="decide"], .ga-no[data-modelo="escreve"] { border-color: color-mix(in srgb, var(--acento) 55%, var(--linha)) }
+  .ga-no[aria-pressed="true"], .ga-no.ga-no-caminho { border-color: var(--acento); box-shadow: inset 0 0 0 2px var(--acento); background: color-mix(in srgb, var(--acento) 10%, var(--papel)) }
+  .ga-no em { position: absolute; top: -9px; right: -9px; min-width: 22px; height: 22px; border-radius: 11px; background: var(--ink); color: var(--papel); font: 600 12px/22px var(--f-ui); font-style: normal }
+  .ga-painel { border-top: 1px solid var(--linha); padding-top: 12px; min-height: 120px }
+  .ga-painel p { margin: 0 0 6px }
+  .ga-titulo { font-weight: 600 }
+  .ga-fato { color: var(--ink-2); font-size: 14px }
+  .ga-ok { color: var(--ok) } .ga-nao { color: var(--aviso) }
+  .ga-ok b, .ga-nao b { color: var(--ink) }
+  .grafo-agente figcaption { font: 14px/1.5 var(--f-ui); color: var(--ink-2); margin-top: 10px }
+  .grafo-agente figcaption b { color: var(--ink); font-weight: 600 }
+  @media (max-width: 520px) { .ga-no { min-width: 0; padding: 6px 10px } .ga-quadro { padding: 12px } }
+</style>

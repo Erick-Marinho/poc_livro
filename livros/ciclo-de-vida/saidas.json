@@ -47,6 +47,48 @@
       ]
     ]
   },
+  "grafo-02": {
+    "comando": "uv run python -c \"from agente import montar; from test_agente import falso; from contrato import Decisao; g = montar(falso(Decisao.PASSAR)).get_graph(); print(*sorted(f'{a.source} -> {a.target}' + (' (escolhe)' if a.conditional else '') for a in g.edges), sep=chr(10))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "__start__ -> decidir",
+        ""
+      ],
+      [
+        "abrir_chamado -> __end__",
+        ""
+      ],
+      [
+        "decidir -> abrir_chamado (escolhe)",
+        ""
+      ],
+      [
+        "decidir -> passar (escolhe)",
+        ""
+      ],
+      [
+        "decidir -> recusar (escolhe)",
+        ""
+      ],
+      [
+        "decidir -> responder (escolhe)",
+        ""
+      ],
+      [
+        "passar -> __end__",
+        ""
+      ],
+      [
+        "recusar -> __end__",
+        ""
+      ],
+      [
+        "responder -> __end__",
+        ""
+      ]
+    ]
+  },
   "r01-uv-init": {
     "comando": "uv init atendimento-bemtevi",
     "saiu_com": 0,
@@ -70,11 +112,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 8ms",
+        "Resolved 6 packages in 151ms",
         ""
       ],
       [
-        "Installed 5 packages in 71ms",
+        "Installed 5 packages in 73ms",
         ""
       ],
       [
@@ -104,11 +146,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 9ms",
+        "Resolved 12 packages in 93ms",
         ""
       ],
       [
-        "Installed 5 packages in 219ms",
+        "Installed 5 packages in 233ms",
         ""
       ],
       [
@@ -442,7 +484,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7ff57abd0820>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f89f49d4820>)",
         "err"
       ],
       [
@@ -466,7 +508,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.12s",
+        "2 failed, 5 passed in 0.14s",
         "err"
       ]
     ]
@@ -526,11 +568,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 45 packages in 20ms",
+        "Resolved 45 packages in 251ms",
         ""
       ],
       [
-        "Installed 32 packages in 1.02s",
+        "Installed 32 packages in 1.33s",
         ""
       ],
       [
@@ -672,7 +714,7 @@
         "err"
       ],
       [
-        "1 failed in 0.91s",
+        "1 failed in 1.00s",
         "err"
       ]
     ]
@@ -686,7 +728,7 @@
         ""
       ],
       [
-        "1 passed in 0.22s",
+        "1 passed in 0.27s",
         "okv"
       ]
     ]
@@ -700,7 +742,7 @@
         ""
       ],
       [
-        "11 passed in 0.30s",
+        "11 passed in 0.35s",
         "okv"
       ]
     ]
@@ -710,11 +752,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 50 packages in 26ms",
+        "Resolved 50 packages in 117ms",
         ""
       ],
       [
-        "Installed 5 packages in 2.09s",
+        "Installed 5 packages in 2.24s",
         ""
       ],
       [
