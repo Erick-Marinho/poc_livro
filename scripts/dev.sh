@@ -17,5 +17,6 @@ trap 'npx astro dev stop >/dev/null 2>&1; kill 0' EXIT
 (cd "$LANDING" && npx vite build --logLevel warn)
 (cd "$LANDING" && npx vite build --watch --logLevel warn) &
 (cd "$LANDING" && npx vite preview --port "$PORTA_LANDING" --strictPort --host 127.0.0.1 --logLevel warn) &
-URL_LANDING="http://localhost:$PORTA_LANDING" PUBLIC_URL_INICIO=/ npx astro dev "$@"
+# --force: o conteúdo é remontado do zero; um astro dev antigo pode ter gravado o cache com um esquema que já mudou
+URL_LANDING="http://localhost:$PORTA_LANDING" PUBLIC_URL_INICIO=/ npx astro dev --force "$@"
 wait
