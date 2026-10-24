@@ -1,15 +1,22 @@
 /* A IDE do capítulo: em cima, o caminho (os passos por seção); no meio, a IDE; embaixo, o passador, no papel do livro. */
 .ic .ide-codigo { height: 340px }
 .ic .ide-terminal { height: 180px }
-.ic-trilha { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 9px 14px; background: var(--ide-lateral); border-bottom: 1px solid var(--ide-linha) }
+/* o conjunto não é uma janela: a trilha (o mapa do livro, nas cores do papel) fica em cima, com um respiro, e a janela
+   da IDE embaixo, com a própria moldura. Coladas, a trilha parecia parte da ferramenta e quebrava a imersão. */
+.ide.ic { background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; display: grid; gap: 14px }
+.ic-janela { position: relative; overflow: hidden; border-radius: 12px; background: var(--ide-fundo); border: 1px solid #262a32; box-shadow: 0 14px 40px rgba(20, 14, 4, .22) }
+.ic-trilha { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 9px 14px; border-radius: 12px; background: var(--papel-2); border: 1px solid var(--linha) }
 .ic-secao { display: flex; align-items: center; gap: 8px; min-width: 0 }
-.ic-secao-nome { font: 12px var(--f-ui); color: var(--ide-fraco); white-space: nowrap }
-.ic-secao-nome b { font: 600 11.5px var(--f-mono); color: var(--ide-acento); margin-right: 2px }
+.ic-secao-nome { font: 12px var(--f-ui); color: var(--ink-2); white-space: nowrap }
+.ic-secao-nome b { font: 600 11.5px var(--f-mono); color: var(--acento); margin-right: 2px }
 .ic-pontos { display: flex; gap: 4px }
-.ic-ponto { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #3a4150; background: #22262e; font: 600 11px var(--f-mono) !important; color: var(--ide-fraco) !important; padding: 0 }
-.ic-ponto.ic-erro { border-color: #6b3a3a } .ic-ponto.ic-engano { border-color: #6b5a2e } .ic-ponto.ic-ok { border-color: #2e5a44 }
-.ic-ponto.ic-feito { background: #1f3b2e; color: var(--ide-verde) !important }
-.ic-ponto.ic-atual { border: 2px solid var(--ide-acento); color: #fff !important }
+.ic-ponto { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--linha); background: var(--papel); font: 600 11px var(--f-mono) !important; color: var(--ink-2) !important; padding: 0 }
+.ic-ponto:hover { border-color: var(--acento) }
+.ic-ponto.ic-erro { border-color: color-mix(in srgb, #d64545 55%, var(--linha)) }
+.ic-ponto.ic-engano { border-color: color-mix(in srgb, var(--aviso) 55%, var(--linha)) }
+.ic-ponto.ic-ok { border-color: color-mix(in srgb, var(--ok) 55%, var(--linha)) }
+.ic-ponto.ic-feito { background: color-mix(in srgb, var(--ok) 16%, var(--papel)); color: var(--ok) !important }
+.ic-ponto.ic-atual { border: 2px solid var(--acento); color: var(--ink) !important }
 .ic-vazio { margin: 4px 8px; font-size: 12px; color: var(--ide-fraco); font-style: italic }
 .ic-sem-arquivo { display: grid; place-items: center } .ic-sem-arquivo p { color: var(--ide-fraco); font-size: 13px }
 .ide-explorador li button.ic-apagado span { text-decoration: line-through } .ic-apagado .ide-git { color: var(--ide-vermelho) }

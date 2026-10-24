@@ -256,6 +256,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       </div>)}
     </nav>
 
+    {/* a janela da IDE: separada da trilha, que é o mapa do livro e não parte da ferramenta */}
+    <div className="ic-janela">
     <div className="ide-barra">
       <span className="ide-luzes" aria-hidden="true"><i /><i /><i /></span>
       <span className="ide-titulo">atendimento-bemtevi{vista ? ` — ${vista}` : ""}</span>
@@ -338,5 +340,6 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       <span>UTF-8</span><span>LF</span>
       {pyRodape && <span className="ic-st-py">Python {pyRodape}</span>}
     </footer>
+    </div>
   </div>;
 }
