@@ -74,7 +74,7 @@
         ""
       ],
       [
-        "Installed 5 packages in 22ms",
+        "Installed 5 packages in 75ms",
         ""
       ],
       [
@@ -104,11 +104,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 9ms",
+        "Resolved 12 packages in 10ms",
         ""
       ],
       [
-        "Installed 5 packages in 86ms",
+        "Installed 5 packages in 292ms",
         ""
       ],
       [
@@ -348,7 +348,7 @@
         ""
       ],
       [
-        "4 passed in 0.10s",
+        "4 passed in 0.09s",
         "okv"
       ]
     ]
@@ -442,7 +442,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7fd05b3e4660>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x7f95f88e4660>)",
         "err"
       ],
       [
@@ -466,7 +466,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.12s",
+        "2 failed, 5 passed in 0.10s",
         "err"
       ]
     ]
@@ -480,7 +480,7 @@
         ""
       ],
       [
-        "7 passed in 0.09s",
+        "7 passed in 0.11s",
         "okv"
       ]
     ]
@@ -518,6 +518,162 @@
       [
         "nota de partida: 5 de 20 (25%)",
         ""
+      ]
+    ]
+  },
+  "r02-uv-add-langgraph": {
+    "comando": "uv add langgraph",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Resolved 45 packages in 24ms",
+        ""
+      ],
+      [
+        "Installed 32 packages in 989ms",
+        ""
+      ],
+      [
+        " + anyio==4.15.1",
+        ""
+      ],
+      [
+        " + certifi==2026.7.22",
+        ""
+      ],
+      [
+        " + charset-normalizer==3.5.2",
+        ""
+      ],
+      [
+        " + distro==1.9.0",
+        ""
+      ],
+      [
+        " + h11==0.16.0",
+        ""
+      ],
+      [
+        " + httpcore==1.0.9",
+        ""
+      ],
+      [
+        " + httpcore2==2.13.1",
+        ""
+      ],
+      [
+        " + httpx==0.28.1",
+        ""
+      ],
+      [
+        " + httpx2==2.13.1",
+        ""
+      ],
+      [
+        " + idna==3.20",
+        ""
+      ],
+      [
+        " + jsonpatch==1.35",
+        ""
+      ],
+      [
+        " + jsonpointer==3.2.1",
+        ""
+      ],
+      [
+        " + langchain-core==1.6.11",
+        ""
+      ],
+      [
+        " + langchain-protocol==0.0.19",
+        ""
+      ],
+      [
+        " + langgraph==1.2.15",
+        ""
+      ],
+      [
+        " + langgraph-checkpoint==4.3.0",
+        ""
+      ],
+      [
+        " + langgraph-prebuilt==1.1.1",
+        ""
+      ],
+      [
+        " + langgraph-sdk==0.4.7",
+        ""
+      ],
+      [
+        " + langsmith==0.14.9",
+        ""
+      ],
+      [
+        " + orjson==3.13.0",
+        ""
+      ],
+      [
+        " + ormsgpack==1.13.0",
+        ""
+      ],
+      [
+        " + pyyaml==6.0.3",
+        ""
+      ],
+      [
+        " + requests==2.34.2",
+        ""
+      ],
+      [
+        " + requests-toolbelt==1.0.0",
+        ""
+      ],
+      [
+        " + sniffio==1.3.1",
+        ""
+      ],
+      [
+        " + tenacity==9.2.1",
+        ""
+      ],
+      [
+        " + truststore==0.10.5",
+        ""
+      ],
+      [
+        " + urllib3==2.8.0",
+        ""
+      ],
+      [
+        " + uuid-utils==0.17.1",
+        ""
+      ],
+      [
+        " + websockets==16.1.1",
+        ""
+      ],
+      [
+        " + xxhash==4.0.1",
+        ""
+      ],
+      [
+        " + zstandard==0.25.0",
+        ""
+      ]
+    ]
+  },
+  "r02-pytest": {
+    "comando": "uv run pytest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "...........                                                              [100%]",
+        ""
+      ],
+      [
+        "11 passed in 1.00s",
+        "okv"
       ]
     ]
   }

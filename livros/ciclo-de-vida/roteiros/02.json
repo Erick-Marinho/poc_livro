@@ -1,0 +1,14 @@
+{
+  "capitulo": 2,
+  "sobre": "O caminho do código do capítulo 2, que parte de onde o capítulo 1 terminou. Ainda em construção: nesta etapa (1), só o grafo com o modelo falso; os blocos, as apostas e os erros do caminho entram na etapa 4.",
+  "passos": [
+    { "acao": "rodar", "id": "r02-uv-add-langgraph", "comando": "uv add langgraph", "espera": 0,
+      "nota": "A LangGraph monta o agente como um grafo: cada passo é um nó, e as setas dizem qual vem depois." },
+    { "acao": "escrever", "arquivo": "agente.py", "partes": [{ "linhas": "1-73" }],
+      "nota": "O agente: decide o que o contrato manda e segue o caminho daquela decisão." },
+    { "acao": "escrever", "arquivo": "test_agente.py", "partes": [{ "linhas": "1-43" }],
+      "nota": "Os testes do grafo, com um modelo falso: nenhuma chamada paga, e a mesma resposta toda vez." },
+    { "acao": "rodar", "id": "r02-pytest", "comando": "uv run pytest -q", "espera": 0,
+      "nota": "Os testes do capítulo 1 e os do grafo." }
+  ]
+}

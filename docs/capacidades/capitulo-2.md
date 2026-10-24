@@ -23,18 +23,20 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (0b) O repositório do leitor tem `cap-NN/fim` e, do 2 em diante, `cap-NN/inicio` (o mesmo commit do fim anterior).
   O capítulo 1 começa numa pasta vazia: o livro não mostra `git checkout` para ele.
 - (0b) O capítulo seguinte herda o `.venv` do anterior, recriado em silêncio: o leitor não vê o uv criar de novo.
+- (1) O `langchain-anthropic` entra na etapa 3, quando o modelo de verdade é usado: o leitor não instala antes.
+- (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
+- (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 
-## Etapa atual: 0b
+## Etapa atual: 1
 
-Arquivos: `marcos/cap-01/` (a cópia do `projeto/`), `scripts/saidas.py`, o capítulo 1 e os testes que leem o projeto.
-O que muda: o roteiro NN confere contra `marcos/cap-NN/` (ou contra o `projeto/`, enquanto o capítulo não fechou);
-o roteiro seguinte parte do fim do anterior; no fim, o `projeto/` tem que ser igual ao fim do último roteiro. O
-repositório do leitor ganha `cap-NN/fim` e, a partir do 2, `cap-NN/inicio`. Evidência: a conferência verde; o
-gravador recusando um arquivo no `projeto/` que nenhum roteiro construiu; um roteiro 02 de teste, numa cópia, que
-parte do fim do 01 e gera `cap-02/inicio`. Fica fora: qualquer código do capítulo 2.
+Arquivos: `projeto/agente.py` (o grafo), `projeto/test_agente.py` (o modelo falso), `pyproject.toml` e `uv.lock`
+(`uv add langgraph`), `roteiros/02.json` (o caminho, ainda curto) e o gravador, que aceita capítulo sem passos.
+Evidência: os testes do grafo passam sem internet e sem chave; tirar um caminho do grafo faz o teste falhar; o
+desenho do grafo saído da LangGraph. Fica fora: modelo de verdade, gravação, IDE e texto.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 0a | `1a38db6` | o teste do formato falha no capítulo 1 (partes repetiam 1.6) e passa depois | 24/10 |
+| 0b | `0a6551c` | o gravador recusa arquivo sem roteiro; roteiro 02 de teste parte do fim do 01 | 24/10 |

@@ -5,6 +5,7 @@ description = "O agente de atendimento da Casa Bem-te-vi, uma loja inventada par
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "langgraph>=1.2.15",
     "pydantic>=2.14.1",
 ]
 

@@ -117,8 +117,12 @@ def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Pa
     saidas, estados = {}, []
     env = ambiente(dados_roteiro.get("versoes_ate", versoes_ate))
     marcos, num = {}, roteiro.stem
+    # um capítulo ainda sem passos (livros/<livro>/passos/<n>.json) está em construção: roda, mas não entra no
+    # repositório do leitor, que fica no fim do último capítulo com passos
+    passos_cap = RAIZ / "livros" / livro / "passos" / roteiro.name
+    repositorio = repositorio and passos_cap.exists()
     if repositorio:
-        cap = json.loads((RAIZ / "livros" / livro / "passos" / roteiro.name).read_text(encoding="utf-8"))
+        cap = json.loads(passos_cap.read_text(encoding="utf-8"))
         marcos = {p["ate"]: (f"cap-{num}/passo-{i:02d}", f"capítulo {int(num)}, passo {i}: {p['titulo']}") for i, p in enumerate(cap["passos"], start=1)}
     pasta = trabalho / Path(leitor).name   # só passa a existir quando o roteiro cria (o `uv init`, ou o primeiro arquivo)
     if inicio:
@@ -288,7 +292,9 @@ def tags_esperadas(livro: str, roteiros: list[Path]) -> set[str]:
     """As tags que o livro promete: uma por passo, o fim de cada capítulo e o início de cada um a partir do 2."""
     tags = set()
     for i, roteiro in enumerate(roteiros):
-        cap = json.loads((RAIZ / "livros" / livro / "passos" / roteiro.name).read_text(encoding="utf-8"))
+        if not (arquivo := RAIZ / "livros" / livro / "passos" / roteiro.name).exists():
+            continue
+        cap = json.loads(arquivo.read_text(encoding="utf-8"))
         tags |= {f"cap-{roteiro.stem}/passo-{j:02d}" for j in range(1, len(cap["passos"]) + 1)} | {f"cap-{roteiro.stem}/fim"}
         if i:
             tags.add(f"cap-{roteiro.stem}/inicio")
