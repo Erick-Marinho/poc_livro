@@ -9,6 +9,7 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
 
 ## Decisões
 
+- (24/10/2026, a pedido do Erick) A figura começa pausada: nada toca sozinho ao chegar na tela; quem dá o play é o leitor.
 - (etapa 1) SVG desenhado no servidor por um componente Astro, animado com `<script>` sem framework, como
   `Listagem` e `Classificador`. React Flow não: ele é um editor de grafos (arrastar, zoom), pede React,
   `@astrojs/react` e o CSS próprio, e um container com altura fixa. Aqui o grafo é fixo, e precisamos de

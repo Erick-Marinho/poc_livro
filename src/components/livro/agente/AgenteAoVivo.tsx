@@ -314,20 +314,11 @@ export default function AgenteAoVivo({ cenarios }: { cenarios: Cenario[] }) {
   const [calmo, setCalmo] = useState(false);
   const s = useSyncExternalStore(r.assinar, r.get, r.get);
 
-  /* ao hidratar: volta ao começo e espera o grafo aparecer na tela para tocar R01 e depois R12 */
+  /* ao hidratar: volta ao começo do R01 e fica pausada; quem dá o play é o leitor (pedido do Erick, 24/10/2026) */
   useEffect(() => {
-    const reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setCalmo(reduz);
+    setCalmo(matchMedia("(prefers-reduced-motion: reduce)").matches);
     if (lerDireto()) return;   /* modo direto: fica no fim do R01, como o servidor desenhou */
-    r.definir({ cen: 0, passo: 0, t: 0, tocando: false, sequencia: !reduz });
-    if (reduz || !("IntersectionObserver" in window)) return;
-    const alvo = raiz.current?.querySelector(".aav-grafo");
-    if (!alvo) return;
-    const io = new IntersectionObserver((es) => {
-      if (es.some((e) => e.isIntersecting)) { io.disconnect(); if (r.get().sequencia) r.definir({ tocando: true }); }
-    }, { threshold: 0.5 });
-    io.observe(alvo);
-    return () => io.disconnect();
+    r.definir({ cen: 0, passo: 0, t: 0, tocando: false, sequencia: false });
   }, [r]);
 
   /* o relógio anda enquanto toca */
