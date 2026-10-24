@@ -136,5 +136,11 @@ o caminho aparece na página.
 - (8b) O repositório do leitor mora em `Erick-Marinho/atendimento-bemtevi` (decisão do Erick, 24/10/2026). `npm run leitor`
   gera ele em `.leitor/atendimento-bemtevi`: o `.git` que o `uv init` criou, um commit e uma tag `cap-01/passo-NN` no fim de
   cada passo, datas fixas (sai igual toda vez). A IDE mostra o checkout quando o `passos/01.json` tiver `repositorio`.
+- (8c) A IDE ganha a barra da direita e o rodapé, como o VS Code. Na barra, abas que simulam os chats de IA
+  (Claude Code e Codex): o texto do passo, dos blocos, das palavras ("o que é…?") e das perguntas vira uma conversa,
+  com as respostas do leitor como mensagens dele e o pensamento do autor como mensagem do autor. É simulação, e diz:
+  "a conversa foi escrita pelos autores do livro, não por um modelo". O "seguir" mora no chat.
+- (8c) O rodapé mostra o ramo do git (depois do `uv init`), os problemas do último comando e o Python do
+  `.python-version`. A "sua vez" flutua sobre o editor; abaixo de 1000 px, o chat desce para baixo da IDE.
 
 **Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.
