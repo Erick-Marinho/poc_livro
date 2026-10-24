@@ -345,7 +345,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
         <div className="ic-chat-abas" role="tablist">
           {(["Claude Code", "Codex"] as const).map((n) => <button key={n} type="button" role="tab" aria-selected={aba === n} onClick={() => setAba(n)}>{n}</button>)}
         </div>
-        <div className="ic-chat-topo"><b>{passo.titulo}</b><span>passo {passo.n} de {passos.length} · seção {passo.secao}</span></div>
+        <div className="ic-chat-topo"><b>{passo.titulo}</b><span>passo {passo.n} de {passos.length} · parte {passo.secao}</span></div>
         <div className="ic-conversa" ref={conversa} aria-live="polite">
           {historia}
           {digitando && <div className="ic-msg ic-ia" key="digitando"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>}

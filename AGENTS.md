@@ -6,6 +6,7 @@ Livros técnicos em que o código se monta e o terminal roda no meio do texto. L
 
 - **`docs/PRINCIPIOS.md`**: o leitor aprende com o que faz, não com o que vê. Toda peça nova passa pelo checklist
   de lá (que pergunta responde, o que o leitor faz, o que substitui, o que vira no modo direto, se é do projeto real).
+- **`docs/FORMATO.md`**: as partes de um capítulo, na ordem; o `testes/formato.test.mjs` confere.
 - **`docs/capacidades/`**: um plano por capacidade, em etapas. Execute só a etapa detalhada, um commit de produto por
   etapa, mostre a evidência real e pare: sem o ok do responsável, a etapa não fecha. O registro vai no fim do plano.
 

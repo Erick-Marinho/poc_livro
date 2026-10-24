@@ -9,7 +9,7 @@ const json = (p) => JSON.parse(ler(p));
 const entrada = () => ({
   roteiro: json("livros/ciclo-de-vida/roteiros/01.json"), estados: json("livros/ciclo-de-vida/roteiros/01.estados.json"),
   saidas: json("livros/ciclo-de-vida/saidas.json"), capitulo: json("livros/ciclo-de-vida/passos/01.json"),
-  secoes: { "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota de partida" },
+  secoes: { "1.5a": "O projeto", "1.5b": "O contrato", "1.5c": "As perguntas", "1.5d": "A nota de partida" },
   glossario: json("livros/ciclo-de-vida/glossario.json"),
 });
 const { acoes, passos } = await montarIde(entrada());
