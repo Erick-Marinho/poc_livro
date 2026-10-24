@@ -44,5 +44,6 @@ mesmo quando contraria o que se esperava. O nome passa a dizer isso: **Experimen
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `c949877` (e o FontMarAI) | `npm test` com 52 testes (um novo: os endereços antigos redirecionam); pelo túnel, `/experimentos/`, o JSON e o experimento abrem, e `/guias/` e `/guias/segundo-cerebro-local/` levam aos novos; a landing com o card Experimentos, "O experimento do dia" e "Experimentos recentes"; capturas | pendente |
 
 (redação: claude-opus-5-5)
