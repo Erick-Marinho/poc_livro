@@ -2,6 +2,7 @@
 
     python3 scripts/saidas.py <livro>              grava livros/<livro>/saidas.json
     python3 scripts/saidas.py <livro> --conferir   roda de novo e falha se a saída mudou
+    python3 scripts/saidas.py <livro> --leitor DIR  grava, e gera em DIR o repositório do leitor (uma tag por passo)
 
 Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros/<livro>/projeto,
 depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
@@ -91,16 +92,25 @@ def ambiente(versoes_ate: str | None) -> dict:
     return {**os.environ, "UV_LINK_MODE": "copy", **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
 
 
-def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = None) -> tuple[dict, list]:
-    """Aplica um roteiro numa pasta vazia; devolve a saída de cada `rodar` e o estado do código depois de cada passo."""
+def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = None, repositorio: Path | None = None) -> tuple[dict, list]:
+    """Aplica um roteiro numa pasta vazia; devolve a saída de cada `rodar` e o estado do código depois de cada passo.
+    Com `repositorio`: no fim de cada passo do capítulo (livros/<livro>/passos/<n>.json), faz um commit e uma tag na
+    pasta (que é um repositório git desde o `uv init`), e no fim copia esse repositório para `repositorio`."""
     projeto = RAIZ / "livros" / livro / "projeto"
     dados_roteiro = json.loads(roteiro.read_text(encoding="utf-8"))
     passos = dados_roteiro["passos"]
     saidas, estados = {}, []
     env = ambiente(dados_roteiro.get("versoes_ate", versoes_ate))
+    marcos = {}
+    if repositorio:
+        cap = json.loads((RAIZ / "livros" / livro / "passos" / roteiro.name).read_text(encoding="utf-8"))
+        num = roteiro.stem
+        marcos = {p["ate"]: (f"cap-{num}/passo-{i:02d}", f"capítulo {int(num)}, passo {i}: {p['titulo']}") for i, p in enumerate(cap["passos"], start=1)}
     with tempfile.TemporaryDirectory(prefix="roteiro-") as tmp:
         pasta = Path(tmp) / Path(leitor).name   # só passa a existir quando o roteiro cria (o `uv init`, ou o primeiro arquivo)
         for n, passo in enumerate(passos, start=1):
+            if n - 1 in marcos:
+                marcar(pasta, *marcos[n - 1], n - 1)
             onde, acao = f"{roteiro.name}, passo {n} ({passo['acao']})", passo["acao"]
             if acao == "copiar":
                 pasta.mkdir(exist_ok=True)
@@ -164,14 +174,41 @@ def construir(livro: str, roteiro: Path, leitor: str, versoes_ate: str | None = 
                 raise RoteiroErrado(f"{onde}: ação desconhecida")
             depois = alvo.read_text(encoding="utf-8")
             estados.append({"passo": n, "arquivo": passo["arquivo"], "conteudo": depois, "alteradas": alteradas(atual, depois)})
+        if len(passos) in marcos:
+            marcar(pasta, *marcos[len(passos)], len(passos))
         feito, real = arquivos(pasta), arquivos(projeto)
         diferentes = sorted(set(feito) ^ set(real)) + [k for k in feito if k in real and feito[k] != real[k]]
         if diferentes:
             raise RoteiroErrado(f"{roteiro.name}: no fim, a pasta não é igual ao projeto real: {', '.join(diferentes)}")
+        if repositorio:
+            if repositorio.exists():
+                shutil.rmtree(repositorio)
+            subprocess.run(["git", "clone", "--quiet", str(pasta), str(repositorio)], check=True)
+            subprocess.run(["git", "-C", str(repositorio), "remote", "remove", "origin"], check=True)
+            tags = subprocess.run(["git", "-C", str(repositorio), "tag", "--list"], check=True, capture_output=True, text=True).stdout.split()
+            if len(tags) != len(marcos):
+                raise RoteiroErrado(f"{roteiro.name}: o repositório do leitor tem {len(tags)} tags, e o capítulo tem {len(marcos)} passos")
     return saidas, estados
 
 
-def rodar(livro: str) -> tuple[dict, dict]:
+GIT_LIVRO = {"GIT_AUTHOR_NAME": "O ciclo de vida de um agente", "GIT_AUTHOR_EMAIL": "livro@fontmar.invalid",
+             "GIT_COMMITTER_NAME": "O ciclo de vida de um agente", "GIT_COMMITTER_EMAIL": "livro@fontmar.invalid"}
+
+
+def marcar(pasta: Path, tag: str, mensagem: str, n: int) -> None:
+    """Um ponto de volta: commit de tudo o que o leitor tem até aqui (o .gitignore do uv deixa o .venv de fora) e a tag.
+    A data é fixa e anda um minuto por passo, para o repositório sair igual toda vez que for gerado."""
+    if not (pasta / ".git").exists():
+        raise RoteiroErrado(f"{tag}: a pasta ainda não é um repositório git (o `uv init` cria um)")
+    env = {**os.environ, **GIT_LIVRO, "GIT_AUTHOR_DATE": f"2026-10-16T12:{n % 60:02d}:00Z", "GIT_COMMITTER_DATE": f"2026-10-16T12:{n % 60:02d}:00Z"}
+    git = lambda *a: subprocess.run(["git", "-C", str(pasta), *a], check=True, capture_output=True, text=True, env=env)
+    git("checkout", "-q", "-B", "main")
+    git("add", "-A")
+    git("commit", "-q", "--allow-empty", "-m", mensagem)
+    git("tag", "-a", tag, "-m", mensagem)
+
+
+def rodar(livro: str, repositorio: Path | None = None) -> tuple[dict, dict]:
     base = RAIZ / "livros" / livro
     conf = json.loads((base / "comandos.json").read_text(encoding="utf-8"))
     projeto = base / "projeto"
@@ -186,7 +223,7 @@ def rodar(livro: str) -> tuple[dict, dict]:
             print(f"aviso: {chave} saiu com {codigo}, o esperado era {esperado}", file=sys.stderr)
     estados = {}
     for roteiro in sorted(p for p in (base / "roteiros").glob("*.json") if not p.name.endswith(".estados.json")):
-        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"], conf.get("versoes_ate"))
+        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"], conf.get("versoes_ate"), repositorio)
         if repetidas := set(do_roteiro) & set(saidas):
             raise RoteiroErrado(f"{roteiro.name}: ids que já existem: {', '.join(sorted(repetidas))}")
         saidas.update(do_roteiro)
@@ -203,9 +240,10 @@ def principal(argv: list[str]) -> int:
         print(__doc__, file=sys.stderr)
         return 2
     livro, conferir = argv[0], "--conferir" in argv
+    repositorio = Path(argv[argv.index("--leitor") + 1]).resolve() if "--leitor" in argv else None
     arquivo = RAIZ / "livros" / livro / "saidas.json"
     try:
-        novas, estados = rodar(livro)
+        novas, estados = rodar(livro, repositorio)
     except RoteiroErrado as erro:
         print(f"roteiro: {erro}", file=sys.stderr)
         return 1

@@ -269,6 +269,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
       {pausa && <div className="ic-suavez" role="note">
         <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
         <span><Md t={pausa} /></span>
+        {passo.volta && <span className="ic-volta">Perdeu o ritmo? <code>git checkout {passo.volta.tag}</code> traz o projeto como estava no começo deste passo, no clone de <a href={passo.volta.repositorio}>{passo.volta.repositorio.replace(/^https:\/\//, "")}</a>.</span>}
       </div>}
 
       {quadro.tipo === "fecha" && <div className="ic-quadro">

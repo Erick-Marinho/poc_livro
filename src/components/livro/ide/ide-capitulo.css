@@ -74,3 +74,4 @@
 .ic-suavez b svg { width: 11px; height: 11px; fill: currentColor }
 .ic-suavez code { background: #1d3552; color: #e6edf6; padding: .05em .35em; border-radius: 4px; font: .88em var(--f-mono) }
 .ic-suavez .ic-volta { font-size: 13.5px; color: #9fb4cc }
+.ic-suavez .ic-volta a { color: #8ec5ff }

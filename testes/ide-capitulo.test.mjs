@@ -88,3 +88,11 @@ test("o livro não monta com um bloco que não está no arquivo, nem com palavra
   const sem = entrada(); sem.roteiro.passos[7].blocos[0].termos = ["palavra-que-nao-existe"];
   await assert.rejects(montarIde(sem), /não está no glossário/);
 });
+
+test("o ponto de volta só aparece com o repositório do leitor, e aponta a tag do fim do passo anterior", async () => {
+  assert.ok(passos.every((p) => !p.volta), "sem repositório, nenhum passo mostra o checkout");
+  const com = entrada(); com.capitulo.repositorio = "https://github.com/Erick-Marinho/atendimento-bemtevi";
+  const { passos: ps } = await montarIde(com);
+  assert.equal(ps[0].volta, undefined);   // o passo 1 começa da pasta vazia: não há para onde voltar
+  assert.equal(ps[4].volta.tag, "cap-01/passo-04");
+});

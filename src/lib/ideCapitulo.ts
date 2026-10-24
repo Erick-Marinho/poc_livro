@@ -22,7 +22,9 @@ export type AcaoIde = { nota: string } & (
   | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
-  objetivo: string; temos: string; engano?: string; pensamento?: Pensamento; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada" };
+  objetivo: string; temos: string; engano?: string; pensamento?: Pensamento; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
+  /** o ponto de volta: a tag do fim do passo anterior, no repositório do leitor (só quando ele existe) */
+  volta?: { repositorio: string; tag: string } };
 
 type DefBloco = { linhas: string; titulo: string; texto: string; termos?: string[]; pergunta?: PerguntaIde };
 type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[] };
@@ -35,7 +37,8 @@ export type Entrada = {
   roteiro: { passos: PassoRoteiro[] };
   estados: Estado[];
   saidas: Record<string, Saida>;
-  capitulo: { autores?: string[]; passos: DefPasso[] };
+  /** `repositorio`: o endereço do repositório do leitor (npm run leitor); sem ele, a IDE não mostra o ponto de volta */
+  capitulo: { autores?: string[]; repositorio?: string; prefixo_tag?: string; passos: DefPasso[] };
   secoes: Record<string, string>;
   glossario: { termos: Record<string, { marca?: string; rotulo?: string; texto: string }> };
   pasta?: string;
@@ -134,7 +137,8 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     const ultimo = runs.at(-1);
     const sinal = !ultimo ? "nada" : p.engano ? "engano" : ultimo.tipo === "rodar" && ultimo.erro ? "erro" : "ok";
     return { n: i + 1, id: p.id, secao: p.secao, nomeSecao: secoes[p.secao], titulo: p.titulo, curta: p.curta, de: p.de, ate: p.ate,
-      objetivo: p.objetivo, temos: p.temos, engano: p.engano, pensamento: p.pensamento, antes: p.antes ?? [], depois: p.depois ?? [], sinal };
+      objetivo: p.objetivo, temos: p.temos, engano: p.engano, pensamento: p.pensamento, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
+    volta: capitulo.repositorio && i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` } : undefined };
   });
   return { acoes, passos, versoes };
 }

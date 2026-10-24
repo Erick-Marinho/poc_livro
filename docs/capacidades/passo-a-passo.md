@@ -133,5 +133,8 @@ o caminho aparece na página.
   não para.
 - (8b) **Ponto de volta**: `git checkout` numa tag por passo, num repositório do leitor gerado pelo roteiro. Só aparece
   na IDE quando o repositório existir de verdade: o livro não mostra comando que não funciona.
+- (8b) O repositório do leitor mora em `Erick-Marinho/atendimento-bemtevi` (decisão do Erick, 24/10/2026). `npm run leitor`
+  gera ele em `.leitor/atendimento-bemtevi`: o `.git` que o `uv init` criou, um commit e uma tag `cap-01/passo-NN` no fim de
+  cada passo, datas fixas (sai igual toda vez). A IDE mostra o checkout quando o `passos/01.json` tiver `repositorio`.
 
 **Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.
