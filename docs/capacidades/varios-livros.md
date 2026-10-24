@@ -37,6 +37,6 @@ loja escritos no código; e o placar guarda no navegador só pelo número do cap
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `a2a7e6b` | nenhum nome do livro atual no `src/` (só um exemplo em comentário); numa cópia com um segundo livro (outra loja, outra pasta), as saídas dos dois gravadas e conferidas, as páginas dos dois montadas e listadas no início; mudar o código do livro de teste faz a conferência sair com 1 e dizer "falhou no livro livro-teste"; o livro atual igual, `npm test` com 41 testes | pendente |
+| 1 | `c7773ac` | nenhum nome do livro atual no `src/` (só um exemplo em comentário); numa cópia com um segundo livro (outra loja, outra pasta), as saídas dos dois gravadas e conferidas, as páginas dos dois montadas e listadas no início; mudar o código do livro de teste faz a conferência sair com 1 e dizer "falhou no livro livro-teste"; o livro atual igual, `npm test` com 41 testes | pendente |
 
 (redação: claude-opus-5-5)
