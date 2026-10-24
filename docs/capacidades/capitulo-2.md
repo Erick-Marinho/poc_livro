@@ -25,17 +25,15 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (0b) O capítulo seguinte herda o `.venv` do anterior, recriado em silêncio: o leitor não vê o uv criar de novo.
 - (1) A ponte com o modelo (`langchain-openai`) entra na etapa 3, quando ele é usado: o leitor não instala antes.
 - (3) O modelo do livro é o GPT-6 Luna, da OpenAI (decisão do Erick, 24/10/2026); o prefácio diz isso.
+- (3) Repetindo a gravação, o comando recebe uma chave de mentira: o cliente da OpenAI exige uma ao ser criado.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 3
+## Etapa atual: 4
 
-Arquivos: `uv add langchain-openai`, `projeto/medir.py` (o agente com o GPT-6 Luna contra as 20 perguntas, a nota e os
-casos errados), o roteiro 02 e `gravacoes/r02-medir.json`. Duas partes: 3a sem custo (o código e o roteiro, até o
-comando que mede) e 3b paga (`npm run gravar` na máquina do Erick, com a chave dele no ambiente). Evidência: a nota
-do agente gravada, os casos que ele errou, e a conferência repetindo tudo sem chamar o modelo. Fica fora: IDE e texto.
+A detalhar: o roteiro do capítulo na IDE (passos, blocos, apostas, pedidos), partindo do fim do capítulo 1.
 
 ## Registro
 
@@ -45,3 +43,4 @@ do agente gravada, os casos que ele errou, e a conferência repetindo tudo sem c
 | 0b | `0a6551c` | o gravador recusa arquivo sem roteiro; roteiro 02 de teste parte do fim do 01 | 24/10 |
 | 1 | `081b73d` | testes do grafo sem internet e sem chave; sem o caminho `passar`, o teste falha | 24/10 |
 | 2 | `d81c6bc` | a conferência para na chamada não gravada, sem chegar à rede; 5 testes da gravação | 24/10 |
+| 3 | `8a13c1a` | 21 chamadas ao GPT-6 Luna gravadas; nota 30% (passa 19 de 20); repetida sem chave, igual | 24/10 |
