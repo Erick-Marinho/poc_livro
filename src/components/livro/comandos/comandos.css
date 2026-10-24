@@ -104,3 +104,14 @@
 .cm-placar-texto code { font-size: 11.5px; overflow-wrap: anywhere }
 @media (max-width: 640px) { .cm-placar-canto { top: calc(100px + env(safe-area-inset-top, 0px)) } }
 @media print { .cm-placar-canto { display: none } }
+
+/* fonte e tamanho: botões lado a lado, com uma amostra */
+.cm-segmentos { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 3px; border-radius: 12px; background: color-mix(in srgb, var(--papel) 10%, transparent) }
+.cm-seg { display: grid; justify-items: center; gap: 1px; padding: 6px 4px; border: 0; border-radius: 9px; background: transparent; color: inherit; font: 12px var(--f-ui); cursor: pointer }
+.cm-seg b { line-height: 1.1; font-weight: 600 }
+.cm-seg:hover { background: color-mix(in srgb, var(--papel) 12%, transparent) }
+.cm-seg[aria-checked="true"] { background: color-mix(in srgb, var(--papel) 22%, transparent); font-weight: 600 }
+.cm-fonte-serifada b { font: 600 17px "Literata", Georgia, serif }
+.cm-fonte-sem-serifa b { font: 600 17px "IBM Plex Sans", system-ui, sans-serif }
+.cm-tam-pequeno b { font-size: 13px } .cm-tam-medio b { font-size: 16px } .cm-tam-grande b { font-size: 20px }
+.cm-painel { max-height: calc(100vh - 90px); overflow-y: auto }

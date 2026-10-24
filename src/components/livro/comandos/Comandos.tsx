@@ -18,6 +18,10 @@ const TEMAS: { id: Tema; nome: string; Icone: typeof Sun }[] = [
   { id: "papel", nome: "Papel", Icone: ScrollText },
   { id: "escuro", nome: "Escuro", Icone: Moon },
 ];
+type Fonte = "serifada" | "sem-serifa";
+type Tamanho = "pequeno" | "medio" | "grande";
+const FONTES: { id: Fonte; nome: string }[] = [{ id: "serifada", nome: "Serifada" }, { id: "sem-serifa", nome: "Sem serifa" }];
+const TAMANHOS: { id: Tamanho; nome: string }[] = [{ id: "pequeno", nome: "Pequeno" }, { id: "medio", nome: "Médio" }, { id: "grande", nome: "Grande" }];
 const CHAVE_TEMA = "fontmar:tema", CHAVE_PILULA = "fontmar:pilula", CHAVE_IDE = "fontmar:ide";
 const guardar = (k: string, v: string | null) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sem armazenamento: vale só nesta visita */ } };
 const temaAtual = (): Tema => {
@@ -32,6 +36,8 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const [recolhida, setRecolhida] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [tema, setTema] = useState<Tema>("papel");
+  const [fonte, setFonte] = useState<Fonte>("serifada");
+  const [tamanho, setTamanho] = useState<Tamanho>("medio");
   const direto = useDireto();
   const x = useMotionValue(0);
   const sumindo = useTransform(x, [0, 160], [1, 0.35]);
@@ -71,6 +77,9 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   /* ao hidratar: lê o que o script do <head> já aplicou */
   useEffect(() => {
     setTema(temaAtual());
+    const h = document.documentElement.dataset;
+    if (h.fonte === "sem-serifa") setFonte("sem-serifa");
+    if (h.tamanho === "pequeno" || h.tamanho === "grande") setTamanho(h.tamanho);
     setRecolhida(document.documentElement.classList.contains("pilula-recolhida"));
     document.documentElement.classList.remove("pilula-recolhida");
     try { setIdeVisto(localStorage.getItem(CHAVE_IDE) === "visto"); } catch { /* sem armazenamento */ }
@@ -103,11 +112,15 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const recolher = (sim: boolean) => { setRecolhida(sim); guardar(CHAVE_PILULA, sim ? "circulo" : null); };
   const curto = onde.replace(/^Capítulo (\d+) · /, "Cap. $1 · ");
   const numero = onde.match(/^Capítulo (\d+)/)?.[1];
-  const teclaRadio = (e: React.KeyboardEvent, i: number) => {
-    const n = TEMAS.length, prox = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1 + n, ArrowUp: i - 1 + n }[e.key];
+  /* fonte e tamanho: o padrão (serifada, médio) não fica guardado; o resto vira atributo do <html>, como o tema */
+  const escolherFonte = (f: Fonte) => { setFonte(f); f === "serifada" ? delete document.documentElement.dataset.fonte : (document.documentElement.dataset.fonte = f); guardar("fontmar:fonte", f === "serifada" ? null : f); };
+  const escolherTamanho = (z: Tamanho) => { setTamanho(z); z === "medio" ? delete document.documentElement.dataset.tamanho : (document.documentElement.dataset.tamanho = z); guardar("fontmar:tamanho", z === "medio" ? null : z); };
+  /* setas andam dentro do próprio grupo de opções, como num grupo de rádio */
+  const teclaRadio = (e: React.KeyboardEvent<HTMLElement>, i: number, n: number, escolher: (k: number) => void) => {
+    const prox = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1 + n, ArrowUp: i - 1 + n }[e.key];
     if (prox === undefined) return;
-    e.preventDefault(); escolherTema(TEMAS[prox % n].id);
-    (painel.current?.querySelectorAll<HTMLElement>("[role='radio']")[prox % n])?.focus();
+    e.preventDefault(); escolher(prox % n);
+    (e.currentTarget.parentElement?.querySelectorAll<HTMLElement>("[role='radio']")[prox % n])?.focus();
   };
 
   return <MotionConfig reducedMotion="user"><LayoutGroup>
@@ -210,8 +223,26 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
             <div role="radiogroup" aria-label="Cor da página" className="cm-temas">
               {TEMAS.map(({ id, nome, Icone }, i) => (
                 <button key={id} type="button" role="radio" aria-checked={tema === id} tabIndex={tema === id ? 0 : -1}
-                  className={`cm-tema cm-tema-${id}`} onClick={() => escolherTema(id)} onKeyDown={(e) => teclaRadio(e, i)}>
+                  className={`cm-tema cm-tema-${id}`} onClick={() => escolherTema(id)} onKeyDown={(e) => teclaRadio(e, i, TEMAS.length, (k) => escolherTema(TEMAS[k].id))}>
                   <span className="cm-amostra"><Icone size={16} /></span>{nome}{tema === id && <Check size={15} className="cm-marca" />}
+                </button>
+              ))}
+            </div>
+            <p className="cm-titulo cm-titulo-2">Fonte</p>
+            <div role="radiogroup" aria-label="Fonte do texto" className="cm-segmentos">
+              {FONTES.map(({ id, nome }, i) => (
+                <button key={id} type="button" role="radio" aria-checked={fonte === id} tabIndex={fonte === id ? 0 : -1} className={`cm-seg cm-fonte-${id}`}
+                  onClick={() => escolherFonte(id)} onKeyDown={(e) => teclaRadio(e, i, FONTES.length, (k) => escolherFonte(FONTES[k].id))}>
+                  <b aria-hidden="true">Aa</b>{nome}
+                </button>
+              ))}
+            </div>
+            <p className="cm-titulo cm-titulo-2">Tamanho</p>
+            <div role="radiogroup" aria-label="Tamanho do texto" className="cm-segmentos">
+              {TAMANHOS.map(({ id, nome }, i) => (
+                <button key={id} type="button" role="radio" aria-checked={tamanho === id} tabIndex={tamanho === id ? 0 : -1} className={`cm-seg cm-tam-${id}`}
+                  onClick={() => escolherTamanho(id)} onKeyDown={(e) => teclaRadio(e, i, TAMANHOS.length, (k) => escolherTamanho(TAMANHOS[k].id))}>
+                  <b aria-hidden="true">A</b>{nome}
                 </button>
               ))}
             </div>

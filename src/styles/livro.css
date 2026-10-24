@@ -4,6 +4,8 @@
   --ok: #1f7a4c; --aviso: #9a5b00; --nota: #fbf8f2;
   --f-texto: "Literata", Georgia, "Times New Roman", serif; --f-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-marca: "Literata", Georgia, "Times New Roman", serif;   /* a marca não muda com a fonte escolhida */
+  --escala: 1;                                                /* o tamanho do texto de leitura, nas configurações */
   --ide-bg: #1e1e1e; --ide-tabs: #2d2d2d; --ide-ink: #d4d4d4; --ide-term: #181818; --ide-new: rgba(0, 122, 204, .18);
 }
 /* Três aparências, escolhidas nas configurações: papel (a de cima), claro e escuro.
@@ -12,6 +14,10 @@
 :root[data-theme="claro"] {
   --papel: #ffffff; --papel-2: #f2f3f5; --ink: #1d2125; --ink-2: #5d6570; --linha: #e1e4e8; --acento: #2a4fb5;
   --ok: #1f7a4c; --aviso: #9a5b00; --nota: #f6f7f9 }
+/* fonte e tamanho do texto de leitura (configurações): sem serifa troca a fonte do texto; o tamanho escala só o texto corrido */
+:root[data-fonte="sem-serifa"] { --f-texto: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif }
+:root[data-tamanho="pequeno"] { --escala: .9 }
+:root[data-tamanho="grande"] { --escala: 1.14 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme]) {
   --papel: #16140f; --papel-2: #1f1c16; --ink: #ebe4d6; --ink-2: #a89f90; --linha: #343026; --acento: #8fa9ff;
   --ok: #57c48e; --aviso: #e0a440; --nota: #1c1913; color-scheme: dark } }
@@ -22,7 +28,7 @@
 * { box-sizing: border-box }
 html { scroll-behavior: smooth; scroll-padding-top: 70px }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
-body { margin: 0; background: var(--papel); color: var(--ink); font: 19px/1.7 var(--f-texto) }
+body { margin: 0; background: var(--papel); color: var(--ink); font: calc(19px * var(--escala))/1.7 var(--f-texto) }
 button { font: inherit; color: inherit }
 :focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
 
@@ -34,7 +40,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .topo a { color: inherit; text-decoration: none }
 .topo .esp { flex: 1 }
 /* a marca: "Font" na cor do texto, "Mar" na cor do acento */
-.topo .marca { font: 700 17px/1 var(--f-texto); color: var(--ink); letter-spacing: -.01em; white-space: nowrap }
+.topo .marca { font: 700 17px/1 var(--f-marca); color: var(--ink); letter-spacing: -.01em; white-space: nowrap }
 .topo .marca span { color: var(--acento) }
 .topo .nome { padding-left: 12px; border-left: 1px solid var(--linha) }
 .progresso { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--acento); width: 0 }
@@ -52,7 +58,7 @@ code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35
 .abertura .cap { font: 600 13px var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--acento) }
 .abertura .numero { font: 700 120px/1 var(--f-texto); color: var(--acento); opacity: .9; margin: 6px 0 0 }
 .abertura h1 { font: 700 48px/1.08 var(--f-texto); letter-spacing: -.02em; margin: 6px 0 18px; text-wrap: balance }
-.abertura .lide { font-size: 22px; line-height: 1.55; color: var(--ink-2); font-style: italic }
+.abertura .lide { font-size: calc(22px * var(--escala)); line-height: 1.55; color: var(--ink-2); font-style: italic }
 .neste { border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); padding: 14px 0; margin: 1.6em auto 2em; font: 15px/1.6 var(--f-ui); display: grid; gap: 8px }
 .neste b { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
 .neste ul { margin: 0; padding-left: 20px }
@@ -65,8 +71,8 @@ code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35
 .proximo span { color: var(--ink-2) }
 
 @media (max-width: 640px) {
-  body { font-size: 17.5px }
-  .abertura .numero { font-size: 84px } .abertura h1 { font-size: 36px } .abertura .lide { font-size: 19px }
+  body { font-size: calc(17.5px * var(--escala)) }
+  .abertura .numero { font-size: 84px } .abertura h1 { font-size: 36px } .abertura .lide { font-size: calc(19px * var(--escala)) }
   h2 { font-size: 25px }
   .topo .nome { display: none }
 }
