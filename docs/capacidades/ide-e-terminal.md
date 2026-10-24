@@ -41,6 +41,11 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 | `IDE` (réplica) | explorador, abas, editor que digita, Problemas e o terminal embaixo | roteiro + saídas | ilha React | nova |
 | capítulo 1, seções 1.5 a 1.8 | o código contado pela IDE, com erros de verdade | IDE | texto | existe |
 
+> **Estado (24/10/2026).** As etapas 1 a 3 continuam valendo (o lembrete da IDE, o terminal e o roteiro de construção).
+> A IDE das etapas 4 e 5 foi **substituída pela IDE do capítulo** (`IdeCapitulo`), construída em outra sessão e descrita
+> em [`passo-a-passo.md`](passo-a-passo.md), etapas 7a a 7c. A etapa 5 deste plano não fecha aqui: o capítulo e a IDE
+> passam a ser daquele plano; este fica com o terminal e o roteiro.
+
 ## Etapas (aceitas pelo responsável)
 
 1. Lembrete fixo, nota no prefácio e a fundamentação com referências.
@@ -48,6 +53,8 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 3. Roteiro de construção do capítulo 1 e `saidas.py` reconstruindo e gravando cada passo, erros incluídos.
 4. IDE réplica com apostas, avançada pelo leitor, usada na seção 1.6 no lugar das listagens e do terminal dela.
 5. A IDE nas seções 1.7 e 1.8, o texto ajustado aos erros do caminho, e a contagem de peças do capítulo antes e depois.
+   *Substituída: o commit `a09e5a4` chegou a fazer isso (o capítulo passou de 20 peças para 12), mas a IDE do capítulo
+   (passo-a-passo.md, 7a) trocou essa versão logo depois.*
 
 ## Registro
 
@@ -56,6 +63,6 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 | 1 | `fb7a34d` | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
 | 2 | `f6fddab` | `npm test`; sessão interativa conferida no DOM (ls, comando incompleto, Tab, Enter, ↑); capturas no computador e no celular | Erick, 23/10/2026 |
 | 3 | `7dab392` | `npm test` com 12 saídas; conferência estável em duas rodadas; o build falha com âncora errada, código de saída errado, sem a correção do R12 e sem o baseline.py | Erick, 23/10/2026 |
-| 4 | `3059027` | `npm test`; sessão conferida no DOM (aposta bloqueia o avanço, nota só depois da aposta, veredito, linhas 6 e 40-47 destacadas, erro na linha 4 com 1 problema); capturas no computador e no celular | Erick, 23/10/2026 |
+| 4 | `3059027` (substituída por `63e936f`) | `npm test`; sessão conferida no DOM (aposta bloqueia o avanço, nota só depois da aposta, veredito, linhas 6 e 40-47 destacadas, erro na linha 4 com 1 problema); capturas no computador e no celular | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)
