@@ -15,6 +15,19 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   algo que funcione sem JS e no modo escuro.
   Fontes: https://reactflow.dev/learn · https://docs.astro.build/en/guides/integrations-guide/react/ ·
   https://docs.astro.build/en/guides/client-side-scripts/ (o script é empacotado e entra uma vez por página).
+- (etapa 4, substitui a de cima) Ilha React com React Flow (`@xyflow/react` 12.12.0) e Motion (`motion` 14.6.0),
+  via `@astrojs/react` 7.1.1, hidratada com `client:visible`. Motivo: a primeira impressão em SVG feito à mão não
+  entregou a experiência que o responsável espera. O build continua conferindo o roteiro contra o contrato
+  (`FiguraAgente.astro`); a ilha só toca. O servidor desenha o R01 terminado (React Flow SSR: nós com
+  `width`/`height` e `handles`, provider com `initialNodes`). Fontes: https://reactflow.dev/learn/advanced-use/ssr-ssg-configuration ·
+  https://reactflow.dev/api-reference/react-flow · https://motion.dev/docs/react
+- (etapa 4) Palco escuro, como o terminal do livro. A conversa imita um app de atendimento ("digitando…" enquanto o
+  grafo trabalha). O agente mostra "o que ele já sabe": o que cada ferramenta devolveu, lido de `pedidos.json` e
+  de um `trecho` de `politica.md` (o build falha se o trecho não estiver lá). O selo fica sobre a seta agente → decisão.
+- (etapa 4) Dois desenhos do grafo: deitado (640 × 434) no computador, em pé (440 × 524) abaixo de 640 px.
+  A figura sai da coluna de texto (até 920 px).
+- (etapa 4) Capturas de celular: o Chrome headless não abre janela com menos de 500 px; o celular é a página dentro
+  de um iframe de 390 px. As capturas "390 px" das etapas 1 a 3 foram feitas, na verdade, em 500 px.
 - (etapa 1) Conversa e grafo juntos, sincronizados. Uma coisa se mexe por vez e a conversa conduz:
   a pergunta aparece → a conversa para e o grafo anima → o grafo para e a resposta aparece.
   No computador, a conversa fica à esquerda e o grafo à direita; abaixo de 640 px, a conversa fica em cima.
@@ -58,31 +71,20 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 1. Conversa e grafo em SVG, sincronizados, com um cenário (R01, responder) no prefácio.
 2. Os quatro cenários (R01, R12, R09, R16: um por decisão, nesta ordem) em abas, e a conferência do roteiro no build.
 3. Controles, acesso e acabamento: pausar, passo a passo, `prefers-reduced-motion`, leitura sem JS, e os 4 ajustes da revisão da etapa 2.
-4. A figura entra no `npm test`: um teste que falha se o roteiro divergir do contrato.
+4. A figura refeita em React Flow e Motion, com a mesma conferência no build (pedido do responsável depois da etapa 3).
+5. A figura entra no `npm test`: um teste que falha se o roteiro divergir do contrato.
 
-## Etapa 3, detalhada
+## Etapa 4, detalhada
 
-- **Arquivos:** `FiguraAgente.astro` e `figuras/agente.json`.
-- **Estado por passo:** o que a figura mostra é função de (cenário, passo, progresso). Pausar, avançar e voltar só
-  mudam o passo; não há segundo caminho de animação.
-- **Controles,** numa barra abaixo das abas: tocar/pausar, passo anterior, próximo passo, tocar de novo. São botões de
-  verdade, com rótulo acessível. O andamento vira `aria-live="polite"`, mas só anuncia o passo que o leitor pediu,
-  não os da reprodução automática.
-- **Movimento reduzido** (`prefers-reduced-motion: reduce`): nada toca sozinho e a bolinha não anda. A figura abre no
-  primeiro passo do R01, e o leitor avança com "próximo passo"; nó e aresta mudam sem transição.
-- **Sem JS e na impressão:** o R01 no estado final, com a pergunta, a resposta, "pedidos" marcado, a pílula
-  "responder" e o canal "resposta" acesos. Abas e controles ficam escondidos.
-- **Acabamento (revisão da etapa 2):**
-  (1) só as arestas do cenário atual aparecem; as outras somem, e com elas as pontas amontoadas no nó "agente";
-  (2) pílulas de decisão com no mínimo 13 px e texto com contraste de 4,5:1 contra o fundo, nos dois modos;
-  (3) campo opcional `marca` no passo: um selo curto (até 20 caracteres) junto ao nó do passo, que fica até o fim
-  do cenário. R01: "e-mail = dono"; R12: "e-mail ≠ dono"; R09: "dentro dos 90 dias". A conferência rejeita marca longa;
-  (4) abaixo de 640 px, as abas viram uma grade 2×2 de mesma largura.
-- **Evidência:** `npm test` passa. Capturas: R12 em 1100 px no passo da comparação, com o selo "e-mail ≠ dono";
-  390 px com as abas em 2×2, no claro e no escuro; com `--force-prefers-reduced-motion`, a figura parada no primeiro
-  passo e depois de dois "próximo passo"; sem JS (`--blink-settings=scriptEnabled=false`), o estado final do R01.
-  A conta de contraste das pílulas nos dois modos. O build falhando com uma marca de 21 caracteres.
-- **Fora:** o teste no `npm test` (etapa 4), o mapa do livro, o roteiro gravado de um trace real.
+- **Arquivos:** `agente/AgenteAoVivo.tsx`, `agente/cena.ts`, `agente/agente.css` (novos); `FiguraAgente.astro` (só conferência
+  e dados); `figuras/agente.json` (`trecho` da política no R09); `00-prefacio.mdx` (props `pedidos` e `politica`);
+  `astro.config.mjs`, `tsconfig.json`, `package.json`.
+- **Mantém:** os 4 cenários, as abas, tocar/pausar/passo a passo, movimento reduzido (abre parado no 1º passo),
+  sem JS (o R01 terminado), `aria-live` só nas ações do leitor, R01 → R12 tocando sozinho quando o grafo aparece.
+- **Evidência:** `npm test` passa; o build falha com a escolha do R12 trocada e com um trecho que não está na política;
+  capturas em 1100 px dos quatro cenários, em 390 px de verdade (iframe), com movimento reduzido e sem JS;
+  nenhuma mensagem no console.
+- **Fora:** o teste no `npm test` (etapa 5); o defeito das figuras `.largo` do livro (a coluna `.corpo` tem 680 px).
 
 ## Registro
 

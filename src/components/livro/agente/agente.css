@@ -1,0 +1,143 @@
+/* A figura do agente é um palco escuro, como o terminal do livro: é a parte do livro que roda. */
+.aav {
+  --aav-fundo: #111318; --aav-palco: #15181e; --aav-cartao: #1c2028; --aav-cartao-2: #232833; --aav-linha: #2c323d;
+  --aav-texto: #e7e9ee; --aav-fraco: #8e95a3; --aav-apagado: #5b6270; --aav-pontos: #262b35;
+  --aav-acento: #5aa9ff; --aav-acento-fundo: rgba(90, 169, 255, .14);
+  --aav-responder: #2fd394; --aav-recusar: #ffb547; --aav-abrir_chamado: #5fd3e6; --aav-passar: #c6a2ff;
+  background: var(--aav-fundo); color: var(--aav-texto); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 18px 50px rgba(20, 14, 4, .22); font: 14px/1.45 var(--f-ui); position: relative;
+}
+.aav button { font: inherit; color: inherit; cursor: pointer }
+.aav .aav-d-responder { --aav-cor: var(--aav-responder) } .aav .aav-d-recusar { --aav-cor: var(--aav-recusar) }
+.aav .aav-d-abrir_chamado { --aav-cor: var(--aav-abrir_chamado) } .aav .aav-d-passar { --aav-cor: var(--aav-passar) }
+
+/* barra de cima: as quatro decisões */
+.aav-barra { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--aav-linha) }
+.aav-abas { display: flex; gap: 6px; flex-wrap: wrap; flex: 1 }
+.aav-abas button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--aav-linha);
+  background: transparent; color: var(--aav-fraco); font-weight: 500; transition: background .2s, color .2s, border-color .2s }
+.aav-abas button i { width: 8px; height: 8px; border-radius: 50%; background: var(--aav-cor); opacity: .55 }
+.aav-abas button:hover { color: var(--aav-texto) }
+.aav-abas button[aria-selected="true"] { background: color-mix(in srgb, var(--aav-cor) 16%, transparent); border-color: color-mix(in srgb, var(--aav-cor) 60%, transparent); color: var(--aav-texto) }
+.aav-abas button[aria-selected="true"] i { opacity: 1; box-shadow: 0 0 10px var(--aav-cor) }
+.aav-simulacao { font: 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--aav-apagado); white-space: nowrap }
+
+/* palco: a conversa e o grafo */
+.aav-palco { display: grid; grid-template-columns: minmax(260px, 320px) 1fr; background: var(--aav-palco) }
+.aav-dentro { position: relative; min-width: 0; border-left: 1px solid var(--aav-linha) }
+.aav-grafo { width: 100% }
+.aav-grafo .react-flow { background: transparent }
+.aav-grafo .react-flow__handle { width: 2px; height: 2px; min-width: 0; min-height: 0; border: 0; background: transparent; opacity: 0 }
+.aav-grafo .react-flow__node { cursor: default }
+.aav-grafo .react-flow__attribution { background: transparent; font-size: 9px; opacity: .45 }
+.aav-grafo .react-flow__attribution a { color: var(--aav-apagado) }
+
+/* a conversa */
+.aav-chat { display: flex; flex-direction: column; min-height: 100%; background: linear-gradient(180deg, #171a21, #13161b) }
+.aav-chat header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--aav-linha) }
+.aav-chat header b { display: block; font-weight: 600; font-size: 14px }
+.aav-chat header small { display: flex; align-items: center; gap: 6px; color: var(--aav-fraco); font-size: 12px }
+.aav-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #2fd394, #1a8f6a); color: #08120d; font: 700 13px var(--f-ui) }
+.aav-online { width: 7px; height: 7px; border-radius: 50%; background: var(--aav-responder); display: inline-block }
+.aav-mensagens { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 16px 14px; overflow: hidden }
+.aav-msg { max-width: 90%; padding: 9px 12px 10px; border-radius: 14px; font-size: 15px; line-height: 1.45 }
+.aav-msg small { display: block; font-size: 11px; color: var(--aav-fraco); margin-bottom: 2px }
+.aav-msg p { margin: 0; overflow-wrap: break-word }
+.aav-dele { align-self: flex-end; background: #24426e; border-bottom-right-radius: 4px }
+.aav-dele small { color: #a9c2e6 }
+.aav-agente-msg { align-self: flex-start; background: var(--aav-cartao-2); border-bottom-left-radius: 4px; border-left: 3px solid var(--aav-cor, var(--aav-linha)) }
+.aav-agente-msg small { color: var(--aav-cor, var(--aav-fraco)) }
+.aav-digitando { display: flex; gap: 4px; padding: 13px 14px; border-left-color: var(--aav-linha) }
+.aav-digitando i { width: 6px; height: 6px; border-radius: 50%; background: var(--aav-fraco); animation: aav-pula 1.1s infinite ease-in-out }
+.aav-digitando i:nth-child(2) { animation-delay: .15s } .aav-digitando i:nth-child(3) { animation-delay: .3s }
+@keyframes aav-pula { 0%, 60%, 100% { transform: none; opacity: .5 } 30% { transform: translateY(-4px); opacity: 1 } }
+.aav-sistema { align-self: center; font: 11px var(--f-mono); color: var(--aav-passar); border: 1px dashed color-mix(in srgb, var(--aav-passar) 50%, transparent); padding: 4px 10px; border-radius: 999px }
+.aav-chat footer { display: flex; align-items: center; justify-content: space-between; margin: 0 12px 12px; padding: 9px 12px; border-radius: 999px; background: var(--aav-cartao); color: var(--aav-apagado); font-size: 13px }
+
+/* os nós */
+.aav-no { width: 100%; height: 100%; display: flex; align-items: center; gap: 9px; padding: 0 12px; border-radius: 12px; background: var(--aav-cartao);
+  border: 1px solid var(--aav-linha); color: var(--aav-texto); transition: border-color .25s, box-shadow .25s, opacity .25s, background .25s; box-sizing: border-box }
+.aav-no b { font-weight: 600; font-size: 15.5px }
+.aav-no small { color: var(--aav-fraco); font-size: 12px }
+.aav-ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--aav-cartao-2); color: var(--aav-fraco); flex: none; transition: color .25s, background .25s }
+.aav-txt { display: grid; line-height: 1.2 }
+.aav-fora { opacity: .32 }
+.aav-espera { opacity: .8 }
+.aav-ativo { border-color: var(--aav-acento); box-shadow: 0 0 0 4px var(--aav-acento-fundo), 0 0 28px rgba(90, 169, 255, .25) }
+.aav-ativo .aav-ic { color: var(--aav-acento); background: var(--aav-acento-fundo) }
+.aav-feito .aav-ic { color: var(--aav-texto) }
+
+.aav-agente { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 12px }
+.aav-agente .aav-topo { display: flex; align-items: center; gap: 9px }
+.aav-status { margin-left: auto; font: 12px var(--f-mono); color: var(--aav-acento) }
+.aav-pensa i { animation: aav-pisca 1.2s infinite; font-style: normal } .aav-pensa i:nth-child(2) { animation-delay: .2s } .aav-pensa i:nth-child(3) { animation-delay: .4s }
+@keyframes aav-pisca { 0%, 100% { opacity: .2 } 50% { opacity: 1 } }
+.aav-rotulo { font: 10.5px var(--f-mono) !important; letter-spacing: .08em; text-transform: uppercase; color: var(--aav-apagado) !important; margin-top: 2px }
+.aav-memoria { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; align-content: start; flex: 1 }
+.aav-memoria li { font-size: 14px; line-height: 1.35; padding: 4px 8px; border-radius: 6px; background: var(--aav-cartao-2); color: #cfd4dc }
+.aav-memoria .aav-vazio { background: none; color: var(--aav-apagado); padding-left: 0 }
+.aav-selo rect { fill: color-mix(in srgb, var(--aav-cor) 18%, var(--aav-palco)); stroke: var(--aav-cor); stroke-width: 1.2 }
+.aav-selo text { fill: var(--aav-cor); font: 600 13px var(--f-ui) }
+
+.aav-grupo { width: 100%; height: 100%; border-radius: 14px; border: 1px dashed var(--aav-linha); background: rgba(255, 255, 255, .015); padding: 8px 12px; box-sizing: border-box }
+.aav-grupo small { font: 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--aav-apagado) }
+.aav-ferramenta { padding: 0 10px; gap: 8px }
+.aav-ferramenta .aav-ic { width: 26px; height: 26px }
+.aav-ok { margin-left: auto; color: var(--aav-responder); display: grid }
+.aav-lendo { margin-left: auto; width: 8px; height: 8px; border-radius: 50%; background: var(--aav-acento); box-shadow: 0 0 10px var(--aav-acento); animation: aav-pisca 1s infinite }
+
+.aav-decisao { flex-direction: column; align-items: stretch; justify-content: center; gap: 9px; padding: 10px 12px }
+.aav-decisao .aav-topo { display: flex; align-items: baseline; gap: 10px }
+.aav-decisao .aav-topo small { font: 12px var(--f-mono) }
+.aav-pilulas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px }
+.aav-pilula { position: relative; display: grid; place-items: center; height: 36px; border-radius: 999px; border: 1px solid var(--aav-linha); color: var(--aav-fraco); font-size: 14px; font-weight: 500; overflow: hidden; transition: color .25s, border-color .25s }
+.aav-pilula .aav-rot { position: relative; z-index: 1; white-space: nowrap }
+.aav-fundo { position: absolute; inset: 0; border-radius: inherit; background: color-mix(in srgb, var(--aav-cor) 22%, transparent) }
+.aav-escolhida { color: var(--aav-texto); border-color: var(--aav-cor); box-shadow: 0 0 18px color-mix(in srgb, var(--aav-cor) 35%, transparent) }
+
+.aav-saida.aav-ativo, .aav-saida.aav-feito { border-color: var(--aav-cor); box-shadow: 0 0 0 4px color-mix(in srgb, var(--aav-cor) 14%, transparent) }
+.aav-saida.aav-ativo .aav-ic, .aav-saida.aav-feito .aav-ic { color: var(--aav-cor); background: color-mix(in srgb, var(--aav-cor) 14%, transparent) }
+
+/* as arestas */
+.aav-aresta path { fill: none; stroke-linecap: round }
+.aav-trilho { stroke: var(--aav-linha); stroke-width: 1.6; stroke-dasharray: 4 5 }
+.aav-cheio { stroke: var(--aav-acento); stroke-width: 2.4 }
+.aav-a-feito .aav-cheio { stroke: color-mix(in srgb, var(--aav-acento) 55%, var(--aav-linha)) }
+.aav-seta { fill: var(--aav-linha) !important; stroke: none }
+.aav-a-feito .aav-seta { fill: color-mix(in srgb, var(--aav-acento) 55%, var(--aav-linha)) !important }
+.aav-a-ativo .aav-seta { fill: var(--aav-acento) !important }
+.aav-bolinha { fill: #fff; stroke: var(--aav-acento); stroke-width: 3; filter: drop-shadow(0 0 6px var(--aav-acento)) }
+
+/* rodapé: controles e linha do tempo */
+.aav-rodape { display: flex; align-items: center; gap: 14px; padding: 12px 14px 14px; border-top: 1px solid var(--aav-linha) }
+.aav-controles { display: flex; gap: 6px }
+/* sem JS (a ilha ainda não hidratou), os botões não fazem nada: ficam escondidos */
+astro-island[ssr] .aav-controles, astro-island[ssr] .aav-segmentos { visibility: hidden }
+.aav-controles button { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--aav-linha); background: var(--aav-cartao) }
+.aav-controles button:first-child { background: var(--aav-acento); border-color: var(--aav-acento); color: #06111f }
+.aav-controles button:disabled { opacity: .35; cursor: default }
+.aav-linha { flex: 1; min-width: 0 }
+.aav-segmentos { display: flex; gap: 4px; height: 14px; align-items: center }
+.aav-segmentos button { flex-basis: 0; height: 4px; padding: 0; border: 0; border-radius: 2px; background: var(--aav-linha); overflow: hidden; position: relative }
+.aav-segmentos button:hover { background: #3a4150 }
+.aav-segmentos span { position: absolute; inset: 0; background: var(--aav-acento); transform-origin: left; transform: scaleX(0) }
+.aav-narra { margin: 6px 0 0; font-size: 15px; color: #cfd4dc; min-height: 2.9em }
+.aav-narra span { font: 11px var(--f-mono); color: var(--aav-apagado); margin-right: 6px }
+.aav-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0 }
+.aav :focus-visible { outline: 2px solid var(--aav-acento); outline-offset: 2px }
+
+@media (max-width: 639px) {
+  .aav-barra { flex-wrap: wrap; padding: 10px }
+  .aav-abas { display: grid; grid-template-columns: 1fr 1fr }
+  .aav-abas button { justify-content: center }
+  .aav-simulacao { order: -1; width: 100% }
+  .aav-palco { grid-template-columns: 1fr }
+  .aav-dentro { border-left: 0; border-top: 1px solid var(--aav-linha) }
+  .aav-chat footer { display: none }
+  .aav-mensagens { padding: 12px 10px }
+  .aav-rodape { padding: 10px; flex-wrap: wrap; gap: 8px }
+  .aav-linha { order: -1; flex-basis: 100% }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aav-digitando i, .aav-pensa i { animation: none }
+}

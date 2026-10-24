@@ -12,6 +12,8 @@ import FiguraAgente from "../../../src/components/livro/FiguraAgente.astro";
 import roteiroAgente from "../figuras/agente.json";
 import referenciaAgente from "../projeto/referencia.jsonl?raw";
 import clientesAgente from "../projeto/dados/clientes.json";
+import pedidosAgente from "../projeto/dados/pedidos.json";
+import politicaAgente from "../projeto/dados/politica.md?raw";
 
 ## Por que este livro existe
 
@@ -42,7 +44,7 @@ A cada capítulo, o mesmo agente passa por uma fase da vida dele:
 7. **Governar:** dado pessoal, aprovação humana e registro de quem decidiu.
 8. **Evoluir:** trocar de modelo ou de instrução sem medo de piorar.
 
-<FiguraAgente roteiro={roteiroAgente} referencia={referenciaAgente} clientes={clientesAgente} />
+<FiguraAgente roteiro={roteiroAgente} referencia={referenciaAgente} clientes={clientesAgente} pedidos={pedidosAgente} politica={politicaAgente} />
 
 <Nota titulo="a loja é inventada">A Casa Bem-te-vi não existe. Os clientes, os CPFs, os e-mails, os pedidos e a transportadora foram criados para o livro, e nenhum deles é de uma pessoa ou empresa real. Os casos difíceis que aparecem aqui são parecidos com os que acontecem em qualquer atendimento, mas não foram tirados de nenhum.</Nota>
 
