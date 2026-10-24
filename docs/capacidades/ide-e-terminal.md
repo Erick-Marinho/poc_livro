@@ -23,6 +23,12 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
   curta, que a IDE vai mostrar. O roteiro não monta se: a âncora não for única, um comando sair com outro código,
   ou o fim não for igual ao `projeto/`. As saídas entram no mesmo `saidas.json`, com ids `r01-…`.
 - (etapa 3) A conferência ignora endereços de memória (`at 0x…`), como já ignorava os tempos.
+- (etapa 4, refeita depois de docs/PRINCIPIOS.md) A IDE **não toca sozinha**: quem avança é o leitor, um passo por vez.
+  Em cada `rodar`, ela pede a **aposta** antes de mostrar a saída ("vai carregar ou dar erro?", "quantos testes
+  falham?"), e só então mostra o terminal; a aposta mora no roteiro, ao lado do comando. O código muda de uma vez,
+  com as linhas alteradas destacadas, sem digitação animada. O erro de verdade marca a linha no editor e no painel
+  Problemas. A IDE **substitui** as listagens e os terminais da seção, em vez de se somar a eles. No modo direto, ela
+  mostra o código final e as saídas, sem apostas. Os estados de cada passo saem do `saidas.py` (uma implementação só).
 
 ## Peças
 
@@ -40,8 +46,8 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 1. Lembrete fixo, nota no prefácio e a fundamentação com referências.
 2. Terminal réplica, guiado e interativo, sobre as saídas gravadas.
 3. Roteiro de construção do capítulo 1 e `saidas.py` reconstruindo e gravando cada passo, erros incluídos.
-4. IDE réplica tocando o roteiro, com o terminal da etapa 2 embutido.
-5. Capítulo 1 com a IDE nas seções 1.5 a 1.8, e o texto ajustado aos erros do caminho.
+4. IDE réplica com apostas, avançada pelo leitor, usada na seção 1.6 no lugar das listagens e do terminal dela.
+5. A IDE nas seções 1.7 e 1.8, o texto ajustado aos erros do caminho, e a contagem de peças do capítulo antes e depois.
 
 ## Registro
 
@@ -49,5 +55,6 @@ erro mostrado saem de rodar o projeto de verdade; o estado final tem que ser igu
 |---|---|---|---|
 | 1 | `fb7a34d` | `npm test`; capturas do lembrete, da nota no prefácio e do diálogo, no computador e no celular | Erick, 23/10/2026 |
 | 2 | `f6fddab` | `npm test`; sessão interativa conferida no DOM (ls, comando incompleto, Tab, Enter, ↑); capturas no computador e no celular | Erick, 23/10/2026 |
+| 3 | `7dab392` | `npm test` com 12 saídas; conferência estável em duas rodadas; o build falha com âncora errada, código de saída errado, sem a correção do R12 e sem o baseline.py | Erick, 23/10/2026 |
 
 (redação: claude-opus-5-5)

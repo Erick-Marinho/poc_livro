@@ -35,6 +35,9 @@ import baseline from "../projeto/baseline.py?raw";
 import politica from "../projeto/dados/politica.md?raw";
 import loja from "../projeto/dados/loja.json?raw";
 import saidas from "../saidas.json";
+import IDE from "../../../src/components/livro/IDE.astro";
+import roteiro01 from "../roteiros/01.json";
+import estados01 from "../roteiros/01.estados.json";
 
 ## 1.1 O que é um agente
 
@@ -139,29 +142,17 @@ Se o agente calcula prazos com a data real do computador, a resposta certa de ho
 
 ## 1.6 O contrato em código
 
-Agora o contrato vira código, no arquivo `contrato.py`. Primeiro, as quatro decisões e as três fontes de informação de que o agente pode precisar:
+O contrato vira código no arquivo `contrato.py`. Ele não nasce inteiro, e o caminho importa: a primeira versão é a mais simples que funciona, e a segunda nasce de um erro. Avance você mesmo e, antes de cada comando, aposte no que vai acontecer.
 
-<Listagem codigo={contrato} nome="contrato.py" linhas="1-27" notas={{ 12: "as quatro decisões da seção 1.4", 21: "onde está a resposta: pedido, política ou catálogo" }} />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={2} ate={9} numero="1.3" legenda="O contrato em código, passo a passo. O código, as saídas e os erros são os do projeto real, gravados ao montar o livro; os passos errados estão aí de propósito." />
 
-Um `StrEnum` é uma lista fechada de valores. Se alguém escrever `"talvez"` como decisão, o erro aparece na hora, em vez de passar despercebido.
+O passo 6 é o que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
 
-Depois, o formato de um caso: uma pergunta, a decisão que o contrato espera e o motivo, em uma frase.
-
-<Listagem codigo={contrato} nome="contrato.py" linhas="28-46" notas={{ 35: "o motivo é para quem lê o caso depois", 40: "regras que valem para todo caso" }} />
-
-As duas regras no fim são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Veja o que acontece quando alguém esquece:
-
-<Terminal saida={saidas["caso-sem-pedido"]} pasta="~/atendimento-bemtevi" />
-
-A linha que começa com `Value error` diz exatamente o que faltou. O resto é o caminho do erro, que o Python sempre mostra.
+As duas regras do passo 8 são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono. Com elas, o mesmo arquivo para no passo 9, e o erro diz a linha. O `StrEnum` das decisões faz o mesmo papel desde o começo: é uma lista fechada, e uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida.
 
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
 </PareEPense>
-
-Por fim, duas funções para ler os arquivos:
-
-<Listagem codigo={contrato} nome="contrato.py" linhas="47-64" notas={{ 52: "uma pergunta por linha", 58: "o erro diz em que linha está" }} />
 
 ## 1.7 As perguntas de referência
 

@@ -1,0 +1,85 @@
+---
+/**
+ * A IDE do livro (ilha React: ide/IdeAoVivo.tsx): um trecho do roteiro de construção, avançado pelo leitor.
+ * Os estados do código saem do saidas.py (roteiros/<n>.estados.json), as saídas do saidas.json: nada aqui
+ * reconstrói código, só mostra. Antes de cada comando com aposta, o leitor aposta; só então vê a saída.
+ * No build: o trecho existe, cada aposta tem a resposta certa entre as opções, e cada marca de erro cai numa linha
+ * que existe no arquivo naquele passo. O realce de código é feito aqui (shiki), uma vez por versão de arquivo.
+ */
+import { codeToHtml } from "shiki";
+import IdeAoVivo from "./ide/IdeAoVivo";
+import type { PassoIde, Versao } from "./ide/IdeAoVivo";
+
+type Aposta = { pergunta: string; opcoes: string[]; certa: number };
+type Marca = { arquivo: string; linha: number; texto: string };
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; comando?: string; nota: string; aposta?: Aposta; marca?: Marca };
+type Estado = { passo: number; arquivo?: string; conteudo?: string; alteradas?: number[]; arquivos?: Record<string, string | null>; rodou?: string };
+interface Props {
+  roteiro: { passos: PassoRoteiro[] };
+  estados: Estado[];
+  saidas: Record<string, { comando: string; saiu_com: number; saida: [string, string][] }>;
+  de: number;
+  ate: number;
+  numero: string;
+  legenda: string;
+  pasta?: string;
+}
+const { roteiro, estados, saidas, de, ate, numero, legenda, pasta = "~/atendimento-bemtevi" } = Astro.props;
+const falhar = (motivo: string): never => { throw new Error(`IDE (figura ${numero}): ${motivo}`); };
+if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos).`);
+
+const LINGUA: Record<string, string> = { py: "python", jsonl: "jsonl", json: "json", md: "markdown", toml: "toml" };
+const versoes: Versao[] = [];
+const idDe = new Map<string, number>();
+async function versao(arquivo: string, conteudo: string | null): Promise<number> {
+  const chave = `${arquivo}\u0000${conteudo}`;
+  if (idDe.has(chave)) return idDe.get(chave)!;
+  const lang = LINGUA[arquivo.split(".").pop() ?? ""] ?? "text";
+  const html = conteudo === null ? null : await codeToHtml(conteudo.replace(/\n$/, ""), {
+    lang, theme: "dark-plus",
+    /* tira as quebras entre as linhas (cada linha já é um bloco) e numera cada uma, como na Listagem */
+    transformers: [{ code(no) { no.children = no.children.filter((c) => c.type === "element"); }, line(no, n) { no.properties["data-n"] = String(n); } }],
+  });
+  versoes.push({ arquivo, html, linhas: conteudo === null ? 0 : conteudo.replace(/\n$/, "").split("\n").length });
+  idDe.set(chave, versoes.length - 1);
+  return versoes.length - 1;
+}
+
+/* o estado antes do trecho, e o que muda em cada passo do trecho */
+const atual: Record<string, number> = {};
+const conteudo: Record<string, string | null> = {};
+const inicio: Record<string, number> = {};
+const passos: PassoIde[] = [];
+for (const e of estados) {
+  const p = roteiro.passos[e.passo - 1];
+  if (e.arquivos) for (const [nome, texto] of Object.entries(e.arquivos)) { atual[nome] = await versao(nome, texto); conteudo[nome] = texto; }
+  if (e.arquivo) { atual[e.arquivo] = await versao(e.arquivo, e.conteudo!); conteudo[e.arquivo] = e.conteudo!; }
+  if (e.passo === de - 1 || (de === 1 && e.passo === 0)) Object.assign(inicio, atual);
+  if (e.passo < de || e.passo > ate) continue;
+  const base = { n: e.passo, nota: p.nota };
+  if (e.rodou) {
+    const s = saidas[e.rodou] ?? falhar(`a saída ${e.rodou} não está no saidas.json; rode npm run saidas.`);
+    if (p.aposta && !(Number.isInteger(p.aposta.certa) && p.aposta.opcoes[p.aposta.certa])) falhar(`a aposta de ${e.rodou} não tem a resposta certa entre as opções.`);
+    if (p.marca) {
+      const texto = conteudo[p.marca.arquivo] ?? falhar(`a marca de ${e.rodou} aponta ${p.marca.arquivo}, que não existe nesse passo.`);
+      const total = texto.replace(/\n$/, "").split("\n").length;
+      if (!(1 <= p.marca.linha && p.marca.linha <= total)) falhar(`a marca de ${e.rodou} aponta a linha ${p.marca.linha} de ${p.marca.arquivo}, que tem ${total}.`);
+    }
+    passos.push({ ...base, tipo: "rodar", comando: s.comando, saida: s.saida, saiuCom: s.saiu_com, aposta: p.aposta, marca: p.marca });
+  } else if (e.arquivo) {
+    passos.push({ ...base, tipo: "editar", arquivo: e.arquivo, versao: atual[e.arquivo], alteradas: e.alteradas ?? [], novo: !(e.arquivo in inicio) && !passos.some((x) => x.tipo === "editar" && x.arquivo === e.arquivo) });
+  } else {
+    passos.push({ ...base, tipo: "copiar", arquivos: Object.keys(e.arquivos ?? {}).map((nome) => ({ nome, versao: atual[nome] })) });
+  }
+}
+---
+<figure class="ide-figura">
+  <IdeAoVivo client:idle passos={passos} inicio={inicio} versoes={versoes} pasta={pasta} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+</figure>
+
+<style>
+  .ide-figura { margin-block: 1.8em 2em; width: min(920px, 100vw - 32px); max-width: none; margin-left: calc(50% - min(460px, 50vw - 16px)) }
+  figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  figcaption b { color: var(--ink); font-weight: 600 }
+</style>

@@ -12,6 +12,7 @@ pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, es
 rodar. Cada `rodar` grava a saída no estado em que o código está naquele passo, e no fim a pasta tem que
 ser igual ao projeto/, arquivo por arquivo. Um roteiro que não chega ao projeto real não monta o livro.
 """
+import difflib
 import json
 import re
 import shutil
@@ -68,11 +69,20 @@ def arquivos(pasta: Path) -> dict[str, bytes]:
             if p.is_file() and not fora & set(p.relative_to(pasta).parts)}
 
 
-def construir(livro: str, roteiro: Path, leitor: str) -> dict:
-    """Aplica um roteiro numa pasta vazia e grava a saída de cada `rodar` no estado daquele passo."""
+def alteradas(antes: str, depois: str) -> list[int]:
+    """As linhas (contadas a partir de 1, no texto novo) que entraram ou mudaram."""
+    novas = []
+    for op, _, _, j1, j2 in difflib.SequenceMatcher(a=antes.splitlines(), b=depois.splitlines(), autojunk=False).get_opcodes():
+        if op in ("replace", "insert"):
+            novas.extend(range(j1 + 1, j2 + 1))
+    return novas
+
+
+def construir(livro: str, roteiro: Path, leitor: str) -> tuple[dict, list]:
+    """Aplica um roteiro numa pasta vazia; devolve a saída de cada `rodar` e o estado do código depois de cada passo."""
     projeto = RAIZ / "livros" / livro / "projeto"
     passos = json.loads(roteiro.read_text(encoding="utf-8"))["passos"]
-    saidas, sincronizado = {}, False
+    saidas, estados, sincronizado = {}, [], False
     with tempfile.TemporaryDirectory(prefix="roteiro-") as tmp:
         pasta = Path(tmp)
         for n, passo in enumerate(passos, start=1):
@@ -81,6 +91,9 @@ def construir(livro: str, roteiro: Path, leitor: str) -> dict:
                 for nome in passo["arquivos"]:
                     (pasta / nome).parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(projeto / nome, pasta / nome)
+                # arquivo grande copiado (o uv.lock) entra só pelo nome: a IDE mostra na árvore, não abre
+                estados.append({"passo": n, "arquivos": {nome: (texto if len(texto := (pasta / nome).read_text(encoding="utf-8")) < 16000 else None)
+                                                        for nome in passo["arquivos"]}})
                 continue
             if acao == "rodar":
                 if not sincronizado:
@@ -91,6 +104,7 @@ def construir(livro: str, roteiro: Path, leitor: str) -> dict:
                     raise RoteiroErrado(f"{onde}: {passo['id']} saiu com {codigo}, o roteiro espera {passo.get('espera', 0)}\n"
                                         + "\n".join(f"    {l}" for l, _ in linhas))
                 saidas[passo["id"]] = {"comando": passo["comando"], "saiu_com": codigo, "saida": linhas}
+                estados.append({"passo": n, "rodou": passo["id"]})
                 continue
             alvo = pasta / passo["arquivo"]
             final = projeto / passo["arquivo"]
@@ -114,14 +128,16 @@ def construir(livro: str, roteiro: Path, leitor: str) -> dict:
                 alvo.write_text(atual.replace(de, montar_partes(passo["para"], final, onde)), encoding="utf-8")
             else:
                 raise RoteiroErrado(f"{onde}: ação desconhecida")
+            depois = alvo.read_text(encoding="utf-8")
+            estados.append({"passo": n, "arquivo": passo["arquivo"], "conteudo": depois, "alteradas": alteradas(atual, depois)})
         feito, real = arquivos(pasta), arquivos(projeto)
         diferentes = sorted(set(feito) ^ set(real)) + [k for k in feito if k in real and feito[k] != real[k]]
         if diferentes:
             raise RoteiroErrado(f"{roteiro.name}: no fim, a pasta não é igual ao projeto real: {', '.join(diferentes)}")
-    return saidas
+    return saidas, estados
 
 
-def rodar(livro: str) -> dict:
+def rodar(livro: str) -> tuple[dict, dict]:
     base = RAIZ / "livros" / livro
     conf = json.loads((base / "comandos.json").read_text(encoding="utf-8"))
     projeto = base / "projeto"
@@ -133,12 +149,13 @@ def rodar(livro: str) -> dict:
         esperado = c.get("saiu_com", 0)
         if codigo != esperado:
             print(f"aviso: {chave} saiu com {codigo}, o esperado era {esperado}", file=sys.stderr)
-    for roteiro in sorted((base / "roteiros").glob("*.json")):
-        do_roteiro = construir(livro, roteiro, conf["pasta_do_leitor"])
+    estados = {}
+    for roteiro in sorted(p for p in (base / "roteiros").glob("*.json") if not p.name.endswith(".estados.json")):
+        do_roteiro, estados[roteiro] = construir(livro, roteiro, conf["pasta_do_leitor"])
         if repetidas := set(do_roteiro) & set(saidas):
             raise RoteiroErrado(f"{roteiro.name}: ids que já existem: {', '.join(sorted(repetidas))}")
         saidas.update(do_roteiro)
-    return saidas
+    return saidas, estados
 
 
 def sem_tempo(saidas: dict) -> dict:
@@ -152,14 +169,22 @@ def principal(argv: list[str]) -> int:
     livro, conferir = argv[0], "--conferir" in argv
     arquivo = RAIZ / "livros" / livro / "saidas.json"
     try:
-        novas = rodar(livro)
+        novas, estados = rodar(livro)
     except RoteiroErrado as erro:
         print(f"roteiro: {erro}", file=sys.stderr)
         return 1
+    # o estado do código depois de cada passo de cada roteiro: é o que a IDE do livro mostra
+    gravar = {r.with_name(r.stem + ".estados.json"): json.dumps(e, ensure_ascii=False, indent=1) + "\n" for r, e in estados.items()}
     if not conferir:
         arquivo.write_text(json.dumps(novas, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(f"gravadas {len(novas)} saídas em {arquivo.relative_to(RAIZ)}")
+        for destino, texto in gravar.items():
+            destino.write_text(texto, encoding="utf-8")
+        print(f"gravadas {len(novas)} saídas em {arquivo.relative_to(RAIZ)} e {len(gravar)} roteiro(s) com os estados")
         return 0
+    velhos = [d.name for d, texto in gravar.items() if not d.exists() or d.read_text(encoding="utf-8") != texto]
+    if velhos:
+        print(f"os estados gravados não batem com o roteiro: {', '.join(velhos)}; rode npm run saidas", file=sys.stderr)
+        return 1
     gravadas = json.loads(arquivo.read_text(encoding="utf-8"))
     a, b = sem_tempo(gravadas), sem_tempo(novas)
     mudou = sorted(set(a) ^ set(b)) + [k for k in a if k in b and a[k] != b[k]]

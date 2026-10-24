@@ -1,0 +1,80 @@
+/* A IDE do livro: uma janela de editor (cores do VS Code escuro), com explorador, abas, editor e painel. */
+.ide { --ide-fundo: #1e1e1e; --ide-lateral: #181a1f; --ide-barra: #24272e; --ide-linha: #2b2f37; --ide-texto: #d4d4d4; --ide-fraco: #8b919c;
+  --ide-acento: #5aa9ff; --ide-verde: #3fd68b; --ide-ambar: #ffb547; --ide-vermelho: #ff6b6b;
+  border-radius: 12px; overflow: hidden; background: var(--ide-fundo); color: var(--ide-texto); border: 1px solid #262a32;
+  box-shadow: 0 14px 40px rgba(20, 14, 4, .22); font: 13px/1.5 var(--f-ui) }
+.ide button { font: inherit; color: inherit; cursor: pointer }
+.ide :focus-visible { outline: 2px solid var(--ide-acento); outline-offset: -2px }
+.ide-barra { display: flex; align-items: center; height: 36px; padding: 0 12px; background: var(--ide-barra); border-bottom: 1px solid var(--ide-linha) }
+.ide-luzes { display: flex; gap: 7px }
+.ide-luzes i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57 } .ide-luzes i:nth-child(2) { background: #febc2e } .ide-luzes i:nth-child(3) { background: #28c840 }
+.ide-titulo { flex: 1; text-align: center; font-size: 12px; color: var(--ide-fraco); padding-right: 50px }
+.ide-corpo { display: grid; grid-template-columns: 190px 1fr; min-height: 0 }
+.ide-explorador { background: var(--ide-lateral); border-right: 1px solid var(--ide-linha); padding: 8px 6px; overflow: auto }
+.ide-explorador small { display: block; padding: 2px 8px 6px; font: 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ide-fraco) }
+.ide-explorador ul { list-style: none; margin: 0; padding: 0 }
+.ide-explorador li button { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 8px; border: 0; border-radius: 5px; background: none; text-align: left; font-size: 12.5px; color: #c9ced6 }
+.ide-explorador li button span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.ide-explorador li button:hover:not(:disabled) { background: #22252c }
+.ide-explorador li button[aria-current] { background: #2a2f3a; color: #fff }
+.ide-explorador li button:disabled { cursor: default; opacity: .55 }
+.ide-explorador svg { color: var(--ide-fraco); flex: none }
+.ide-git { font: 600 10.5px var(--f-mono); font-style: normal }
+.ide-git-U { color: var(--ide-verde) } .ide-git-M { color: var(--ide-ambar) }
+.ide-com-erro span { color: var(--ide-vermelho) }
+.ide-editor { display: grid; grid-template-rows: auto 1fr auto; min-width: 0 }
+.ide-abas { display: flex; overflow-x: auto; background: var(--ide-lateral); border-bottom: 1px solid var(--ide-linha) }
+.ide-abas button { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border: 0; border-right: 1px solid var(--ide-linha); background: none; color: var(--ide-fraco); font-size: 12.5px; white-space: nowrap }
+.ide-abas button[aria-selected="true"] { background: var(--ide-fundo); color: #fff; box-shadow: inset 0 1px 0 var(--ide-acento) }
+.ide-abas svg { color: var(--ide-fraco) }
+.ide-codigo { height: 300px; overflow: auto; background: var(--ide-fundo) }
+.ide-codigo pre { margin: 0; padding: 8px 0 14px; font: 13px/20px var(--f-mono); background: transparent !important; min-width: max-content }
+/* o estilo de `code` do texto do livro não entra no editor */
+.ide-codigo code { display: block; background: none; padding: 0; border-radius: 0; font: inherit; overflow-wrap: normal }
+.ide-codigo .line { display: block; min-height: 20px; padding-right: 18px; white-space: pre; position: relative }
+.ide-codigo .line::before { content: attr(data-n); display: inline-block; width: 44px; padding-right: 14px; text-align: right; color: #5c6370; user-select: none }
+.ide-codigo .line.ide-novo { background: rgba(63, 214, 139, .1); box-shadow: inset 3px 0 0 var(--ide-verde) }
+.ide-codigo .line.ide-erro { background: rgba(255, 107, 107, .12); box-shadow: inset 3px 0 0 var(--ide-vermelho);
+  text-decoration: underline wavy var(--ide-vermelho); text-decoration-skip-ink: none; text-underline-offset: 4px }
+.ide-painel { border-top: 1px solid var(--ide-linha); background: #15171c }
+.ide-painel-abas { display: flex; gap: 2px; padding: 0 8px; border-bottom: 1px solid var(--ide-linha) }
+.ide-painel-abas button { border: 0; background: none; padding: 6px 10px; font: 600 11px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ide-fraco); border-bottom: 1px solid transparent; margin-bottom: -1px }
+.ide-painel-abas button[aria-selected="true"] { color: #fff; border-bottom-color: var(--ide-acento) }
+.ide-conta { display: inline-grid; place-items: center; min-width: 16px; height: 16px; margin-left: 6px; border-radius: 8px; background: var(--ide-vermelho); color: #fff; font: 600 10px var(--f-ui); font-style: normal }
+.ide-terminal { height: 200px; overflow: auto; padding: 8px 14px 10px; font: 12.5px/1.55 var(--f-mono); white-space: pre-wrap; word-break: break-word }
+.ide-pr { color: var(--ide-verde) } .ide-cwd { color: var(--ide-acento) }
+.ide .okv { color: var(--ide-verde) } .ide .err { color: var(--ide-vermelho) }
+.ide-cursor { display: inline-block; width: 7px; height: 14px; background: var(--ide-texto); vertical-align: -2px; animation: ide-pisca 1s steps(1) infinite }
+@keyframes ide-pisca { 50% { opacity: 0 } }
+.ide-aposta { margin: 8px 0 4px; padding: 10px 12px; border: 1px solid #3a4150; border-left: 3px solid var(--ide-ambar); border-radius: 8px; background: #1c1f26; font-family: var(--f-ui); white-space: normal }
+.ide-aposta b { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ide-ambar) }
+.ide-aposta p { margin: 4px 0 8px; font-size: 14px; color: #e7e9ee }
+.ide-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+.ide-opcoes button { border: 1px solid #3a4150; background: #252a33; border-radius: 7px; padding: 5px 11px; font-size: 13px }
+.ide-opcoes button:hover { border-color: var(--ide-acento) }
+.ide-opcoes .ide-pular { border-style: dashed; color: var(--ide-fraco) }
+.ide-veredito { display: flex; align-items: center; gap: 6px; margin: 6px 0; font: 600 12.5px var(--f-ui); white-space: normal }
+.ide-acertou { color: var(--ide-verde) } .ide-errou { color: var(--ide-ambar) }
+.ide-problemas { height: 200px; overflow: auto; padding: 6px 8px }
+.ide-problemas p { margin: 6px; color: var(--ide-fraco) }
+.ide-problemas button { display: flex; align-items: baseline; gap: 8px; width: 100%; padding: 5px 6px; border: 0; border-radius: 5px; background: none; text-align: left; font-size: 13px }
+.ide-problemas button:hover { background: #22252c }
+.ide-problemas svg { color: var(--ide-vermelho); flex: none; align-self: center }
+.ide-problemas small { margin-left: auto; color: var(--ide-fraco); white-space: nowrap }
+.ide-rodape { display: flex; align-items: center; gap: 14px; padding: 10px 12px; border-top: 1px solid var(--ide-linha); background: var(--ide-barra) }
+.ide-controles { display: flex; gap: 6px; flex: none }
+.ide-controles button { display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid #3a4150; background: #2a2f38 }
+.ide-controles .ide-proximo { background: var(--ide-acento); border-color: var(--ide-acento); color: #06111f; font-weight: 600; padding: 0 12px }
+.ide-controles button:disabled { opacity: .45; cursor: default }
+.ide-nota { flex: 1; min-width: 0; margin: 0; font-size: 14px; color: #cfd4dc }
+.ide-nota span { font: 11px var(--f-mono); color: var(--ide-fraco); margin-right: 6px }
+astro-island[ssr] .ide-controles { visibility: hidden }
+@media (prefers-reduced-motion: reduce) { .ide-cursor { animation: none } }
+@media (max-width: 680px) {
+  .ide-corpo { grid-template-columns: 1fr }
+  .ide-explorador { display: none }
+  .ide-codigo { height: 260px }
+  .ide-codigo .line::before { width: 32px; padding-right: 10px }
+  .ide-rodape { flex-wrap: wrap }
+  .ide-nota { order: -1; flex-basis: 100% }
+}
