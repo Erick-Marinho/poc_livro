@@ -7,12 +7,13 @@ const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const html = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html");
 const saidas = JSON.parse(ler("livros/ciclo-de-vida/saidas.json"));
 const secao = html.slice(html.indexOf('id="s1-6"'), html.indexOf('id="s1-7"'));
-const passos = secao.split('data-passo aria-label="').slice(1);
+const MARCA = /data-passo data-passo-id="[^"]+" aria-label="/;
+const passos = secao.split(MARCA).slice(1);
 
-test("a 1.6 tem seis passos, cada um com o fim do passo e o 'agora você tem'", () => {
+test("a 1.6 tem os seis primeiros passos, cada um com o fim do passo e o 'agora você tem'", () => {
   assert.equal(passos.length, 6);
   passos.forEach((p, i) => {
-    assert.ok(p.startsWith(`Passo ${i + 1} de 6`), p.slice(0, 40));
+    assert.ok(p.startsWith(`Passo ${i + 1} de 14`), p.slice(0, 40));
     assert.match(p, /no fim deste passo:/);
     assert.match(p, /agora você tem:/);
   });
@@ -37,16 +38,16 @@ test("o passo 1 pede a aposta antes de mostrar o erro do 'talvez'", () => {
 });
 
 const trecho = (de, ate) => html.slice(html.indexOf(`id="${de}"`), ate ? html.indexOf(`id="${ate}"`) : undefined);
-const contar = (t) => [...t.matchAll(/data-passo aria-label="Passo (\d+) de (\d+)/g)].map((m) => `${m[1]}/${m[2]}`);
+const contar = (t) => [...t.matchAll(/data-passo-id="[^"]+" aria-label="Passo (\d+) de (\d+)/g)].map((m) => `${m[1]}/${m[2]}`);
 
 test("a 1.7 tem seis passos e a 1.8 tem dois, e o capítulo não tem mais a IDE no meio do texto", () => {
-  assert.deepEqual(contar(trecho("s1-7", "s1-8")), ["1/6", "2/6", "3/6", "4/6", "5/6", "6/6"]);
-  assert.deepEqual(contar(trecho("s1-8")), ["1/2", "2/2"]);
+  assert.deepEqual(contar(trecho("s1-7", "s1-8")), ["7/14", "8/14", "9/14", "10/14", "11/14", "12/14"]);
+  assert.deepEqual(contar(trecho("s1-8")), ["13/14", "14/14"]);
   assert.doesNotMatch(html, /class="ide-figura"/);
 });
 
 test("o R12 fica à vista no passo das vinte perguntas, mesmo com o resto do arquivo dobrado", () => {
-  const p = trecho("s1-7", "s1-8").split('data-passo aria-label="')[1];
+  const p = trecho("s1-7", "s1-8").split(MARCA)[1];
   assert.match(p, /<span class="line novo depois-da-dobra" data-n="12">/);
   assert.match(p, /<span class="line novo dobrada" data-n="7">/);
 });
@@ -54,4 +55,21 @@ test("o R12 fica à vista no passo das vinte perguntas, mesmo com o resto do arq
 test("o passo da nota zero avisa o placar quando o leitor aposta", () => {
   assert.match(trecho("s1-8"), /data-id="r01-nota-zero"/);
   assert.match(html, /fontmar:apostou/);
+});
+
+test("a trilha leva aos 14 passos, e o sinal de cada um sai da saída gravada", () => {
+  const trilha = html.slice(html.indexOf("data-trilha"), html.indexOf("</figure>", html.indexOf("data-trilha")));
+  const itens = [...trilha.matchAll(/data-ir-passo="([^"]+)"[^>]*>.*?class="tr-sinal (\w+)"/g)].map((m) => `${m[1]}:${m[2]}`);
+  assert.deepEqual(itens, ["decisoes:erro", "caso:erro", "ler-arquivo:nada", "tres-perguntas:ok", "caso-apressado:engano", "contrato-se-protege:erro",
+    "vinte-perguntas:engano", "le-a-loja:ok", "o-que-os-testes-leem:nada", "testes-de-formato:engano", "regras-da-politica:erro", "r12-corrigido:ok",
+    "agente-mais-simples:ok", "a-regua:ok"]);
+  for (const m of trilha.matchAll(/href="#passo-([^"]+)"/g)) assert.match(html, new RegExp(`id="passo-${m[1]}"`));
+});
+
+test("cada passo abre o projeto inteiro até ali, com os arquivos daquele momento", () => {
+  const p6 = passos[5];
+  assert.match(p6, /ver o projeto inteiro até aqui/);
+  assert.match(p6, /<template data-projeto>/);
+  assert.match(p6, /model_validator/);   // no fim do passo 6, o contrato já tem a regra
+  assert.doesNotMatch(passos[0].slice(passos[0].indexOf("<template data-projeto>")), /test_referencia\.py/);   // no passo 1 ainda não há testes
 });

@@ -41,8 +41,10 @@ import Passador from "../../../src/components/livro/Passador.astro";
 import passadorCaso from "../passadores/caso.json";
 import glossario from "../glossario.json";
 import Passo from "../../../src/components/livro/Passo.astro";
+import Trilha from "../../../src/components/livro/Trilha.astro";
+import passos01 from "../passos/01.json";
 
-export const base = { roteiro: roteiro01, estados: estados01, saidas, glossario };
+export const base = { roteiro: roteiro01, estados: estados01, saidas, glossario, capitulo: passos01, passadores: { caso: { codigo: contrato, dados: passadorCaso } } };
 
 ## 1.1 O que é um agente
 
@@ -151,39 +153,29 @@ Se o agente calcula prazos com a data real do computador, a resposta certa de ho
 
 ## 1.6 O contrato em código
 
-O contrato vira código no arquivo `contrato.py`, em seis passos. Cada um começa dizendo o que vai existir no fim dele e termina num comando que prova que existe. O arquivo não nasce de cima para baixo: duas vezes você volta ao topo para acrescentar um import, como acontece na sua IDE. E um dos passos dá errado de propósito.
+O contrato vira código no arquivo `contrato.py`, nos seis primeiros passos de um caminho de quatorze, que vai até a nota zero no fim do capítulo. Cada um começa dizendo o que vai existir no fim dele e termina num comando que prova que existe. O arquivo não nasce de cima para baixo: duas vezes você volta ao topo para acrescentar um import, como acontece na sua IDE. E um dos passos dá errado de propósito.
 
-<Passo {...base} n={1} total={6} titulo="As quatro decisões" de={2} ate={3}
-  objetivo="o Python conhece as quatro decisões e as três fontes, e recusa qualquer outra."
-  temos="`Decisao` e `Fonte`, duas listas fechadas." />
+<Trilha capitulo={passos01} roteiro={roteiro01} saidas={saidas} secoes={{ "1.6": "O contrato em código", "1.7": "As perguntas de referência", "1.8": "A nota zero" }} numero="1.3" legenda="O caminho do capítulo, do arquivo vazio à nota zero. Clique num passo para ir até ele; o sinal diz o que o comando do fim mostra, e ele é o do projeto real." />
+
+<Passo {...base} id="decisoes" />
 
 Um `StrEnum` é uma lista fechada de textos. Uma decisão escrita como `"talvez"` falha na hora, em vez de passar despercebida e aparecer semanas depois como um "erro do agente".
 
-<Passo {...base} n={2} total={6} titulo="O formato de um caso" de={4} ate={6} passador={{ codigo: contrato, dados: passadorCaso }}
-  objetivo="o pydantic confere cada caso, e um caso torto não entra."
-  temos="o molde `Caso`, que diz qual campo está errado e por quê." />
+<Passo {...base} id="caso" />
 
 Repare na volta ao topo antes do `Caso`: o import do pydantic só entrou quando o código precisou dele. Escrever todos os imports antes, "por garantia", é adivinhar o que o arquivo vai precisar.
 
-<Passo {...base} n={3} total={6} titulo="Ler o arquivo de referência" de={7} ate={9}
-  objetivo="uma função lê as perguntas de referência do arquivo, uma por linha, e diz em que linha está o erro."
-  temos="`carregar_referencia`, ainda sem nada para ler." />
+<Passo {...base} id="ler-arquivo" />
 
-<Passo {...base} n={4} total={6} titulo="As três primeiras perguntas" de={10} ate={11}
-  objetivo="o formato funcionando com perguntas de verdade, antes de escrever as vinte."
-  temos="três casos que o contrato aceita." />
+<Passo {...base} id="tres-perguntas" />
 
-<Passo {...base} n={5} total={6} titulo="O caso apressado" de={12} ate={13}
-  objetivo="ver um caso sem resposta certa entrar sem que ninguém avise."
-  temos="um buraco no contrato, que você viu acontecer." />
+<Passo {...base} id="caso-apressado" />
 
 Este é o passo que mais ensina. O caso apressado diz que precisa dos pedidos e não diz qual, e o arquivo carregou sem reclamar. É o pior tipo de erro: nada quebra, e um caso sem resposta certa passa a fazer parte da régua. Semanas depois, quando um agente "errar" esse caso, ninguém vai saber que o erro era do caso.
 
 <Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
-<Passo {...base} n={6} total={6} titulo="O contrato se protege" de={14} ate={16}
-  objetivo="o mesmo arquivo para de carregar, e o erro diz a linha do caso errado."
-  temos="um contrato que barra caso mal escrito antes de ele virar régua." />
+<Passo {...base} id="contrato-se-protege" />
 
 As duas regras são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono.
 
@@ -197,33 +189,21 @@ O contrato diz como um caso deve ser. As perguntas de referência são os casos 
 
 Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
 
-<Passo {...base} n={1} total={6} titulo="As vinte perguntas" de={17} ate={19} ver={{ "referencia.jsonl": [12] }}
-  objetivo="as vinte perguntas de referência no projeto, com um engano escondido nelas."
-  temos="vinte casos que carregam, e um deles errado sem ninguém saber." />
+<Passo {...base} id="vinte-perguntas" />
 
 Carregar sem erro só prova que cada linha tem o formato certo. Para conferir se as perguntas fazem sentido com a loja, os testes vão precisar ler os pedidos e os clientes.
 
-<Passo {...base} n={2} total={6} titulo="O contrato lê a loja" de={20} ate={23}
-  objetivo="o código abre qualquer arquivo de dados da loja pelo nome."
-  temos="`carregar`, que os testes vão usar." />
+<Passo {...base} id="le-a-loja" />
 
-<Passo {...base} n={3} total={6} titulo="O que os testes leem" de={24} ate={24}
-  objetivo="o começo do arquivo de testes: tudo o que os testes vão consultar, lido uma vez só."
-  temos={'os casos, os pedidos, os e-mails dos clientes, o "hoje" da loja e quem é dono de cada pedido.'} />
+<Passo {...base} id="o-que-os-testes-leem" />
 
-<Passo {...base} n={4} total={6} titulo="Os testes do formato" de={25} ate={26}
-  objetivo="testes que conferem o arquivo em si: ids, decisões, pedidos que existem."
-  temos="quatro testes verdes, e o R12 ainda errado." />
+<Passo {...base} id="testes-de-formato" />
 
 Os quatro passaram, e o R12 continua errado. Teste de formato não pega engano de regra: para isso, a regra tem que virar teste.
 
-<Passo {...base} n={5} total={6} titulo="As regras da política" de={27} ate={28}
-  objetivo="cada regra da política vira um teste que a máquina confere."
-  temos="dois testes vermelhos, e os dois apontam o R12." />
+<Passo {...base} id="regras-da-politica" />
 
-<Passo {...base} n={6} total={6} titulo="O R12 corrigido" de={29} ate={30}
-  objetivo="o caso certo, e os sete testes verdes."
-  temos="vinte perguntas de referência conferidas contra a loja." />
+<Passo {...base} id="r12-corrigido" />
 
 Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
 
@@ -233,13 +213,9 @@ Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrit
 
 Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
 
-<Passo {...base} n={1} total={2} titulo="O agente mais simples" de={31} ate={32}
-  objetivo={'um "agente" que nem lê a pergunta.'}
-  temos="`sempre_passar`, que responde passar a tudo." />
+<Passo {...base} id="agente-mais-simples" />
 
-<Passo {...base} n={2} total={2} titulo="A régua" de={33} ate={34}
-  objetivo="uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota."
-  temos="a nota zero: o número que todo agente do livro tem que bater." />
+<Passo {...base} id="a-regua" />
 
 Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
 

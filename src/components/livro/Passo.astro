@@ -21,22 +21,26 @@ interface Props {
   estados: Estado[];
   saidas: Record<string, Saida>;
   glossario: { termos: Record<string, unknown> };
-  n: number;
-  total: number;
-  titulo: string;
-  objetivo: string;
-  temos: string;
-  de: number;
-  ate: number;
-  passador?: { codigo: string; dados: { arquivo: string; linhas: string; blocos: { linhas: string }[] } };
-  /** linhas que ficam à vista mesmo dobradas (números do arquivo no fim do passo), por arquivo */
-  ver?: Record<string, number[]>;
+  /** os passos do capítulo (livros/<livro>/passos/<n>.json); este passo é o de `id` */
+  capitulo: { passos: DefPasso[] };
+  id: string;
+  passadores?: Record<string, { codigo: string; dados: { arquivo: string; linhas: string; blocos: { linhas: string }[] } }>;
   pasta?: string;
 }
-const { roteiro, estados, saidas, glossario, n, total, titulo, objetivo, temos, de, ate, passador, ver = {}, pasta = "~/atendimento-bemtevi" } = Astro.props;
+/** `ver`: linhas que ficam à vista mesmo dobradas (números do arquivo no fim do passo), por arquivo */
+type DefPasso = { id: string; secao: string; titulo: string; de: number; ate: number; objetivo: string; temos: string; passador?: string; ver?: Record<string, number[]>; engano?: string };
+const { roteiro, estados, saidas, glossario, capitulo, id, passadores = {}, pasta = "~/atendimento-bemtevi" } = Astro.props;
+const indice = capitulo.passos.findIndex((p) => p.id === id);
+if (indice < 0) throw new Error(`Passo: "${id}" não está nos passos do capítulo`);
+const { secao, titulo, de, ate, objetivo, temos, ver = {} } = capitulo.passos[indice];
+const n = indice + 1, total = capitulo.passos.length;
+const passador = capitulo.passos[indice].passador ? (passadores[capitulo.passos[indice].passador!] ?? (() => { throw new Error(`Passo ${id}: o passador "${capitulo.passos[indice].passador}" não foi passado`); })()) : undefined;
 /* arquivo de dados (perguntas, loja) não conta no limite: é para copiar, não para digitar; mostra só o começo e o que `ver` pedir */
 const DADOS = /\.(jsonl?|md|toml)$/;
-const falhar = (m: string): never => { throw new Error(`Passo ${n} (${titulo}): ${m}`); };
+const falhar = (m: string): never => { throw new Error(`Passo ${n} (${id}): ${m}`); };
+const anterior = capitulo.passos[indice - 1];
+if (anterior && anterior.ate + 1 !== de) falhar(`o passo anterior termina no ${anterior.ate} do roteiro, e este começa no ${de}: nenhum pedaço do caminho pode sumir`);
+if (indice === total - 1 && ate !== roteiro.passos.length) falhar(`o último passo termina no ${ate}, e o roteiro tem ${roteiro.passos.length}`);
 if (!(1 <= de && de <= ate && ate <= roteiro.passos.length)) falhar(`trecho ${de}-${ate} fora do roteiro (${roteiro.passos.length} passos)`);
 
 /* o projeto antes e depois do trecho */
@@ -125,12 +129,29 @@ if (totalNovas > LIMITE) falhar(`${totalNovas} linhas novas; o limite é ${LIMIT
 /* o mapa: os arquivos do leitor (os prontos ficam num grupo só) */
 const doLeitor = Object.keys(depois).filter((k) => !prontos.has(k)).sort();
 const grupoPronto = [...prontos].some((k) => k.startsWith("dados/")) ? `dados/ (${[...prontos].filter((k) => k.startsWith("dados/")).length}) e o pyproject.toml` : [...prontos].join(", ");
+/* o projeto inteiro no fim do passo, para quem quiser ver o todo (abre por clique; o realce é guardado entre os passos) */
+const cache: Map<string, string> = ((globalThis as any).__realcePasso ??= new Map());
+const projeto: { nome: string; html: string | null; muda: boolean }[] = [];
+for (const nome of Object.keys(depois).sort((a, b) => Number(prontos.has(a)) - Number(prontos.has(b)) || a.localeCompare(b))) {
+  const texto = depois[nome];
+  const grande = texto === "" && prontos.has(nome);
+  let html: string | null = null;
+  if (!grande) {
+    const chave = `${nome}\u0000${texto}`;
+    if (!cache.has(chave)) cache.set(chave, await codeToHtml(texto.replace(/\n$/, ""), {
+      lang: LINGUA[nome.split(".").pop() ?? ""] ?? "text", theme: "dark-plus",
+      transformers: [{ line(no, i) { no.properties["data-n"] = String(i); }, code(no) { no.children = no.children.filter((c) => c.type === "element"); } }],
+    }));
+    html = cache.get(chave)!;
+  }
+  projeto.push({ nome, html, muda: editados.includes(nome) });
+}
 const esc = (s: string) => s.replace(/[&<>"]/g, (x) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[x]!);
 const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 ---
-<section class="passo largo" data-passo aria-label={`Passo ${n} de ${total}: ${titulo}`}>
+<section class="passo largo" id={`passo-${id}`} data-passo data-passo-id={id} aria-label={`Passo ${n} de ${total}: ${titulo}`}>
   <header class="ps-topo">
-    <span class="ps-n">passo {n} de {total}</span>
+    <div class="ps-linha"><span class="ps-n">passo {n} de {total} · seção {secao}</span><button type="button" class="ps-ver-projeto" data-abrir-projeto>ver o projeto inteiro até aqui</button></div>
     <h3 class="ps-titulo">{titulo}</h3>
     <p class="ps-objetivo"><b>no fim deste passo:</b> <span set:html={md(objetivo)} /></p>
     <div class="ps-mapa" aria-label="O projeto neste passo">
@@ -167,6 +188,22 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   ))}
 
   <p class="ps-temos" data-temos hidden={rodadas.length > 0}>✓ <b>agora você tem:</b> <span set:html={md(temos)} /></p>
+
+  <template data-projeto>
+    <div class="pj-topo"><b>o projeto no fim do passo {n}</b> · {titulo}<button type="button" class="pj-fechar" data-fechar aria-label="Fechar">✕</button></div>
+    <div class="pj-corpo">
+      <nav class="pj-arvore" aria-label="Arquivos">
+        {projeto.map((f, i) => <button type="button" data-ver={i} aria-pressed={i === 0 ? "true" : "false"} class:list={[{ muda: f.muda, pronto: prontos.has(f.nome) }]}>{f.nome}</button>)}
+      </nav>
+      <div class="pj-arquivos">
+        {projeto.map((f, i) => (
+          <div class="pj-arquivo" data-arq={i} hidden={i > 0}>
+            {f.html ? <div class="ps-codigo pj-codigo" set:html={f.html} /> : <p class="pj-grande">{f.nome}: arquivo gerado pelo uv, longo demais para ler aqui.</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </template>
 </section>
 
 <script>
@@ -196,6 +233,27 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
       const aberto = f.classList.toggle("inteiro");
       (e.currentTarget as HTMLElement).textContent = aberto ? "só o que mudou" : "ver o arquivo inteiro";
     }));
+    /* o passo feito avisa a trilha do capítulo */
+    const temos = sec.querySelector<HTMLElement>("[data-temos]")!;
+    let avisou = false;
+    const avisar = () => { if (avisou || temos.hidden) return; avisou = true; dispatchEvent(new CustomEvent("fontmar:passo-feito", { detail: sec.dataset.passoId })); };
+    new MutationObserver(avisar).observe(temos, { attributes: true, attributeFilter: ["hidden"] });
+    new IntersectionObserver((es, o) => { if (es.some((e) => e.isIntersecting)) { avisar(); if (avisou) o.disconnect(); } }).observe(temos);
+
+    /* o projeto inteiro: num diálogo, montado só quando o leitor pede */
+    sec.querySelector("[data-abrir-projeto]")!.addEventListener("click", () => {
+      const d = document.createElement("dialog");
+      d.className = "pj-dialogo";
+      d.append((sec.querySelector("template[data-projeto]") as HTMLTemplateElement).content.cloneNode(true));
+      d.querySelectorAll<HTMLButtonElement>("[data-ver]").forEach((b) => b.addEventListener("click", () => {
+        d.querySelectorAll<HTMLButtonElement>("[data-ver]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        d.querySelectorAll<HTMLElement>("[data-arq]").forEach((a) => (a.hidden = a.dataset.arq !== b.dataset.ver));
+      }));
+      d.querySelector("[data-fechar]")!.addEventListener("click", () => d.close());
+      d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+      d.addEventListener("close", () => d.remove());
+      document.body.append(d); d.showModal();
+    });
     const aplicarDireto = () => { if (direto()) runs.forEach(mostrar); };
     addEventListener("fontmar:direto", aplicarDireto); aplicarDireto();
   });
@@ -204,6 +262,25 @@ const md = (s: string) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
 <style is:global>
   .passo { margin: 2em auto 2.2em; border: 1px solid var(--linha); border-radius: 14px; background: var(--papel-2); overflow: hidden }
   .ps-topo { padding: 14px 18px 12px; display: grid; gap: 6px; border-bottom: 1px solid var(--linha) }
+  .ps-linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+  .ps-ver-projeto { margin-left: auto; border: 1px solid var(--linha); background: var(--papel); border-radius: 6px; padding: 2px 10px; cursor: pointer; font: 12.5px var(--f-ui); color: var(--ink-2) }
+  .ps-ver-projeto:hover { color: var(--acento); border-color: var(--acento) }
+  .pj-dialogo { width: min(980px, calc(100vw - 24px)); max-height: calc(100vh - 48px); padding: 0; border: 0; border-radius: 12px; background: var(--ide-bg); color: var(--ide-ink); overflow: hidden }
+  .pj-dialogo::backdrop { background: rgba(10, 8, 4, .55) }
+  .pj-topo { display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: var(--ide-tabs); font: 13px var(--f-ui); color: #ccc }
+  .pj-topo b { color: #fff; font-weight: 600 }
+  .pj-fechar { margin-left: auto; background: none; border: 0; color: #bbb; font-size: 16px; cursor: pointer }
+  .pj-corpo { display: grid; grid-template-columns: 220px minmax(0, 1fr); height: min(70vh, 640px) }
+  .pj-arvore { display: flex; flex-direction: column; gap: 1px; padding: 8px 6px; background: #181818; overflow: auto; border-right: 1px solid #2a2a2a }
+  .pj-arvore button { text-align: left; background: none; border: 0; color: #cfcfcf; font: 13px var(--f-mono); padding: 4px 8px; border-radius: 4px; cursor: pointer; overflow-wrap: anywhere }
+  .pj-arvore button.pronto { color: #8b8b8b }
+  .pj-arvore button.muda::after { content: " ●"; color: #3794ff }
+  .pj-arvore button[aria-pressed="true"] { background: #37373d; color: #fff }
+  .pj-arquivos { overflow: auto; min-width: 0 }
+  .pj-arquivo[hidden] { display: none }
+  .pj-codigo .line:not(.novo) { opacity: 1 }
+  .pj-grande { padding: 14px; font: 14px var(--f-ui); color: #aaa }
+  @media (max-width: 640px) { .pj-corpo { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); height: 80vh } .pj-arvore { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid #2a2a2a } }
   .ps-n { font: 600 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--acento) }
   .ps-titulo { margin: 0; font: 700 22px/1.25 var(--f-texto); text-wrap: balance }
   .ps-objetivo { margin: 0; font: 15.5px/1.5 var(--f-ui) }

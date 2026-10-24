@@ -34,6 +34,13 @@ o caminho aparece na página.
   errado; os três da política, que o pegam) e o `baseline.py` em duas (o decisor; a régua). Três comandos novos gravados.
 - (5c1) Os passos são numerados por seção (1.6: 6; 1.7: 6; 1.8: 2). A numeração do capítulo inteiro fica para a trilha (5c2).
 - (5c1) O passo avisa o placar quando o leitor aposta (`fontmar:apostou`), como a IDE fazia.
+- (5c2) Os passos do capítulo moram em `livros/<livro>/passos/<n>.json` (título, trecho do roteiro, fim do passo,
+  "agora você tem"); o MDX só diz qual passo entra onde. O Passo e a trilha leem do mesmo arquivo.
+- (5c2) A numeração passa a ser do capítulo inteiro ("passo 7 de 14 · seção 1.7"). Os trechos dos passos têm que
+  emendar um no outro e cobrir o roteiro até o fim: se um pedaço do caminho sumir, o build falha.
+- (5c2) O sinal de cada passo na trilha sai da saída gravada: ✗ quando o comando sai com erro ou mostra uma linha de
+  erro; ! quando o passo tem `engano` (dá certo e esconde um erro); ✓ quando dá certo; • quando não roda nada.
+- (5c2) "Ver o projeto inteiro até aqui" abre num diálogo os arquivos do fim daquele passo; ele só é montado no clique.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -44,7 +51,8 @@ o caminho aparece na página.
 | `Passador.astro` | um trecho real, bloco a bloco, com palavras e perguntas | arquivo real + `passadores/*.json` + glossário | figura | nova |
 | `passadores/caso.json` | os 5 blocos do formato de um caso (`contrato.py`, 29–38) | — | blocos | nova |
 | `Passo.astro` | objetivo, mapa pequeno, código novo, rodar com aposta, "agora você tem" | roteiro + estados + saídas | figura | nova (5b2) |
-| trilha do capítulo | fluxograma clicável dos passos | roteiro | figura | a construir (5c) |
+| `passos/01.json` | os 14 passos do capítulo, na ordem | — | passos | nova (5c2) |
+| `Trilha.astro` | o caminho do capítulo, clicável, com o sinal de cada passo e os feitos | passos + roteiro + saídas | figura | nova (5c2) |
 
 ## Etapas
 
@@ -67,3 +75,4 @@ o caminho aparece na página.
 | 5a | `43782da` | `npm test` (10 testes, 4 novos); passador no ngrok, no computador e no celular; perguntas conferidas no projeto real | Erick, 23/10/2026 |
 | 5b1 | `11d272c` | contagem de linhas novas por passo (todas ≤ 13 no `contrato.py`); 2 saídas novas gravadas e conferidas | Erick, 23/10/2026 |
 | 5b2 | `9a105c0` | `npm test` (14 testes, 4 novos); seis passos na 1.6 no ngrok, no computador e no celular; o build barrou um passo de 16 linhas | Erick, 23/10/2026 |
+| 5c1 | `2e0e4b3` | `npm test` (17 testes, 3 novos); 1.7 e 1.8 em passos no ngrok; o placar se revela com a aposta | Erick, 23/10/2026 |

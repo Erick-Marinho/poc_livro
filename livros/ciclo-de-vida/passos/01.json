@@ -1,0 +1,154 @@
+{
+  "sobre": "Os passos de construção do capítulo 1, na ordem. Cada um é um trecho do roteiro (de, ate). O Passo e a trilha leem daqui; `engano` marca o passo em que o comando dá certo e esconde um erro.",
+  "passos": [
+    {
+      "id": "decisoes",
+      "secao": "1.6",
+      "titulo": "As quatro decisões",
+      "curta": "as quatro decisões",
+      "de": 2,
+      "ate": 3,
+      "objetivo": "o Python conhece as quatro decisões e as três fontes, e recusa qualquer outra.",
+      "temos": "`Decisao` e `Fonte`, duas listas fechadas."
+    },
+    {
+      "id": "caso",
+      "secao": "1.6",
+      "titulo": "O formato de um caso",
+      "curta": "um caso",
+      "de": 4,
+      "ate": 6,
+      "objetivo": "o pydantic confere cada caso, e um caso torto não entra.",
+      "temos": "o molde `Caso`, que diz qual campo está errado e por quê.",
+      "passador": "caso"
+    },
+    {
+      "id": "ler-arquivo",
+      "secao": "1.6",
+      "titulo": "Ler o arquivo de referência",
+      "curta": "ler o arquivo",
+      "de": 7,
+      "ate": 9,
+      "objetivo": "uma função lê as perguntas de referência do arquivo, uma por linha, e diz em que linha está o erro.",
+      "temos": "`carregar_referencia`, ainda sem nada para ler."
+    },
+    {
+      "id": "tres-perguntas",
+      "secao": "1.6",
+      "titulo": "As três primeiras perguntas",
+      "curta": "3 perguntas",
+      "de": 10,
+      "ate": 11,
+      "objetivo": "o formato funcionando com perguntas de verdade, antes de escrever as vinte.",
+      "temos": "três casos que o contrato aceita."
+    },
+    {
+      "id": "caso-apressado",
+      "secao": "1.6",
+      "titulo": "O caso apressado",
+      "curta": "caso apressado passa",
+      "de": 12,
+      "ate": 13,
+      "objetivo": "ver um caso sem resposta certa entrar sem que ninguém avise.",
+      "temos": "um buraco no contrato, que você viu acontecer.",
+      "engano": "carrega sem reclamar, e não devia"
+    },
+    {
+      "id": "contrato-se-protege",
+      "secao": "1.6",
+      "titulo": "O contrato se protege",
+      "curta": "a regra barra",
+      "de": 14,
+      "ate": 16,
+      "objetivo": "o mesmo arquivo para de carregar, e o erro diz a linha do caso errado.",
+      "temos": "um contrato que barra caso mal escrito antes de ele virar régua."
+    },
+    {
+      "id": "vinte-perguntas",
+      "secao": "1.7",
+      "titulo": "As vinte perguntas",
+      "curta": "20 perguntas",
+      "de": 17,
+      "ate": 19,
+      "objetivo": "as vinte perguntas de referência no projeto, com um engano escondido nelas.",
+      "temos": "vinte casos que carregam, e um deles errado sem ninguém saber.",
+      "ver": {
+        "referencia.jsonl": [
+          12
+        ]
+      },
+      "engano": "carregam, e uma delas está errada"
+    },
+    {
+      "id": "le-a-loja",
+      "secao": "1.7",
+      "titulo": "O contrato lê a loja",
+      "curta": "ler a loja",
+      "de": 20,
+      "ate": 23,
+      "objetivo": "o código abre qualquer arquivo de dados da loja pelo nome.",
+      "temos": "`carregar`, que os testes vão usar."
+    },
+    {
+      "id": "o-que-os-testes-leem",
+      "secao": "1.7",
+      "titulo": "O que os testes leem",
+      "curta": "o que os testes leem",
+      "de": 24,
+      "ate": 24,
+      "objetivo": "o começo do arquivo de testes: tudo o que os testes vão consultar, lido uma vez só.",
+      "temos": "os casos, os pedidos, os e-mails dos clientes, o \"hoje\" da loja e quem é dono de cada pedido."
+    },
+    {
+      "id": "testes-de-formato",
+      "secao": "1.7",
+      "titulo": "Os testes do formato",
+      "curta": "testes do formato",
+      "de": 25,
+      "ate": 26,
+      "objetivo": "testes que conferem o arquivo em si: ids, decisões, pedidos que existem.",
+      "temos": "quatro testes verdes, e o R12 ainda errado.",
+      "engano": "os testes passam, e o R12 continua errado"
+    },
+    {
+      "id": "regras-da-politica",
+      "secao": "1.7",
+      "titulo": "As regras da política",
+      "curta": "as regras pegam o R12",
+      "de": 27,
+      "ate": 28,
+      "objetivo": "cada regra da política vira um teste que a máquina confere.",
+      "temos": "dois testes vermelhos, e os dois apontam o R12."
+    },
+    {
+      "id": "r12-corrigido",
+      "secao": "1.7",
+      "titulo": "O R12 corrigido",
+      "curta": "R12 corrigido",
+      "de": 29,
+      "ate": 30,
+      "objetivo": "o caso certo, e os sete testes verdes.",
+      "temos": "vinte perguntas de referência conferidas contra a loja."
+    },
+    {
+      "id": "agente-mais-simples",
+      "secao": "1.8",
+      "titulo": "O agente mais simples",
+      "curta": "sempre passar",
+      "de": 31,
+      "ate": 32,
+      "objetivo": "um \"agente\" que nem lê a pergunta.",
+      "temos": "`sempre_passar`, que responde passar a tudo."
+    },
+    {
+      "id": "a-regua",
+      "secao": "1.8",
+      "titulo": "A régua",
+      "curta": "a régua: 25%",
+      "de": 33,
+      "ate": 34,
+      "objetivo": "uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota.",
+      "temos": "a nota zero: o número que todo agente do livro tem que bater."
+    }
+  ]
+}
