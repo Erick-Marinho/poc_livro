@@ -30,20 +30,25 @@ mesmo quando contraria o que se esperava. O nome passa a dizer isso: **Experimen
 2. O molde: as seis partes no topo do `.mdx` e no texto, conferidas por um teste; o experimento do segundo cérebro
    passa por ele.
 
-## Etapa 1 (detalhe)
+## Etapa 2 (detalhe)
 
-- **Arquivos:** `guias/` vira `experimentos/`; `src/content.config.ts`, `src/pages/guias/` vira `src/pages/experimentos/`,
-  `src/layouts/Guia.astro`, `src/lib/guias.ts`, `src/lib/vitrine.ts`, `src/styles/guias.css`, `src/lib/livroDaPagina.ts`,
-  as figuras e a IDE (que dizem "guia"), `TopoSite.astro`, `404.astro`, `package.json`, os testes; os planos ganham a
-  decisão. No FontMarAI, `src/App.tsx`, `Vitrine.tsx`, `Newsletter.tsx`, `rotas.ts`, `README.md`.
-- **Evidência:** `npm test`; `/experimentos/` e o experimento abrem; `/guias/` e `/guias/segundo-cerebro-local/`
-  redirecionam; o JSON novo na landing, com "Experimentos recentes"; no `npm run local` e no túnel.
-- **Fica fora:** o molde (etapa 2).
+- **Arquivos:** `src/content.config.ts` (os campos do molde), `src/pages/experimentos/[experimento].astro` e
+  `src/layouts/Experimento.astro` (a página mostra o molde), `src/styles/experimentos.css`,
+  `experimentos/segundo-cerebro-local/experimento.mdx` (os campos dele), `testes/experimentos.test.mjs`, `docs/FORMATO.md`.
+- **Muda:** no topo do `.mdx`, a afirmação (com a fonte), a régua (o arquivo e o que conta como acerto), o resultado
+  (cada linha aponta uma saída gravada; o número sai dela), o achado e o custo. Faltando um, o build não monta. A
+  página abre com "O que se testa" (a afirmação e a régua) e fecha com "O que deu" (os resultados lidos das saídas, o
+  achado e o custo): o resultado fica no fim, para não estragar as apostas. Um teste confere as partes do texto: "O
+  que vamos construir", a IDE com ao menos uma aposta no roteiro, a nota do que é inventado e o lugar da voz dos
+  autores.
+- **Evidência:** `npm test`; o build falha sem um campo do molde e com um resultado que não aponta saída gravada; o
+  teste falha sem uma parte do texto; captura da página.
+- **Fica fora:** a landing mostrar a afirmação no card (depois, se fizer sentido).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `c949877` (e o FontMarAI) | `npm test` com 52 testes (um novo: os endereços antigos redirecionam); pelo túnel, `/experimentos/`, o JSON e o experimento abrem, e `/guias/` e `/guias/segundo-cerebro-local/` levam aos novos; a landing com o card Experimentos, "O experimento do dia" e "Experimentos recentes"; capturas | pendente |
+| 1 | `c949877` (e o FontMarAI) | `npm test` com 52 testes (um novo: os endereços antigos redirecionam); pelo túnel, `/experimentos/`, o JSON e o experimento abrem, e `/guias/` e `/guias/segundo-cerebro-local/` levam aos novos; a landing com o card Experimentos, "O experimento do dia" e "Experimentos recentes"; capturas | Erick, 24/10/2026 |
 
 (redação: claude-opus-5-5)
