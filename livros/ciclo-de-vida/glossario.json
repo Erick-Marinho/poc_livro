@@ -188,6 +188,94 @@
     },
     "f\"{x:.0%}\"": {
       "texto": "O número como porcentagem, sem casas decimais: 0.25 vira 25%."
+    },
+    "\"\"\"…\"\"\" (texto longo)": {
+      "rotulo": "\"\"\"…\"\"\"",
+      "texto": "Um texto que ocupa várias linhas, entre três aspas. Aqui ele não é docstring: é guardado numa variável, INSTRUCAO, para ser mandado ao modelo."
+    },
+    "TypedDict": {
+      "marca": "TypedDict",
+      "texto": "Um dicionário com nome e chaves combinadas: diz quais campos existem e o tipo de cada um. Diferente do BaseModel, não confere nada na entrada; é um combinado para quem lê e para o editor."
+    },
+    "total=False": {
+      "texto": "Nenhum campo é obrigatório: o estado começa só com a pergunta, e cada nó acrescenta o que descobriu."
+    },
+    "estado": {
+      "texto": "O que o grafo carrega de um nó para o outro. Cada nó lê o estado e devolve só o que mudou; a LangGraph junta com o que já estava lá."
+    },
+    "with_structured_output": {
+      "marca": "with_structured_output",
+      "texto": "Pede ao modelo uma resposta no formato de um molde do pydantic, e não em texto solto. O que volta já é um objeto conferido, como Escolha(decisao=..., motivo=...)."
+    },
+    "invoke": {
+      "marca": "invoke",
+      "texto": "Roda: chama o modelo, ou o grafo, com uma entrada e espera a resposta."
+    },
+    "def dentro de def": {
+      "texto": "escrever(pedido) não escreve nada: ela monta e devolve um nó que escreve com aquele pedido. A função de dentro lembra o pedido de quem a criou."
+    },
+    ".text": {
+      "texto": "O texto da resposta do modelo, sem o resto da mensagem (quem respondeu, quanto gastou)."
+    },
+    "{chave: valor}": {
+      "texto": "Um dicionário: cada chave aponta para um valor. caminhos[Decisao.PASSAR] devolve o nó de passar a vez."
+    },
+    "StateGraph": {
+      "marca": "StateGraph",
+      "texto": "O grafo da LangGraph: você diz quais são os nós, por onde se entra e para onde cada um vai, e ele cuida de passar o estado adiante."
+    },
+    "add_node": {
+      "marca": "add_node",
+      "texto": "Põe um nó no grafo: um nome e a função que roda quando o grafo chega nele."
+    },
+    "add_edge": {
+      "marca": "add_edge",
+      "texto": "Uma seta fixa: depois deste nó, vai sempre para aquele."
+    },
+    "START / END": {
+      "texto": "Os dois pontos que todo grafo tem: por onde se entra e onde se termina. Não são nós seus; vêm da LangGraph."
+    },
+    "add_conditional_edges": {
+      "marca": "add_conditional_edges",
+      "texto": "Uma seta que escolhe: depois do nó, uma função olha o estado e devolve o nome do próximo nó. A lista no fim diz quais nomes valem."
+    },
+    "lambda": {
+      "marca": "lambda",
+      "texto": "Uma função de uma linha, sem nome. lambda c: c[\"decisao\"].value recebe o estado e devolve o nome do caminho."
+    },
+    "compile": {
+      "marca": "compile",
+      "texto": "Confere o grafo (nó sem saída, seta para um nó que não existe) e devolve o agente pronto para rodar."
+    },
+    "GenericFakeChatModel": {
+      "marca": "GenericFakeChatModel",
+      "texto": "O modelo falso da LangChain: devolve, na ordem, as respostas que você combinou. Não chama ninguém e não custa nada."
+    },
+    "AIMessage": {
+      "marca": "AIMessage",
+      "texto": "Uma mensagem vinda do modelo. É o que o modelo falso devolve no lugar do de verdade."
+    },
+    "tool_calls": {
+      "texto": "O modelo pedindo para usar uma ferramenta, com o nome e os valores. A saída estruturada chega assim: uma ferramenta com o nome do molde, Escolha."
+    },
+    "bind_tools": {
+      "marca": "bind_tools",
+      "texto": "O jeito de entregar ferramentas a um modelo. A saída estruturada usa esse caminho por baixo; o modelo falso não tem, então o nosso finge que tem."
+    },
+    "*textos": {
+      "texto": "Recebe quantos textos vierem, nenhum ou vários, juntos numa tupla."
+    },
+    "iter": {
+      "marca": "iter",
+      "texto": "Transforma a lista numa fila: cada vez que alguém pede, sai o próximo. Quando a fila acaba, acabou."
+    },
+    "ChatOpenAI": {
+      "marca": "ChatOpenAI",
+      "texto": "A ponte entre a LangChain e os modelos da OpenAI. Lê a chave da variável de ambiente OPENAI_API_KEY."
+    },
+    "max_tokens": {
+      "marca": "max_tokens",
+      "texto": "O tamanho máximo de cada resposta, contado em tokens (pedaços de palavra). Limita o gasto de cada chamada."
     }
   }
 }

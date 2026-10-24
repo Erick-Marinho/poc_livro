@@ -112,11 +112,10 @@ test("o rodapé sabe o Python do projeto: o que o uv achou ao criar o .venv", as
 
 /* ===== o capítulo 2: a IDE abre onde o capítulo 1 terminou ===== */
 const roteiro02 = json("livros/ciclo-de-vida/roteiros/02.json");
-/* os passos do capítulo 2 só chegam na etapa 4b: aqui, um passo só, cobrindo o roteiro inteiro */
-const um02 = { repositorio: "https://github.com/Erick-Marinho/atendimento-bemtevi", prefixo_tag: "cap-02",
-  passos: [{ id: "tudo", secao: "2.5a", titulo: "o capítulo inteiro", curta: "tudo", de: 1, ate: roteiro02.passos.length, objetivo: "x", temos: "y", pedido: "z" }] };
+const passos02 = json("livros/ciclo-de-vida/passos/02.json");
 const cap02 = await montarIde({ ...entrada(), roteiro: roteiro02, estados: json("livros/ciclo-de-vida/roteiros/02.estados.json"),
-  capitulo: um02, secoes: { "2.5a": "O agente" }, anteriores: [json("livros/ciclo-de-vida/roteiros/01.estados.json")],
+  capitulo: passos02, secoes: { "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" },
+  anteriores: [json("livros/ciclo-de-vida/roteiros/01.estados.json")],
   gravacoes: { "r02-medir": { quando: "2026-10-24", modelo: "gpt-6-luna", chamadas: 21 } } });
 
 test("o capítulo 1 abre numa pasta vazia; o 2, com o projeto do fim do 1", async () => {
@@ -141,4 +140,23 @@ test("o comando que chamou o modelo diz quando e com qual foi gravado; os outros
 test("o resumo da gravação sai do arquivo gravado de verdade", async () => {
   const { resumirGravacao } = await import("../src/lib/ideCapitulo.ts");
   assert.deepEqual(resumirGravacao(json("livros/ciclo-de-vida/gravacoes/r02-medir.json")), { quando: "2026-10-24", modelo: "gpt-6-luna", chamadas: 21 });
+});
+
+test("o capítulo 2: 10 passos sem buraco, um erro de verdade no caminho, e a IDE abre no contrato", () => {
+  assert.equal(cap02.passos.length, 10);
+  assert.equal(cap02.passos.at(-1).ate, roteiro02.passos.length);
+  assert.equal(cap02.abreCom, "contrato.py");
+  assert.deepEqual(cap02.passos.map((p) => p.sinal), ["ok", "nada", "nada", "nada", "nada", "erro", "ok", "ok", "ok", "ok"]);
+  const falso = cap02.acoes.find((a) => a.id === "r02-pytest-falso");
+  assert.match(falso.saida.map((t) => t.l).join("\n"), /NotImplementedError: with_structured_output is not implemented/);
+  assert.ok(cap02.acoes.filter((a) => a.tipo === "editar").some((a) => a.blocos.length), "os blocos do agente entraram");
+});
+
+test("o texto do capítulo 2 diz a nota que a gravação deu", () => {
+  const nota = json("livros/ciclo-de-vida/saidas.json")["r02-medir"].saida.map(([l]) => l).find((l) => l.startsWith("nota do agente"));
+  const pct = nota.match(/\((\d+%)\)/)[1];
+  const fim = passos02.passos.find((p) => p.id === "a-nota");
+  assert.ok(fim.depois.join(" ").startsWith(pct), `o passo diz "${fim.depois[0].slice(0, 20)}…", e a gravação deu ${pct}`);
+  const aposta = roteiro02.passos.find((p) => p.id === "r02-medir").aposta;
+  assert.equal(aposta.opcoes[aposta.certa], "um pouco mais que a nota de partida");
 });

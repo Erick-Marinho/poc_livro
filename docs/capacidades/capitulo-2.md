@@ -27,17 +27,19 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (1) A ponte com o modelo (`langchain-openai`) entra na etapa 3, quando ele é usado: o leitor não instala antes.
 - (3) O modelo do livro é o GPT-6 Luna, da OpenAI (decisão do Erick, 24/10/2026); o prefácio diz isso.
 - (3) Repetindo a gravação, o comando recebe uma chave de mentira: o cliente da OpenAI exige uma ao ser criado.
+- (4b) O erro do caminho do capítulo 2 é o modelo falso da LangChain sem o `bind_tools`: real, e documentado por ela.
+- (4b) Texto que cita um número gravado (a nota) tem teste: se a gravação mudar, o build avisa.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
 - (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 4a
+## Etapa atual: 4b
 
-Arquivos: `lib/ideCapitulo.ts` (os arquivos de abertura vindos dos estados dos capítulos anteriores, o resumo da
-gravação), `IdeCapitulo.astro` (lê `gravacoes/*.json`), a ilha da IDE e os testes. Evidência: o capítulo 2 abre com
-os 14 arquivos do fim do 1, o `uv add` marca `pyproject.toml` e `uv.lock` como mudados (não novos), e o terminal do
-`medir.py` diz "gravada em 24/10/2026 com gpt-6-luna (21 chamadas)". Fica fora: os passos e o texto (4b e 5).
+Arquivos: `roteiros/02.json` (16 ações, na ordem em que se pensa), `passos/02.json` (10 passos, pedidos em rascunho,
+`abre_com`), o glossário (24 palavras novas), a IDE (abre no `contrato.py`; o "sua vez" do comando pago avisa da chave
+e do custo) e os testes. Evidência: o erro de verdade no passo 6 (`NotImplementedError` do modelo falso, com aposta),
+a nota com aposta no passo 10, e um teste que falha se o texto disser uma nota diferente da gravada.
 
 ## Registro
 
@@ -48,3 +50,4 @@ os 14 arquivos do fim do 1, o `uv add` marca `pyproject.toml` e `uv.lock` como m
 | 1 | `081b73d` | testes do grafo sem internet e sem chave; sem o caminho `passar`, o teste falha | 24/10 |
 | 2 | `d81c6bc` | a conferência para na chamada não gravada, sem chegar à rede; 5 testes da gravação | 24/10 |
 | 3 | `8a13c1a` | 21 chamadas ao GPT-6 Luna gravadas; nota 30% (passa 19 de 20); repetida sem chave, igual | 24/10 |
+| 4a | `59d2c4b` | o capítulo 2 abre com os 14 arquivos do fim do 1; o terminal diz de quando é a resposta gravada | 24/10 |

@@ -1,6 +1,6 @@
 {
   "capitulo": 2,
-  "sobre": "O caminho do código do capítulo 2, que parte de onde o capítulo 1 terminou. Ainda em construção: nesta etapa (1), só o grafo com o modelo falso; os blocos, as apostas e os erros do caminho entram na etapa 4.",
+  "sobre": "O caminho do código do capítulo 2, que parte de onde o capítulo 1 terminou, na ordem em que se pensa e com o erro do caminho: o modelo falso da LangChain sem o ajuste que a saída estruturada pede. O medir.py chama o GPT-6 Luna; a resposta é a gravada em gravacoes/r02-medir.json.",
   "passos": [
     {
       "acao": "rodar",
@@ -14,27 +14,327 @@
       "arquivo": "agente.py",
       "partes": [
         {
-          "linhas": "1-73"
+          "linhas": "1-4"
+        },
+        {
+          "linhas": "9-26"
         }
       ],
-      "nota": "O agente: decide o que o contrato manda e segue o caminho daquela decisão."
+      "nota": "Primeiro, o que o agente pede ao modelo e o formato da resposta. O grafo vem depois.",
+      "blocos": [
+        {
+          "linhas": "1-4",
+          "titulo": "o que é o arquivo",
+          "texto": "A docstring diz o que o agente faz e o que ele ainda não faz: sem ferramentas, ele não consulta pedido nem abre chamado.",
+          "termos": [
+            "docstring"
+          ]
+        },
+        {
+          "linhas": "13-19",
+          "titulo": "a instrução",
+          "texto": "O texto que vai para o modelo em toda conversa. É o contrato do capítulo 1 dito em palavras: as quatro decisões e quando usar cada uma. A última linha é a regra que vai pesar na nota.",
+          "termos": [
+            "\"\"\"…\"\"\" (texto longo)"
+          ]
+        },
+        {
+          "linhas": "22-26",
+          "titulo": "o formato da resposta",
+          "texto": "Em vez de texto solto, o modelo vai devolver uma Escolha: uma das quatro decisões e o motivo numa frase. A decisão usa a Decisao do contrato, então \"talvez\" não passa.",
+          "termos": [
+            "class",
+            "BaseModel",
+            "Field",
+            "description"
+          ],
+          "pergunta": {
+            "texto": "Por que a decisão é do tipo Decisao, e não um texto qualquer?",
+            "opcoes": [
+              "porque o modelo só entende enum",
+              "para que só as quatro decisões do contrato sejam aceitas",
+              "para a resposta ficar mais curta"
+            ],
+            "certa": 1,
+            "porque": "Se o modelo inventar uma quinta decisão, o pydantic recusa na hora. O contrato do capítulo 1 continua mandando."
+          }
+        }
+      ]
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "agente.py",
+      "de": "from pydantic import BaseModel, Field\n",
+      "para": [
+        {
+          "linhas": "5-9"
+        }
+      ],
+      "nota": "De volta ao topo: o estado e o grafo vêm da LangGraph, e o tipo do modelo vem da LangChain."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "agente.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "27-35"
+        }
+      ],
+      "nota": "O que o grafo carrega de um nó para o outro.",
+      "blocos": [
+        {
+          "linhas": "29-35",
+          "titulo": "o estado",
+          "texto": "A conversa começa só com a pergunta. O nó que decide acrescenta a decisão e o motivo; o caminho escolhido acrescenta a resposta. Cada nó devolve só o que mudou.",
+          "termos": [
+            "TypedDict",
+            "total=False",
+            "estado"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "agente.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "36-44"
+        }
+      ],
+      "nota": "A função que monta o agente começa pelo nó que decide.",
+      "blocos": [
+        {
+          "linhas": "38-40",
+          "titulo": "o modelo que devolve uma Escolha",
+          "texto": "montar recebe o modelo de fora: quem chama escolhe qual (o de verdade, ou um falso nos testes). with_structured_output faz o modelo responder no formato da Escolha.",
+          "termos": [
+            "def",
+            "nome: tipo",
+            "with_structured_output"
+          ]
+        },
+        {
+          "linhas": "42-44",
+          "titulo": "o nó decidir",
+          "texto": "Um nó é uma função que recebe o estado e devolve o que mudou. Este manda a instrução e a pergunta para o modelo e guarda a decisão e o motivo.",
+          "termos": [
+            "invoke",
+            "->"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "agente.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "45-73"
+        }
+      ],
+      "nota": "Um caminho para cada decisão do contrato, e o grafo que liga tudo.",
+      "blocos": [
+        {
+          "linhas": "46-50",
+          "titulo": "o caminho que escreve",
+          "texto": "escrever não escreve nada: ela monta um nó que escreve com aquele pedido. Responder e recusar usam o mesmo código, cada um com o seu pedido.",
+          "termos": [
+            "def dentro de def",
+            ".text"
+          ]
+        },
+        {
+          "linhas": "52-58",
+          "titulo": "os caminhos de texto fixo",
+          "texto": "Passar a vez e abrir chamado não chamam o modelo: a frase é sempre a mesma. E o abrir chamado diz a verdade: ainda não abre nada sozinho.",
+          "termos": [
+            "#"
+          ],
+          "pergunta": {
+            "texto": "Por que passar a vez tem uma frase fixa, e não uma escrita pelo modelo?",
+            "opcoes": [
+              "porque o modelo não sabe passar a vez",
+              "porque ali o modelo não precisa escrever: sai mais barato e ele não improvisa",
+              "porque a LangGraph exige"
+            ],
+            "certa": 1,
+            "porque": "Na hora de entregar o caso a uma pessoa, não há o que inventar. Onde o modelo não precisa escrever, ele não escreve."
+          }
+        },
+        {
+          "linhas": "60-65",
+          "titulo": "qual nó para cada decisão",
+          "texto": "Um dicionário liga cada decisão do contrato ao nó que cuida dela. Se faltar uma decisão aqui, o teste do grafo vai pegar.",
+          "termos": [
+            "{chave: valor}"
+          ]
+        },
+        {
+          "linhas": "66-73",
+          "titulo": "o grafo",
+          "texto": "Os nós entram no grafo, cada caminho termina no END, o START leva ao decidir, e a seta que escolhe olha a decisão no estado para saber o próximo nó. compile confere tudo e devolve o agente.",
+          "termos": [
+            "StateGraph",
+            "add_node",
+            "add_edge",
+            "START / END",
+            "add_conditional_edges",
+            "lambda",
+            "compile"
+          ]
+        }
+      ]
     },
     {
       "acao": "escrever",
       "arquivo": "test_agente.py",
       "partes": [
         {
-          "linhas": "1-43"
+          "linhas": "1-8"
+        },
+        {
+          "texto": "def falso(decisao: Decisao, *textos: str) -> GenericFakeChatModel:\n    \"\"\"Um modelo que primeiro escolhe `decisao` e depois, se pedirem, escreve cada um dos `textos`. Nada além disso.\"\"\"\n    escolha = AIMessage(content=\"\", tool_calls=[{\"name\": \"Escolha\", \"args\": {\"decisao\": decisao, \"motivo\": \"teste\"}, \"id\": \"1\"}])\n    return GenericFakeChatModel(messages=iter([escolha, *(AIMessage(content=t) for t in textos)]))\n"
+        },
+        {
+          "linhas": "20-24"
         }
       ],
-      "nota": "Os testes do grafo, com um modelo falso: nenhuma chamada paga, e a mesma resposta toda vez."
+      "nota": "Testar o grafo sem chamar modelo de verdade: o modelo falso da LangChain devolve o que a gente combinar.",
+      "blocos": [
+        {
+          "linhas": "1-6",
+          "titulo": "o modelo falso",
+          "texto": "O GenericFakeChatModel vem da própria LangChain: devolve, na ordem, as respostas combinadas. Não chama ninguém e não custa nada.",
+          "termos": [
+            "GenericFakeChatModel",
+            "AIMessage"
+          ]
+        },
+        {
+          "linhas": "17-18",
+          "titulo": "a escolha combinada",
+          "texto": "A saída estruturada chega como um pedido de ferramenta com o nome do molde, Escolha, e os campos dele. É isso que o falso vai devolver primeiro.",
+          "termos": [
+            "tool_calls"
+          ]
+        },
+        {
+          "linhas": "22-24",
+          "titulo": "um caminho para cada decisão",
+          "texto": "O primeiro teste olha só o desenho: o grafo tem o START, o decidir, um nó por decisão e o END.",
+          "termos": [
+            "set",
+            "assert"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "r02-pytest-falso",
+      "comando": "uv run pytest -q test_agente.py 2>&1 | grep -E \"^E |failed\"",
+      "espera": 0,
+      "aposta": {
+        "pergunta": "O modelo falso da LangChain dá conta da saída estruturada?",
+        "opcoes": [
+          "Dá: ele devolve a escolha combinada",
+          "Não dá: falta alguma coisa nele"
+        ],
+        "certa": 1
+      },
+      "nota": "O modelo falso não sabe receber ferramentas, e a saída estruturada usa esse caminho por baixo. O grep mostra só a linha do erro e o resumo."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_agente.py",
+      "depois": "from contrato import Decisao\n",
+      "partes": [
+        {
+          "linhas": "7-13"
+        }
+      ],
+      "nota": "A documentação de testes da LangChain manda fazer assim: um modelo falso que finge saber receber ferramentas.",
+      "blocos": [
+        {
+          "linhas": "9-13",
+          "titulo": "o falso que finge",
+          "texto": "Herda tudo do modelo falso e troca só uma coisa: quando pedirem para receber ferramentas, ele devolve ele mesmo. A escolha combinada passa a chegar.",
+          "termos": [
+            "class",
+            "bind_tools",
+            "return self"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "test_agente.py",
+      "de": "def falso(decisao: Decisao, *textos: str) -> GenericFakeChatModel:\n    \"\"\"Um modelo que primeiro escolhe `decisao` e depois, se pedirem, escreve cada um dos `textos`. Nada além disso.\"\"\"\n    escolha = AIMessage(content=\"\", tool_calls=[{\"name\": \"Escolha\", \"args\": {\"decisao\": decisao, \"motivo\": \"teste\"}, \"id\": \"1\"}])\n    return GenericFakeChatModel(messages=iter([escolha, *(AIMessage(content=t) for t in textos)]))\n",
+      "para": [
+        {
+          "linhas": "16-19"
+        }
+      ],
+      "nota": "E o falso dos testes passa a ser o nosso.",
+      "blocos": [
+        {
+          "linhas": "16-19",
+          "titulo": "um modelo combinado",
+          "texto": "falso(decisao, textos...) monta um modelo que primeiro escolhe a decisão e depois escreve cada texto, se pedirem. Nada além disso: se um caminho pedir mais, o teste falha.",
+          "termos": [
+            "*textos",
+            "iter"
+          ]
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "r02-pytest-um",
+      "comando": "uv run pytest -q test_agente.py",
+      "espera": 0,
+      "nota": "O teste do desenho do grafo passa."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_agente.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "25-43"
+        }
+      ],
+      "nota": "Um teste para cada caminho: os que escrevem com o modelo, e os de frase fixa.",
+      "blocos": [
+        {
+          "linhas": "27-30",
+          "titulo": "responder escreve com o modelo",
+          "texto": "O modelo combinado escolhe responder e escreve uma frase. O teste confere a decisão e a resposta.",
+          "termos": [
+            "invoke"
+          ]
+        },
+        {
+          "linhas": "38-43",
+          "titulo": "quem não precisa do modelo não chama",
+          "texto": "O falso aqui só tem a escolha. Se passar a vez ou abrir chamado pedissem um texto ao modelo, não haveria o que devolver, e o teste falharia.",
+          "termos": [
+            "in"
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
       "id": "r02-pytest",
       "comando": "uv run pytest -q",
       "espera": 0,
-      "nota": "Os testes do capítulo 1 e os do grafo."
+      "nota": "Os testes do capítulo 1 e os do grafo, todos de uma vez."
     },
     {
       "acao": "rodar",
@@ -51,13 +351,60 @@
           "linhas": "1-32"
         }
       ],
-      "nota": "A régua do capítulo 1, agora com o agente de verdade: a nota e os casos que ele errou."
+      "nota": "A régua do capítulo 1, agora com o agente de verdade: a nota e os casos que ele errou.",
+      "blocos": [
+        {
+          "linhas": "1-5",
+          "titulo": "o que precisa para rodar",
+          "texto": "Este é o primeiro arquivo que chama um modelo de verdade: precisa da chave da OpenAI no ambiente, e cada rodada custa (pouco).",
+          "termos": [
+            "docstring"
+          ]
+        },
+        {
+          "linhas": "15-17",
+          "titulo": "o agente com o GPT-6 Luna",
+          "texto": "O mesmo montar dos testes, agora com o modelo de verdade. max_tokens limita o tamanho de cada resposta, e com ele o gasto.",
+          "termos": [
+            "if __name__ == \"__main__\"",
+            "ChatOpenAI",
+            "max_tokens"
+          ]
+        },
+        {
+          "linhas": "21-25",
+          "titulo": "a régua não muda",
+          "texto": "avaliar é a régua do capítulo 1: recebe um decisor e conta acertos. O decisor aqui roda o agente inteiro e guarda o que ele decidiu, para listar os erros depois sem pagar de novo.",
+          "termos": [
+            "{chave: valor}"
+          ]
+        },
+        {
+          "linhas": "28-32",
+          "titulo": "a nota e os erros",
+          "texto": "A nota no mesmo formato da nota de partida, e cada caso em que o agente decidiu diferente do contrato.",
+          "termos": [
+            "f\"{x:.0%}\"",
+            "!="
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
       "id": "r02-medir",
       "comando": "uv run python medir.py",
       "espera": 0,
+      "aposta": {
+        "pergunta": "Sem acesso aos pedidos, ao catálogo e à política, quanto o agente acerta das 20?",
+        "opcoes": [
+          "menos que a nota de partida (25%)",
+          "um pouco mais que a nota de partida",
+          "mais da metade",
+          "quase tudo"
+        ],
+        "certa": 1
+      },
       "nota": "O agente com o GPT-6 Luna, nas 20 perguntas, pela régua da nota de partida."
     }
   ]

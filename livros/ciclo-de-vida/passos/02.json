@@ -1,0 +1,182 @@
+{
+  "sobre": "Os passos de construção do capítulo 2, na ordem. Cada um é um trecho do roteiro (de, ate). `pedido` é a mensagem do autor ao chat que abre o passo (rascunho do modelo até o autor revisar: `pedido_revisado`). `abre_com`: o arquivo que a IDE mostra ao abrir, antes do primeiro passo.",
+  "autores": [
+    "Erick Marinho",
+    "Victor Fontela"
+  ],
+  "repositorio": "https://github.com/Erick-Marinho/atendimento-bemtevi",
+  "prefixo_tag": "cap-02",
+  "abre_com": "contrato.py",
+  "passos": [
+    {
+      "id": "langgraph",
+      "secao": "2.5a",
+      "titulo": "A LangGraph entra",
+      "curta": "uv add langgraph",
+      "de": 1,
+      "ate": 1,
+      "objetivo": "a biblioteca que monta o agente como um grafo, instalada no projeto do capítulo 1.",
+      "temos": "a LangGraph no `pyproject.toml`, com a mesma data de versões do capítulo 1.",
+      "antes": [
+        "O projeto é o mesmo do capítulo 1: o contrato, as 20 perguntas e a régua continuam aqui. Agora entra o agente, e ele vai ser um grafo: cada passo é um nó, e as setas dizem qual vem depois."
+      ],
+      "depois": [
+        "O `pyproject.toml` e o `uv.lock` mudaram, mas não nasceram agora: estão marcados como mudados, não como novos."
+      ],
+      "pedido": "Bora para o agente. Ele vai ser um grafo da LangGraph: instala no projeto."
+    },
+    {
+      "id": "escolha",
+      "secao": "2.5a",
+      "titulo": "O que o modelo devolve",
+      "curta": "a Escolha",
+      "de": 2,
+      "ate": 2,
+      "objetivo": "a instrução que vai para o modelo e o formato da resposta dele.",
+      "temos": "`INSTRUCAO`, o contrato em palavras, e `Escolha`, a decisão com o motivo.",
+      "antes": [
+        "Antes do grafo, o que o agente pede e o que ele espera de volta. A resposta não vai ser texto solto: vai ser uma decisão do contrato, conferida pelo pydantic."
+      ],
+      "depois": [
+        "A Escolha usa a Decisao do capítulo 1. O contrato continua mandando: nenhuma quinta decisão passa."
+      ],
+      "pedido": "Começa pelo que a gente pede ao modelo e pelo formato da resposta. Quero a decisão do contrato, não texto solto."
+    },
+    {
+      "id": "estado",
+      "secao": "2.5a",
+      "titulo": "O estado",
+      "curta": "Conversa",
+      "de": 3,
+      "ate": 4,
+      "objetivo": "o que o grafo carrega de um nó para o outro.",
+      "temos": "`Conversa`: a pergunta, a decisão, o motivo e a resposta.",
+      "antes": [
+        "Um grafo passa um estado adiante. Cada nó lê o que precisa e devolve só o que descobriu."
+      ],
+      "depois": [
+        "O estado começa só com a pergunta. O resto vai sendo preenchido pelos nós."
+      ],
+      "pedido": "Agora o que vai passando de um nó para o outro: a pergunta, a decisão, a resposta."
+    },
+    {
+      "id": "decidir",
+      "secao": "2.5a",
+      "titulo": "O nó que decide",
+      "curta": "decidir",
+      "de": 5,
+      "ate": 5,
+      "objetivo": "o primeiro nó: manda a pergunta ao modelo e guarda a decisão.",
+      "temos": "`montar`, que recebe o modelo de fora, e o nó `decidir`.",
+      "antes": [
+        "O modelo entra pela porta da frente: `montar` recebe qualquer modelo. Isso vai ser útil daqui a pouco, nos testes."
+      ],
+      "depois": [
+        "`montar` ainda não devolve nada. Faltam os caminhos e o grafo."
+      ],
+      "pedido": "O primeiro nó é o que decide. E deixa o modelo vir de fora, que eu quero testar sem pagar."
+    },
+    {
+      "id": "caminhos",
+      "secao": "2.5a",
+      "titulo": "Os caminhos e o grafo",
+      "curta": "o grafo",
+      "de": 6,
+      "ate": 6,
+      "objetivo": "um caminho para cada decisão do contrato, e o grafo que liga tudo.",
+      "temos": "o agente inteiro: decidir e, depois, o caminho da decisão.",
+      "antes": [
+        "Quatro decisões, quatro caminhos. Dois escrevem com o modelo; dois têm frase fixa. Depois, o grafo: os nós, a seta que escolhe e o fim de cada caminho."
+      ],
+      "depois": [
+        "O agente está pronto, e ainda não falou com modelo nenhum. O próximo passo é provar que o grafo tem o desenho certo."
+      ],
+      "pedido": "Agora um caminho para cada decisão, e liga tudo num grafo."
+    },
+    {
+      "id": "testar-sem-pagar",
+      "secao": "2.5b",
+      "titulo": "Testar sem pagar",
+      "curta": "o modelo falso",
+      "de": 7,
+      "ate": 8,
+      "objetivo": "um teste do desenho do grafo, com o modelo falso da LangChain.",
+      "temos": "um teste que falha, e o porquê.",
+      "antes": [
+        "Testar com o modelo de verdade custa e muda a cada rodada. A LangChain tem um modelo falso, que devolve o que a gente combinar. E um dos passos dá errado de verdade."
+      ],
+      "depois": [
+        "O erro diz que o modelo falso não sabe fazer saída estruturada. Ela usa ferramentas por baixo, e o falso não sabe receber ferramentas."
+      ],
+      "pedido": "Antes de gastar um centavo, quero testar o grafo com um modelo falso."
+    },
+    {
+      "id": "falso-que-finge",
+      "secao": "2.5b",
+      "titulo": "O falso que finge",
+      "curta": "bind_tools",
+      "de": 9,
+      "ate": 11,
+      "objetivo": "um modelo falso que finge saber receber ferramentas.",
+      "temos": "`ModeloFalso` e o teste do desenho passando.",
+      "antes": [
+        "A própria documentação de testes da LangChain mostra o caminho: herdar o modelo falso e trocar só o `bind_tools`."
+      ],
+      "depois": [
+        "Um teste passou, sem internet e sem chave. O grafo tem um nó para cada decisão do contrato."
+      ],
+      "pedido": "Deu erro. Como faz o falso entender a saída estruturada?"
+    },
+    {
+      "id": "um-teste-por-caminho",
+      "secao": "2.5b",
+      "titulo": "Um teste por caminho",
+      "curta": "os caminhos",
+      "de": 12,
+      "ate": 13,
+      "objetivo": "um teste para cada caminho do grafo.",
+      "temos": "os 11 testes do projeto passando: os 7 do contrato e os 4 do grafo.",
+      "antes": [
+        "Cada caminho, um teste. O de passar a vez é o mais esperto: se o caminho chamasse o modelo, o falso não teria o que devolver."
+      ],
+      "depois": [
+        "Tudo verde, e nenhuma chamada paga até aqui."
+      ],
+      "pedido": "Agora um teste para cada caminho, e roda tudo junto com os testes do capítulo 1."
+    },
+    {
+      "id": "openai",
+      "secao": "2.5c",
+      "titulo": "A ponte com a OpenAI",
+      "curta": "uv add langchain-openai",
+      "de": 14,
+      "ate": 14,
+      "objetivo": "a ponte entre a LangChain e o GPT-6 Luna.",
+      "temos": "o `langchain-openai` no projeto.",
+      "antes": [
+        "Até aqui, modelo nenhum. Para medir de verdade, entra a ponte com a OpenAI. O modelo do livro é o GPT-6 Luna."
+      ],
+      "depois": [
+        "Só a biblioteca entrou. A chave fica no ambiente, nunca no código."
+      ],
+      "pedido": "Agora sim, o modelo de verdade. Instala a ponte com a OpenAI."
+    },
+    {
+      "id": "a-nota",
+      "secao": "2.5c",
+      "titulo": "A nota do agente",
+      "curta": "medir.py",
+      "de": 15,
+      "ate": 16,
+      "objetivo": "a nota do agente com o GPT-6 Luna, pela mesma régua da nota de partida.",
+      "temos": "a nota do agente, os casos que ele errou e o porquê.",
+      "antes": [
+        "A régua do capítulo 1 não sabe qual decisor está medindo. Agora ela mede o agente de verdade, nas 20 perguntas."
+      ],
+      "depois": [
+        "30%. Sem dados da loja, o agente seguiu a regra da instrução, quando a política não diz, não prometa, e passou a vez em quase tudo. O cuidado está aí; falta a informação. É o assunto do capítulo 3."
+      ],
+      "pedido": "Mede o agente nas 20 perguntas, pela mesma régua da nota de partida."
+    }
+  ]
+}

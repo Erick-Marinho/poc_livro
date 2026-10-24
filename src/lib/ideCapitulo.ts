@@ -42,7 +42,8 @@ export type Entrada = {
   estados: Estado[];
   saidas: Record<string, Saida>;
   /** `repositorio`: o endereço do repositório do leitor (npm run leitor); sem ele, a IDE não mostra o ponto de volta */
-  capitulo: { autores?: string[]; repositorio?: string; prefixo_tag?: string; passos: DefPasso[] };
+  /** `abre_com`: o arquivo que a IDE mostra ao abrir, antes do primeiro passo (do capítulo 2 em diante) */
+  capitulo: { autores?: string[]; repositorio?: string; prefixo_tag?: string; abre_com?: string; passos: DefPasso[] };
   secoes: Record<string, string>;
   glossario: { termos: Record<string, { marca?: string; rotulo?: string; texto: string }> };
   pasta?: string;
@@ -132,6 +133,7 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
   /* os arquivos com que a IDE abre: os que os capítulos anteriores deixaram (no capítulo 1, nenhum) */
   const iniciais: { nome: string; versao: number }[] = [];
   for (const [nome, texto] of Object.entries(inicio)) iniciais.push({ nome, versao: await versao(nome, texto) });
+  if (capitulo.abre_com && !(capitulo.abre_com in inicio)) falhar(`a IDE abriria com ${capitulo.abre_com}, que o capítulo anterior não deixou`);
   const acoes: AcaoIde[] = [];
   const cwdLeitor = (onde?: string) => (onde === "acima" ? pasta.replace(/\/[^/]+$/, "") || "~" : pasta);
   for (const e of estados) {
@@ -183,5 +185,5 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     if (python || a.tipo !== "rodar") return;
     for (const t of a.saida) { const m = t.tipo === "linha" && t.l.match(/^Using CPython (\S+)/); if (m) { python = { versao: m[1], desde: k }; break; } }
   });
-  return { acoes, passos, versoes, python, iniciais };
+  return { acoes, passos, versoes, python, iniciais, abreCom: capitulo.abre_com ?? null };
 }

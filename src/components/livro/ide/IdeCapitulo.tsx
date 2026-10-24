@@ -22,6 +22,8 @@ const Md = ({ t }: { t: string }) => <>{t.split(/(`[^`]+`)/).map((x, i) => x.sta
 /* "sua vez": o que o leitor faz na IDE dele depois de ver a ação aqui */
 const DADO = /(\.(jsonl?|md|toml)$|(^|\/)\.[^/]+$)/;
 function suaVez(a: AcaoIde): string {
+  /* o comando que chama um modelo de verdade: na máquina do leitor ele custa, pede a chave, e pode responder diferente */
+  if (a.tipo === "rodar" && a.gravacao) return `Rode o comando no seu terminal, na pasta do projeto, com a sua chave no ambiente (\`OPENAI_API_KEY\`). Ele chama o ${a.gravacao.modelo} de verdade, e cada rodada custa centavos. A sua nota pode sair diferente da daqui: o modelo não responde sempre igual.`;
   if (a.tipo === "rodar") return `Rode o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
   if (a.tipo === "apagar") return `Apague o \`${a.arquivo}\` no seu projeto.`;
   if (a.tipo === "copiar") return "Copie a pasta `dados/` do repositório do livro para o seu projeto. Digitar dado inventado não ensina nada.";
@@ -47,10 +49,12 @@ function feito(a: AcaoIde): string {
   return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
 }
 
-export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [] }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
+export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais = [], abreCom = null }: { acoes: AcaoIde[]; passos: PassoCap[]; versoes: VersaoIde[];
   python: { versao: string; desde: number } | null;
   /** os arquivos com que a IDE abre: o projeto como os capítulos anteriores o deixaram */
-  iniciais?: { nome: string; versao: number }[] }) {
+  iniciais?: { nome: string; versao: number }[];
+  /** o arquivo à vista quando a IDE abre, antes de qualquer ação */
+  abreCom?: string | null }) {
   const direto = useDireto();
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => direto ? [
@@ -66,7 +70,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   ]), [acoes, passos, direto]);
   const [q, setQ] = useState(0);
   const [apostas, setApostas] = useState<Record<number, number | "pulou">>({});
-  const [aberto, setAberto] = useState<string | null>(null);
+  const [aberto, setAberto] = useState<string | null>(abreCom);
   const [abertas, setAbertas] = useState<Set<string>>(new Set());   /* dobras do caminho do erro abertas */
   const [perguntados, setPerguntados] = useState<Record<string, string[]>>({});   /* as palavras que o leitor perguntou, por "ação:bloco" */
   const [respostas, setRespostas] = useState<Record<string, number | "pulou">>({});   /* as perguntas dos blocos, por "ação:bloco" */
