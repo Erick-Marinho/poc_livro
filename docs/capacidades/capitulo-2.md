@@ -26,13 +26,16 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (1) O `langchain-anthropic` entra na etapa 3, quando o modelo de verdade é usado: o leitor não instala antes.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
+- (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
+- (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-Arquivos: `projeto/agente.py` (o grafo), `projeto/test_agente.py` (o modelo falso), `pyproject.toml` e `uv.lock`
-(`uv add langgraph`), `roteiros/02.json` (o caminho, ainda curto) e o gravador, que aceita capítulo sem passos.
-Evidência: os testes do grafo passam sem internet e sem chave; tirar um caminho do grafo faz o teste falhar; o
-desenho do grafo saído da LangGraph. Fica fora: modelo de verdade, gravação, IDE e texto.
+Arquivos: `scripts/gravacao/` (o cache que lê e grava um arquivo, e o `sitecustomize.py` que o liga), o gravador
+(todo comando roda com a gravação ligada) e `testes/test_gravacao.py`. Modos: `repetir` (o padrão, no build: chamada
+que não está gravada para o comando) e `gravar` (chama o modelo no que falta, e só roda com o ok e a chave do Erick).
+Modelos falsos (os dos testes) passam direto. Evidência: os testes da gravação com um modelo de mentira (grava,
+repete sem chamar, recusa a chamada não gravada) e a conferência do livro verde. Fica fora: a rodada paga.
 
 ## Registro
 
@@ -40,3 +43,4 @@ desenho do grafo saído da LangGraph. Fica fora: modelo de verdade, gravação, 
 |---|---|---|---|
 | 0a | `1a38db6` | o teste do formato falha no capítulo 1 (partes repetiam 1.6) e passa depois | 24/10 |
 | 0b | `0a6551c` | o gravador recusa arquivo sem roteiro; roteiro 02 de teste parte do fim do 01 | 24/10 |
+| 1 | `081b73d` | testes do grafo sem internet e sem chave; sem o caminho `passar`, o teste falha | 24/10 |

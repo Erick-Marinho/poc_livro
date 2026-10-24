@@ -25,6 +25,7 @@ Livros técnicos em que o código se monta e o terminal roda no meio do texto. L
 ```bash
 npm test            # monta o site, confere as saídas gravadas e roda os testes do livro
 npm run saidas      # regrava as saídas (comandos.json e roteiros) depois de mudar o projeto
+npm run gravar      # chama o modelo de verdade no que não está gravado: é pago, só com o ok dos autores
 ```
 
 Capturas de tela: o Chrome headless não abre janela com menos de 500 px (use um iframe para o celular) e, com

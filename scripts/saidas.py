@@ -8,6 +8,10 @@ Os comandos ficam em livros/<livro>/comandos.json. Cada um roda dentro de livros
 em "em", como marcos/cap-01 para um comando do capítulo 1), depois de um `uv sync`. O caminho da máquina vira o caminho do leitor, e os tempos (como
 "in 0.63s") e os endereços de memória (como "at 0x7f3a…") não contam na conferência. Saída 0: tudo certo. 1: alguma saída mudou. 2: uso errado.
 
+Todo comando roda com a gravação do modelo ligada (scripts/gravacao): o que um modelo de verdade responde fica em
+livros/<livro>/gravacoes/<id>.json e é repetido; chamada que não está gravada para o comando. Para gravar (chamada
+paga, só com o ok dos autores e a chave no ambiente): LIVRO_GRAVACAO_MODO=gravar, ou npm run gravar.
+
 Os roteiros de construção (livros/<livro>/roteiros/*.json) contam o caminho do código na ordem em que se
 pensa, com os erros do caminho. Cada um é aplicado numa pasta vazia: copiar, escrever, inserir, trocar, apagar e
 rodar (com `"onde": "acima"`, o comando roda na pasta de cima, como o `uv init`). Cada `rodar` grava a saída no estado em que o código está naquele passo.
@@ -88,6 +92,14 @@ def alteradas(antes: str, depois: str) -> list[int]:
     return novas
 
 
+def com_gravacao(env: dict, livro: str, id_: str) -> dict:
+    """O ambiente de um comando com a gravação do modelo ligada: o sitecustomize da gravação entra no PYTHONPATH."""
+    pasta = str(RAIZ / "scripts" / "gravacao")
+    return {**env, "PYTHONPATH": os.pathsep.join(p for p in (pasta, env.get("PYTHONPATH")) if p),
+            "LIVRO_GRAVACAO": str(RAIZ / "livros" / livro / "gravacoes" / f"{id_}.json"),
+            "LIVRO_GRAVACAO_MODO": os.environ.get("LIVRO_GRAVACAO_MODO", "repetir")}
+
+
 def ambiente(versoes_ate: str | None) -> dict:
     """`versoes_ate`: o uv só enxerga versões publicadas até essa data, e o `uv add` dá sempre o mesmo resultado.
     Vale também para o `uv sync` do projeto/, senão ele reescreve o uv.lock sem a data."""
@@ -152,7 +164,7 @@ def construir(livro: str, roteiro: Path, leitor: str, trabalho: Path, inicio: Pa
             if cwd == pasta and not passo["comando"].startswith("uv ") and (pasta / "pyproject.toml").exists() and not (pasta / ".venv").exists():
                 subprocess.run(["uv", "sync", "--quiet"], cwd=pasta, check=True, env=env)
             antes_de_rodar = arquivos(pasta) if pasta.exists() else {}
-            codigo, linhas = executar(passo["comando"], pasta, leitor, env, cwd)
+            codigo, linhas = executar(passo["comando"], pasta, leitor, com_gravacao(env, livro, passo["id"]), cwd)
             if codigo != passo.get("espera", 0):
                 raise RoteiroErrado(f"{onde}: {passo['id']} saiu com {codigo}, o roteiro espera {passo.get('espera', 0)}\n"
                                     + "\n".join(f"    {l}" for l, _ in linhas))
@@ -256,7 +268,7 @@ def rodar(livro: str, repositorio: Path | None = None) -> tuple[dict, dict]:
         if onde not in sincronizadas:
             subprocess.run(["uv", "sync", "--quiet"], cwd=onde, check=True, env=env)
             sincronizadas.add(onde)
-        codigo, linhas = executar(c["comando"], onde, conf["pasta_do_leitor"], env)
+        codigo, linhas = executar(c["comando"], onde, conf["pasta_do_leitor"], com_gravacao(env, livro, chave))
         saidas[chave] = {"comando": c["comando"], "saiu_com": codigo, "saida": linhas}
         esperado = c.get("saiu_com", 0)
         if codigo != esperado:
