@@ -36,6 +36,7 @@ import saidas from "../saidas.json";
 import IDE from "../../../src/components/livro/IDE.astro";
 import roteiro01 from "../roteiros/01.json";
 import estados01 from "../roteiros/01.estados.json";
+import contrato from "../projeto/contrato.py?raw";
 import Passador from "../../../src/components/livro/Passador.astro";
 import passadorCaso from "../passadores/caso.json";
 import glossario from "../glossario.json";
@@ -171,7 +172,7 @@ O contrato diz como um caso deve ser. As perguntas de referência são os casos 
 
 Escrever vinte casos à mão é onde o engano mora, e o mais fácil deles é justamente esse, o R12: ele tem número de pedido e tem e-mail, então parece um caso de responder. Se você caiu nele na figura 1.2, está em boa companhia. Veja o que segura o engano:
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={10} ate={17} numero="1.4" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={10} ate={17} numero="1.5" legenda="As vinte perguntas e os testes que as conferem. O R12 começa marcado errado de propósito; os dois testes que falham são os de verdade." />
 
 Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.
 
@@ -181,7 +182,7 @@ Carregar sem erro só provou que cada linha tinha o formato certo. Quem pegou o 
 
 Ainda não existe agente, mas já dá para medir um. O mais simples possível: um "agente" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém. Antes de rodar, aposte na nota dele.
 
-<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={18} ate={19} numero="1.5" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
+<IDE roteiro={roteiro01} estados={estados01} saidas={saidas} de={18} ate={19} numero="1.6" legenda="A nota zero: o baseline.py e o que ele acerta das vinte perguntas, gravado do projeto real." />
 
 Vinte e cinco por cento. Esta é a nota zero do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.
 
