@@ -54,11 +54,8 @@ o caminho aparece na página.
 - (6a) O que um comando cria ou muda (o `uv init`, o `uv add`) aparece depois da saída dele, como "o que o comando criou
   ou mudou"; o `uv.lock` aparece só pelo nome. Arquivo apagado (o `main.py` do exemplo) aparece riscado.
 - (6a) Arquivos de configuração (`.gitignore`, `.python-version`, `.lock`) contam como dados: não entram no limite.
-- (6b) O pensamento do autor fica no passo (`pensamento` no `passos/<n>.json`): **me pergunto**, **por que assim** e,
-  se houver, **espero**. Só os autores listados no arquivo podem assinar; o build falha com outro nome.
-- (6b) O **espero** não aparece antes da aposta do leitor: num passo com aposta, ele entra depois da saída, como
-  "Erick tinha apostado: …", para o leitor comparar a aposta dele com a do autor.
-- (6b) Passo sem pensamento mostra o marcador "pendente"; nenhum texto de exemplo vai para o livro.
+- (6b) O pensamento do autor por passo (me pergunto, por que assim, espero) entrou e saiu em 8e: a conversa do chat já
+  é o raciocínio do autor.
 - (7a) Mudança de rumo, a pedido do Erick: os passos espalhados no texto (`Passo`, `Trilha`) saem, e o capítulo é
   construído numa **IDE só**, da pasta vazia à nota zero. O explorador ganha os arquivos na ordem em que nascem, o
   terminal guarda tudo o que rodou, e o **passador** embaixo avança ação por ação: cada passo abre (o que vai existir
@@ -83,7 +80,7 @@ o caminho aparece na página.
 | Peça | Função | Entrada | Saída | Cor |
 |---|---|---|---|---|
 | `glossario.json` | as palavras difíceis, uma vez por livro | — | termos | nova |
-| `passos/01.json` | os 18 passos do capítulo: trecho do roteiro, fim do passo, pensamento, texto antes e depois | — | passos | em uso |
+| `passos/01.json` | os 18 passos do capítulo: trecho do roteiro, fim do passo, pedido do autor, texto antes e depois | — | passos | em uso |
 | `lib/ideCapitulo.ts` | monta as ações, os passos e as versões dos arquivos, e barra o que não bate | roteiro + estados + saídas + passos | dados da IDE | nova (7a) |
 | `IdeCapitulo` | a IDE do capítulo: progresso, explorador, editor, terminal com aposta, e o passador | dados da IDE | figura | nova (7a) |
 | `blocos` no roteiro | os blocos lógicos de cada edição de código: título, texto, palavras, pergunta | — | blocos | novo (7b): 10 edições, 30 blocos |
@@ -138,7 +135,7 @@ o caminho aparece na página.
   cada passo, datas fixas (sai igual toda vez). A IDE mostra o checkout quando o `passos/01.json` tiver `repositorio`.
 - (8c) A IDE ganha a barra da direita e o rodapé, como o VS Code. Na barra, abas que simulam os chats de IA
   (Claude Code e Codex): o texto do passo, dos blocos, das palavras ("o que é…?") e das perguntas vira uma conversa,
-  com as respostas do leitor como mensagens dele e o pensamento do autor como mensagem do autor. É simulação, e diz:
+  com as respostas do leitor como mensagens dele. É simulação, e diz:
   "a conversa foi escrita pelos autores do livro, não por um modelo". O "seguir" mora no chat.
 - (8c) O rodapé mostra o ramo do git (depois do `uv init`), os problemas do último comando e o Python do
   `.python-version`. A "sua vez" flutua sobre o editor; abaixo de 1000 px, o chat desce para baixo da IDE.
@@ -148,5 +145,9 @@ o caminho aparece na página.
   reduzido). Os 18 pedidos são rascunho do modelo até o autor revisar (`pedido_revisado`).
 - (8d) O rodapé mostra o Python que o uv achou ao criar o `.venv` (o da saída gravada), e antes disso o do
   `.python-version`; no celular, o Python continua à vista.
+- (8e) O pensamento do autor sai do chat e do `passos/01.json`, a pedido do Erick.
+- (8e) A conversa é uma só, do passo 1 até onde o leitor está: o que já foi dito não some nem é desenhado de novo, só
+  entra o novo. A fala do leitor entra na hora em que ele age; a da IA, depois de um "digitando" curto. A conversa não
+  segura o "seguir": quem segue antes vê o resto já escrito. As palavras perguntadas ficam na conversa.
 
-**Capacidade fechada em 24/10/2026.** Fica para depois: os pensamentos dos autores nos 18 passos (6c), e a barra flutuante do livro por cima do "seguir" no celular.
+**Capacidade fechada em 24/10/2026.** Fica para depois: a barra flutuante do livro por cima do "seguir" no celular.

@@ -1,5 +1,5 @@
 {
-  "sobre": "Os passos de construção do capítulo 1, na ordem. Cada um é um trecho do roteiro (de, ate). O Passo e a trilha leem daqui; `engano` marca o passo em que o comando dá certo e esconde um erro. `pensamento` é o que o autor pensa no passo, nas palavras dele: só os autores escrevem. `pedido` é a mensagem do autor ao chat que abre o passo (rascunho do modelo até o autor revisar: `pedido_revisado`).",
+  "sobre": "Os passos de construção do capítulo 1, na ordem. Cada um é um trecho do roteiro (de, ate). O Passo e a trilha leem daqui; `engano` marca o passo em que o comando dá certo e esconde um erro. `pedido` é a mensagem do autor ao chat que abre o passo (rascunho do modelo até o autor revisar: `pedido_revisado`).",
   "autores": [
     "Erick Marinho",
     "Victor Fontela"

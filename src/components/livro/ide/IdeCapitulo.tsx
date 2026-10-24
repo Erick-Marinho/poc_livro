@@ -28,8 +28,16 @@ function suaVez(a: AcaoIde): string {
   if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do livro vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
   return a.novo ? `Crie o \`${a.arquivo}\` na sua IDE e digite este código. Digitar, e não colar, é o que faz perceber o que não ficou claro.` : `Digite as linhas novas no seu \`${a.arquivo}\`, no mesmo lugar em que elas aparecem aqui.`;
 }
-const iniciais = (nome: string) => nome.split(/\s+/).map((x) => x[0]).join("").slice(0, 2).toUpperCase();
-const primeiro = (nome: string) => nome.split(/\s+/)[0];
+/* quem fala com a IA no chat: o autor, construindo junto com o leitor */
+const AUTOR = "Erick";
+
+/* uma fala do chat, com chave estável. O componente fica fora da IDE de propósito: definido dentro, ele seria um tipo
+   novo a cada render, e o React desmontaria e remontaria a conversa inteira (e a animação de entrada rodaria de novo) */
+type Fala = { chave: string; quem: "ia" | "pessoa" | "divisa"; corpo: React.ReactNode };
+function Mensagem({ f, ia }: { f: Fala; ia: string }) {
+  if (f.quem === "divisa") return <p className="ic-divisa">{f.corpo}</p>;
+  return <div className={`ic-msg ${f.quem === "ia" ? "ic-ia" : "ic-pessoa"}`}><span className="ic-quem">{f.quem === "ia" ? ia : AUTOR}</span><div className="ic-bolha">{f.corpo}</div></div>;
+}
 
 /* como a IA conta a ação que acabou de fazer */
 function feito(a: AcaoIde): string {
@@ -57,7 +65,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   const [apostas, setApostas] = useState<Record<number, number | "pulou">>({});
   const [aberto, setAberto] = useState<string | null>(null);
   const [abertas, setAbertas] = useState<Set<string>>(new Set());   /* dobras do caminho do erro abertas */
-  const [termo, setTermo] = useState<string | null>(null);   /* a palavra aberta no balão do bloco */
+  const [perguntados, setPerguntados] = useState<Record<string, string[]>>({});   /* as palavras que o leitor perguntou, por "ação:bloco" */
   const [respostas, setRespostas] = useState<Record<string, number | "pulou">>({});   /* as perguntas dos blocos, por "ação:bloco" */
   const codigo = useRef<HTMLDivElement>(null), terminal = useRef<HTMLDivElement>(null);
 
@@ -69,7 +77,6 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   const bloco = quadro.tipo === "acao" && quadro.b !== undefined && acao?.tipo === "editar" ? acao.blocos[quadro.b] : null;
   const chaveBloco = quadro.tipo === "acao" ? `${quadro.k}:${quadro.b}` : "";
   const perguntando = !!bloco?.pergunta && !direto && respostas[chaveBloco] === undefined;
-  useEffect(() => setTermo(null), [q]);
   const esperando = acao?.tipo === "rodar" && !respondida(quadro.k as number);
   /* a pausa para fazer na própria IDE: quando a ação já foi toda mostrada aqui (o último bloco, ou a saída depois da aposta) */
   const ultimoBloco = !bloco || (acao?.tipo === "editar" && quadro.tipo === "acao" && quadro.b === acao.blocos.length - 1);
@@ -125,7 +132,9 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
     const linha = alvo ? el.querySelector<HTMLElement>(`.line[data-n="${alvo}"]`) : null;
     el.scrollTo({ top: linha ? Math.max(linha.offsetTop - 60, 0) : 0 });
   }, [versao, alteradas.join(","), blocoVisto]);
-  const clicarCodigo = (e: React.MouseEvent) => { const t = (e.target as HTMLElement).closest<HTMLElement>(".ic-termo"); if (t?.dataset.termo) setTermo(t.dataset.termo); };
+  /* perguntar o que é uma palavra: vira mais uma fala da conversa, e fica nela */
+  const perguntar = (chave: string) => setPerguntados((v) => (v[chaveBloco] ?? []).includes(chave) ? v : { ...v, [chaveBloco]: [...(v[chaveBloco] ?? []), chave] });
+  const clicarCodigo = (e: React.MouseEvent) => { const t = (e.target as HTMLElement).closest<HTMLElement>(".ic-termo"); if (t?.dataset.termo) perguntar(t.dataset.termo); };
 
   /* o terminal: tudo o que já rodou no capítulo, e o comando da vez (com a aposta, se houver) */
   const rodados = acoes.map((a, k) => ({ a, k })).filter(({ a, k }) => a.tipo === "rodar" && k <= feitaAte && (k < feitaAte || respondida(k) || quadro.tipo !== "acao"));
@@ -162,97 +171,98 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
   const secoes = [...new Set(passos.map((p) => p.secao))];
   const apostaFeita = acao?.tipo === "rodar" && acao.aposta && typeof apostas[quadro.k as number] === "number" ? apostas[quadro.k as number] as number : null;
 
-  /* ===== a conversa do chat: tudo o que já aconteceu neste passo, como mensagens ===== */
+  /* ===== a conversa do chat: o capítulo inteiro até aqui, como mensagens. O que já foi dito fica; só entra o novo ===== */
   const [aba, setAba] = useState<"Claude Code" | "Codex">("Claude Code");
   const conversa = useRef<HTMLDivElement>(null);
   const [digitando, setDigitando] = useState(false);
-  /* quantas falas do quadro atual já entraram (o resto ainda vai entrar, uma a uma) */
+  /* quantas falas do quadro atual já entraram (o resto ainda vai entrar) */
   const [visiveis, setVisiveis] = useState(Number.POSITIVE_INFINITY);
   const visiveisRef = useRef(Number.POSITIVE_INFINITY);
   visiveisRef.current = visiveis;
-  useEffect(() => { const t = requestAnimationFrame(() => { const el = conversa.current; if (el) el.scrollTop = el.scrollHeight; }); return () => cancelAnimationFrame(t); }, [q, respostas, termo, apostas, digitando, visiveis]);
-  const Ia = ({ children }: { children: React.ReactNode }) => <div className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha">{children}</div></div>;
-  const Pessoa = ({ quem, children }: { quem: string; children: React.ReactNode }) => <div className="ic-msg ic-pessoa"><span className="ic-quem">{quem}</span><div className="ic-bolha">{children}</div></div>;
-  const autor = passo.pensamento ? primeiro(passo.pensamento.autor) : "Erick";
-  const daqui = quadros.map((x, i) => ({ x, i })).filter(({ x, i }) => x.p === quadro.p && i <= q);
-  const falas = (x: Quadro, i: number): React.ReactNode[] => {
-    const atual = i === q;
+  const ia = (chave: string, corpo: React.ReactNode): Fala => ({ chave, quem: "ia", corpo });
+  const pessoa = (chave: string, corpo: React.ReactNode): Fala => ({ chave, quem: "pessoa", corpo });
+  const falas = (x: Quadro, i: number): Fala[] => {
+    const atual = i === q, ps = passos[x.p];
     if (x.tipo === "abre") return [
-      <p key="d" className="ic-divisa">passo {passo.n} · {passo.titulo}</p>,
-      <Pessoa key="p" quem={autor}><p>{passo.pedido}</p>
-        {passo.pensamento && <><p>{passo.pensamento.pergunta}</p><p className="ic-fraco">{passo.pensamento.por_que}</p></>}</Pessoa>,
-      <Ia key="i">{passo.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={passo.objetivo} /></p></Ia>,
-      ...(!passo.pensamento ? [<p key="pend" className="ic-pendente" data-pendente="pensamento">💭 o que o autor pensa neste passo: pendente</p>] : []),
+      { chave: "d", quem: "divisa", corpo: <>passo {ps.n} · {ps.titulo}</> },
+      pessoa("p", <p>{ps.pedido}</p>),
+      ia("i", <>{ps.antes.map((t, k) => <p key={k}><Md t={t} /></p>)}<p><b>No fim deste passo:</b> <Md t={ps.objetivo} /></p></>),
     ];
-    if (x.tipo === "fecha") return [<Ia key="f"><p className="ic-temos">✓ <b>Pronto. Agora você tem:</b> <Md t={passo.temos} /></p>{passo.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</Ia>];
+    if (x.tipo === "fecha") return [ia("f", <><p className="ic-temos">✓ <b>Pronto. Agora você tem:</b> <Md t={ps.temos} /></p>{ps.depois.map((t, k) => <p key={k}><Md t={t} /></p>)}</>)];
     const a = acoes[x.k];
     if (x.b === undefined || a.tipo !== "editar") {
-      const aposta = a.tipo === "rodar" && a.aposta ? apostas[x.k] : undefined;
-      if (atual && esperando) return [<Ia key="e"><p>Antes de eu rodar <code>{a.tipo === "rodar" ? a.comando.split(" ").slice(0, 3).join(" ") : ""}</code>: o que você acha que vai acontecer? Aposta comigo no terminal.</p></Ia>];
+      const comAposta = a.tipo === "rodar" && !!a.aposta && !direto, aposta = comAposta ? apostas[x.k] : undefined;
+      const pede = comAposta ? [ia("e", <p>Antes de eu rodar <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando.split(" ").slice(0, 3).join(" ")}</code>: o que você acha que vai acontecer? Aposta comigo no terminal.</p>)] : [];
+      if (comAposta && aposta === undefined) return pede;
       return [
-        ...(typeof aposta === "number" ? [<Pessoa key="ap" quem={autor}><p>Aposto: {(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.</p></Pessoa>] : []),
-        <Ia key="n"><p><Md t={feito(a)} /> <Md t={a.nota} /></p></Ia>,
-        ...(typeof aposta === "number" && passo.pensamento?.espero ? [<Pessoa key="es" quem={autor}><p>Eu tinha apostado: {passo.pensamento.espero}</p></Pessoa>] : []),
+        ...pede,
+        ...(aposta !== undefined ? [pessoa("ap", <p>{aposta === "pulou" ? "Só me mostra." : `Aposto: ${(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.`}</p>)] : []),
+        ia("n", <p><Md t={feito(a)} /> <Md t={a.nota} /></p>),
       ];
     }
     const b = a.blocos[x.b], chave = `${x.k}:${x.b}`, r = respostas[chave];
-    const termoAqui = atual && termo ? b.termos.find((t) => t.chave === termo) : undefined;
+    const ja = perguntados[chave] ?? [];
     return [
-      ...(x.b === 0 ? [<Ia key="n0"><p><Md t={feito(a)} /> <Md t={a.nota} /> Vamos por partes: são {a.blocos.length} {a.blocos.length === 1 ? "bloco" : "blocos"}.</p></Ia>] : [<Pessoa key="mais" quem={autor}><p>E o próximo?</p></Pessoa>]),
-      <Ia key="b">
+      ...(x.b === 0 ? [ia("n0", <p><Md t={feito(a)} /> <Md t={a.nota} /> Vamos por partes: são {a.blocos.length} {a.blocos.length === 1 ? "bloco" : "blocos"}.</p>)] : [pessoa("mais", <p>E o próximo?</p>)]),
+      ia("b", <>
         <p className="ic-bloco-titulo">bloco {x.b + 1} de {a.blocos.length} · {b.titulo} <span>(linhas {b.a}{b.z > b.a ? `–${b.z}` : ""})</span></p>
         <p><Md t={b.texto} /></p>
         {b.termos.length > 0 && <div className="ic-termos">{b.termos.map((t) => atual
-          ? <button key={t.chave} type="button" aria-expanded={termo === t.chave} onClick={() => setTermo(termo === t.chave ? null : t.chave)}><code>{t.rotulo}</code></button>
+          ? <button key={t.chave} type="button" aria-pressed={ja.includes(t.chave)} onClick={() => perguntar(t.chave)}><code>{t.rotulo}</code></button>
           : <code key={t.chave} className="ic-termo-fixo">{t.rotulo}</code>)}</div>}
-      </Ia>,
-      ...(termoAqui ? [<Pessoa key="tq" quem={autor}><p>O que é <code>{termoAqui.rotulo}</code>?</p></Pessoa>, <Ia key="tr"><p>{termoAqui.texto}</p></Ia>] : []),
+      </>),
+      ...ja.flatMap((c) => { const t = b.termos.find((y) => y.chave === c)!; return [pessoa(`tq-${c}`, <p>O que é <code>{t.rotulo}</code>?</p>), ia(`tr-${c}`, <p>{t.texto}</p>)]; }),
       ...(b.pergunta ? [
-        <Ia key="pq"><p><b>Antes de seguir, me diz:</b> {b.pergunta.texto}</p>
+        ia("pq", <><p><b>Antes de seguir, me diz:</b> {b.pergunta.texto}</p>
           {r === undefined && atual && !direto && <div className="ic-opcoes">
             {b.pergunta.opcoes.map((o, j) => <button key={j} type="button" onClick={() => setRespostas((v) => ({ ...v, [chave]: j }))}>{o}</button>)}
             <button type="button" className="ic-pular" onClick={() => setRespostas((v) => ({ ...v, [chave]: "pulou" }))}>não sei, me mostra</button>
-          </div>}
-        </Ia>,
+          </div>}</>),
         ...(r !== undefined ? [
-          <Pessoa key="pr" quem={autor}><p>{r === "pulou" ? "Não sei, me mostra." : b.pergunta.opcoes[r]}</p></Pessoa>,
-          <Ia key="pp"><p><b className={r === b.pergunta.certa ? "ic-ok" : "ic-nao"}>{r === b.pergunta.certa ? "Isso." : r === "pulou" ? `É "${b.pergunta.opcoes[b.pergunta.certa]}".` : `Não: é "${b.pergunta.opcoes[b.pergunta.certa]}".`}</b> {b.pergunta.porque}</p></Ia>,
+          pessoa("pr", <p>{r === "pulou" ? "Não sei, me mostra." : b.pergunta.opcoes[r]}</p>),
+          ia("pp", <p><b className={r === b.pergunta.certa ? "ic-ok" : "ic-nao"}>{r === b.pergunta.certa ? "Isso." : r === "pulou" ? `É "${b.pergunta.opcoes[b.pergunta.certa]}".` : `Não: é "${b.pergunta.opcoes[b.pergunta.certa]}".`}</b> {b.pergunta.porque}</p>),
         ] : []),
       ] : []),
     ];
   };
-  /* o ritmo de uma conversa de verdade: as falas do quadro atual entram uma a uma; antes de cada fala da IA, o
-     "digitando". O que já foi dito fica. Voltar, o modo direto e quem pede menos movimento veem tudo de uma vez. */
+  /* o ritmo de um chat de verdade: a fala do leitor entra na hora em que ele age; a da IA vem depois do "digitando".
+     Só entra o que é novo; voltar, o modo direto e quem pede menos movimento veem tudo de uma vez. */
   const falasAgora = falas(quadro, q);
-  const tipos = falasAgora.map((n) => (n as React.ReactElement)?.type === Ia ? "i" : (n as React.ReactElement)?.type === Pessoa ? "p" : "x").join("");
+  const tipos = falasAgora.map((f) => f.quem[0]).join("");
   const qAnterior = useRef(q);
+  const calmo = () => direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
   useEffect(() => {
-    const calmo = direto || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
     const avancou = q > qAnterior.current, voltou = q < qAnterior.current;
     qAnterior.current = q;
-    if (calmo || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); return; }
+    if (calmo() || voltou) { setVisiveis(Number.POSITIVE_INFINITY); setDigitando(false); return; }
     let j = avancou ? 0 : Math.min(visiveisRef.current, tipos.length);
     if (j >= tipos.length) return;
-    setVisiveis(j);
     const relogios: ReturnType<typeof setTimeout>[] = [];
     const proxima = () => {
+      while (j < tipos.length && tipos[j] !== "i") j += 1;   /* o leitor e a divisa não "digitam" */
+      setVisiveis(j);
       if (j >= tipos.length) { setDigitando(false); return; }
-      const ia = tipos[j] === "i";
-      setDigitando(ia);
-      relogios.push(setTimeout(() => { j += 1; setDigitando(false); setVisiveis(j); relogios.push(setTimeout(proxima, 140)); }, ia ? 1200 : tipos[j] === "p" ? 550 : 250));
+      setDigitando(true);
+      relogios.push(setTimeout(() => { j += 1; setDigitando(false); setVisiveis(j); relogios.push(setTimeout(proxima, 180)); }, 650));
     };
     proxima();
     return () => relogios.forEach(clearTimeout);
   }, [q, tipos, direto]);
-  const revelando = visiveis < tipos.length;
-  /* seguir espera a aposta, a resposta e a conversa terminar de entrar */
-  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando && !revelando;
-  const mensagens = daqui.flatMap(({ x, i }) => {
-    const f = i === q ? falasAgora : falas(x, i);
-    const vistas = i === q ? f.slice(0, visiveis) : f;
-    return [...vistas.map((n, k) => <Fragment key={`${i}-${k}`}>{n}</Fragment>),
-      ...(i === q && digitando ? [<div key={`${i}-dig`} className="ic-msg ic-ia"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>] : [])];
+  /* seguir espera a aposta e a resposta; a conversa não segura o leitor: quem segue antes vê o resto já escrito */
+  const podeSeguir = q < quadros.length - 1 && !esperando && !perguntando;
+  const historia = quadros.slice(0, q + 1).flatMap((x, i) => {
+    const f = i === q ? falasAgora.slice(0, visiveis) : falas(x, i);
+    return f.map((y) => <Mensagem key={`${i}:${y.chave}`} f={y} ia={aba} />);
   });
+  /* desce a conversa quando entra fala nova; se o leitor subiu para reler, só desce quando ele avança */
+  const ultimoQ = useRef(q);
+  useEffect(() => {
+    const el = conversa.current;
+    if (!el) return;
+    const mudouQ = ultimoQ.current !== q; ultimoQ.current = q;
+    const perto = el.scrollHeight - el.scrollTop - el.clientHeight < 200;
+    if (mudouQ || perto) el.scrollTo({ top: el.scrollHeight, behavior: calmo() || Math.abs(el.scrollHeight - el.scrollTop) > 4000 ? "auto" : "smooth" });
+  }, [historia.length, digitando, q]);
   const cartaoSuaVez = pausa && <>
     <b><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" /><rect x="7" y="1" width="3" height="10" rx="1" /></svg>sua vez</b>
     <span><Md t={pausa} /></span>
@@ -337,7 +347,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
         </div>
         <div className="ic-chat-topo"><b>{passo.titulo}</b><span>passo {passo.n} de {passos.length} · seção {passo.secao}</span></div>
         <div className="ic-conversa" ref={conversa} aria-live="polite">
-          {mensagens}
+          {historia}
+          {digitando && <div className="ic-msg ic-ia" key="digitando"><span className="ic-quem">{aba}</span><div className="ic-bolha ic-digitando" aria-label="digitando"><i /><i /><i /></div></div>}
         </div>
         <div className="ic-compositor">
           {pausa && <div className="ic-suavez ic-suavez-chat" role="note">{cartaoSuaVez}</div>}
@@ -362,8 +373,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python }: { acoes:
       <button type="button" className="ic-voltar" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
       <span className="ic-onde"><b>passo {passo.n} de {passos.length}</b> · {passo.titulo}</span>
       <button type="button" className="ic-seguir" onClick={() => setQ(q + 1)} disabled={!podeSeguir}>
-        {revelando ? "lendo…" : esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-        {!revelando && !esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
+        {esperando ? "aposte no terminal" : perguntando ? "responda no chat" : q === quadros.length - 1 ? "fim do capítulo" : pausa ? "fiz na minha IDE" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+        {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
       </button>
     </nav>
   </div>;

@@ -44,11 +44,9 @@ test("o caminho do erro chega dobrado: o contrato.py à vista, as bibliotecas de
   assert.ok(barrado.saida.some((t) => t.tipo === "dobra" && t.linhas.some(([l]) => l.includes("site-packages"))));
 });
 
-test("o livro não monta com buraco entre passos, nem com pensamento de quem não é autor", async () => {
+test("o livro não monta com buraco entre passos", async () => {
   const buraco = entrada(); buraco.capitulo.passos[4].de += 1;
   await assert.rejects(montarIde(buraco), /nenhum pedaço do caminho pode sumir/);
-  const fora = entrada(); fora.capitulo.passos[0].pensamento = { autor: "Fulano", pergunta: "x", por_que: "y" };
-  await assert.rejects(montarIde(fora), /não está entre os autores/);
 });
 
 test("a página traz a IDE do capítulo, e nenhum texto de exemplo", () => {

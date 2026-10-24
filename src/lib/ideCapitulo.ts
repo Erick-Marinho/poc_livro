@@ -1,7 +1,7 @@
 /**
  * O que a IDE do capítulo mostra, montado a partir do roteiro, dos estados e das saídas gravadas (scripts/saidas.py).
- * Falha (e o livro não monta) se os passos não emendarem e cobrirem o roteiro inteiro, se faltar uma saída, se uma
- * aposta não tiver a resposta certa entre as opções, ou se um pensamento tiver autor de fora do capítulo.
+ * Falha (e o livro não monta) se os passos não emendarem e cobrirem o roteiro inteiro, se faltar uma saída, ou se uma
+ * aposta não tiver a resposta certa entre as opções.
  * Puro de propósito: o teste do livro chama isto direto, sem montar a página.
  */
 import { codeToHtml } from "shiki";
@@ -9,7 +9,6 @@ import { dobrarErro, mudadas } from "./codigo.ts";
 import type { Trecho } from "./codigo.ts";
 
 export type Aposta = { pergunta: string; opcoes: string[]; certa: number };
-export type Pensamento = { autor: string; pergunta: string; espero?: string; por_que: string; ajustes?: string };
 export type VersaoIde = { nome: string; html: string | null };
 export type TermoIde = { chave: string; rotulo: string; texto: string; marca?: string };
 export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porque: string };
@@ -22,7 +21,7 @@ export type AcaoIde = { nota: string } & (
   | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
-  objetivo: string; temos: string; engano?: string; pensamento?: Pensamento; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
+  objetivo: string; temos: string; engano?: string; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
   /** a mensagem do autor ao chat que abre o passo; `rascunho` enquanto o autor não revisou */
   pedido: string; rascunho: boolean;
   /** o ponto de volta: a tag do fim do passo anterior, no repositório do leitor (só quando ele existe) */
@@ -34,7 +33,7 @@ type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: R
   gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
 type DefPasso = { id: string; secao: string; titulo: string; curta: string; de: number; ate: number; objetivo: string; temos: string;
-  engano?: string; pensamento?: Pensamento; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean };
+  engano?: string; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean };
 export type Entrada = {
   roteiro: { passos: PassoRoteiro[] };
   estados: Estado[];
@@ -57,8 +56,6 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     if (antes && antes.ate + 1 !== p.de) falhar(`o passo ${p.id} começa no ${p.de}, e o anterior termina no ${antes.ate}: nenhum pedaço do caminho pode sumir`);
     if (p.ate < p.de) falhar(`o passo ${p.id} termina antes de começar`);
     if (!secoes[p.secao]) falhar(`falta o nome da seção ${p.secao}`);
-    if (p.pensamento && !capitulo.autores?.includes(p.pensamento.autor)) falhar(`o pensamento do passo ${p.id} é de "${p.pensamento.autor}", que não está entre os autores`);
-    if (p.pensamento && !(p.pensamento.pergunta?.trim() && p.pensamento.por_que?.trim())) falhar(`o pensamento do passo ${p.id} precisa da pergunta e do porquê`);
   });
   if (capitulo.passos.at(-1)!.ate !== roteiro.passos.length) falhar(`o último passo termina no ${capitulo.passos.at(-1)!.ate}, e o roteiro tem ${roteiro.passos.length}`);
 
@@ -139,7 +136,7 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     const ultimo = runs.at(-1);
     const sinal = !ultimo ? "nada" : p.engano ? "engano" : ultimo.tipo === "rodar" && ultimo.erro ? "erro" : "ok";
     return { n: i + 1, id: p.id, secao: p.secao, nomeSecao: secoes[p.secao], titulo: p.titulo, curta: p.curta, de: p.de, ate: p.ate,
-      objetivo: p.objetivo, temos: p.temos, engano: p.engano, pensamento: p.pensamento, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
+      objetivo: p.objetivo, temos: p.temos, engano: p.engano, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
     pedido: p.pedido ?? falhar(`o passo ${p.id} não tem o pedido do autor ao chat`), rascunho: !p.pedido_revisado,
     volta: capitulo.repositorio && i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` } : undefined };
   });
