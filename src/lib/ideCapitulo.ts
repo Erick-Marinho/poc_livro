@@ -11,8 +11,12 @@ import type { Trecho } from "./codigo.ts";
 export type Aposta = { pergunta: string; opcoes: string[]; certa: number };
 export type Pensamento = { autor: string; pergunta: string; espero?: string; por_que: string; ajustes?: string };
 export type VersaoIde = { nome: string; html: string | null };
+export type TermoIde = { chave: string; rotulo: string; texto: string; marca?: string };
+export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porque: string };
+/** um bloco lógico do código que entrou: as linhas (no arquivo daquele momento), o que ele faz, e as palavras dele */
+export type BlocoIde = { a: number; z: number; titulo: string; texto: string; termos: TermoIde[]; pergunta?: PerguntaIde };
 export type AcaoIde = { nota: string } & (
-  | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean }
+  | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
   | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; aposta?: Aposta;
@@ -20,7 +24,8 @@ export type AcaoIde = { nota: string } & (
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; pensamento?: Pensamento; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada" };
 
-type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string };
+type DefBloco = { linhas: string; titulo: string; texto: string; termos?: string[]; pergunta?: PerguntaIde };
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[] };
 type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: Record<string, string | null>; rodou?: string;
   gerados?: Record<string, string | null>; apagados?: string[]; apagado?: string };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
@@ -32,11 +37,12 @@ export type Entrada = {
   saidas: Record<string, Saida>;
   capitulo: { autores?: string[]; passos: DefPasso[] };
   secoes: Record<string, string>;
+  glossario: { termos: Record<string, { marca?: string; rotulo?: string; texto: string }> };
   pasta?: string;
   numero?: string;
 };
 
-export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, pasta = "~/atendimento-bemtevi", numero = "" }: Entrada) {
+export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, glossario, pasta = "~/atendimento-bemtevi", numero = "" }: Entrada) {
   const falhar = (m: string): never => { throw new Error(`IDE do capítulo (figura ${numero}): ${m}`); };
 
   /* os passos emendam um no outro e cobrem o roteiro inteiro */
@@ -67,6 +73,27 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, pa
     return versoes.length - 1;
   }
 
+  /* o fim de cada arquivo (é igual ao projeto/, o saidas.py garante): os blocos apontam linhas dele, como as partes do roteiro */
+  const finais: Record<string, string> = {};
+  for (const e of estados) { if (e.arquivo) finais[e.arquivo] = e.conteudo!; for (const [n, t] of Object.entries({ ...(e.arquivos ?? {}), ...(e.gerados ?? {}) })) if (t !== null) finais[n] = t; }
+  /* um bloco: acha as linhas dele no arquivo daquele momento, pelo texto, e confere as palavras e a pergunta */
+  function blocosDe(k: number, arquivo: string, conteudo: string, defs: DefBloco[]): BlocoIde[] {
+    const agora = conteudo.replace(/\n$/, "").split("\n"), fim = finais[arquivo].replace(/\n$/, "").split("\n");
+    return defs.map((d, i) => {
+      const [de, ate = de] = d.linhas.split("-").map(Number);
+      const alvo = fim.slice(de - 1, ate);
+      if (!alvo.length) falhar(`ação ${k}: o bloco ${i + 1} (${d.linhas}) está fora de ${arquivo}`);
+      const onde = agora.findIndex((_, j) => alvo.every((l, m) => agora[j + m] === l));
+      if (onde < 0) falhar(`ação ${k}: o bloco ${i + 1} (${d.titulo}) não está em ${arquivo} nesse momento`);
+      const termos = (d.termos ?? []).map((t) => {
+        const g = glossario.termos[t] ?? falhar(`ação ${k}, bloco "${d.titulo}": "${t}" não está no glossário`);
+        return { chave: t, rotulo: g.rotulo ?? t, texto: g.texto, marca: g.marca };
+      });
+      if (d.pergunta && !(d.pergunta.certa >= 0 && d.pergunta.certa < d.pergunta.opcoes.length)) falhar(`ação ${k}, bloco "${d.titulo}": a resposta certa não está entre as opções`);
+      return { a: onde + 1, z: onde + alvo.length, titulo: d.titulo, texto: d.texto, termos, pergunta: d.pergunta };
+    });
+  }
+
   /* as ações do roteiro, na ordem, cada uma com o que muda no projeto */
   const atual: Record<string, string | null> = {};
   const acoes: AcaoIde[] = [];
@@ -95,7 +122,8 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, pa
       const alteradas = mudadas(atual[e.arquivo], e.conteudo!);
       const novo = !(e.arquivo in atual);
       atual[e.arquivo] = e.conteudo!;
-      acoes.push({ tipo: "editar", nota: p.nota, arquivo: e.arquivo, versao: await versao(e.arquivo, e.conteudo!), alteradas, novo });
+      const blocos = p.blocos ? blocosDe(e.passo, e.arquivo, e.conteudo!, p.blocos) : [];
+    acoes.push({ tipo: "editar", nota: p.nota, arquivo: e.arquivo, versao: await versao(e.arquivo, e.conteudo!), alteradas, novo, blocos });
     }
   }
   if (acoes.length !== roteiro.passos.length) falhar(`o roteiro tem ${roteiro.passos.length} ações e os estados, ${acoes.length}; rode npm run saidas`);

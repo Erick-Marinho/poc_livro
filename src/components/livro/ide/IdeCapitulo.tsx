@@ -12,7 +12,8 @@ import type { AcaoIde, PassoCap, VersaoIde } from "../../../lib/ideCapitulo.ts";
 import "./ide.css";
 import "./ide-capitulo.css";
 
-type Quadro = { tipo: "abre"; p: number } | { tipo: "acao"; p: number; k: number } | { tipo: "fecha"; p: number };
+/* b: o bloco lógico da ação, quando o código entra por blocos */
+type Quadro = { tipo: "abre"; p: number } | { tipo: "acao"; p: number; k: number; b?: number } | { tipo: "fecha"; p: number };
 
 const icone = (nome: string) => nome.endsWith(".py") ? <FileCode size={14} /> : /\.(jsonl?|toml|lock)$/.test(nome) ? <FileBraces size={14} /> : <FileText size={14} />;
 const SINAL = { ok: "✓", erro: "✗", engano: "!", nada: "•" };
@@ -26,13 +27,17 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   /* a sequência do passador: abre, as ações do passo, fecha */
   const quadros = useMemo(() => passos.flatMap((p, i): Quadro[] => [
     { tipo: "abre", p: i },
-    ...acoes.slice(p.de - 1, p.ate).map((_, j): Quadro => ({ tipo: "acao", p: i, k: p.de - 1 + j })),
+    ...acoes.slice(p.de - 1, p.ate).flatMap((a, j): Quadro[] => a.tipo === "editar" && a.blocos.length
+      ? a.blocos.map((_, b) => ({ tipo: "acao", p: i, k: p.de - 1 + j, b }))
+      : [{ tipo: "acao", p: i, k: p.de - 1 + j }]),
     { tipo: "fecha", p: i },
   ]), [acoes, passos]);
   const [q, setQ] = useState(0);
   const [apostas, setApostas] = useState<Record<number, number | "pulou">>({});
   const [aberto, setAberto] = useState<string | null>(null);
   const [abertas, setAbertas] = useState<Set<string>>(new Set());   /* dobras do caminho do erro abertas */
+  const [termo, setTermo] = useState<string | null>(null);   /* a palavra aberta no balão do bloco */
+  const [respostas, setRespostas] = useState<Record<string, number | "pulou">>({});   /* as perguntas dos blocos, por "ação:bloco" */
   const codigo = useRef<HTMLDivElement>(null), terminal = useRef<HTMLDivElement>(null);
 
   const quadro = quadros[q], passo = passos[quadro.p];
@@ -40,6 +45,10 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const feitaAte = quadro.tipo === "acao" ? quadro.k : quadro.tipo === "abre" ? passo.de - 2 : passo.ate - 1;
   const acao = quadro.tipo === "acao" ? acoes[quadro.k] : null;
   const respondida = (k: number) => { const a = acoes[k]; return direto || !(a.tipo === "rodar" && a.aposta) || apostas[k] !== undefined; };
+  const bloco = quadro.tipo === "acao" && quadro.b !== undefined && acao?.tipo === "editar" ? acao.blocos[quadro.b] : null;
+  const chaveBloco = quadro.tipo === "acao" ? `${quadro.k}:${quadro.b}` : "";
+  const perguntando = !!bloco?.pergunta && !direto && respostas[chaveBloco] === undefined;
+  useEffect(() => setTermo(null), [q]);
   const esperando = acao?.tipo === "rodar" && !respondida(quadro.k as number);
 
   /* o projeto depois da ação feitaAte: a versão de cada arquivo, e o que nasceu ou mudou neste passo */
@@ -72,14 +81,27 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
   const abas = [...projeto.marcas.keys()].filter((a) => projeto.arquivos[a] !== undefined && versoes[projeto.arquivos[a]].html);
   if (vista && !abas.includes(vista) && versao?.html) abas.push(vista);
 
-  /* destaca as linhas da ação e leva o editor até elas */
+  /* destaca as linhas da ação (e, no bloco, as do bloco), marca as palavras do bloco e leva o editor até elas */
+  const blocoVisto = bloco && acao?.tipo === "editar" && acao.arquivo === vista ? bloco : null;
   useEffect(() => {
     const el = codigo.current;
     if (!el) return;
-    el.querySelectorAll<HTMLElement>(".line").forEach((l) => l.classList.toggle("ide-novo", alteradas.includes(Number(l.dataset.n))));
-    const linha = alteradas.length ? el.querySelector<HTMLElement>(`.line[data-n="${alteradas[0]}"]`) : null;
+    el.classList.toggle("ic-com-bloco", !!blocoVisto);
+    el.querySelectorAll<HTMLElement>(".ic-termo").forEach((t) => { t.classList.remove("ic-termo"); delete t.dataset.termo; });
+    el.querySelectorAll<HTMLElement>(".line").forEach((l) => {
+      const n = Number(l.dataset.n), noBloco = !!blocoVisto && n >= blocoVisto.a && n <= blocoVisto.z;
+      l.classList.toggle("ide-novo", alteradas.includes(n));
+      l.classList.toggle("ic-bloco", noBloco);
+      if (noBloco) for (const sp of l.querySelectorAll<HTMLElement>("span")) {
+        const t = blocoVisto!.termos.find((x) => x.marca && sp.textContent!.trim() === x.marca);
+        if (t) { sp.classList.add("ic-termo"); sp.dataset.termo = t.chave; }
+      }
+    });
+    const alvo = blocoVisto?.a ?? alteradas[0];
+    const linha = alvo ? el.querySelector<HTMLElement>(`.line[data-n="${alvo}"]`) : null;
     el.scrollTo({ top: linha ? Math.max(linha.offsetTop - 60, 0) : 0 });
-  }, [versao, alteradas.join(",")]);
+  }, [versao, alteradas.join(","), blocoVisto]);
+  const clicarCodigo = (e: React.MouseEvent) => { const t = (e.target as HTMLElement).closest<HTMLElement>(".ic-termo"); if (t?.dataset.termo) setTermo(t.dataset.termo); };
 
   /* o terminal: tudo o que já rodou no capítulo, e o comando da vez (com a aposta, se houver) */
   const rodados = acoes.map((a, k) => ({ a, k })).filter(({ a, k }) => a.tipo === "rodar" && k <= feitaAte && (k < feitaAte || respondida(k) || quadro.tipo !== "acao"));
@@ -141,7 +163,7 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
           {abas.map((a) => <button key={a} type="button" role="tab" aria-selected={a === vista} onClick={() => setAberto(a)}>{icone(a)}{a.split("/").pop()}</button>)}
         </div>
         {versao?.html
-          ? <div className="ide-codigo" ref={codigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
+          ? <div className="ide-codigo" ref={codigo} onClick={clicarCodigo} dangerouslySetInnerHTML={{ __html: versao.html }} />
           : <div className="ide-codigo ic-sem-arquivo" ref={codigo}><p>{nomes.length ? "Abra um arquivo no explorador." : "Nenhum arquivo ainda: o projeto começa no terminal."}</p></div>}
         <div className="ide-painel">
           <div className="ide-painel-abas"><button type="button" aria-selected="true">terminal</button></div>
@@ -173,7 +195,8 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
     {/* o passador: o que este momento do passo quer dizer */}
     <div className="ic-passador">
       <p className="ic-onde">passo {passo.n} de {passos.length} · seção {passo.secao} · <b>{passo.titulo}</b>
-        {quadro.tipo === "acao" && <span> · ação {quadro.k - passo.de + 2} de {passo.ate - passo.de + 1}</span>}</p>
+        {quadro.tipo === "acao" && <span> · ação {quadro.k - passo.de + 2} de {passo.ate - passo.de + 1}</span>}
+        {bloco && acao?.tipo === "editar" && <span> · bloco {quadro.tipo === "acao" ? quadro.b! + 1 : 0} de {acao.blocos.length}</span>}</p>
 
       {quadro.tipo === "abre" && <div className="ic-quadro">
         {passo.antes.map((t, i) => <p key={i} className="ic-texto"><Md t={t} /></p>)}
@@ -188,7 +211,28 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
         </div> : <p className="ic-pendente" data-pendente="pensamento">💭 o que eu penso: <span>pendente · as palavras dos autores entram aqui</span></p>}
       </div>}
 
-      {quadro.tipo === "acao" && acao && <div className="ic-quadro">
+      {bloco && <div className="ic-quadro">
+        {quadro.tipo === "acao" && quadro.b === 0 && <p className="ic-nota-acao"><Md t={acao!.nota} /></p>}
+        <p className="ic-bloco-titulo">{bloco.titulo}</p>
+        <p className="ic-texto"><Md t={bloco.texto} /></p>
+        {bloco.termos.length > 0 && <div className="ic-termos">
+          <span className="ic-termos-rot">palavras deste bloco</span>
+          {bloco.termos.map((t) => <button key={t.chave} type="button" aria-expanded={termo === t.chave} onClick={() => setTermo(termo === t.chave ? null : t.chave)}><code>{t.rotulo}</code></button>)}
+          {termo && bloco.termos.find((t) => t.chave === termo) && <p className="ic-def"><code>{bloco.termos.find((t) => t.chave === termo)!.rotulo}</code> {bloco.termos.find((t) => t.chave === termo)!.texto}</p>}
+        </div>}
+        {bloco.pergunta && <div className="ic-pergunta">
+          <p><b>◆ antes de seguir:</b> {bloco.pergunta.texto}</p>
+          <div className="ic-opcoes">{bloco.pergunta.opcoes.map((o, j) => {
+            const r = respostas[chaveBloco];
+            return <button key={j} type="button" disabled={r !== undefined}
+              className={r === undefined ? "" : j === bloco.pergunta!.certa ? "ic-certa" : r === j ? "ic-errada" : ""}
+              onClick={() => setRespostas((x) => ({ ...x, [chaveBloco]: j }))}>{o}</button>;
+          })}{respostas[chaveBloco] === undefined && <button type="button" className="ic-pular" onClick={() => setRespostas((x) => ({ ...x, [chaveBloco]: "pulou" }))}>só mostrar</button>}</div>
+          {respostas[chaveBloco] !== undefined && <p className="ic-porque"><b>{respostas[chaveBloco] === bloco.pergunta.certa ? "Isso." : respostas[chaveBloco] === "pulou" ? "A resposta:" : "Não é essa."}</b> {bloco.pergunta.porque}</p>}
+        </div>}
+      </div>}
+
+      {quadro.tipo === "acao" && acao && !bloco && <div className="ic-quadro">
         {esperando ? <p className="ic-texto">Antes de rodar: o que você acha que vai acontecer? Aposte no terminal.</p> : <>
           <p className="ic-texto"><Md t={acao.nota} /></p>
           {apostaFeita !== null && passo.pensamento?.espero && <p className="ic-apostou"><span className="ic-autor">{iniciais(passo.pensamento.autor)}</span>
@@ -203,9 +247,9 @@ export default function IdeCapitulo({ acoes, passos, versoes }: { acoes: AcaoIde
 
       {!direto && <div className="ide-controles ic-controles">
         <button type="button" onClick={() => setQ(q - 1)} disabled={q === 0} aria-label="Voltar"><ChevronLeft size={18} /></button>
-        <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={q === quadros.length - 1 || esperando}>
-          {esperando ? "aposte para seguir" : q === quadros.length - 1 ? "fim do capítulo" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
-          {!esperando && q < quadros.length - 1 && <ChevronRight size={16} />}
+        <button type="button" className="ide-proximo" onClick={() => setQ(q + 1)} disabled={q === quadros.length - 1 || esperando || perguntando}>
+          {esperando ? "aposte para seguir" : perguntando ? "responda para seguir" : q === quadros.length - 1 ? "fim do capítulo" : quadro.tipo === "fecha" ? "próximo passo" : "seguir"}
+          {!esperando && !perguntando && q < quadros.length - 1 && <ChevronRight size={16} />}
         </button>
       </div>}
     </div>

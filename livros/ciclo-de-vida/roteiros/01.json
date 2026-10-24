@@ -75,7 +75,41 @@
           "linhas": "10-27"
         }
       ],
-      "nota": "Primeiro, as duas listas fechadas: as quatro decisões e as três fontes. Nada de pydantic ainda."
+      "nota": "Primeiro, as duas listas fechadas: as quatro decisões e as três fontes. Nada de pydantic ainda.",
+      "blocos": [
+        {
+          "linhas": "1-1",
+          "titulo": "o que é o arquivo",
+          "texto": "A primeira linha diz, em uma frase, para que o arquivo existe. Quem abrir o contrato daqui a seis meses começa por ela.",
+          "termos": [
+            "docstring"
+          ]
+        },
+        {
+          "linhas": "3-3",
+          "titulo": "de onde vem a lista fechada",
+          "texto": "O StrEnum vem da biblioteca padrão do Python: não precisa instalar nada.",
+          "termos": [
+            "import",
+            "StrEnum"
+          ]
+        },
+        {
+          "linhas": "12-18",
+          "titulo": "as quatro decisões",
+          "texto": "Uma classe que herda de StrEnum é uma lista fechada de textos. Cada linha é um valor possível, com o nome em maiúsculas e o texto que vai aparecer nos arquivos. O comentário diz quando usar cada um.",
+          "termos": [
+            "class",
+            "StrEnum",
+            "#"
+          ]
+        },
+        {
+          "linhas": "21-26",
+          "titulo": "as três fontes",
+          "texto": "O mesmo molde, para outra pergunta: onde está a informação de que o agente precisa. Ninguém vai poder escrever \"planilha\" como fonte."
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -118,7 +152,78 @@
           "linhas": "28-38"
         }
       ],
-      "nota": "O formato de um caso: cada campo com o seu tipo e as suas regras."
+      "nota": "O formato de um caso: cada campo com o seu tipo e as suas regras.",
+      "blocos": [
+        {
+          "linhas": "29-30",
+          "titulo": "o molde",
+          "texto": "Um caso é um molde com nome e campos. Herdar de BaseModel, o que está entre parênteses, é o que faz o pydantic conferir cada caso que entrar.",
+          "termos": [
+            "class",
+            "BaseModel",
+            "docstring"
+          ]
+        },
+        {
+          "linhas": "32-33",
+          "titulo": "o id e a pergunta",
+          "texto": "Cada linha é um campo, sempre na forma nome: tipo = regra. O id é um texto no formato R01 a R99; a pergunta tem pelo menos 5 caracteres.",
+          "termos": [
+            "nome: tipo",
+            "Field",
+            "pattern",
+            "r\"…\"",
+            "^R\\d{2}$",
+            "min_length"
+          ],
+          "pergunta": {
+            "texto": "Qual destes ids o contrato aceita?",
+            "opcoes": [
+              "R7",
+              "R07",
+              "r07",
+              "R007"
+            ],
+            "certa": 1,
+            "porque": "O padrão pede R maiúsculo e exatamente dois dígitos, do começo ao fim."
+          }
+        },
+        {
+          "linhas": "34-35",
+          "titulo": "a decisão e o motivo",
+          "texto": "A decisão não é um texto qualquer: o tipo é Decisao, então só entra uma das quatro do contrato. Escrever \"talvez\" ali dá erro. O motivo é uma frase para quem ler o caso depois.",
+          "termos": [
+            "description"
+          ]
+        },
+        {
+          "linhas": "36",
+          "titulo": "de onde vem a resposta",
+          "texto": "As fontes de que a pergunta precisa: pedidos, política ou catálogo. Se o caso não disser nada, nenhuma.",
+          "termos": [
+            "list[…]",
+            "= []"
+          ]
+        },
+        {
+          "linhas": "37-38",
+          "titulo": "pedido e e-mail",
+          "texto": "Pedido e e-mail são opcionais, porque uma pergunta sobre a política não tem pedido. Quando o pedido vem, tem que seguir o formato BT-0000.",
+          "termos": [
+            "str | None",
+            "None"
+          ],
+          "pergunta": {
+            "texto": "Um caso que precisa dos pedidos, mas não traz pedido nem e-mail: estas linhas deixam passar?",
+            "opcoes": [
+              "deixam passar",
+              "barram"
+            ],
+            "certa": 0,
+            "porque": "Os dois começam como None, e nada aqui liga um campo ao outro. É esse buraco que o caso apressado do roteiro vai mostrar, e que a regra no fim da classe fecha."
+          }
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -158,7 +263,43 @@
           "linhas": "47-59"
         }
       ],
-      "nota": "A função que lê as perguntas de referência, uma por linha, e diz em que linha está o erro."
+      "nota": "A função que lê as perguntas de referência, uma por linha, e diz em que linha está o erro.",
+      "blocos": [
+        {
+          "linhas": "49-50",
+          "titulo": "a assinatura da função",
+          "texto": "A função recebe o caminho do arquivo e devolve uma lista de casos. Se ninguém disser o caminho, ela usa o referencia.jsonl ao lado do contrato.",
+          "termos": [
+            "def",
+            "nome: tipo",
+            "= valor padrão",
+            "->",
+            "/ (caminho)"
+          ]
+        },
+        {
+          "linhas": "51-54",
+          "titulo": "uma linha por vez",
+          "texto": "Lê o arquivo inteiro, quebra em linhas e conta cada uma a partir de 1, para o erro poder dizer a linha. Linha em branco é pulada.",
+          "termos": [
+            "enumerate",
+            "start=1",
+            "splitlines",
+            "continue"
+          ]
+        },
+        {
+          "linhas": "55-59",
+          "titulo": "o caso, ou o erro com a linha",
+          "texto": "Cada linha vira um Caso, e o pydantic confere. Se não passar, o erro sai de novo, agora dizendo o nome do arquivo e a linha.",
+          "termos": [
+            "try / except",
+            "model_validate_json",
+            "raise … from",
+            "f\"…\""
+          ]
+        }
+      ]
     },
     {
       "acao": "escrever",
@@ -223,7 +364,38 @@
           "linhas": "39-46"
         }
       ],
-      "nota": "O contrato passa a se proteger: pedido e e-mail andam juntos, e quem precisa dos pedidos diz qual."
+      "nota": "O contrato passa a se proteger: pedido e e-mail andam juntos, e quem precisa dos pedidos diz qual.",
+      "blocos": [
+        {
+          "linhas": "40-41",
+          "titulo": "uma regra para o caso inteiro",
+          "texto": "O decorador diz ao pydantic: depois de conferir cada campo, rode esta função com o caso pronto.",
+          "termos": [
+            "@model_validator",
+            "mode=\"after\"",
+            "self"
+          ]
+        },
+        {
+          "linhas": "42-43",
+          "titulo": "pedido e e-mail andam juntos",
+          "texto": "Os dois lados do != dizem se o campo está vazio. Se um está vazio e o outro não, o caso é recusado com a frase de erro.",
+          "termos": [
+            "is None",
+            "!=",
+            "raise"
+          ]
+        },
+        {
+          "linhas": "44-46",
+          "titulo": "quem precisa dos pedidos diz qual",
+          "texto": "Se o caso diz que precisa dos pedidos, tem que trazer o número do pedido. No fim, a função devolve o caso, que segue em frente.",
+          "termos": [
+            "in",
+            "return self"
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -312,7 +484,17 @@
           "linhas": "60-64"
         }
       ],
-      "nota": "E a função que abre um arquivo de dados pelo nome."
+      "nota": "E a função que abre um arquivo de dados pelo nome.",
+      "blocos": [
+        {
+          "linhas": "62-64",
+          "titulo": "um arquivo de dados pelo nome",
+          "texto": "carregar(\"pedidos\") abre dados/pedidos.json e devolve o que tem dentro, como listas e dicionários do Python.",
+          "termos": [
+            "json.loads"
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -329,7 +511,32 @@
           "linhas": "1-16"
         }
       ],
-      "nota": "Antes de qualquer teste, o que todos vão usar: os casos, os pedidos, os e-mails dos clientes e o \"hoje\" da loja."
+      "nota": "Antes de qualquer teste, o que todos vão usar: os casos, os pedidos, os e-mails dos clientes e o \"hoje\" da loja.",
+      "blocos": [
+        {
+          "linhas": "1-6",
+          "titulo": "o que os testes usam",
+          "texto": "O pytest procura arquivos que começam com test_ e roda as funções que começam com test_. Daqui ele só precisa do contrato e das datas.",
+          "termos": [
+            "pytest",
+            "from … import"
+          ]
+        },
+        {
+          "linhas": "8-11",
+          "titulo": "lido uma vez só",
+          "texto": "Tudo o que os testes consultam é lido aqui, uma vez, quando o pytest abre o arquivo: as vinte perguntas, os pedidos por número, o e-mail de cada cliente e o \"hoje\" da loja.",
+          "termos": [
+            "{chave: valor for …}",
+            "date.fromisoformat"
+          ]
+        },
+        {
+          "linhas": "14-15",
+          "titulo": "quem é o dono do pedido",
+          "texto": "Uma função pequena que os testes vão repetir: do número do pedido ao e-mail de quem comprou."
+        }
+      ]
     },
     {
       "acao": "inserir",
@@ -343,7 +550,43 @@
           "linhas": "47-53"
         }
       ],
-      "nota": "Quatro testes do formato: ids em ordem, as quatro decisões presentes, pedido que existe, e linha errada dizendo qual linha."
+      "nota": "Quatro testes do formato: ids em ordem, as quatro decisões presentes, pedido que existe, e linha errada dizendo qual linha.",
+      "blocos": [
+        {
+          "linhas": "18-19",
+          "titulo": "ids em ordem",
+          "texto": "Os ids têm que ser R01, R02, R03… sem pular nem repetir.",
+          "termos": [
+            "assert",
+            "f\"{i:02d}\""
+          ]
+        },
+        {
+          "linhas": "22-23",
+          "titulo": "as quatro decisões aparecem",
+          "texto": "O conjunto das decisões dos casos tem que ser igual ao conjunto das quatro do contrato: nenhuma pode ficar de fora.",
+          "termos": [
+            "set"
+          ]
+        },
+        {
+          "linhas": "26-27",
+          "titulo": "pedido que existe",
+          "texto": "Todo pedido citado num caso tem que existir na loja.",
+          "termos": [
+            "all(…)"
+          ]
+        },
+        {
+          "linhas": "49-53",
+          "titulo": "a linha errada diz qual linha",
+          "texto": "O teste escreve um arquivo com uma linha torta numa pasta temporária e confere que o erro diz \"linha 1\".",
+          "termos": [
+            "tmp_path",
+            "pytest.raises"
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -370,7 +613,30 @@
           "linhas": "28-46"
         }
       ],
-      "nota": "Três testes da política: só se fala de pedido com o dono, o caso do capítulo 6 existe, e chamado só dentro dos 90 dias."
+      "nota": "Três testes da política: só se fala de pedido com o dono, o caso do capítulo 6 existe, e chamado só dentro dos 90 dias.",
+      "blocos": [
+        {
+          "linhas": "30-33",
+          "titulo": "só fala de pedido com o dono",
+          "texto": "Se o caso responde ou abre chamado sobre um pedido, o e-mail de quem pergunta tem que ser o do dono. A mensagem diz qual caso falhou."
+        },
+        {
+          "linhas": "36-38",
+          "titulo": "o caso do capítulo 6 existe",
+          "texto": "Tem que existir um caso de pedido de outra pessoa, marcado como recusar. É ele que o capítulo 6 vai usar para quebrar o agente.",
+          "termos": [
+            "any(…)"
+          ]
+        },
+        {
+          "linhas": "41-46",
+          "titulo": "chamado só dentro dos 90 dias",
+          "texto": "Todo chamado tem que ser de pedido entregue, e a no máximo 90 dias do \"hoje\" da loja.",
+          "termos": [
+            ".days"
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -419,7 +685,22 @@
           "linhas": "1-13"
         }
       ],
-      "nota": "O \"agente\" mais simples que existe: qualquer pergunta, a mesma decisão."
+      "nota": "O \"agente\" mais simples que existe: qualquer pergunta, a mesma decisão.",
+      "blocos": [
+        {
+          "linhas": "1-5",
+          "titulo": "o que é a nota zero",
+          "texto": "A explicação do arquivo: um \"agente\" que passa tudo para a equipe. Ele nunca erra feio, mas também não ajuda ninguém.",
+          "termos": [
+            "docstring"
+          ]
+        },
+        {
+          "linhas": "11-12",
+          "titulo": "o decisor mais simples",
+          "texto": "Uma função que recebe a pergunta e devolve sempre a mesma decisão. Nem lê a pergunta."
+        }
+      ]
     },
     {
       "acao": "rodar",
@@ -437,7 +718,28 @@
           "linhas": "14-30"
         }
       ],
-      "nota": "A régua: para cada decisão do contrato, quantos casos o decisor acertou, e a nota no fim."
+      "nota": "A régua: para cada decisão do contrato, quantos casos o decisor acertou, e a nota no fim.",
+      "blocos": [
+        {
+          "linhas": "15-21",
+          "titulo": "a régua",
+          "texto": "Para cada decisão esperada, conta quantos casos existem e quantos o decisor acertou. A régua não sabe qual decisor está medindo: serve para este e para todo agente depois.",
+          "termos": [
+            "Counter",
+            "+= (com verdadeiro e falso)"
+          ]
+        },
+        {
+          "linhas": "24-30",
+          "titulo": "rodar o arquivo",
+          "texto": "Este trecho só roda quando o arquivo é chamado direto, com uv run python baseline.py. Ele mede o sempre_passar e imprime a nota.",
+          "termos": [
+            "if __name__ == \"__main__\"",
+            "f\"{d:<14}\"",
+            "f\"{x:.0%}\""
+          ]
+        }
+      ]
     },
     {
       "acao": "rodar",

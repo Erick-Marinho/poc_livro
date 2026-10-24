@@ -33,6 +33,7 @@ import saidas from "../saidas.json";
 import roteiro01 from "../roteiros/01.json";
 import estados01 from "../roteiros/01.estados.json";
 import passos01 from "../passos/01.json";
+import glossario from "../glossario.json";
 import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 
 
@@ -120,7 +121,7 @@ Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: 
 
 Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota zero em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
 
-<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} secoes={{ "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota zero. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
+<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota zero. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
 ## 1.6 O que ficou de pé
 

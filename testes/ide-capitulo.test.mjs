@@ -10,6 +10,7 @@ const entrada = () => ({
   roteiro: json("livros/ciclo-de-vida/roteiros/01.json"), estados: json("livros/ciclo-de-vida/roteiros/01.estados.json"),
   saidas: json("livros/ciclo-de-vida/saidas.json"), capitulo: json("livros/ciclo-de-vida/passos/01.json"),
   secoes: { "1.5": "O projeto", "1.6": "O contrato", "1.7": "As perguntas", "1.8": "A nota zero" },
+  glossario: json("livros/ciclo-de-vida/glossario.json"),
 });
 const { acoes, passos } = await montarIde(entrada());
 
@@ -55,4 +56,35 @@ test("a página traz a IDE do capítulo, e nenhum texto de exemplo", () => {
   assert.match(html, /component-url="[^"]*IdeCapitulo[^"]*"/);
   assert.equal([...html.matchAll(/class="ic-ponto /g)].length, 18);
   assert.doesNotMatch(html, /EXEMPLO/);
+});
+
+test("o código entra por blocos lógicos, e cada bloco cai nas linhas certas do arquivo daquele momento", () => {
+  const comBlocos = acoes.filter((a) => a.tipo === "editar" && a.blocos.length);
+  assert.equal(comBlocos.length, 10);
+  const caso = comBlocos.find((a) => a.blocos.some((b) => b.titulo === "o molde"));
+  assert.equal(caso.blocos.length, 5);
+  assert.ok(caso.blocos.every((b, i) => i === 0 || b.a > caso.blocos[i - 1].z), "os blocos seguem a ordem do arquivo");
+  for (const a of comBlocos) for (const b of a.blocos) for (const t of b.termos) assert.ok(t.texto.length > 10, `${b.titulo}: ${t.chave}`);
+});
+
+test("a pergunta do id: só a resposta certa segue o padrão do contrato real", () => {
+  const contrato = ler("livros/ciclo-de-vida/projeto/contrato.py");
+  const padrao = new RegExp(contrato.match(/id: str = Field\(pattern=r"([^"]+)"\)/)[1]);
+  const q = acoes.flatMap((a) => a.tipo === "editar" ? a.blocos : []).find((b) => b.pergunta?.texto.includes("ids")).pergunta;
+  q.opcoes.forEach((o, i) => assert.equal(padrao.test(o), i === q.certa, o));
+});
+
+test("a pergunta do pedido: o roteiro mostra o caso apressado passando antes da regra", () => {
+  const saidas = json("livros/ciclo-de-vida/saidas.json");
+  const q = acoes.flatMap((a) => a.tipo === "editar" ? a.blocos : []).find((b) => b.pergunta?.texto.includes("pedidos")).pergunta;
+  assert.equal(q.opcoes[q.certa], "deixam passar");
+  assert.equal(saidas["r01-caso-sem-pedido-passa"].saiu_com, 0);
+  assert.notEqual(saidas["r01-caso-sem-pedido-barrado"].saiu_com, 0);
+});
+
+test("o livro não monta com um bloco que não está no arquivo, nem com palavra fora do glossário", async () => {
+  const torto = entrada(); torto.roteiro.passos[7].blocos[0].linhas = "62-64";   // a função carregar, que ainda não existe nesse momento
+  await assert.rejects(montarIde(torto), /não está em contrato\.py nesse momento/);
+  const sem = entrada(); sem.roteiro.passos[7].blocos[0].termos = ["palavra-que-nao-existe"];
+  await assert.rejects(montarIde(sem), /não está no glossário/);
 });

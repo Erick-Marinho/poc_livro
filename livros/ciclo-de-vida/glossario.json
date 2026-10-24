@@ -1,19 +1,193 @@
 {
   "sobre": "As palavras do código que podem travar quem está começando, explicadas em palavras do dia a dia. Uma vez por livro; o passador mostra as do bloco. `marca` é o texto exato que fica sublinhado no código, quando ele aparece sozinho.",
   "termos": {
-    "class": { "marca": "class", "texto": "Cria um molde. Cada caso do arquivo vai virar um objeto feito com esse molde, com os mesmos campos." },
-    "BaseModel": { "marca": "BaseModel", "texto": "O molde do pydantic. Ele confere os dados na entrada: se um campo faltar ou vier com o tipo errado, dá erro na hora e diz qual campo." },
-    "docstring": { "rotulo": "\"\"\"…\"\"\"", "texto": "Um texto de explicação logo abaixo da classe ou da função. O Python guarda, mas não executa: é para quem lê o código." },
-    "nome: tipo": { "texto": "O que vem depois dos dois-pontos diz o tipo do campo. Em Python comum, é só um aviso para quem lê. Num BaseModel, o pydantic confere de verdade." },
-    "Field": { "marca": "Field", "texto": "Acrescenta regras a um campo, além do tipo: um padrão que o texto tem que seguir, um tamanho mínimo, um valor inicial." },
-    "pattern": { "marca": "pattern", "texto": "O texto do campo tem que seguir este padrão. O padrão é escrito como expressão regular, uma pequena linguagem para descrever textos." },
-    "r\"…\"": { "texto": "Texto cru. A barra invertida fica como está, em vez de virar um caractere especial. Por isso quase todo padrão em Python começa com r." },
-    "^R\\d{2}$": { "texto": "O padrão do id: começa (^) com R maiúsculo, depois exatamente dois dígitos (\\d{2}), e acaba ($). R07 passa; R7, r07 e R007 não." },
-    "min_length": { "marca": "min_length", "texto": "Pelo menos esse número de caracteres. Com 5, uma pergunta vazia ou um \"oi\" não entram." },
-    "description": { "marca": "description", "texto": "Uma explicação do campo, para quem lê e para ferramentas que geram documentação. Não muda a conferência." },
-    "list[…]": { "texto": "Uma lista em que todo item é do tipo entre colchetes. list[Fonte] aceita pedidos, politica e catalogo, e nada além disso." },
-    "= []": { "texto": "O valor do campo quando o caso não diz nada: lista vazia. No pydantic isso é seguro, porque cada caso ganha a sua lista. Numa função comum do Python, lista como valor padrão é uma armadilha conhecida: a mesma lista é usada em toda chamada." },
-    "str | None": { "texto": "Texto ou nada. A barra | quer dizer \"ou\": o campo aceita um texto, ou None." },
-    "None": { "marca": "None", "texto": "O valor do Python para \"não tem\". Diferente de texto vazio: \"\" é um texto sem letras; None é a ausência do texto." }
+    "class": {
+      "marca": "class",
+      "texto": "Cria um molde. Cada caso do arquivo vai virar um objeto feito com esse molde, com os mesmos campos."
+    },
+    "BaseModel": {
+      "marca": "BaseModel",
+      "texto": "O molde do pydantic. Ele confere os dados na entrada: se um campo faltar ou vier com o tipo errado, dá erro na hora e diz qual campo."
+    },
+    "docstring": {
+      "rotulo": "\"\"\"…\"\"\"",
+      "texto": "Um texto de explicação logo abaixo da classe ou da função. O Python guarda, mas não executa: é para quem lê o código."
+    },
+    "nome: tipo": {
+      "texto": "O que vem depois dos dois-pontos diz o tipo do campo. Em Python comum, é só um aviso para quem lê. Num BaseModel, o pydantic confere de verdade."
+    },
+    "Field": {
+      "marca": "Field",
+      "texto": "Acrescenta regras a um campo, além do tipo: um padrão que o texto tem que seguir, um tamanho mínimo, um valor inicial."
+    },
+    "pattern": {
+      "marca": "pattern",
+      "texto": "O texto do campo tem que seguir este padrão. O padrão é escrito como expressão regular, uma pequena linguagem para descrever textos."
+    },
+    "r\"…\"": {
+      "texto": "Texto cru. A barra invertida fica como está, em vez de virar um caractere especial. Por isso quase todo padrão em Python começa com r."
+    },
+    "^R\\d{2}$": {
+      "texto": "O padrão do id: começa (^) com R maiúsculo, depois exatamente dois dígitos (\\d{2}), e acaba ($). R07 passa; R7, r07 e R007 não."
+    },
+    "min_length": {
+      "marca": "min_length",
+      "texto": "Pelo menos esse número de caracteres. Com 5, uma pergunta vazia ou um \"oi\" não entram."
+    },
+    "description": {
+      "marca": "description",
+      "texto": "Uma explicação do campo, para quem lê e para ferramentas que geram documentação. Não muda a conferência."
+    },
+    "list[…]": {
+      "texto": "Uma lista em que todo item é do tipo entre colchetes. list[Fonte] aceita pedidos, politica e catalogo, e nada além disso."
+    },
+    "= []": {
+      "texto": "O valor do campo quando o caso não diz nada: lista vazia. No pydantic isso é seguro, porque cada caso ganha a sua lista. Numa função comum do Python, lista como valor padrão é uma armadilha conhecida: a mesma lista é usada em toda chamada."
+    },
+    "str | None": {
+      "texto": "Texto ou nada. A barra | quer dizer \"ou\": o campo aceita um texto, ou None."
+    },
+    "None": {
+      "marca": "None",
+      "texto": "O valor do Python para \"não tem\". Diferente de texto vazio: \"\" é um texto sem letras; None é a ausência do texto."
+    },
+    "import": {
+      "marca": "import",
+      "texto": "Traz para o arquivo algo que está em outro lugar: da biblioteca padrão do Python, de uma biblioteca instalada ou de outro arquivo do projeto."
+    },
+    "from … import": {
+      "texto": "Traz só o que você vai usar: from contrato import Decisao traz a Decisao do arquivo contrato.py."
+    },
+    "StrEnum": {
+      "marca": "StrEnum",
+      "texto": "Uma lista fechada de textos. Cada valor tem um nome e um texto; qualquer texto fora da lista dá erro."
+    },
+    "#": {
+      "texto": "Comentário: do # até o fim da linha, o Python ignora. Serve para quem lê."
+    },
+    "def": {
+      "marca": "def",
+      "texto": "Cria uma função: um pedaço de código com nome, que recebe valores e devolve um resultado."
+    },
+    "= valor padrão": {
+      "texto": "O valor que o parâmetro recebe quando quem chama a função não diz nada."
+    },
+    "->": {
+      "texto": "O que vem depois da seta diz o tipo do que a função devolve. É aviso para quem lê; o Python não confere."
+    },
+    "/ (caminho)": {
+      "texto": "Com caminhos (Path), a barra junta pastas e arquivos: AQUI / \"referencia.jsonl\" é o arquivo dentro da pasta AQUI."
+    },
+    "enumerate": {
+      "marca": "enumerate",
+      "texto": "Percorre uma lista entregando a posição junto com o item: (1, primeira linha), (2, segunda linha)…"
+    },
+    "start=1": {
+      "texto": "Começa a contar do 1, e não do 0, para o número bater com a linha que o editor mostra."
+    },
+    "splitlines": {
+      "marca": "splitlines",
+      "texto": "Quebra um texto em linhas."
+    },
+    "continue": {
+      "marca": "continue",
+      "texto": "Pula para a próxima volta do for, sem fazer o resto desta."
+    },
+    "try / except": {
+      "texto": "Tenta o bloco do try; se der o erro indicado no except, em vez de parar, faz o que está no except."
+    },
+    "model_validate_json": {
+      "marca": "model_validate_json",
+      "texto": "Do pydantic: lê um texto em JSON e monta o Caso, conferindo cada campo."
+    },
+    "raise … from": {
+      "texto": "Levanta um erro novo dizendo que ele veio de outro. O caminho do erro mostra os dois, um depois do outro."
+    },
+    "f\"…\"": {
+      "texto": "Texto com valores no meio: f\"linha {n}\" vira \"linha 4\" quando n vale 4."
+    },
+    "@model_validator": {
+      "marca": "model_validator",
+      "texto": "Do pydantic: marca uma função que confere o caso inteiro, e não só um campo."
+    },
+    "mode=\"after\"": {
+      "texto": "A conferência roda depois de cada campo já ter sido conferido e convertido."
+    },
+    "self": {
+      "marca": "self",
+      "texto": "O próprio objeto: dentro da função, self.pedido é o pedido deste caso."
+    },
+    "is None": {
+      "texto": "Pergunta se o valor é None, ou seja, se não tem valor."
+    },
+    "!=": {
+      "texto": "Diferente. Entre dois verdadeiro-ou-falso, dá verdadeiro quando um é verdadeiro e o outro é falso."
+    },
+    "raise": {
+      "marca": "raise",
+      "texto": "Levanta um erro: a execução para ali, e o erro sobe até alguém tratar ou até o terminal."
+    },
+    "in": {
+      "texto": "Pergunta se um valor está dentro de uma lista."
+    },
+    "return self": {
+      "texto": "Devolve o próprio caso: é assim que o pydantic sabe que a conferência passou."
+    },
+    "json.loads": {
+      "texto": "Transforma um texto em JSON em listas e dicionários do Python."
+    },
+    "pytest": {
+      "marca": "pytest",
+      "texto": "A ferramenta que roda os testes. Cada função que começa com test_ é um teste."
+    },
+    "{chave: valor for …}": {
+      "texto": "Monta um dicionário numa linha: para cada pedido, a chave é o número e o valor é o pedido."
+    },
+    "date.fromisoformat": {
+      "texto": "Transforma um texto como \"2026-11-10\" numa data de verdade, com a qual dá para fazer conta."
+    },
+    "assert": {
+      "marca": "assert",
+      "texto": "Confere uma afirmação. Se ela for falsa, o teste falha ali, com a mensagem que vier depois da vírgula."
+    },
+    "f\"{i:02d}\"": {
+      "texto": "O número com dois dígitos, completando com zero: 1 vira 01."
+    },
+    "set": {
+      "marca": "set",
+      "texto": "Um conjunto: sem repetidos e sem ordem. Dois conjuntos são iguais quando têm os mesmos itens."
+    },
+    "all(…)": {
+      "texto": "Verdadeiro só se todos os itens forem verdadeiros."
+    },
+    "any(…)": {
+      "texto": "Verdadeiro se pelo menos um item for verdadeiro."
+    },
+    "tmp_path": {
+      "marca": "tmp_path",
+      "texto": "Do pytest: uma pasta temporária, nova a cada teste, que some depois."
+    },
+    "pytest.raises": {
+      "texto": "O teste só passa se o bloco de dentro levantar esse erro."
+    },
+    ".days": {
+      "texto": "A diferença entre duas datas, em dias."
+    },
+    "Counter": {
+      "marca": "Counter",
+      "texto": "Um contador: Counter()[chave] começa em zero e vai somando."
+    },
+    "+= (com verdadeiro e falso)": {
+      "texto": "Soma ao que já tinha. Verdadeiro conta como 1 e falso como 0, então somar um acerto é somar a comparação."
+    },
+    "if __name__ == \"__main__\"": {
+      "texto": "Só roda quando o arquivo é chamado direto, e não quando outro arquivo faz import dele."
+    },
+    "f\"{d:<14}\"": {
+      "texto": "O texto alinhado à esquerda, ocupando 14 espaços, para as colunas ficarem retas."
+    },
+    "f\"{x:.0%}\"": {
+      "texto": "O número como porcentagem, sem casas decimais: 0.25 vira 25%."
+    }
   }
 }

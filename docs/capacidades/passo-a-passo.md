@@ -66,6 +66,12 @@ o caminho aparece na página.
 - (7a) O texto que ficava entre os passos vira `antes` e `depois` do passo, no `passos/01.json`, e aparece no passador.
   Ficam fora da IDE só as perguntas e a conclusão (seção 1.6, "O que ficou de pé").
 - (7a) O que a IDE mostra é montado em `src/lib/ideCapitulo.ts`, puro, e o teste chama esse módulo direto.
+- (7b) Os blocos lógicos moram no próprio roteiro (`blocos` na edição), com as linhas do arquivo final, como as partes;
+  a IDE acha cada bloco no arquivo daquele momento pelo texto. Bloco que não está lá, ou palavra fora do glossário,
+  não monta o livro. O `passadores/caso.json` e o `Passador.astro` saem: os blocos do `Caso` foram para o roteiro.
+- (7b) No bloco, as linhas dele acendem e as outras apagam um pouco; as palavras dele ficam sublinhadas no código e
+  como botões no passador, e as duas abrem a mesma explicação. Pergunta de bloco segura o "seguir" até a resposta
+  (ou "só mostrar"), como a aposta.
 - (5c) A IDE completa só abre por clique ("ver o projeto inteiro até aqui"); nunca fica aberta no meio do texto.
 
 ## Peças
@@ -73,11 +79,10 @@ o caminho aparece na página.
 | Peça | Função | Entrada | Saída | Cor |
 |---|---|---|---|---|
 | `glossario.json` | as palavras difíceis, uma vez por livro | — | termos | nova |
-| `Passador.astro` | um trecho real, bloco a bloco, com palavras e perguntas | arquivo real + `passadores/*.json` + glossário | figura | nova |
-| `passadores/caso.json` | os 5 blocos do formato de um caso (`contrato.py`, 29–38) | — | blocos | nova |
 | `passos/01.json` | os 18 passos do capítulo: trecho do roteiro, fim do passo, pensamento, texto antes e depois | — | passos | em uso |
 | `lib/ideCapitulo.ts` | monta as ações, os passos e as versões dos arquivos, e barra o que não bate | roteiro + estados + saídas + passos | dados da IDE | nova (7a) |
 | `IdeCapitulo` | a IDE do capítulo: progresso, explorador, editor, terminal com aposta, e o passador | dados da IDE | figura | nova (7a) |
+| `blocos` no roteiro | os blocos lógicos de cada edição de código: título, texto, palavras, pergunta | — | blocos | novo (7b): 10 edições, 30 blocos |
 | `Passo.astro`, `Trilha.astro`, `IDE.astro` | substituídos pela IDE do capítulo | — | — | apagados (7a) |
 
 ## Etapas
@@ -113,3 +118,4 @@ o caminho aparece na página.
 | 5c2 | `32cfca7` | `npm test` (19 testes, 2 novos); trilha e projeto inteiro no ngrok; o build barrou um buraco entre dois passos | Erick, 23/10/2026 |
 | 5c3 | `f38d3f2` | `npm test` (21 testes, 2 novos); erro dobrado no ngrok, no celular; nenhuma linha em branco acesa | Erick, 23/10/2026 |
 | 6a | `e3c87a3`, `f9930ee` | `npm test` (22 testes) no computador e na máquina do Erick; a 1.5 da pasta vazia ao `uv add` no ngrok | Erick, 23/10/2026 |
+| 7a | `63e936f` | `npm test` (15 testes) no computador e na máquina do Erick; a IDE do capítulo no ngrok | Erick, 23/10/2026 |
