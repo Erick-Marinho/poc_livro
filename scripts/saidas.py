@@ -118,8 +118,10 @@ def ambiente(versoes_ate: str | None) -> dict:
     """`versoes_ate`: o uv só enxerga versões publicadas até essa data, e o `uv add` dá sempre o mesmo resultado.
     Vale também para o `uv sync` do projeto/, senão ele reescreve o uv.lock sem a data."""
     # UV_LINK_MODE=copy: a pasta do roteiro fica em /tmp, muitas vezes noutro disco que o cache do uv, e o aviso de
-    # "Failed to hardlink" entraria na saída de quem grava; o leitor, na pasta dele, não vê esse aviso
-    return {**os.environ, "UV_LINK_MODE": "copy", **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
+    # "Failed to hardlink" entraria na saída de quem grava; o leitor, na pasta dele, não vê esse aviso.
+    # PYTHONDONTWRITEBYTECODE: sem __pycache__, uma mudança de código feita e desfeita no mesmo segundo (o mesmo tamanho
+    # de arquivo) não roda o bytecode velho, e a conferência não passa por engano
+    return {**os.environ, "UV_LINK_MODE": "copy", "PYTHONDONTWRITEBYTECODE": "1", **({"UV_EXCLUDE_NEWER": versoes_ate} if versoes_ate else {})}
 
 
 IGNORAR = shutil.ignore_patterns(".venv", "__pycache__", ".pytest_cache", ".ruff_cache")
