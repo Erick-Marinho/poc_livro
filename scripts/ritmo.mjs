@@ -18,6 +18,16 @@ const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exerci
 /* o texto destes não é lido pelo leitor como texto corrido (ainda não existe, ou é fecho) */
 const SEM_TEXTO = new Set(["Pendente", "PontoDeVolta"]);
 
+/** Se um componente pede uma decisão do leitor. Com regra por modo (GrafoAgente), basta que um modo peça. */
+export const eAcao = (nome) => typeof CONTA[nome] === "function" || CONTA[nome] === true;
+
+/** O que um Rascunho precisa dizer (docs/capacidades/ritmo-no-texto.md): uma ação de verdade, e de onde vem o dado. */
+export function conferirRascunho({ acao, nova = false, dado }) {
+  if (!nova && !(acao in CONTA)) throw new Error(`Rascunho: o componente ${acao} não existe no livro; se é um componente novo, diga com nova`);
+  if (!nova && !eAcao(acao)) throw new Error(`Rascunho: ${acao} não pede uma decisão do leitor, então não é ação (docs/RITMO.md)`);
+  if (!/^(real|ilustração): \S/.test(dado ?? "")) throw new Error(`Rascunho: o dado de ${acao} começa com "real: " ou "ilustração: ", e diz de onde vem`);
+}
+
 const palavras = (t) => t.replace(/<[^>]+>/g, " ").replace(/\{[^}]*\}/g, " ").replace(/[*`#|_>-]+/g, " ").split(/\s+/).filter((p) => /\p{L}|\d/u.test(p)).length;
 
 /** Os trechos de um texto: { secao, palavras, ate } — `ate` é a ação que fecha o trecho (null no fim do texto). */
