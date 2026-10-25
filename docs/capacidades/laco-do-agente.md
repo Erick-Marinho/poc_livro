@@ -27,6 +27,13 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
   leitor investir. As "cenas" do laco.json viram trechos de um gráfico só.
 - (25/10/2026, Erick) Sem câmera e sem a barra do tempo: o leitor vê o laço inteiro o tempo todo, e controla só com
   play e pausar ("a experiência piorou com a câmera, melhor ele ver o todo"). Vale da etapa 5 em diante.
+- (25/10/2026, Erick) A figura 1.1 com o laço abstrato ficou "confusa, abstrata e trazendo mais dúvidas": refeita na
+  etapa 6, com "a melhor experiência possível".
+- (6) Os três jeitos lado a lado, com a mesma mensagem da cliente no topo: os passos de cada um (os dos "três jeitos")
+  aparecem juntos, como cartões concretos (quem fez, o que fez, o selo "decide" ou "decide de novo"), e cada coluna
+  termina na resposta, ✓ ou ✗, com o porquê. Primeiro o pedido, depois a frigideira; antes da frigideira, o leitor
+  investe no que o fluxo fixo faz. No fim, o placar das duas perguntas em cada coluna. No celular, três faixas, uma
+  embaixo da outra, com o passo de agora e os anteriores em miniatura. Sai o diagrama do laço (caixas e setas).
 - (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
   trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
   a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
@@ -54,14 +61,17 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
    pausa para investir, o modo direto, o menos movimento, sem JS; "olhar" vira "observar".
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
 5. O laço inteiro à vista, na figura 1.1: sem câmera e sem a barra do tempo.
+6. A figura 1.1 refeita: os três jeitos lado a lado, com os passos concretos e o investimento no fluxo fixo.
 
-## Etapa atual: 5
+## Etapa atual: 6
 
-**Arquivos.** `laco/laco.ts` (sai a câmera), `laco/LacoAnimado.tsx` (o desenho inteiro, sempre), `palco/TocaGrafico.tsx`
-e `palco/palco.css` (saem a barra e o tempo; ficam o play, o pausar e a pausa para investir), `testes/laco.test.mjs`.
+**Arquivos.** `figuras/laco.json` (os trechos e o investimento), `laco/laco.ts` (a linha do tempo de cada coluna,
+conferida contra os "três jeitos"), `laco/LacoAnimado.tsx` (as três colunas e as três faixas),
+`laco/FiguraLacoVideo.tsx`, `FiguraLaco.astro`, o Studio do my-video, `testes/laco.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha com o código de antes; no navegador, com clique de verdade,
-o gráfico inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px.
+**Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; no navegador, com clique de
+verdade, o gráfico do começo ao fim, o investimento certo e o errado, em 1280 e 390 px; com menos movimento, no modo
+direto e sem JS; o vídeo inteiro renderizado.
 
 **Fora.** A etapa 4, que segue esperando o capítulo 3.
 
@@ -72,5 +82,6 @@ o gráfico inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px
 | 1 | `37a2834` | 107 testes do livro; os 3 novos falham sem o código; no navegador, o mapa da introdução sobre a base: as 6 cenas com clique de verdade (5, 6, 7, 8, 7 e 5 s), com menos movimento e no modo direto, iguais a antes; o elenco renderizado em 720 e 360 px | Erick, 25/10/2026 |
 | 2 | `55578ca` | 110 testes do livro; os 3 novos falham sem o código; quadros das 6 cenas e os vídeos inteiros renderizados pelo Remotion, em 720 e 360 px | Erick, 25/10/2026 |
 | 3 | `0b53f39` | 114 testes do livro; os 4 novos falham sem o código; no navegador, com clique de verdade: o play, a pausa aos 25 s e o investimento certo e o errado, o fim, a barra e o pausar, em 1280 e 390 px; com menos movimento, no modo direto e sem JS; os vídeos inteiros renderizados pelo Remotion | Erick, 25/10/2026 |
+| 5 | `353dc88` | 114 testes do livro; os novos falham com o código de antes; no navegador, o laço inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px | não: "confuso, abstrato" (refeita na 6) |
 
 (redação: claude-opus-5-5)
