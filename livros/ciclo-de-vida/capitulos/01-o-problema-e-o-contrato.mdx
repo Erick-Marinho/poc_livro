@@ -45,6 +45,10 @@ import trocaDePrompt from "../figuras/troca-de-prompt.json";
 
 Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve outro. Pergunte a ele quando chega o pedido BT-1003 e ele responde com o que parecer mais provável. Ele não sabe nada do pedido, porque o pedido mora no sistema da loja, e não dentro do modelo. Então ele escreve uma data qualquer, com cara de certa.
 
+<PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem roda a consulta: o modelo ou o seu código?">
+O seu código. O modelo só pede, e lê o que volta.
+</PareEPense>
+
 O primeiro conserto é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
 
 Com ferramentas na mesa, existem dois jeitos de montar o sistema. No **fluxo fixo**, o seu código decide a ordem: sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. No **agente**, quem decide o próximo passo é o modelo: ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo. Usar outra ferramenta, responder ou parar. Esse ciclo de decidir, agir e olhar o resultado se repete até ele achar que terminou.
@@ -96,6 +100,10 @@ Lembra do desconto que o agente apressado prometeu? É a mesma mensagem, agora c
 O contrato também não é o prompt. O prompt é como você pede ao modelo que se comporte; o contrato é como você confere o que ele fez. Você vai trocar de prompt muitas vezes ao longo do livro, e de modelo também. O contrato fica, e é justamente por ficar que ele serve de régua.
 
 <Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
+
+<PareEPense pergunta="Na seção anterior, você separou as mensagens em pilhas sem nome. Que nome você daria a cada uma?">
+O contrato chama as pilhas de responder, abrir chamado, recusar e passar a vez. A tabela abaixo diz quando vale cada uma.
+</PareEPense>
 
 As saídas são as pilhas que você separou na seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
 

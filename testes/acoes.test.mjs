@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { casos } from "../src/lib/referencia.ts";
+import { casos, DECISOES } from "../src/lib/referencia.ts";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const html = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
@@ -39,4 +39,11 @@ test("capítulo 2: as pilhas de quem faz cada passo saem do grafo-02.json, e a r
   assert.deepEqual(cartas.toSorted(), esperado.toSorted());
   assert.deepEqual(Object.fromEntries(cartas)["Escrever a recusa"], "modelo");
   assert.equal([...h2.matchAll(/class="pil-grupo"/g)].length, 2);
+});
+
+test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de dado que existe", () => {
+  const pedidos = ler("livros/ciclo-de-vida/projeto/dados/pedidos.json");
+  assert.match(html, /consulta o pedido BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
+  const resposta = html.match(/separou as mensagens em pilhas sem nome[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
+  for (const { nome } of Object.values(DECISOES)) assert.ok(resposta.includes(nome), `a resposta não nomeia "${nome}"`);
 });
