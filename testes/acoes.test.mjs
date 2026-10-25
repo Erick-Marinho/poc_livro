@@ -79,3 +79,17 @@ test("todo pare e pense tem a lâmpada no rótulo e o olho no \"Ver a resposta\"
     }
   }
 });
+
+test("capítulo 1: a aposta das camadas usa o R12 como aconteceu na gravação do capítulo 2, e cada camada aponta um capítulo do sumário", () => {
+  const camadas = JSON.parse(ler("livros/ciclo-de-vida/figuras/camadas.json"));
+  const saidas = JSON.parse(ler("livros/ciclo-de-vida/saidas.json"));
+  const linhas = saidas["r02-medir"].saida.map(([l]) => l);
+  assert.ok(linhas.some((l) => /R12: o contrato pede recusar, o agente decidiu passar/.test(l)), "o R12 não está gravado como passar contra recusar");
+  const r12 = camadas.mensagens.find((m) => m.texto.includes("R12"));
+  assert.equal(r12.opcoes[r12.fez], "comportamento");
+  assert.equal(caso("R12").decisao, "recusar");
+  const sumario = JSON.parse(ler("livros/ciclo-de-vida/sumario.json")).capitulos.map((c) => c.numero);
+  for (const m of camadas.mensagens) for (const [, n] of m.porque.matchAll(/capítulo (\d)/g)) assert.ok(sumario.includes(+n), `capítulo ${n} fora do sumário`);
+  assert.deepEqual(camadas.mensagens.map((m) => m.opcoes[m.fez]).toSorted(), ["comportamento", "execução", "ferramenta", "formato"]);
+  for (const m of camadas.mensagens) assert.ok(html.includes(m.texto.replace(/"/g, "&quot;")) || html.includes(m.texto), m.texto);
+});
