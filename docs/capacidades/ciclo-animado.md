@@ -38,18 +38,26 @@ ficam escondidos, desligados do desenho.
 2. A animação: as 6 cenas, aprovadas antes no Studio, com o avançar, as apostas ao lado, menos movimento e modo direto.
 3. O "você está aqui" com o anel em miniatura.
 
-## Etapa 1, detalhada
+## Etapa 2, detalhada
 
-- **Arquivos:** `src/components/livro/ciclo/Anel.tsx` (novo), `src/components/livro/MapaDoCiclo.astro`,
-  `testes/ciclo-animado.test.mjs` (novo).
-- **Muda:** o mapa vira o anel (a coluna abaixo de 640 px), com Evoluir por fora e Governar como halo; embaixo, um
-  cartão `<details>` por fase. Clicar num nó acende e abre o cartão dele; sem JS, os cartões abrem sozinhos.
-- **Evidência:** `npm test`; o teste novo falha com o mapa de hoje; capturas em 1280 e 360 px, sem JS e na impressão.
-- **Fora:** a animação (etapa 2) e a miniatura (etapa 3).
+- **Arquivos:** `figuras/ciclo-animado.json` (as cenas), `ciclo/cenas.ts` (a linha do tempo, sem JSX),
+  `ciclo/CicloAnimado.tsx` (a composição), `ciclo/FiguraCiclo.tsx` (a ilha), `ciclo/Anel.tsx` (o estilo junto do
+  desenho, e os nós com realce), `MapaDoCiclo.astro`, `testes/ciclo-animado.test.mjs`. No `my-video`: a prévia no Studio.
+- **Muda:** seis cenas: o elenco; o pedido de outra pessoa pego em Planejar; a conta pega em Observar; a pergunta
+  imprevista falha no uso, cai em "Quando dá errado" e volta pela seta como caso da régua (o momento-chave, mais lento);
+  o modelo novo entra por Evoluir e volta a Construir; o fim, com Governar aceso. Cada problema fica na fase que o
+  pegou, com a aposta do leitor ao lado (lida da aposta da página). O leitor avança cena a cena; a fase por onde o
+  problema passa acende o cartão. Menos movimento: o avançar vai direto ao fim da cena. Modo direto: o quadro final.
+- **Antes da ilha:** as cenas vão ao Studio para o ok do responsável.
+- **Evidência:** `npm test` (as cenas são os problemas da aposta; a fase que pega cada um está no caminho dele; até 6
+  cenas, 45 s, 8 s por cena e 12 palavras por legenda); o teste falha sem as cenas; no navegador, as seis cenas com o
+  avançar, a aposta ao lado, os cartões acendendo, em 1280 e 360 px.
+- **Fora:** a miniatura (etapa 3).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `bc13d31` | `npm test` com 84 testes; o teste novo falha com o mapa de antes; no navegador: anel em 1280 e coluna em 360 px, o clique no nó abre e acende o cartão, na impressão e no modo direto os 8 cartões abertos, console limpo | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
