@@ -5,7 +5,7 @@
  * pedido (dá certo) e, depois de prever, com a frigideira (para no passo 1). 3. Agente: no papel do modelo, escolhe
  * cada passo, vê o que voltou e decide de novo, até responder; embaixo, o laço que ele fez. No fim, quem decide em cada
  * jeito. As respostas e os resultados vêm dos três jeitos (quemDecide.ts). Com menos movimento, nada desliza; no modo
- * direto, só o fim. Sem JS, fica a figura em texto (FiguraLaco.astro).
+ * direto, só o fim. Sem JS, só um aviso (FiguraLaco.astro).
  */
 import { Brain, Check, Code, Lock, MessageSquare, RotateCcw, Wrench, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -100,12 +100,10 @@ export default function QuemDecide(props: Entrada) {
 
   useEffect(() => { if (direto) setRodada(3); }, [direto]);
 
-  /* a figura passa a mostrar a ilha, e a versão em texto se fecha (sem JS, ela é a figura) */
+  /* a figura passa a mostrar a ilha (antes de carregar, ela fica com 1 px) */
   useEffect(() => {
     const fig = topo.current?.closest<HTMLElement>("figure[data-laco]");
     fig?.setAttribute("data-animado", "");
-    const texto = fig?.querySelector<HTMLDetailsElement>("details.laco-texto");
-    if (texto) texto.open = false;
     return () => fig?.removeAttribute("data-animado");
   }, []);
 

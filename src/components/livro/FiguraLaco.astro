@@ -1,10 +1,9 @@
 ---
 /**
  * A figura 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, com o leitor no papel de cada jeito de
- * usar um modelo, em três rodadas (laco/QuemDecide.tsx); e, embaixo, a mesma figura em texto, para quem lê sem JS ou com
- * leitor de tela. Sem JS, só a figura em texto, aberta; com JS, a ilha aparece e ela se fecha (a ilha faz as duas
- * coisas); na impressão, abre de novo. Os dados são os "três jeitos" (tres-jeitos.json), as falas da figura (laco.json)
- * e os clientes da loja; a montagem confere as rodadas contra eles (laco/quemDecide.ts).
+ * usar um modelo, em três rodadas (laco/QuemDecide.tsx). Sem JS, só um aviso de que a figura precisa dele. Os dados são
+ * os "três jeitos" (tres-jeitos.json), as falas da figura (laco.json) e os clientes da loja; a montagem confere as
+ * rodadas contra eles (laco/quemDecide.ts).
  */
 import QuemDecide from "./laco/QuemDecide";
 import { montarRodadas, type Entrada } from "./laco/quemDecide";
@@ -17,27 +16,8 @@ montarRodadas({ laco, tresJeitos, clientes });
 <figure class="laco" data-laco>
   <QuemDecide client:visible={{ rootMargin: "400px" }} laco={laco} tresJeitos={tresJeitos} clientes={clientes} />
   <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
-  <details class="laco-texto" open>
-    <summary>A figura em texto</summary>
-    {tresJeitos.modos.map((m) => (
-      <section>
-        <h4>{m.nome} <span>quem decide: {(m as { quem_decide?: string }).quem_decide}</span></h4>
-        {tresJeitos.perguntas.map((p) => (
-          <ol data-caminho={`${m.id}/${p.id}`} aria-label={`${m.nome}: ${p.texto}`}>
-            {m.passos[p.id].map((s) => (
-              <li><b>{s.quem}{s.decide && " (decide)"}:</b> {s.texto}{s.erro && <em> ✗ {s.erro}</em>}{s.certo && <em> ✓ veio dos dados da loja</em>}</li>
-            ))}
-          </ol>
-        ))}
-      </section>
-    ))}
-  </details>
+  <noscript><p class="laco-semjs">Esta figura é interativa e precisa de JavaScript.</p></noscript>
 </figure>
-
-<script>
-  /* na impressão, a figura em texto aberta */
-  addEventListener("beforeprint", () => document.querySelectorAll<HTMLDetailsElement>("details.laco-texto").forEach((d) => { d.open = true; }));
-</script>
 
 <style is:global>
   .laco { margin: 1.8em auto 2em }
@@ -127,11 +107,6 @@ montarRodadas({ laco, tresJeitos, clientes });
     .qd-linha { grid-template-columns: 1fr; gap: 2px }
   }
 
-  .laco-texto { margin-top: 8px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
-  .laco-texto summary { cursor: pointer; width: max-content; color: var(--acento) }
-  .laco-texto h4 { margin: 1em 0 .3em; font: 600 14px var(--f-ui); color: var(--ink) }
-  .laco-texto h4 span { font-weight: 400; color: var(--ink-2); margin-left: 6px }
-  .laco-texto ol { margin: 0 0 .6em; padding-left: 22px }
-  .laco-texto em { color: var(--ink) }
+  .laco-semjs { margin: 0; padding: 12px 14px; border: 1px dashed var(--linha); border-radius: 12px; font: 14px var(--f-ui); color: var(--ink-2) }
   @media print { .qd { display: none } }
 </style>

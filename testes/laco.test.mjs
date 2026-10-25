@@ -50,12 +50,12 @@ test("o fim diz quem decide em cada jeito, e o que cada um acertou, nos três je
   assert.deepEqual(r.fim.map((f) => [f.nome, f.acertos]), [["só o modelo", [false, false]], ["fluxo fixo", [true, false]], ["agente", [true, true]]]);
 });
 
-test("o 1.1 tem a figura em que o leitor decide, no lugar dos três jeitos e do Pendente, com a figura em texto aberta sem JS", () => {
+test("o 1.1 tem a figura em que o leitor decide, no lugar dos três jeitos e do Pendente, sem a figura em texto", () => {
   const pagina = parse(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html"));
   const fig = pagina.querySelector("figure[data-laco]");
   assert.ok(fig, "a figura não está no 1.1");
   assert.ok(fig.querySelectorAll("astro-island").some((i) => (i.getAttribute("component-url") ?? "").includes("QuemDecide")), "a figura não tem a ilha");
-  assert.ok(fig.querySelector("details.laco-texto[open] [data-caminho]"), "sem JS, a figura em texto não vem aberta");
+  assert.equal(fig.querySelectorAll(".laco-texto, [data-caminho]").length, 0, "a figura em texto ficou");
   assert.equal(pagina.querySelectorAll(".rastro").length, 0, "os três jeitos ficaram");
   const mdx = ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx");
   assert.doesNotMatch(mdx, /<Pendente o="Figura: o laço/);

@@ -46,6 +46,8 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
   responde; executa o roteiro do fluxo fixo com o pedido e, depois de prever, com a frigideira; e, como o modelo de um
   agente, escolhe cada passo até responder, vendo o laço que fez. Sai do Remotion: a composição do laço, o player
   contínuo e as composições do Studio deixam de existir.
+- (25/10/2026, Erick) Sem a figura em texto embaixo da 1.1. Sem JS, fica só um aviso de que a figura precisa dele; na
+  impressão, a figura não sai (só a legenda).
 - (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
   trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
   a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
@@ -99,5 +101,6 @@ menos movimento, no modo direto e sem JS.
 | 5 | `353dc88` | 114 testes do livro; os novos falham com o código de antes; no navegador, o laço inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px | não: "confuso, abstrato" (refeita na 6) |
 | 6 | sem commit | os três jeitos lado a lado, renderizados em 720 e 360 px | não: "muita informação de uma vez" (refeita na 7) |
 | 7 | `7d74e64` | 115 testes do livro; no navegador, do play ao fim, com o investimento, em 1280 e 390 px; os vídeos inteiros | não: "ainda não está bom" (refeita na 8) |
+| 8 | `71f4f26` | 111 testes do livro; no navegador, com clique de verdade, as três rodadas do começo ao fim, pelo caminho com desvio e pelo errado, em 1280 e 390 px; no modo direto e sem JS | Erick, 25/10/2026 (pediu só tirar a figura em texto) |
 
 (redação: claude-opus-5-5)

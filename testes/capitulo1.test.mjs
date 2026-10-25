@@ -1,4 +1,4 @@
-/** Capítulo 1: a epígrafe tem fonte, e a figura dos três jeitos só usa dados que existem na loja. Rode depois de `astro build`. */
+/** Capítulo 1: a epígrafe tem fonte, e os três jeitos da figura 1.1 só usam dados que existem na loja. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -14,8 +14,8 @@ test("a epígrafe sai com autor, obra e ano", () => {
   assert.match(html, /Uri Levine, cofundador do Waze, em <cite[^>]*>Apaixone-se pelo problema, não pela solução<\/cite> \(2023\)/);
 });
 
-test("a figura 1.1 tem um caminho para cada jeito e cada pergunta", () => {
-  const caminhos = [...html.matchAll(/data-caminho="(\w+\/\w+)"/g)].map((m) => m[1]);
+test("os três jeitos da figura 1.1 têm um caminho para cada jeito e cada pergunta", () => {
+  const caminhos = figura.modos.flatMap((m) => Object.keys(m.passos).map((p) => `${m.id}/${p}`));
   assert.deepEqual(caminhos.sort(), ["agente/pedido", "agente/produto", "fluxo/pedido", "fluxo/produto", "modelo/pedido", "modelo/produto"]);
 });
 
