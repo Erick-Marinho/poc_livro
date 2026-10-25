@@ -9,7 +9,7 @@
   "passos": [
     {
       "id": "projeto-nasce",
-      "secao": "1.5a",
+      "secao": "1.6a",
       "titulo": "O projeto nasce",
       "curta": "uv init",
       "de": 1,
@@ -20,7 +20,7 @@
     },
     {
       "id": "pydantic",
-      "secao": "1.5a",
+      "secao": "1.6a",
       "titulo": "O pydantic",
       "curta": "uv add pydantic",
       "de": 5,
@@ -31,7 +31,7 @@
     },
     {
       "id": "pytest",
-      "secao": "1.5a",
+      "secao": "1.6a",
       "titulo": "O pytest",
       "curta": "uv add --dev pytest",
       "de": 6,
@@ -46,7 +46,7 @@
     },
     {
       "id": "a-loja",
-      "secao": "1.5a",
+      "secao": "1.6a",
       "titulo": "A loja inventada",
       "curta": "a loja",
       "de": 7,
@@ -92,7 +92,7 @@
     },
     {
       "id": "decisoes",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "As quatro decisões",
       "curta": "as quatro decisões",
       "de": 8,
@@ -109,7 +109,7 @@
     },
     {
       "id": "caso",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "O formato de um caso",
       "curta": "um caso",
       "de": 10,
@@ -124,7 +124,7 @@
     },
     {
       "id": "ler-arquivo",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "Ler o arquivo de referência",
       "curta": "ler o arquivo",
       "de": 13,
@@ -135,7 +135,7 @@
     },
     {
       "id": "tres-perguntas",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "As três primeiras perguntas",
       "curta": "3 perguntas",
       "de": 16,
@@ -146,7 +146,7 @@
     },
     {
       "id": "caso-apressado",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "O caso apressado",
       "curta": "caso apressado passa",
       "de": 18,
@@ -161,7 +161,7 @@
     },
     {
       "id": "contrato-se-protege",
-      "secao": "1.5b",
+      "secao": "1.6b",
       "titulo": "O contrato se protege",
       "curta": "a regra barra",
       "de": 20,
@@ -175,7 +175,7 @@
     },
     {
       "id": "vinte-perguntas",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "As vinte perguntas",
       "curta": "20 perguntas",
       "de": 23,
@@ -199,7 +199,7 @@
     },
     {
       "id": "le-a-loja",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "O contrato lê a loja",
       "curta": "ler a loja",
       "de": 26,
@@ -210,7 +210,7 @@
     },
     {
       "id": "o-que-os-testes-leem",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "O que os testes leem",
       "curta": "o que os testes leem",
       "de": 30,
@@ -221,7 +221,7 @@
     },
     {
       "id": "testes-de-formato",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "Os testes do formato",
       "curta": "testes do formato",
       "de": 31,
@@ -236,7 +236,7 @@
     },
     {
       "id": "regras-da-politica",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "As regras da política",
       "curta": "as regras pegam o R12",
       "de": 33,
@@ -247,7 +247,7 @@
     },
     {
       "id": "r12-corrigido",
-      "secao": "1.5c",
+      "secao": "1.6c",
       "titulo": "O R12 corrigido",
       "curta": "R12 corrigido",
       "de": 35,
@@ -262,7 +262,7 @@
     },
     {
       "id": "agente-mais-simples",
-      "secao": "1.5d",
+      "secao": "1.6d",
       "titulo": "O agente mais simples",
       "curta": "sempre passar",
       "de": 37,
@@ -276,7 +276,7 @@
     },
     {
       "id": "a-regua",
-      "secao": "1.5d",
+      "secao": "1.6d",
       "titulo": "A régua",
       "curta": "a régua: 25%",
       "de": 39,

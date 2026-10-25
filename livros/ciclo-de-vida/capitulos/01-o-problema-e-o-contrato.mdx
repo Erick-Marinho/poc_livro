@@ -90,7 +90,9 @@ O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para
 Olhando de perto, aparece um padrão. Algumas perguntas se respondem com os dados da loja: o pedido, o catálogo. Outras, com a política de atendimento. Algumas pedem uma ação, como abrir um chamado de troca. Outras o agente simplesmente não pode atender. E algumas não são para o agente: são para uma pessoa.
 </Pilhas>
 
-## 1.4 O contrato: quatro decisões
+## 1.4 O que é um contrato
+
+Na loja, o combinado já existe: é a política de atendimento. Ela diz o que o atendente pode prometer (troca por defeito em até 90 dias), o que não pode (desconto) e quando chamar alguém da equipe (todo reembolso passa por uma pessoa). Um atendente novo lê a política antes do primeiro cliente. O contrato é essa política escrita de um jeito que uma máquina consegue conferir: em vez de "não damos desconto", uma lista de perguntas com a decisão certa para cada uma.
 
 A palavra vem do direito, e a ideia é a mesma: um acordo escrito antes, que diz o que cada lado pode esperar do outro. Em software, ela tem até autor. Nos anos 1980, Bertrand Meyer propôs que cada rotina declarasse o que exige de quem a chama e o que garante de volta, e chamou isso de projeto por contrato. A rotina deixa de ser "um código que parece funcionar" e passa a ter uma promessa que dá para conferir.
 
@@ -104,13 +106,15 @@ O contrato também não é o prompt. O prompt é como você pede ao modelo que s
 
 <Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
 
-<PareEPense pergunta="Na seção anterior, você separou as mensagens em pilhas sem nome. Que nome você daria a cada uma?">
+## 1.5 As quatro decisões
+
+<PareEPense pergunta="Na seção 1.3, você separou as mensagens em pilhas sem nome. Que nome você daria a cada uma?">
 O contrato chama as pilhas de responder, abrir chamado, recusar e passar a vez. A tabela abaixo diz quando vale cada uma.
 </PareEPense>
 
 <Pendente o="Opinião dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
-As saídas são as pilhas que você separou na seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
+As saídas são as pilhas que você separou na seção 1.3. Para toda pergunta, o agente toma uma de quatro decisões:
 
 | Decisão | Quando | Exemplo |
 |---|---|---|
@@ -121,19 +125,19 @@ As saídas são as pilhas que você separou na seção anterior. Para toda pergu
 
 Parece simples até você tentar aplicar. Tente: para cada pergunta abaixo, escolha o que o agente deveria fazer, e veja o que o contrato diz.
 
-<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.5c, dentro da IDE." />
+<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
 
 Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
 
 <Nota titulo="passar a vez não é falhar">Um agente que sabe a hora de chamar uma pessoa vale mais que um que tenta responder tudo. Passar a vez é uma decisão do contrato, com regra própria, e não um erro do agente. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
 
-## 1.5 Mão na massa
+## 1.6 Mão na massa
 
 Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota de partida em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
 
-<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.5a": "O projeto", "1.5b": "O contrato", "1.5c": "As perguntas", "1.5d": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
+<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.6a": "O projeto", "1.6b": "O contrato", "1.6c": "As perguntas", "1.6d": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
-## 1.6 O que ficou de pé
+## 1.7 O que ficou de pé
 
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
