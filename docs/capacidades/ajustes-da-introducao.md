@@ -13,12 +13,16 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 - (25/10/2026, Erick) O pare e pense usa ícones do Lucide.
 - (25/10/2026, Erick) "Régua" é explicada onde o leitor a encontra pela primeira vez.
 - (25/10/2026, Erick) O que fica abaixo da animação começa recolhido, para o leitor focar nela.
-- (25/10/2026, Erick) "A conta que cresce" diz o que é a conta.
+- (25/10/2026, Erick) "A conta que cresce" diz o que é a conta: "o gasto com o modelo que cresce sem aviso" e, na
+  etiqueta da animação, "gasto que cresce" (escolha do Claude, a pedido de Erick: "a melhor experiência").
 - (1) Muda só o texto que o leitor lê; os nomes internos (`onde-se-pega.json`, o campo `pega`) ficam. "Quem pega" vira
   "Onde é capturado" (na aposta) e "Capturado em" (na animação).
 - (2) Os nomes internos (`Aposta.astro`, `data-aposta`, o evento `fontmar:apostou`) ficam. "Aposto: X" vira "Meu
   investimento: X", que serve a todas as opções. "A aposta da parte do modelo local", no experimento, fica: é a aposta
   do artigo, não uma ação do leitor.
+- (3) "Já sabe" é o leitor que investiu em ao menos um problema, ou está no modo direto (lá a resposta aparece sem
+  pedir). Para ele, o título e a primeira cena afirmam, e a faixa só diz onde foi capturado e se bateu com o
+  investimento. Quem não investiu continua vendo a pergunta: para ele, a animação é a resposta.
 
 ## Peças
 
@@ -41,21 +45,22 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 6. O que fica abaixo da animação começa recolhido.
 7. "A conta que cresce" diz que é o gasto com o modelo.
 
-## Etapa atual: 2
+## Etapa atual: 3
 
-**Arquivos.** `Aposta.astro` (o rótulo e o fecho padrão), `00-introducao.mdx`, `02-o-primeiro-agente.mdx`,
-`experimentos/segundo-cerebro-local/experimento.mdx`, `CicloAnimado.tsx` (a faixa), `FiguraAgenteVideo.tsx`,
-`IdeCapitulo.tsx`, `Comandos.tsx`, `testes/vocabulario.test.mjs` (novo, com o teste da etapa 1 dentro).
+**Arquivos.** `ciclo-animado.json` (o título e a primeira legenda de quem já sabe), `ciclo/cenas.ts` (quem já sabe,
+o título e a legenda de cada caso), `ciclo/CicloAnimado.tsx` (o título e a faixa), `ciclo/FiguraCiclo.tsx` (lê o
+investimento quando o leitor clica na caixa, e o botão), `testes/ciclo-animado.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; nenhuma página montada do livro e
-dos experimentos diz "aposte" ou "apostou".
+**Evidência.** Os testes do livro passam; o teste novo falha sem o código; dois quadros da composição renderizados
+pelo Remotion, um sem investimento (a pergunta) e um com (a afirmação e a faixa curta).
 
-**Fora.** Os nomes internos e os comentários do código; a aposta do artigo, no experimento.
+**Fora.** A caixa do "invista" em si; os cartões abaixo da animação (etapa 6); "conta que cresce" (etapa 7).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `313a0e6`, `82eebbf` | 90 testes do livro; o teste novo falha com o texto de antes ("Quem pega"); na página, "capturado" em 13 lugares e nenhum "pego" | Erick, 25/10/2026 ("capturado", no lugar de "apanhado") |
+| 2 | `da066d1` | 91 testes do livro; o teste novo (`vocabulario.test.mjs`) falha com o texto de antes ("Aposte em qual."); nenhum "apost…" nas páginas locais da introdução, dos capítulos 1 e 2 e do experimento | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
