@@ -1,6 +1,7 @@
 # O ritmo de um texto
 
-Vale para capítulo e experimento. O `npm run ritmo` mede; a skill `revisar-ritmo` aplica o roteiro num rascunho.
+Vale para capítulo e experimento. O `npm run ritmo` mede; a skill `revisar-ritmo` escreve no texto um `Rascunho` em
+cada lugar onde o leitor deve agir, e quem escreve troca pelo componente ou apaga (texto com rascunho não publica).
 ✓ é o que o `testes/ritmo.test.mjs` confere.
 
 ## As três camadas
