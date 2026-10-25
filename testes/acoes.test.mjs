@@ -93,3 +93,15 @@ test("capítulo 1: a aposta das camadas usa o R12 como aconteceu na gravação d
   assert.deepEqual(camadas.mensagens.map((m) => m.opcoes[m.fez]).toSorted(), ["comportamento", "execução", "ferramenta", "formato"]);
   for (const m of camadas.mensagens) assert.ok(html.includes(m.texto.replace(/"/g, "&quot;")) || html.includes(m.texto), m.texto);
 });
+
+test("capítulo 2: o molde garantiu a forma das 20 e não a decisão; os números são os da gravação", () => {
+  const saidas = JSON.parse(ler("livros/ciclo-de-vida/saidas.json"));
+  const linhas = saidas["r02-medir"].saida.map(([l]) => l);
+  const [, certas, total] = linhas.find((l) => /nota do agente: \d+ de \d+/.test(l)).match(/nota do agente: (\d+) de (\d+)/).map(Number);
+  const erros = linhas.filter((l) => /R\d\d: o contrato pede \w+, o agente decidiu (\w+)/.test(l));
+  assert.equal(total, 20); assert.equal(total - certas, erros.length);
+  for (const l of erros) assert.ok(Object.keys(DECISOES).includes(l.match(/decidiu (\w+)/)[1]), `decisão fora do molde: ${l}`);
+  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  assert.match(h2, new RegExp(`nenhuma das ${total} respostas|recusou nenhuma das ${total} respostas`));
+  assert.match(h2, new RegExp(`${total - certas} estavam erradas`));
+});
