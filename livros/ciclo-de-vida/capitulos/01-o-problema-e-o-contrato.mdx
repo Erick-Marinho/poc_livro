@@ -60,7 +60,7 @@ A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferra
 
 Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
 
-Faça o papel de cada um dos três jeitos, com as mesmas duas perguntas, e repare em quem decide:
+Acompanhe três atendentes diante das mesmas perguntas (na última história, quem atende é você) e repare em quem decide o próximo passo:
 
 <FiguraLaco laco={laco} tresJeitos={tresJeitos} clientes={clientesDaLoja} numero="1.1" legenda="Quem decide o próximo passo, em três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido, do produto e da cliente são os da loja." />
 

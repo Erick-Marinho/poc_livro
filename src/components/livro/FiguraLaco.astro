@@ -1,17 +1,17 @@
 ---
 /**
- * A figura 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, com o leitor no papel de cada jeito de
- * usar um modelo, em três rodadas (laco/QuemDecide.tsx). Sem JS, só um aviso de que a figura precisa dele. Os dados são
- * os "três jeitos" (tres-jeitos.json), as falas da figura (laco.json) e os clientes da loja; a montagem confere as
- * rodadas contra eles (laco/quemDecide.ts).
+ * A figura 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três histórias de atendentes da
+ * loja, em quadrinhos, para quem começa do zero (laco/QuemDecide.tsx). Sem JS, só um aviso de que a figura precisa dele.
+ * Os dados são os "três jeitos" (tres-jeitos.json), as falas da figura (laco.json) e os clientes da loja; a montagem
+ * confere as histórias contra eles (laco/quemDecide.ts).
  */
 import QuemDecide from "./laco/QuemDecide";
-import { montarRodadas, type Entrada } from "./laco/quemDecide";
+import { montarHistorias, type Entrada } from "./laco/quemDecide";
 
 interface Props extends Entrada { numero: string; legenda: string }
 const { laco, tresJeitos, clientes, numero, legenda } = Astro.props;
 /* confere no build o que a ilha vai montar no navegador */
-montarRodadas({ laco, tresJeitos, clientes });
+montarHistorias({ laco, tresJeitos, clientes });
 ---
 <figure class="laco" data-laco>
   <QuemDecide client:visible={{ rootMargin: "400px" }} laco={laco} tresJeitos={tresJeitos} clientes={clientes} />
@@ -23,90 +23,96 @@ montarRodadas({ laco, tresJeitos, clientes });
   .laco { margin: 1.8em auto 2em }
   .laco figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
   .laco figcaption b { color: var(--ink); font-weight: 600 }
+  .laco-semjs { margin: 0; padding: 12px 14px; border: 1px dashed var(--linha); border-radius: 12px; font: 14px var(--f-ui); color: var(--ink-2) }
 
-  /* a ilha: um cartão, uma rodada por vez */
-  .qd { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 16px 18px 18px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui); color: var(--ink); scroll-margin-top: 76px }
+  /* a ilha: um cartão, uma história por vez, um quadro por vez */
+  .qd { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 16px 18px 18px; display: grid; gap: 12px; font: 15.5px/1.5 var(--f-ui); color: var(--ink); scroll-margin-top: 76px }
   /* antes de a ilha carregar (e sem JS), 1 px e não display: none: o client:visible só carrega o que chega a aparecer na tela */
   .laco:not([data-animado]) .qd { height: 1px; overflow: hidden; padding: 0; border: 0 }
   .qd-cabeca { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap }
   .qd-titulo { font: 700 19px var(--f-ui) }
   .qd-etiqueta { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
-  .qd-rodadas { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
-  .qd-rodadas li { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 999px; border: 1px solid var(--linha); color: var(--ink-2); font: 500 13px var(--f-ui) }
-  .qd-rodadas li.qd-agora { border-color: var(--acento); color: var(--ink); font-weight: 600 }
-  .qd-num { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 999px; background: var(--papel-2); font: 700 11.5px var(--f-ui) }
-  .qd-agora .qd-num { background: var(--acento); color: var(--papel) }
-  .qd-feita .qd-num { background: var(--ink-2); color: var(--papel) }
+  .qd-capitulo { margin: 0; font-size: 15px; color: var(--ink-2) }
+  .qd-capitulo b { color: var(--ink) }
+  .qd-historia { display: grid; gap: 10px }
+  .qd-narra { margin: 0; font-size: 16px }
 
-  .qd-rodada { display: grid; gap: 10px }
-  .qd-intro { margin: 0; font-size: 16px }
-  .qd-quem { display: inline-flex; align-items: center; gap: 5px; font: 600 11.5px var(--f-ui); text-transform: uppercase; letter-spacing: .03em; color: var(--ink-2) }
-  .qd-msg { display: grid; gap: 2px; padding: 9px 12px; border-radius: 10px; background: var(--papel); border: 1.5px solid var(--linha); font-size: 17px }
-  .qd-msg .qd-quem { text-transform: none; letter-spacing: 0; font-size: 12.5px }
-  .qd-trancado { display: inline-flex; align-items: center; gap: 6px; width: max-content; max-width: 100%; padding: 4px 10px; border-radius: 999px; border: 1.5px dashed var(--linha); color: var(--ink-2); font-size: 13.5px }
-  .qd-seta { opacity: .6 }
+  /* o quadro: o rosto de quem fala e o balão */
+  .qd-quadro { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: start }
+  .qd-avatar { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: var(--papel-2); border: 1.5px solid var(--linha); color: var(--ink-2) }
+  .qd-balao { display: grid; gap: 3px; padding: 9px 13px; border-radius: 4px 14px 14px 14px; background: var(--papel); border: 1.5px solid var(--linha); font-size: 17px; line-height: 1.4 }
+  .qd-quem { display: inline-flex; align-items: center; gap: 5px; font: 600 12.5px var(--f-ui); color: var(--ink-2) }
+  .qd-quadro.qd-certo .qd-balao { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--papel)) }
+  .qd-quadro.qd-erro .qd-balao { border-color: var(--aviso); background: color-mix(in srgb, var(--aviso) 10%, var(--papel)) }
+  .qd-porque { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; font: 600 14px var(--f-ui) }
+  .qd-quadro.qd-certo .qd-porque { color: var(--ok) } .qd-quadro.qd-erro .qd-porque { color: var(--aviso) }
+  .qd-trancado { display: inline-flex; align-items: center; gap: 6px; width: max-content; max-width: 100%; margin-top: 4px; padding: 2px 9px; border-radius: 999px; border: 1.5px dashed var(--linha); color: var(--ink-2); font-size: 13px }
 
-  .qd-prever, .qd-decidir { display: grid; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--acento); background: var(--papel) }
-  .qd-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
-  .qd-opcoes button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--linha); background: var(--nota); color: var(--ink); font: 500 14.5px var(--f-ui); cursor: pointer }
-  .qd-opcoes button:not(:disabled):hover, .qd-opcoes button:focus-visible { border-color: var(--acento) }
+  /* prever e decidir: o que o leitor faz */
+  .qd-prever { display: grid; gap: 8px; padding: 11px 13px; border-radius: 12px; border: 1.5px solid var(--acento); background: var(--papel) }
+  .qd-prever > b { display: flex; align-items: center; gap: 7px; font-size: 16px }
+  .qd-prever > b svg { color: var(--acento); flex: none }
+  .qd-opcoes, .qd-acoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .qd-opcoes button, .qd-acoes button { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 999px; border: 1.5px solid var(--linha); background: var(--nota); color: var(--ink); font: 500 15px var(--f-ui); cursor: pointer }
+  .qd-acoes button { border-radius: 12px; padding: 10px 14px }
+  .qd-acoes button svg { color: var(--acento) }
+  .qd-opcoes button:not(:disabled):hover, .qd-acoes button:hover, .qd-opcoes button:focus-visible, .qd-acoes button:focus-visible { border-color: var(--acento) }
   .qd-opcoes button:disabled { cursor: default }
   .qd-opcoes button.qd-certo { border-color: var(--ok); color: var(--ok); font-weight: 600 }
   .qd-opcoes button.qd-erro { border-color: var(--aviso); color: var(--aviso); text-decoration: line-through }
   .qd-opcoes button.qd-apagada { opacity: .5 }
 
-  .qd-digitando { display: inline-flex; align-items: center; gap: 5px; color: var(--ink-2); font-size: 14px }
-  .qd-digitando span { animation: qd-pisca 1s infinite both }
-  .qd-digitando span:nth-child(3) { animation-delay: .2s } .qd-digitando span:nth-child(4) { animation-delay: .4s }
-  @keyframes qd-pisca { 0%, 100% { opacity: .2 } 50% { opacity: 1 } }
+  /* a ficha do atendente */
+  .qd-ficha { display: grid; gap: 6px; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--linha); background: var(--papel) }
+  .qd-ficha ol { margin: 0; padding-left: 22px; display: grid; gap: 4px }
+  .qd-ficha li { padding: 3px 8px; border-radius: 6px; border: 1.5px solid transparent; font-size: 15.5px; transition: border-color .3s, opacity .3s }
+  .qd-ficha li > span:first-child { margin-right: 6px }
+  .qd-ficha li.qd-certo { border-color: var(--ok) }
+  .qd-ficha li.qd-erro { border-color: var(--aviso); background: color-mix(in srgb, var(--aviso) 8%, var(--papel)) }
+  .qd-ficha li.qd-apagada { opacity: .4 }
+  .qd-ficha li .qd-marca { float: right; margin-top: 2px }
+  .qd-achou { font-weight: 600 }
+  .qd-alerta { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border-radius: 10px; border: 2px solid var(--aviso); color: var(--aviso); font: 600 15.5px/1.4 var(--f-ui); background: color-mix(in srgb, var(--aviso) 8%, var(--papel)) }
+  .qd-alerta svg { flex: none }
+  .qd-feito { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--linha); background: var(--papel); font-size: 14.5px; color: var(--ink-2) }
 
-  .qd-resposta { display: grid; gap: 3px; padding: 9px 12px; border-radius: 10px; border: 2px solid; font-size: 16px }
-  .qd-resposta.qd-certo { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--papel)) }
-  .qd-resposta.qd-erro { border-color: var(--aviso); background: color-mix(in srgb, var(--aviso) 10%, var(--papel)) }
-  .qd-porque { display: inline-flex; align-items: center; gap: 6px; font: 600 13.5px var(--f-ui) }
-  .qd-resposta.qd-certo .qd-porque { color: var(--ok) } .qd-resposta.qd-erro .qd-porque { color: var(--aviso) }
   .qd-marca { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 999px; color: var(--papel) }
   .qd-marca.qd-certo { background: var(--ok) } .qd-marca.qd-erro { background: var(--aviso) }
 
-  .qd-execucao { display: grid; gap: 8px; padding-top: 4px }
-  .qd-feito { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--linha); background: var(--papel); font-size: 14.5px; color: var(--ink-2) }
-  .qd-roteiro { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; counter-reset: passo }
-  .qd-roteiro li { counter-increment: passo; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--linha); background: var(--papel); font-size: 14.5px; transition: border-color .3s, opacity .3s }
-  .qd-roteiro li::before { content: counter(passo) "."; font: 700 13px var(--f-ui); color: var(--ink-2) }
-  .qd-roteiro li.qd-certo { border-color: var(--ok) }
-  .qd-roteiro li.qd-erro { border-color: var(--aviso); border-width: 2px }
-  .qd-roteiro li.qd-apagada { opacity: .45 }
-  .qd-roteiro li .qd-marca { margin-left: auto }
-  .qd-volta { font: 13.5px var(--f-mono); color: var(--ink-2) }
-  .qd-executar, .qd-seguir { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 999px; border: 1.5px solid var(--acento); background: var(--papel); color: var(--ink); font: 600 14.5px var(--f-ui); cursor: pointer }
-  .qd-executar:hover, .qd-seguir:hover { background: var(--papel-2) }
+  /* o fim de cada história: o que aconteceu e o nome técnico */
+  .qd-nome { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; background: var(--papel-2) }
+  .qd-conclusao { margin: 0; font: 600 16.5px/1.45 var(--f-ui) }
+  .qd-tecnico { margin: 0; font-size: 15.5px; color: var(--ink) }
+  .qd-tecnico b { color: var(--acento) }
+  .qd-continuar, .qd-seguir { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--acento); background: var(--papel); color: var(--ink); font: 600 15px var(--f-ui); cursor: pointer }
+  .qd-continuar:hover, .qd-seguir:hover { background: var(--nota) }
+  .qd-caminho { display: grid; gap: 4px; padding: 9px 13px; border-radius: 10px; border: 1.5px dashed var(--acento); font-size: 15px }
+  .qd-caminho .qd-quem { color: var(--acento); text-transform: uppercase; letter-spacing: .04em; font-size: 11.5px }
+  .qd-ok { color: var(--ok) }
 
-  .qd-acao { display: grid; gap: 2px; padding: 7px 12px; border-left: 3px solid var(--acento); background: var(--papel); border-radius: 0 8px 8px 0 }
-  .qd-laco { display: grid; gap: 4px; padding: 8px 12px; border-radius: 10px; border: 1.5px dashed var(--acento); font-size: 14px }
-  .qd-laco-titulo { font: 600 11.5px var(--f-ui); text-transform: uppercase; letter-spacing: .04em; color: var(--acento) }
-  .qd-elos i { font-style: normal; font-weight: 600 }
-  .qd-elos i.qd-certo { color: var(--ok) } .qd-elos i.qd-erro { color: var(--aviso) }
-
-  .qd-licao { display: grid; gap: 10px; padding-top: 2px }
-  .qd-licao p { margin: 0; font: 600 16px/1.45 var(--f-ui) }
-
+  /* o fim: quem decide em cada história */
   .qd-fim { gap: 8px }
-  .qd-linha { display: grid; grid-template-columns: 8.5em 1fr auto; align-items: center; gap: 4px 12px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--linha); background: var(--papel) }
+  .qd-linha { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 4px 12px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--linha); background: var(--papel) }
+  .qd-linha-quem { display: block; font-size: 13px; color: var(--ink-2) }
+  .qd-linha-nome { color: var(--ink-2); font-size: 14px }
   .qd-acertos { display: inline-flex; gap: 10px; font-size: 13px; color: var(--ink-2) }
   .qd-acertos > span { display: inline-flex; align-items: center; gap: 4px }
+  .qd-quebra { margin: 4px 0 0; padding: 10px 13px; border-left: 3px solid var(--aviso); background: var(--papel); border-radius: 0 10px 10px 0; font-size: 15px }
   .qd-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
 
-  .qd-entra { animation: qd-entra .35s ease-out both }
+  .qd-entra { animation: qd-entra .4s ease-out both }
   @keyframes qd-entra { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
-  @media (prefers-reduced-motion: reduce) { .qd-entra, .qd-digitando span { animation: none } .qd-roteiro li { transition: none } }
+  @media (prefers-reduced-motion: reduce) { .qd-entra { animation: none } .qd-ficha li { transition: none } }
 
   @media (max-width: 640px) {
     .qd { padding: 12px 12px 14px; gap: 10px }
     .qd-titulo { font-size: 17px }
-    .qd-opcoes button { flex: 1 1 100%; justify-content: center }
-    .qd-linha { grid-template-columns: 1fr; gap: 2px }
+    .qd-quadro { grid-template-columns: 34px 1fr; gap: 8px }
+    .qd-avatar { width: 34px; height: 34px }
+    .qd-balao { font-size: 16px }
+    .qd-opcoes button, .qd-acoes button { flex: 1 1 100%; justify-content: center }
+    .qd-linha { grid-template-columns: 34px 1fr }
+    .qd-acertos { grid-column: 2 }
   }
-
-  .laco-semjs { margin: 0; padding: 12px 14px; border: 1px dashed var(--linha); border-radius: 12px; font: 14px var(--f-ui); color: var(--ink-2) }
   @media print { .qd { display: none } }
 </style>

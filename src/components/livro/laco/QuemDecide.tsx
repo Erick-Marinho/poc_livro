@@ -1,16 +1,16 @@
 /**
- * A figura 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, com o leitor no papel de cada jeito
- * de usar um modelo, uma rodada por vez (docs/PRINCIPIOS.md: o leitor aprende com o que faz). 1. Só o modelo: ele prevê
- * o que o modelo responde sem ver o sistema, e vê a data inventada. 2. Fluxo fixo: executa o roteiro do código com o
- * pedido (dá certo) e, depois de prever, com a frigideira (para no passo 1). 3. Agente: no papel do modelo, escolhe
- * cada passo, vê o que voltou e decide de novo, até responder; embaixo, o laço que ele fez. No fim, quem decide em cada
- * jeito. As respostas e os resultados vêm dos três jeitos (quemDecide.ts). Com menos movimento, nada desliza; no modo
- * direto, só o fim. Sem JS, só um aviso (FiguraLaco.astro).
+ * A figura 1.1 (docs/capacidades/laco-do-agente.md): três histórias de atendentes da loja, em quadrinhos, para quem
+ * começa do zero. Um quadro por vez, no ritmo do leitor ("Continuar"), sem jargão; o nome técnico só no fim de cada
+ * história. 1. O atendente sem acesso ao sistema: o leitor prevê o que ele responde, e ele chuta. 2. O atendente com a
+ * ficha: com o pedido, a ficha dá certo; com a frigideira, o leitor prevê, e a ficha trava no passo 1, porque não prevê
+ * pergunta de produto. 3. A atendente é o leitor: escolhe onde olhar, vê o resultado e decide de novo, até responder. No
+ * fim, quem decide em cada história, e onde a comparação quebra. Os fatos vêm dos três jeitos (quemDecide.ts). Com menos
+ * movimento, nada desliza; no modo direto, só o fim.
  */
-import { Brain, Check, Code, Lock, MessageSquare, RotateCcw, Wrench, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, BookOpen, Check, ClipboardList, Hand, Headset, Lock, MessageCircle, Monitor, RotateCcw, UserRound, X } from "lucide-react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useDireto } from "../palco/direto";
-import { agir, type Entrada, inicio, montarRodadas, type Resposta, type Trilha } from "./quemDecide";
+import { agir, type Entrada, inicio, montarHistorias, type Resposta, type Seguiu, type Trilha } from "./quemDecide";
 
 const menos = () => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const espera = (ms: number) => new Promise((ok) => setTimeout(ok, menos() ? 0 : ms));
@@ -19,24 +19,27 @@ const Marca = ({ certo }: { certo: boolean }) => (
   <span className={`qd-marca ${certo ? "qd-certo" : "qd-erro"}`} aria-label={certo ? "certo" : "errado"}>{certo ? <Check size={13} strokeWidth={3} /> : <X size={13} strokeWidth={3} />}</span>
 );
 
-const Mensagem = ({ cliente, texto }: { cliente: string; texto: string }) => (
-  <div className="qd-msg qd-entra"><span className="qd-quem">{cliente} escreve:</span>“{texto}”</div>
+// um quadro: quem fala (o ícone e o nome) e o balão
+const Quadro = ({ icone, quem, children, tom = "" }: { icone: ReactNode; quem: string; children: ReactNode; tom?: string }) => (
+  <div className={`qd-quadro qd-entra ${tom}`}>
+    <span className="qd-avatar" aria-hidden="true">{icone}</span>
+    <div className="qd-balao"><span className="qd-quem">{quem}</span>{children}</div>
+  </div>
 );
 
-// a resposta que chega para a cliente: certa (verde) ou errada (âmbar), com o porquê
-const Respondeu = ({ r }: { r: Resposta }) => (
-  <div className={`qd-resposta qd-entra ${r.certo ? "qd-certo" : "qd-erro"}`}>
-    <span className="qd-quem"><MessageSquare size={14} /> resposta</span>
-    <span>“{r.texto}”</span>
-    <span className="qd-porque"><Marca certo={r.certo} /> {r.certo ? "veio dos dados da loja" : r.erro}</span>
-  </div>
+const Cliente = ({ nome, texto }: { nome: string; texto: string }) => <Quadro icone={<UserRound size={20} />} quem={nome}>“{texto}”</Quadro>;
+const Responde = ({ quem, r, icone = <Headset size={20} /> }: { quem: string; r: Resposta; icone?: ReactNode }) => (
+  <Quadro icone={icone} quem={quem} tom={r.certo ? "qd-certo" : "qd-erro"}>
+    “{r.texto}”
+    <span className="qd-porque"><Marca certo={r.certo} /> {r.certo ? "certo: veio dos dados da loja" : r.erro}</span>
+  </Quadro>
 );
 
 // uma pergunta antes de ver: as opções viram certo ou errado quando o leitor escolhe
 function Prever({ pergunta, opcoes, certa, escolha, escolher }: { pergunta: string; opcoes: string[]; certa: number; escolha: number | null; escolher: (k: number) => void }) {
   return (
     <div className="qd-prever qd-entra" role="group" aria-label={pergunta}>
-      <b>{pergunta}</b>
+      <b><Hand size={16} /> Você prevê: {pergunta}</b>
       <div className="qd-opcoes">
         {opcoes.map((o, k) => {
           const feito = escolha !== null;
@@ -48,58 +51,55 @@ function Prever({ pergunta, opcoes, certa, escolha, escolher }: { pergunta: stri
   );
 }
 
-const Licao = ({ texto, seguir, rotulo }: { texto: string; seguir?: () => void; rotulo?: string }) => (
-  <div className="qd-licao qd-entra">
-    <p>{texto}</p>
-    {seguir ? <button type="button" className="qd-seguir" onClick={seguir}>{rotulo}</button> : null}
+// a ficha: os passos, e, quando o atendente segue, o que ele achou em cada um
+function Ficha({ ficha, seguiu, ate, titulo }: { ficha: string[]; seguiu?: Seguiu; ate?: number; titulo: string }) {
+  return (
+    <div className="qd-ficha qd-entra">
+      <span className="qd-quem"><ClipboardList size={15} /> {titulo}</span>
+      <ol>
+        {ficha.map((p, n) => {
+          const feito = seguiu && ate !== undefined && ate > n && n < seguiu.passos.length;
+          const travou = seguiu && ate !== undefined && ate >= seguiu.passos.length && n === seguiu.passos.length - 1 && !seguiu.resposta.certo;
+          const nem = seguiu && ate !== undefined && ate >= seguiu.passos.length && n >= seguiu.passos.length;
+          return (
+            <li key={p} className={travou ? "qd-erro" : feito ? "qd-certo" : nem ? "qd-apagada" : ""}>
+              <span>{p}</span>
+              {feito && seguiu.passos[n].achou ? <span className="qd-achou">→ {seguiu.passos[n].achou}</span> : null}
+              {feito ? <Marca certo={!travou} /> : null}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+// o fim de cada história: o que aconteceu, e o nome técnico disso
+const Nome = ({ conclusao, nome, explica, seguir, rotulo }: { conclusao: string; nome: string; explica: string; seguir: () => void; rotulo: string }) => (
+  <div className="qd-nome qd-entra">
+    <p className="qd-conclusao">{conclusao}</p>
+    <p className="qd-tecnico"><b>{nome}:</b> {explica}</p>
+    <button type="button" className="qd-seguir" onClick={seguir}>{rotulo} <ArrowRight size={15} /></button>
   </div>
 );
 
 export default function QuemDecide(props: Entrada) {
-  const r = useMemo(() => montarRodadas(props), [props]);
+  const h = useMemo(() => montarHistorias(props), [props]);
   const direto = useDireto();
-  const [rodada, setRodada] = useState(0); // 0, 1, 2; 3 é o fim
+  const [historia, setHistoria] = useState(0); // 0, 1, 2; 3 é o fim
+  const [quadro, setQuadro] = useState(0); // quantos quadros da história já apareceram, além do primeiro
   const [anuncio, setAnuncio] = useState("");
   const topo = useRef<HTMLDivElement>(null);
-
-  // 1. só o modelo
+  // 1.
   const [prevModelo, setPrevModelo] = useState<number | null>(null);
-  const [escreveu, setEscreveu] = useState(false);
-  // 2. fluxo fixo: quantos passos do roteiro já rodaram, com o pedido e com a frigideira
-  const [rodouPedido, setRodouPedido] = useState(-1); // -1: não começou
-  const [viuPedido, setViuPedido] = useState(false); // o leitor viu o pedido dar certo e pediu a outra pergunta
+  // 2. quantos passos da ficha ele já seguiu, com o pedido e com a frigideira
+  const [seguiuPedido, setSeguiuPedido] = useState(-1);
   const [prevFluxo, setPrevFluxo] = useState<number | null>(null);
-  const [rodouProduto, setRodouProduto] = useState(-1);
-  // 3. agente
+  const [seguiuProduto, setSeguiuProduto] = useState(-1);
+  // 3.
   const [trilha, setTrilha] = useState<Trilha>(inicio());
 
-  const ir = (k: number) => { setRodada(k); topo.current?.scrollIntoView({ block: "nearest", behavior: menos() ? "auto" : "smooth" }); };
-
-  const preverModelo = async (k: number) => {
-    setPrevModelo(k);
-    await espera(900);
-    setEscreveu(true);
-    setAnuncio(`O modelo respondeu: ${r.modelo.resposta.texto} Errado: ${r.modelo.resposta.erro}.`);
-  };
-  const rodar = async (passos: number, marcar: (n: number) => void, fim: string) => {
-    for (let n = 0; n <= passos; n++) { marcar(n); await espera(850); }
-    setAnuncio(fim);
-  };
-  const executarPedido = () => rodar(r.fluxo.pedido.passos.length, setRodouPedido, `O roteiro foi até o fim. ${r.fluxo.pedido.resposta.texto} Certo.`);
-  const preverFluxo = async (k: number) => {
-    setPrevFluxo(k);
-    await espera(500);
-    rodar(r.fluxo.produto.passos.length, setRodouProduto, `O roteiro parou no passo ${r.fluxo.produto.passos.length}. ${r.fluxo.produto.resposta.texto} Errado.`);
-  };
-  const escolher = (id: string) => {
-    const t = agir(r.agente, trilha, id);
-    setTrilha(t);
-    const ultimo = t.passos[t.passos.length - 1];
-    setAnuncio(t.resposta ? `Você respondeu: ${t.resposta.texto} ${t.resposta.certo ? "Certo." : `Errado: ${t.resposta.erro}.`}` : `${ultimo.rotulo}: ${ultimo.resultado}`);
-  };
-
-  useEffect(() => { if (direto) setRodada(3); }, [direto]);
-
+  useEffect(() => { if (direto) setHistoria(3); }, [direto]);
   /* a figura passa a mostrar a ilha (antes de carregar, ela fica com 1 px) */
   useEffect(() => {
     const fig = topo.current?.closest<HTMLElement>("figure[data-laco]");
@@ -107,125 +107,128 @@ export default function QuemDecide(props: Entrada) {
     return () => fig?.removeAttribute("data-animado");
   }, []);
 
-  const passos = [r.modelo.titulo, r.fluxo.titulo, r.agente.titulo];
+  const mais = () => setQuadro((q) => q + 1);
+  const ir = (k: number) => { setHistoria(k); setQuadro(0); topo.current?.scrollIntoView({ block: "nearest", behavior: menos() ? "auto" : "smooth" }); };
+  const recomecar = () => { setPrevModelo(null); setSeguiuPedido(-1); setPrevFluxo(null); setSeguiuProduto(-1); setTrilha(inicio()); ir(0); };
+  const seguir = async (passos: number, marcar: (n: number) => void, fim: string) => {
+    for (let n = 0; n <= passos; n++) { marcar(n); await espera(900); }
+    setAnuncio(fim);
+  };
+  const Continuar = ({ rotulo = "Continuar" }: { rotulo?: string }) => <button type="button" className="qd-continuar qd-entra" onClick={mais}>{rotulo} <ArrowRight size={15} /></button>;
+
+  const m = h.modelo, f = h.fluxo, a = h.agente;
+  const titulos = [m.titulo, f.titulo, a.titulo];
 
   return (
     <div className="qd" ref={topo}>
       <div className="qd-cabeca">
-        <span className="qd-titulo">{r.pergunta}</span>
-        <span className="qd-etiqueta">ilustração · você decide</span>
+        <span className="qd-titulo">{h.pergunta}</span>
+        <span className="qd-etiqueta">ilustração · três histórias</span>
       </div>
-      {/* as três rodadas: a de agora acesa; as feitas, com ✓ */}
-      <ol className="qd-rodadas" aria-label="os três jeitos">
-        {passos.map((p, k) => (
-          <li key={p} aria-current={k === rodada ? "true" : undefined} className={k === rodada ? "qd-agora" : k < rodada || rodada === 3 ? "qd-feita" : ""}>
-            <span className="qd-num">{k < rodada || rodada === 3 ? <Check size={12} strokeWidth={3} /> : k + 1}</span>{p}
-          </li>
-        ))}
-      </ol>
+      {historia < 3 ? <p className="qd-capitulo">História {historia + 1} de 3 · <b>{titulos[historia]}</b></p> : null}
 
-      {rodada === 0 ? (
-        <section className="qd-rodada" key="modelo">
-          <p className="qd-intro">{r.modelo.intro}</p>
-          <Mensagem cliente={r.modelo.cliente} texto={r.modelo.mensagem} />
-          <div className="qd-trancado"><Brain size={15} /> o modelo <span className="qd-seta">⇢</span> <Lock size={14} /> o sistema da loja: fora do alcance</div>
-          <Prever {...r.modelo.prever} escolha={prevModelo} escolher={preverModelo} />
-          {prevModelo !== null && !escreveu ? <div className="qd-digitando" aria-hidden="true"><Brain size={14} /> o modelo escreve<span>.</span><span>.</span><span>.</span></div> : null}
-          {escreveu ? <><Respondeu r={r.modelo.resposta} /><Licao texto={r.modelo.licao} seguir={() => ir(1)} rotulo="Próximo jeito: fluxo fixo →" /></> : null}
-        </section>
-      ) : null}
-
-      {rodada === 1 ? (
-        <section className="qd-rodada" key="fluxo">
-          <p className="qd-intro">{r.fluxo.intro}</p>
-          {/* uma execução aberta por vez: com a frigideira, a do pedido vira uma linha */}
-          {viuPedido ? (
-            <div className="qd-feito qd-entra"><Marca certo={r.fluxo.pedido.resposta.certo} /> com o pedido, o roteiro foi até o fim: “{r.fluxo.pedido.resposta.texto}”</div>
+      {historia === 0 ? (
+        <section className="qd-historia" key="modelo">
+          <Cliente nome={m.cliente} texto={m.mensagem} />
+          {quadro < 1 ? <Continuar /> : null}
+          {quadro >= 1 ? (
+            <Quadro icone={<Headset size={20} />} quem="O atendente pensa">
+              {m.pensa}
+              <span className="qd-trancado"><Lock size={13} /> sem acesso ao sistema da loja</span>
+            </Quadro>
           ) : null}
-          {[viuPedido ? { e: r.fluxo.produto, rodou: rodouProduto, i: 1 } : { e: r.fluxo.pedido, rodou: rodouPedido, i: 0 }].map(({ e, rodou, i }) => (
-            <div key={i} className="qd-execucao qd-entra">
-              <Mensagem cliente={e.cliente} texto={e.mensagem} />
-              {/* com a frigideira, o leitor prevê antes de o roteiro executar */}
-              {i === 1 ? <Prever {...r.fluxo.prever} escolha={prevFluxo} escolher={preverFluxo} /> : null}
-              {i === 0 || prevFluxo !== null ? (
-                <ol className="qd-roteiro">
-                  {r.fluxo.roteiro.map((passo, n) => {
-                    const feito = rodou > n && n < e.passos.length;
-                    const parou = rodou >= e.passos.length && n === e.passos.length - 1 && !e.resposta.certo;
-                    const nem = rodou >= e.passos.length && n >= e.passos.length;
-                    return (
-                      <li key={passo} className={parou ? "qd-erro" : feito ? "qd-certo" : nem ? "qd-apagada" : ""}>
-                        <span className="qd-quem">{n === 1 ? <Wrench size={13} /> : n === 2 ? <Brain size={13} /> : <Code size={13} />}</span>
-                        <span>{passo}</span>
-                        {feito && e.passos[n].resultado ? <span className="qd-volta">→ {e.passos[n].resultado}</span> : null}
-                        {feito ? <Marca certo={!parou} /> : nem ? <span className="qd-volta">não chega aqui</span> : null}
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : null}
-              {i === 0 && rodou < 0 ? <button type="button" className="qd-executar" onClick={executarPedido}>▶ Executar o roteiro</button> : null}
-              {rodou >= e.passos.length ? <Respondeu r={e.resposta} /> : null}
-              {i === 0 && rodou >= e.passos.length ? <button type="button" className="qd-seguir qd-entra" onClick={() => setViuPedido(true)}>Outra pergunta, o mesmo roteiro →</button> : null}
-            </div>
-          ))}
-          {rodouProduto >= r.fluxo.produto.passos.length ? <Licao texto={r.fluxo.licao} seguir={() => ir(2)} rotulo="Por último: você é o agente →" /> : null}
+          {quadro >= 1 ? <Prever {...m.prever} escolha={prevModelo} escolher={async (k) => { setPrevModelo(k); await espera(700); mais(); setAnuncio(`Ele responde: ${m.resposta.texto} Errado: ${m.resposta.erro}.`); }} /> : null}
+          {quadro >= 2 ? <Responde quem="O atendente responde" r={m.resposta} /> : null}
+          {quadro >= 2 ? <Nome conclusao={m.conclusao} nome={m.nome} explica={m.explica} seguir={() => ir(1)} rotulo="Próxima história" /> : null}
         </section>
       ) : null}
 
-      {rodada === 2 ? (
-        <section className="qd-rodada" key="agente">
-          <p className="qd-intro">{r.agente.intro}</p>
-          <Mensagem cliente={r.agente.cliente} texto={r.agente.mensagem} />
-          {/* o que o leitor já fez: cada ação e o que voltou */}
+      {historia === 1 ? (
+        <section className="qd-historia" key="fluxo">
+          {/* uma pergunta de cada vez: com a frigideira, a do pedido vira uma linha */}
+          {quadro >= 3 ? <div className="qd-feito qd-entra"><Marca certo /> Com o pedido, a ficha deu certo: “{f.pedido.resposta.texto}”</div> : null}
+          {quadro < 3 ? (
+            <>
+              <Ficha ficha={f.ficha} titulo={f.ficha_diz} seguiu={f.pedido} ate={seguiuPedido} />
+              {quadro < 1 ? <Continuar /> : null}
+              {quadro >= 1 ? <Cliente nome={f.pedido.cliente} texto={f.pedido.mensagem} /> : null}
+              {quadro === 1 ? <button type="button" className="qd-continuar qd-entra" onClick={async () => { mais(); await seguir(f.pedido.passos.length, setSeguiuPedido, `A ficha foi até o fim. ${f.pedido.resposta.texto} Certo.`); }}>Ver o atendente seguir a ficha <ArrowRight size={15} /></button> : null}
+              {quadro >= 2 && seguiuPedido >= f.pedido.passos.length ? <Responde quem="O atendente responde" r={f.pedido.resposta} /> : null}
+              {quadro >= 2 && seguiuPedido >= f.pedido.passos.length ? <Continuar rotulo="Chega outra pergunta" /> : null}
+            </>
+          ) : (
+            <>
+              <p className="qd-narra qd-entra">{f.outra}</p>
+              <Cliente nome={f.produto.cliente} texto={f.produto.mensagem} />
+              {/* a ficha à vista antes de prever; depois da escolha, ele a segue ali mesmo */}
+              <Ficha ficha={f.ficha} titulo={f.ficha_diz} seguiu={prevFluxo !== null ? f.produto : undefined} ate={seguiuProduto} />
+              <Prever {...f.prever} escolha={prevFluxo} escolher={async (k) => { setPrevFluxo(k); await espera(500); await seguir(f.produto.passos.length, setSeguiuProduto, `A ficha travou no passo ${f.produto.passos.length}. ${f.nao_preve}`); }} />
+              {seguiuProduto >= f.produto.passos.length ? (
+                <>
+                  <div className="qd-alerta qd-entra"><ClipboardList size={16} /> {f.nao_preve}</div>
+                  <Responde quem="O atendente responde" r={f.produto.resposta} />
+                  <Nome conclusao={f.conclusao} nome={f.nome} explica={f.explica} seguir={() => ir(2)} rotulo="Última história: agora é você" />
+                </>
+              ) : null}
+            </>
+          )}
+        </section>
+      ) : null}
+
+      {historia === 2 ? (
+        <section className="qd-historia" key="agente">
+          <Cliente nome={a.cliente} texto={a.mensagem} />
+          {/* o que o leitor já fez: onde olhou e o que viu */}
           {trilha.passos.map((p, i) => (
-            <div key={i} className="qd-acao qd-entra">
-              <span className="qd-quem"><Wrench size={13} /> {p.rotulo}</span>
-              <span className="qd-volta">→ {p.resultado}</span>
-            </div>
+            <Quadro key={i} icone={p.id === "buscar_produto" ? <BookOpen size={20} /> : <Monitor size={20} />} quem={p.fez}>{p.resultado}</Quadro>
           ))}
-          {trilha.resposta ? <Respondeu r={trilha.resposta} /> : (
-            <div className="qd-decidir qd-entra" role="group" aria-label="o seu próximo passo">
-              <b>{trilha.passos.length ? "Você viu o que voltou. Decida de novo:" : "Você é o modelo. Qual é o próximo passo?"}</b>
-              <div className="qd-opcoes">
-                {r.agente.acoes.map((a) => <button key={a.id} type="button" onClick={() => escolher(a.id)}>{a.rotulo}</button>)}
+          {trilha.resposta ? <Responde quem="Você responde" r={trilha.resposta} icone={<Hand size={20} />} /> : (
+            <div className="qd-prever qd-entra" role="group" aria-label="o que você faz">
+              <b><Hand size={16} /> {trilha.passos.length ? a.de_novo : a.diz}</b>
+              <div className="qd-acoes">
+                {a.acoes.map((x) => (
+                  <button key={x.id} type="button" onClick={() => {
+                    const t = agir(a, trilha, x.id);
+                    setTrilha(t);
+                    const u = t.passos[t.passos.length - 1];
+                    setAnuncio(t.resposta ? `Você respondeu: ${t.resposta.texto} ${t.resposta.certo ? "Certo." : `Errado: ${t.resposta.erro}.`}` : `${u.fez}: ${u.resultado}`);
+                  }}>
+                    {x.id === "consultar_pedido" ? <Monitor size={18} /> : x.id === "buscar_produto" ? <BookOpen size={18} /> : <MessageCircle size={18} />}{x.rotulo}
+                  </button>
+                ))}
               </div>
             </div>
           )}
-          {/* o laço que o leitor fez */}
-          {trilha.passos.length || trilha.resposta ? (
-            <div className="qd-laco qd-entra" aria-label="o laço que você fez">
-              <span className="qd-laco-titulo">o laço que você fez</span>
-              <span className="qd-elos">
-                {trilha.passos.map((p, i) => <span key={i}><i>decidir</i> → <i>agir: {p.rotulo}</i> → <i>observar</i> → </span>)}
-                <i>decidir</i>{trilha.resposta ? <> → <i className={trilha.resposta.certo ? "qd-certo" : "qd-erro"}>responder</i></> : " …"}
-              </span>
-            </div>
-          ) : null}
           {trilha.resposta && !trilha.resposta.certo ? (
-            <div className="qd-licao qd-entra">
-              <p>Você respondeu sem olhar o sistema: é o que o modelo sozinho faz.</p>
-              <button type="button" className="qd-seguir" onClick={() => setTrilha(inicio())}><RotateCcw size={14} /> Decidir de novo</button>
+            <div className="qd-nome qd-entra">
+              <p className="qd-conclusao">{a.sem_olhar}</p>
+              <button type="button" className="qd-seguir" onClick={() => setTrilha(inicio())}><RotateCcw size={14} /> Tentar de novo</button>
             </div>
           ) : null}
-          {trilha.resposta?.certo ? <Licao texto={r.agente.licao} seguir={() => ir(3)} rotulo="Ver quem decide em cada jeito →" /> : null}
+          {trilha.resposta?.certo ? (
+            <>
+              <div className="qd-caminho qd-entra" aria-label={a.caminho}>
+                <span className="qd-quem">{a.caminho}</span>
+                <span>{trilha.passos.map((p, i) => <span key={i}>decidiu → <b>{p.fez.replace(/^Você /, "")}</b> → viu o resultado → </span>)}decidiu de novo → <b className="qd-ok">respondeu</b></span>
+              </div>
+              <Nome conclusao={a.conclusao} nome={a.nome} explica={a.explica} seguir={() => ir(3)} rotulo="Então, quem decide?" />
+            </>
+          ) : null}
         </section>
       ) : null}
 
-      {rodada === 3 ? (
-        <section className="qd-rodada qd-fim" key="fim">
-          {r.fim.map((f) => (
-            <div key={f.jeito} className="qd-linha qd-entra">
-              <b>{f.nome}</b>
-              <span>{f.quem}</span>
-              <span className="qd-acertos">{f.acertos.map((a, i) => <span key={i}><Marca certo={a} /> {i === 0 ? "pedido" : "frigideira"}</span>)}</span>
+      {historia === 3 ? (
+        <section className="qd-historia qd-fim" key="fim">
+          <p className="qd-capitulo"><b>{h.fim.titulo}</b></p>
+          {h.fim.linhas.map((x) => (
+            <div key={x.jeito} className="qd-linha qd-entra">
+              <span className="qd-avatar" aria-hidden="true">{x.jeito === "modelo" ? <Headset size={18} /> : x.jeito === "fluxo" ? <ClipboardList size={18} /> : <Hand size={18} />}</span>
+              <span><span className="qd-linha-quem">{x.quem}</span><b>{x.decide}</b> <span className="qd-linha-nome">({x.nome})</span></span>
+              <span className="qd-acertos">{x.acertos.map((c, i) => <span key={i}><Marca certo={c} /> {i === 0 ? "pedido" : "frigideira"}</span>)}</span>
             </div>
           ))}
-          {!direto ? (
-            <button type="button" className="qd-seguir" onClick={() => { setPrevModelo(null); setEscreveu(false); setRodouPedido(-1); setViuPedido(false); setPrevFluxo(null); setRodouProduto(-1); setTrilha(inicio()); ir(0); }}>
-              <RotateCcw size={14} /> Recomeçar
-            </button>
-          ) : null}
+          <p className="qd-quebra qd-entra">{h.fim.quebra}</p>
+          {!direto ? <button type="button" className="qd-seguir" onClick={recomecar}><RotateCcw size={14} /> Ver de novo</button> : null}
         </section>
       ) : null}
 
