@@ -47,3 +47,18 @@ test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de
   const resposta = html.match(/separou as mensagens em pilhas sem nome[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
   for (const { nome } of Object.values(DECISOES)) assert.ok(resposta.includes(nome), `a resposta não nomeia "${nome}"`);
 });
+
+/* ajustes da introdução (etapa 4): o pare e pense com os ícones do Lucide, no lugar do losango de texto */
+test("todo pare e pense tem a lâmpada no rótulo e o olho no \"Ver a resposta\", e nenhum losango", async () => {
+  const { parse } = await import("node-html-parser");
+  for (const p of ["00-introducao", "01-o-problema-e-o-contrato", "02-o-primeiro-agente"]) {
+    const caixas = parse(ler(`dist/ciclo-de-vida/${p}/index.html`)).querySelectorAll(".pense");
+    assert.ok(caixas.length, `${p}: sem pare e pense`);
+    for (const c of caixas) {
+      assert.ok(c.querySelector(":scope > b svg.lucide-lightbulb"), `${p}: o rótulo sem a lâmpada`);
+      assert.ok(c.querySelector("summary svg.lucide-eye"), `${p}: o "Ver a resposta" sem o olho`);
+      assert.equal(c.querySelector("svg").getAttribute("aria-hidden"), "true", `${p}: o ícone é lido pelo leitor de tela`);
+      assert.doesNotMatch(c.querySelector(":scope > b").text, /◆/, `${p}: o losango de texto ficou`);
+    }
+  }
+});
