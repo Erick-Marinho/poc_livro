@@ -17,16 +17,16 @@ as 20 respostas vieram no formato e 6 estavam certas.
 - (0) Para quando chegarmos lá: entrada e saída tipadas das ferramentas, e o MCP como quadro opcional (cap. 3); a
   política fixada com impressão digital, as tentativas contadas e o checkpoint (cap. 5); a impressão digital gravada
   junto de cada decisão (cap. 8).
+- (2) A pergunta do molde fica na 2.6, e não na 2.4, para não entregar o palpite da IDE antes da hora.
 - (1) Quatro camadas: comportamento, formato, ferramenta e execução (a auditoria fica dentro de execução).
 
-## Etapa atual: 2
+## Etapa atual: nenhuma
 
-No capítulo 2, a camada de formato contra a de comportamento com o número gravado: as 20 respostas vieram no molde da
-`Escolha`, e 6 estavam certas. O lugar é o que não estraga o palpite da IDE (o resultado só aparece na 2.6).
-Evidência: `npm test`, com o 20 e o 6 conferidos contra a gravação; o relógio do capítulo 2; a página.
+Capacidade fechada em 25/10/2026. O que vem do livro para os capítulos 3, 5 e 8 está nas decisões (0).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `45cfb79` | `npm test` com 101 testes; a aposta das camadas jogada (3 de 4) e o quadro em 1280 e 360 px; o R12 conferido contra a gravação; a 1.4 em 273 · 177 · 115 | 25/10 |
+| 2 | `2b2c5bb` | `npm test` com 102 testes; o 20 e o 14 conferidos contra a gravação; a 2.6 em 48 · 86 · 199, sem aviso | 25/10 |
