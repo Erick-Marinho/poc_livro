@@ -21,7 +21,9 @@ import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import Classificador from "../../../src/components/livro/Classificador.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
-import Rastro from "../../../src/components/livro/Rastro.astro";
+import FiguraLaco from "../../../src/components/livro/FiguraLaco.astro";
+import laco from "../figuras/laco.json";
+import clientesDaLoja from "../projeto/dados/clientes.json";
 import escala from "../figuras/escala.json";
 import camadas from "../figuras/camadas.json";
 import tresJeitos from "../figuras/tres-jeitos.json";
@@ -48,9 +50,7 @@ import trocaDePrompt from "../figuras/troca-de-prompt.json";
 
 Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve outro. Pergunte a ele quando chega o pedido BT-1003 e ele responde com o que parecer mais provável. Ele não sabe nada do pedido, porque o pedido mora no sistema da loja, e não dentro do modelo. Então ele escreve uma data qualquer, com cara de certa.
 
-<Pendente o="Figura: o laço do atendente com o BT-1003, a primeira cena do fluxograma animado do ciclo" parte="1.1" />
-
-Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem e decide que precisa olhar o sistema. Abre o pedido BT-1003: enviado pela Transportadora Asa Leve, com previsão de entrega em 14/11. Olha o que viu e decide de novo: isso basta para responder? Basta, e ele responde. Se o pedido estivesse "preparando", ele olharia outra coisa antes. Decidir, agir, olhar o resultado e decidir de novo: é esse laço que o modelo sozinho não faz.
+Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem e decide que precisa olhar o sistema. Abre o pedido BT-1003: enviado pela Transportadora Asa Leve, com previsão de entrega em 14/11. Observa o que viu e decide de novo: isso basta para responder? Basta, e ele responde. Se o pedido estivesse "preparando", ele olharia outra coisa antes. Decidir, agir, observar o resultado e decidir de novo: é esse laço que o modelo sozinho não faz.
 
 <PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem executa a consulta: o modelo ou o seu código?">
 O seu código. O modelo só pede, e lê o que volta.
@@ -60,9 +60,9 @@ A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferra
 
 Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
 
-Veja os três jeitos com as mesmas duas perguntas. Avance passo a passo e repare em quem decide:
+Veja os três jeitos com as mesmas duas perguntas. Avance cena a cena e repare em quem decide:
 
-<Rastro dados={tresJeitos} numero="1.1" legenda="Três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido e do produto são os da loja." />
+<FiguraLaco laco={laco} tresJeitos={tresJeitos} clientes={clientesDaLoja} numero="1.1" legenda="Quem decide o próximo passo, em três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido, do produto e da cliente são os da loja." />
 
 O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
 

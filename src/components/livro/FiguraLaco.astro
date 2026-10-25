@@ -1,0 +1,74 @@
+---
+/**
+ * A figura do laço, no 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos de usar um
+ * modelo. A animação (laco/FiguraLacoVideo.tsx) que o leitor avança cena a cena, com a pausa para investir na cena do
+ * agente; e, embaixo, a mesma figura em texto, para quem lê sem JS ou com leitor de tela. Sem JS, só a figura em texto,
+ * aberta; com JS, o vídeo aparece e ela se fecha (a ilha faz as duas coisas); na impressão, abre de novo. Os dados
+ * são os "três jeitos" (tres-jeitos.json), as cenas (laco.json) e os clientes da loja; a montagem confere as cenas e a
+ * pausa contra eles (laco/laco.ts).
+ */
+import FiguraLacoVideo from "./laco/FiguraLacoVideo";
+import { montarCenas, montarElenco, pausaDe, type Entrada } from "./laco/laco";
+
+interface Props extends Entrada { numero: string; legenda: string }
+const { laco, tresJeitos, clientes, numero, legenda } = Astro.props;
+/* confere no build o que a ilha vai montar no navegador: o elenco, as cenas e a pausa */
+montarElenco({ laco, tresJeitos, clientes });
+pausaDe(montarCenas({ laco, tresJeitos }));
+---
+<figure class="laco" data-laco>
+  <FiguraLacoVideo client:visible={{ rootMargin: "400px" }} laco={laco} tresJeitos={tresJeitos} clientes={clientes} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+  <details class="laco-texto" open>
+    <summary>A figura em texto</summary>
+    {tresJeitos.modos.map((m) => (
+      <section>
+        <h4>{m.nome} <span>quem decide: {(m as { quem_decide?: string }).quem_decide}</span></h4>
+        {tresJeitos.perguntas.map((p) => (
+          <ol data-caminho={`${m.id}/${p.id}`} aria-label={`${m.nome}: ${p.texto}`}>
+            {m.passos[p.id].map((s) => (
+              <li><b>{s.quem}{s.decide && " (decide)"}:</b> {s.texto}{s.erro && <em> ✗ {s.erro}</em>}{s.certo && <em> ✓ veio dos dados da loja</em>}</li>
+            ))}
+          </ol>
+        ))}
+      </section>
+    ))}
+  </details>
+</figure>
+
+<script>
+  /* na impressão, a figura em texto aberta */
+  addEventListener("beforeprint", () => document.querySelectorAll<HTMLDetailsElement>("details.laco-texto").forEach((d) => { d.open = true; }));
+</script>
+
+<style is:global>
+  .laco { margin: 1.8em auto 2em }
+  .laco-video { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 12px }
+  /* antes de a ilha carregar (e sem JS), 1 px e não display: none: o client:visible só carrega o que chega a aparecer na tela */
+  .laco:not([data-animado]) .laco-video { height: 1px; overflow: hidden; padding: 0; border: 0 }
+  .laco figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .laco figcaption b { color: var(--ink); font-weight: 600 }
+  .laco-resultado { margin: 6px 0 0; min-height: 1.4em; font: 14px var(--f-ui); color: var(--ink-2) }
+  .laco-resultado b { color: var(--ink) }
+  /* a pausa para investir, por cima do vídeo */
+  .laco-investir { position: absolute; left: 50%; bottom: 10px; translate: -50% 0; width: min(560px, calc(100% - 16px)); display: grid; gap: 8px;
+    padding: 12px 14px 10px; border: 1px solid var(--acento); border-radius: 14px; background: var(--papel); box-shadow: 0 10px 30px rgb(0 0 0 / .18);
+    font: 15px/1.4 var(--f-ui); color: var(--ink) }
+  .laco-pista { font: italic 13.5px var(--f-ui); color: var(--ink-2) }
+  .laco-opcoes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px }
+  .laco-opcoes button { padding: 8px 6px; border: 1px solid var(--linha); border-radius: 999px; background: var(--nota); color: var(--ink); font: 500 14px var(--f-ui); cursor: pointer }
+  .laco-opcoes button:hover, .laco-opcoes button:focus-visible { border-color: var(--acento) }
+  .laco-pular { justify-self: end; border: 0; padding: 0; background: none; color: var(--ink-2); font: 13px var(--f-ui); cursor: pointer }
+  .laco-texto { margin-top: 8px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .laco-texto summary { cursor: pointer; width: max-content; color: var(--acento) }
+  .laco-texto h4 { margin: 1em 0 .3em; font: 600 14px var(--f-ui); color: var(--ink) }
+  .laco-texto h4 span { font-weight: 400; color: var(--ink-2); margin-left: 6px }
+  .laco-texto ol { margin: 0 0 .6em; padding-left: 22px }
+  .laco-texto em { color: var(--ink) }
+  @media (max-width: 640px) {
+    .laco-video { padding: 6px }
+    .laco-opcoes { grid-template-columns: 1fr }
+    .laco-investir { position: static; translate: none; width: auto; margin-top: 8px }
+  }
+  @media print { .laco-video { display: none } }
+</style>

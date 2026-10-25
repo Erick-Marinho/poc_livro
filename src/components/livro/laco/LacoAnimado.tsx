@@ -5,21 +5,22 @@
  * pelos passos de um jeito dos "três jeitos", de peça em peça pelas setas; a ficha de quem decide acende, o que o jeito
  * não usa fica apagado, e embaixo vão a legenda e o passo de agora. O quadro final soma os acertos de cada jeito. Cor
  * com sentido fixo: acento é o que acontece agora, verde é o certo, âmbar é o erro. O desenho é da loja, com as palavras
- * do livro. O leitor avança cena a cena (a ilha, etapa 3); o último quadro é o do modo direto. O Studio do my-video
- * importa esta composição.
+ * do livro. É um gráfico contínuo: a câmera (laco.ts) aproxima a peça de agora e a seguinte, e abre para o quadro
+ * inteiro entre um trecho e outro; com `movimento` falso, ela fica parada e o ponto pula de peça em peça. O leitor toca
+ * e pausa (a ilha); o último quadro é o do modo direto. O Studio do my-video importa esta composição.
  */
 import { useMemo } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
-import { type Caixa, caixas, type Cena, cenaEm, type Desenho, type Entrada, montarCenas, montarElenco, type Peca, placar, pontoDaSeta, rota, type Seta, setas, VISTA } from "./laco";
+import { ANDA, type Caixa, caixas, camera, type Cena, cenaEm, type Desenho, type Entrada, montarCenas, montarElenco, type Peca, placar, pontoDaSeta, rota, type Seta, setas, VISTA } from "./laco";
 
-export type Props = Entrada & { desenho: Desenho };
+/** `movimento`: falso para quem pede menos movimento (a câmera parada, o ponto pulando) */
+export type Props = Entrada & { desenho: Desenho; movimento?: boolean };
 
 const TOPO = 56; // a pergunta
 const FAIXA: Record<Desenho, number> = { largo: 92, coluna: 128 }; // a legenda e o passo de agora
 export const tamanho = (desenho: Desenho) => ({ w: VISTA[desenho].w, h: TOPO + VISTA[desenho].h + FAIXA[desenho] });
 
-const ANDA = 0.6; // o ponto leva isto para ir de uma peça à seguinte, e chega um pouco antes da parada
 const APAGADO = 0.28;
 
 type Estilo = { borda: string; grossa?: boolean; opacidade: number };
@@ -74,13 +75,14 @@ const linhas = (texto: string, n: number) => texto.split(" ").reduce<string[]>((
 }, []);
 
 /** Onde está o ponto (a pergunta) num momento da cena, e por que setas ele anda agora. */
-function ponto(cena: Cena, v: number, sx: Record<string, Seta>, cx: Record<Peca, Caixa>) {
+function ponto(cena: Cena, v: number, sx: Record<string, Seta>, cx: Record<Peca, Caixa>, movimento: boolean) {
   const ps = cena.paradas;
   if (!ps.length || v < ps[0].em - 0.3) return null;
   const centro = (p: Peca): [number, number] => [cx[p].x + cx[p].w - 16, cx[p].y + 14];
   let i = ps.filter((p) => p.em <= v + ANDA + 0.1).length - 1; // a parada para onde ele vai, ou onde está
   i = Math.max(0, i);
   const chegada = ps[i].em - 0.1, partida = chegada - ANDA;
+  if (!movimento && v < chegada && i > 0) return { xy: centro(ps[i - 1].peca), andando: [] as string[], aparece: 1 }; // com menos movimento, pula
   if (i === 0 || v >= chegada || ps[i].peca === ps[i - 1].peca) return { xy: centro(ps[i].peca), andando: [] as string[], aparece: kf(v, [[ps[0].em - 0.3, 0], [ps[0].em, 1]]) };
   const ids = rota(ps[i - 1].peca, ps[i].peca);
   const k = kf(v, [[partida, 0], [chegada, 1]], suave) * ids.length;
@@ -88,7 +90,7 @@ function ponto(cena: Cena, v: number, sx: Record<string, Seta>, cx: Record<Peca,
   return { xy: pontoDaSeta(sx[ids[seg]], k - seg), andando: ids, aparece: 1 };
 }
 
-export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desenho }) => {
+export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desenho, movimento = true }) => {
   const elenco = useMemo(() => montarElenco({ laco, tresJeitos, clientes }), [laco, tresJeitos, clientes]);
   const m = useMemo(() => montarCenas({ laco, tresJeitos }), [laco, tresJeitos]);
   const soma = useMemo(() => placar(tresJeitos), [tresJeitos]);
@@ -97,6 +99,7 @@ export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desen
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { cena, v } = cenaEm(m, frame / fps);
+  const cam = camera(m, frame / fps, desenho, movimento);
   const vista = VISTA[desenho];
   const coluna = desenho === "coluna";
   const marca = `laco-${desenho}-seta`;
@@ -108,7 +111,7 @@ export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desen
   const fim = chegou.find((p) => p.resultado);
   const ficha = [...chegou].reverse().find((p) => p.ficha)?.ficha;
   const chamada = chegou.find((p) => p.ferramenta)?.ferramenta;
-  const pt = ponto(cena, v, sx, cx);
+  const pt = ponto(cena, v, sx, cx, movimento);
   const usa = (id: string) => !jeito || cena.usa.includes(id);
   const estilo = (p: Peca): Estilo => {
     if (p === "responder" && fim) return { borda: fim.resultado === "certo" ? cor.ok : cor.aviso, grossa: true, opacidade: 1 };
@@ -132,7 +135,8 @@ export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desen
         <span>{elenco.pergunta}</span>
         <span style={{ font: `600 11px ${mono}`, letterSpacing: ".08em", textTransform: "uppercase", color: cor.fraco }}>ilustração</span>
       </div>
-      <svg viewBox={`0 0 ${vista.w} ${vista.h}`} width={vista.w} height={vista.h} style={{ position: "absolute", left: 0, top: TOPO }}>
+      {/* a câmera: o viewBox é a janela de agora sobre o desenho */}
+      <svg viewBox={`${cam.x} ${cam.y} ${cam.w} ${cam.h}`} width={vista.w} height={vista.h} style={{ position: "absolute", left: 0, top: TOPO }}>
         <defs>
           {([["", cor.fraco], ["-acesa", cor.acento]] as const).map(([sufixo, c]) => (
             <marker key={sufixo} id={`${marca}${sufixo}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

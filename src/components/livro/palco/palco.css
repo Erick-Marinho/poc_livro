@@ -95,3 +95,10 @@ astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibil
   .ac-avancar button:hover { border-color: var(--acento) }
   .ac-avancar button:disabled { cursor: default; opacity: .65 }
   .ac-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+
+/* o gráfico contínuo (TocaGrafico.tsx): o play, a barra e o tempo numa linha */
+.tg-controles { flex-wrap: nowrap }
+.tg-controles button { flex: none; min-width: 9.5em }
+.tg-controles input[type="range"] { flex: 1; min-width: 0; accent-color: var(--acento); cursor: pointer }
+.tg-controles input[type="range"]:disabled { cursor: default; opacity: .5 }
+.tg-tempo { flex: none; font-variant-numeric: tabular-nums }
