@@ -53,6 +53,20 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
 - (etapa 3) O anúncio acessível fica numa região separada do andamento visual; só ações do leitor atualizam essa região.
 - (etapa 3) As pílulas usam texto `--ink` sobre `--papel-2`, borda `--ok` na escolha e fonte SVG de 20 px para compensar a escala.
 
+- (25/10/2026, Erick) A figura vira um vídeo (Remotion, como a figura 1 do experimento: `docs/capacidades/figura-em-video.md`),
+  aprovado antes no Studio do `my-video`. Até 45 s, os quatro cenários seguidos; a conversa imita um app de mensagens
+  (o cliente digita na caixa, ✓✓, "digitando…"), e o mesmo cliente segue na mesma conversa (R01 → R12).
+- (25/10/2026, Erick) Só tocar e pausar, discretos: saem as abas clicáveis, o passo a passo e as teclas (etapas 2 e 3).
+  Continua valendo: começa pausada, quem dá o play é o leitor.
+- (25/10/2026, Erick) No celular, o mesmo vídeo deitado, pequeno (sai o desenho em pé da etapa 4).
+- (25/10/2026, Erick) Sem JS e na impressão: a conversa do R01 em texto (etapa 7).
+- (6) A conferência do roteiro contra o contrato sai do `FiguraAgente.astro` para `agente/cenarios.ts`, sem mudar
+  de regra: o Astro e o Studio montam os cenários pela mesma função. O tempo de cada passo é do vídeo; o `duracao`
+  do roteiro deixa de ser usado.
+- (6) Parada, a figura mostra o fim do R01 (como o servidor desenhava na etapa 4); o play começa do início. No modo
+  direto e com movimento reduzido, mostra o último quadro.
+- (6) A etapa 5 não foi feita; o teste da etapa 6 faz o que ela pedia (a figura no `npm test`).
+
 ## Peças
 
 | Peça | Função | Entrada | Saída | Cor |
@@ -61,6 +75,9 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
 | `src/components/livro/FiguraAgente.astro` | desenha o grafo e toca o roteiro | roteiro + `referencia.jsonl` (`?raw`) + `clientes.json` | `<figure>` com SVG | nova |
 | conferência do roteiro | o caso existe e a decisão final é a do contrato | roteiro + referência | erro de build | nova |
 | `00-prefacio.mdx` | onde a figura aparece | componente | página | existe |
+| `agente/cenarios.ts` | os cenários conferidos contra o contrato (sai do `FiguraAgente.astro`) | roteiro, contrato, dados | os cenários | nova (etapa 6) |
+| `agente/AgenteAoVivo.tsx` | a figura em vídeo: a conversa e o grafo, quadro a quadro | cenários + nome da loja | a composição | troca (etapa 6; sai o React Flow) |
+| `agente/FiguraAgenteVideo.tsx` | a ilha: o Player, com tocar e pausar | as mesmas props | o vídeo na figura | nova (etapa 6) |
 | roteiro gravado de um trace real | troca a simulação pelo agente de verdade | trace (cap. 5) | o mesmo JSON | depois |
 | o grafo como mapa do livro | cada capítulo acende só o que o leitor já construiu | capítulo atual | o mesmo SVG | depois |
 
@@ -74,18 +91,20 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 3. Controles, acesso e acabamento: pausar, passo a passo, `prefers-reduced-motion`, leitura sem JS, e os 4 ajustes da revisão da etapa 2.
 4. A figura refeita em React Flow e Motion, com a mesma conferência no build (pedido do responsável depois da etapa 3).
 5. A figura entra no `npm test`: um teste que falha se o roteiro divergir do contrato.
+6. A figura vira vídeo (Remotion): a composição aprovada no Studio, a ilha com tocar e pausar, o nome da loja do
+   livro, o modo direto e o movimento reduzido no último quadro, e o teste.
+7. Sem JS e na impressão: a conversa do R01 em texto.
 
-## Etapa 4, detalhada
+## Etapa 6, detalhada
 
-- **Arquivos:** `agente/AgenteAoVivo.tsx`, `agente/cena.ts`, `agente/agente.css` (novos); `FiguraAgente.astro` (só conferência
-  e dados); `figuras/agente.json` (`trecho` da política no R09); `00-prefacio.mdx` (props `pedidos` e `politica`);
-  `astro.config.mjs`, `tsconfig.json`, `package.json`.
-- **Mantém:** os 4 cenários, as abas, tocar/pausar/passo a passo, movimento reduzido (abre parado no 1º passo),
-  sem JS (o R01 terminado), `aria-live` só nas ações do leitor, R01 → R12 tocando sozinho quando o grafo aparece.
-- **Evidência:** `npm test` passa; o build falha com a escolha do R12 trocada e com um trecho que não está na política;
-  capturas em 1100 px dos quatro cenários, em 390 px de verdade (iframe), com movimento reduzido e sem JS;
-  nenhuma mensagem no console.
-- **Fora:** o teste no `npm test` (etapa 5); o defeito das figuras `.largo` do livro (a coluna `.corpo` tem 680 px).
+- **Arquivos:** `agente/cenarios.ts` e `agente/FiguraAgenteVideo.tsx` (novos); `agente/AgenteAoVivo.tsx` (troca);
+  `agente/cena.ts` e `agente/agente.css` (saem); `FiguraAgente.astro`; `testes/figura-agente.test.mjs` (novo).
+  No `my-video`: o Studio importa a composição daqui.
+- **Muda:** o prefácio mostra o vídeo de 43 s no Player, só com tocar e pausar. O nome e as iniciais da loja vêm do
+  `loja.json`. O `@xyflow/react` fica (o rastro usa).
+- **Evidência:** `npm test`; o teste novo falha com a figura de antes; o build continua falhando com a escolha do R12
+  trocada; o Studio do `my-video` abre a composição daqui; a página vista pelo responsável.
+- **Fora:** sem JS e impressão (etapa 7).
 
 ## Registro
 
