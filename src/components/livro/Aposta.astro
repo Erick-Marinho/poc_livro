@@ -37,10 +37,10 @@ const fechos = dados.fechos ?? { nenhum: "Você investiu em outra coisa em todas
     const msgs = [...fig.querySelectorAll<HTMLElement>(".apo-msg")];
     const placar = fig.querySelector<HTMLElement>("[data-placar]")!;
     let feitas = 0, iguais = 0;
-    msgs.forEach((m) => m.querySelectorAll<HTMLButtonElement>("button").forEach((b) => b.addEventListener("click", () => {
+    msgs.forEach((m) => m.querySelectorAll<HTMLButtonElement>(".apo-opcoes button").forEach((b) => b.addEventListener("click", () => {
       if (m.classList.contains("feita")) return;
       m.classList.add("feita");
-      m.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      m.querySelectorAll<HTMLButtonElement>(".apo-opcoes button").forEach((x) => { x.disabled = true; });
       b.setAttribute("aria-pressed", "true");
       m.querySelector<HTMLElement>(".apo-fez")!.hidden = false;
       feitas++; if (b.dataset.j === m.dataset.fez) iguais++;

@@ -12,6 +12,8 @@ import FiguraAgente from "../../../src/components/livro/FiguraAgente.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import MapaDoCiclo from "../../../src/components/livro/MapaDoCiclo.astro";
+import Termos from "../../../src/components/livro/Termos.astro";
+import termos from "../termos.json";
 import ciclo from "../figuras/ciclo.json";
 import ondeSePega from "../figuras/onde-se-pega.json";
 import cicloAnimado from "../figuras/ciclo-animado.json";
@@ -21,6 +23,8 @@ import referenciaAgente from "../projeto/referencia.jsonl?raw";
 import clientesAgente from "../projeto/dados/clientes.json";
 import pedidosAgente from "../projeto/dados/pedidos.json";
 import politicaAgente from "../projeto/dados/politica.md?raw";
+
+<Termos termos={termos} sumario={sumario} />
 
 ## Por que este livro existe
 

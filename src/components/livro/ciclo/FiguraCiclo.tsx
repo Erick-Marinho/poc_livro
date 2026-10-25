@@ -45,7 +45,7 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   /* o investimento do leitor: o que já está marcado quando a ilha carrega, e cada clique na caixa depois */
   useEffect(() => {
     setApostas(lerApostas(aposta));
-    const clique = (e: Event) => { if ((e.target as Element).closest?.("[data-aposta] button")) setApostas(lerApostas(aposta)); };
+    const clique = (e: Event) => { if ((e.target as Element).closest?.("[data-aposta] .apo-opcoes button")) setApostas(lerApostas(aposta)); };
     document.addEventListener("click", clique);
     return () => document.removeEventListener("click", clique);
   }, [aposta]);

@@ -1,0 +1,90 @@
+---
+/**
+ * Os termos explicáveis de um capítulo (livros/<livro>/termos.json; docs/capacidades/ajustes-da-introducao.md): posto
+ * uma vez no capítulo, marca no navegador cada ocorrência no corpo, e a definição abre ao passar o mouse, ao focar ou
+ * ao tocar. Fora de código, SVG, vídeo, botão, link e resumo de <details>. A definição fica fora do texto (um balão só,
+ * no fim da página): quem lê o texto de um trecho (a ilha do mapa lê as mensagens da caixa) lê o mesmo de antes. Sem
+ * JS, o texto fica como está.
+ */
+import type { Termo } from "../../lib/termos.ts";
+
+interface Props { termos: Record<string, Termo | string>; sumario: { capitulos: { numero: number; titulo: string }[] } }
+const { termos, sumario } = Astro.props;
+const titulo = (n: number) => sumario.capitulos.find((c) => c.numero === n)?.titulo ?? (() => { throw new Error(`Termos: o capítulo ${n} não está no sumário`); })();
+const definicoes = Object.fromEntries(Object.entries(termos).filter(([nome]) => nome !== "sobre")
+  .map(([nome, t]) => { const { definicao, capitulo } = t as Termo; return [nome, `${definicao} Nasce no capítulo ${capitulo} (${titulo(capitulo)}).`]; }));
+---
+<script type="application/json" data-termos set:html={JSON.stringify(definicoes)} />
+
+<script>
+  import { trechos } from "../../lib/termos.ts";
+
+  const dados = document.querySelector<HTMLScriptElement>("script[data-termos]");
+  const corpo = document.querySelector<HTMLElement>(".corpo");
+  if (dados && corpo) {
+    const definicoes: Record<string, string> = JSON.parse(dados.textContent ?? "{}");
+    const nomes = Object.keys(definicoes);
+    const FORA = "svg, code, pre, button, a, summary, script, style, .mc-video, [data-sem-termos]";
+
+    /* a definição de cada termo, uma vez, para o leitor de tela (aria-describedby); e um balão só, para os olhos */
+    const guarda = document.createElement("div");
+    guarda.hidden = true;
+    const id = (nome: string) => `termo-${nomes.indexOf(nome)}`;
+    for (const nome of nomes) { const d = document.createElement("span"); d.id = id(nome); d.textContent = definicoes[nome]; guarda.append(d); }
+    const balao = document.createElement("div");
+    balao.className = "termo-balao"; balao.setAttribute("aria-hidden", "true"); balao.hidden = true;
+    document.body.append(guarda, balao);
+
+    /* marca o corpo: cada ocorrência vira um botão com o termo */
+    const textos: Text[] = [];
+    const andar = document.createTreeWalker(corpo, NodeFilter.SHOW_TEXT, { acceptNode: (n) =>
+      n.parentElement?.closest(FORA) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    while (andar.nextNode()) textos.push(andar.currentNode as Text);
+    for (const t of textos) {
+      const partes = trechos(t.data, nomes);
+      if (!partes.some((p) => p.termo)) continue;
+      t.replaceWith(...partes.map((p) => {
+        if (!p.termo) return document.createTextNode(p.texto);
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "termo"; b.textContent = p.texto; b.dataset.termo = p.termo;
+        b.setAttribute("aria-describedby", id(p.termo)); b.setAttribute("aria-expanded", "false");
+        return b;
+      }));
+    }
+
+    /* o balão: abre sobre o termo, dentro da tela; fecha ao sair, com Esc ou tocando fora */
+    let aberto: HTMLButtonElement | null = null, fixo = false;
+    const abrir = (b: HTMLButtonElement) => {
+      aberto?.setAttribute("aria-expanded", "false");
+      aberto = b; b.setAttribute("aria-expanded", "true");
+      balao.textContent = definicoes[b.dataset.termo!];
+      balao.hidden = false;
+      const r = b.getBoundingClientRect(), w = balao.offsetWidth, h = balao.offsetHeight;
+      const x = Math.min(Math.max(8, r.left - 12), innerWidth - w - 8); // começa no termo, sem sair da tela
+      const acima = r.top - h - 10 > 8;
+      balao.style.left = `${x + scrollX}px`;
+      balao.style.top = `${(acima ? r.top - h - 10 : r.bottom + 10) + scrollY}px`;
+    };
+    const fechar = () => { aberto?.setAttribute("aria-expanded", "false"); aberto = null; fixo = false; balao.hidden = true; };
+    corpo.addEventListener("pointerover", (e) => { const b = (e.target as Element).closest<HTMLButtonElement>("button.termo"); if (b && !fixo) abrir(b); });
+    corpo.addEventListener("pointerout", (e) => { if ((e.target as Element).closest("button.termo") && !fixo) fechar(); });
+    corpo.addEventListener("focusin", (e) => { const b = (e.target as Element).closest<HTMLButtonElement>("button.termo"); if (b) abrir(b); });
+    corpo.addEventListener("focusout", (e) => { if ((e.target as Element).closest("button.termo")) fechar(); });
+    document.addEventListener("click", (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>("button.termo");
+      if (b) { if (aberto === b && fixo) fechar(); else { abrir(b); fixo = true; } }
+      else if (aberto) fechar();
+    });
+    addEventListener("keydown", (e) => { if (e.key === "Escape" && aberto) fechar(); });
+    addEventListener("scroll", () => { if (aberto && !fixo) fechar(); }, { passive: true });
+  }
+</script>
+
+<style is:global>
+  .termo { all: unset; cursor: help; text-decoration: underline dotted var(--acento) 1.5px; text-underline-offset: 3px; border-radius: 3px }
+  .termo:hover, .termo[aria-expanded="true"] { background: var(--papel-2) }
+  .termo:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px }
+  .termo-balao { position: absolute; z-index: 50; max-width: min(300px, calc(100vw - 16px)); padding: 8px 11px; border: 1px solid var(--linha);
+    border-radius: 8px; background: var(--papel); color: var(--ink); box-shadow: 0 4px 14px rgb(0 0 0 / .12); font: 14px/1.45 var(--f-ui); pointer-events: none }
+  @media print { .termo { text-decoration: none } .termo-balao { display: none } }
+</style>
