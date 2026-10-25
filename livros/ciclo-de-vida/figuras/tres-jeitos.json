@@ -1,7 +1,13 @@
 {
   "perguntas": [
-    { "id": "pedido", "texto": "Quando chega o BT-1003? E-mail carla.mendes@exemplo.test" },
-    { "id": "produto", "texto": "A frigideira antiaderente de 24 cm vai ao forno?" }
+    {
+      "id": "pedido",
+      "texto": "Quando chega o BT-1003? E-mail carla.mendes@exemplo.test"
+    },
+    {
+      "id": "produto",
+      "texto": "A frigideira antiaderente de 24 cm vai ao forno?"
+    }
   ],
   "modos": [
     {
@@ -10,14 +16,36 @@
       "quem_decide": "ninguém: o modelo só escreve",
       "passos": {
         "pedido": [
-          { "quem": "cliente", "texto": "Quando chega o BT-1003?" },
-          { "quem": "modelo", "texto": "Escreve a resposta mais provável. Ele não vê o sistema da loja." },
-          { "quem": "resposta", "texto": "Seu pedido deve chegar em 3 a 5 dias úteis.", "erro": "inventou: a previsão real é 14/11" }
+          {
+            "quem": "cliente",
+            "texto": "Quando chega o BT-1003?"
+          },
+          {
+            "quem": "modelo",
+            "texto": "Escreve a resposta mais provável. Ele não vê o sistema da loja.",
+            "curto": "escreve o mais provável, sem olhar o sistema"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Seu pedido deve chegar em 3 a 5 dias úteis.",
+            "erro": "inventou: a previsão real é 14/11"
+          }
         ],
         "produto": [
-          { "quem": "cliente", "texto": "A frigideira de 24 cm vai ao forno?" },
-          { "quem": "modelo", "texto": "Escreve o que costuma valer para frigideiras em geral." },
-          { "quem": "resposta", "texto": "Sim, frigideiras antiaderentes costumam ir ao forno.", "erro": "genérico: faltou o limite de 180 °C e o cabo" }
+          {
+            "quem": "cliente",
+            "texto": "A frigideira de 24 cm vai ao forno?"
+          },
+          {
+            "quem": "modelo",
+            "texto": "Escreve o que costuma valer para frigideiras em geral.",
+            "curto": "escreve o que vale para frigideiras em geral"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Sim, frigideiras antiaderentes costumam ir ao forno.",
+            "erro": "genérico: faltou o limite de 180 °C e o cabo"
+          }
         ]
       }
     },
@@ -27,16 +55,48 @@
       "quem_decide": "o seu código, sempre na mesma ordem",
       "passos": {
         "pedido": [
-          { "quem": "cliente", "texto": "Quando chega o BT-1003?" },
-          { "quem": "código", "texto": "Procura um número de pedido na mensagem: BT-1003.", "decide": true },
-          { "quem": "ferramenta", "texto": "consultar_pedido(\"BT-1003\") → enviado, Asa Leve, previsão 14/11" },
-          { "quem": "modelo", "texto": "Escreve a resposta com o que o código entregou." },
-          { "quem": "resposta", "texto": "Seu pedido saiu pela Asa Leve e a previsão é 14/11.", "certo": true }
+          {
+            "quem": "cliente",
+            "texto": "Quando chega o BT-1003?"
+          },
+          {
+            "quem": "código",
+            "texto": "Procura um número de pedido na mensagem: BT-1003.",
+            "decide": true,
+            "curto": "procura o número do pedido: BT-1003"
+          },
+          {
+            "quem": "ferramenta",
+            "texto": "consultar_pedido(\"BT-1003\") → enviado, Asa Leve, previsão 14/11",
+            "curto": "consultar_pedido → previsão 14/11"
+          },
+          {
+            "quem": "modelo",
+            "texto": "Escreve a resposta com o que o código entregou.",
+            "curto": "escreve com o que o código entregou"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Seu pedido saiu pela Asa Leve e a previsão é 14/11.",
+            "certo": true
+          }
         ],
         "produto": [
-          { "quem": "cliente", "texto": "A frigideira de 24 cm vai ao forno?" },
-          { "quem": "código", "texto": "Procura um número de pedido na mensagem. Não acha.", "decide": true },
-          { "quem": "resposta", "texto": "Não encontrei o número do seu pedido.", "erro": "o caminho não previa pergunta de produto" }
+          {
+            "quem": "cliente",
+            "texto": "A frigideira de 24 cm vai ao forno?"
+          },
+          {
+            "quem": "código",
+            "texto": "Procura um número de pedido na mensagem. Não acha.",
+            "decide": true,
+            "curto": "procura o número do pedido… e não acha"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Não encontrei o número do seu pedido.",
+            "erro": "o caminho não previa pergunta de produto"
+          }
         ]
       }
     },
@@ -46,20 +106,63 @@
       "quem_decide": "o modelo, a cada volta",
       "passos": {
         "pedido": [
-          { "quem": "cliente", "texto": "Quando chega o BT-1003?" },
-          { "quem": "modelo", "texto": "É sobre um pedido, e veio o e-mail. Decide: consultar o pedido.", "decide": true },
-          { "quem": "ferramenta", "texto": "consultar_pedido(\"BT-1003\", e-mail) → enviado, Asa Leve, previsão 14/11" },
-          { "quem": "modelo", "texto": "Lê o resultado. Já tem o que precisa. Decide: responder.", "decide": true },
-          { "quem": "resposta", "texto": "Seu pedido saiu pela Asa Leve e a previsão é 14/11.", "certo": true }
+          {
+            "quem": "cliente",
+            "texto": "Quando chega o BT-1003?"
+          },
+          {
+            "quem": "modelo",
+            "texto": "É sobre um pedido, e veio o e-mail. Decide: consultar o pedido.",
+            "decide": true,
+            "curto": "é sobre um pedido: vou consultar"
+          },
+          {
+            "quem": "ferramenta",
+            "texto": "consultar_pedido(\"BT-1003\", e-mail) → enviado, Asa Leve, previsão 14/11",
+            "curto": "consultar_pedido → previsão 14/11"
+          },
+          {
+            "quem": "modelo",
+            "texto": "Lê o resultado. Já tem o que precisa. Decide: responder.",
+            "decide": true,
+            "curto": "já tenho o que preciso: vou responder"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Seu pedido saiu pela Asa Leve e a previsão é 14/11.",
+            "certo": true
+          }
         ],
         "produto": [
-          { "quem": "cliente", "texto": "A frigideira de 24 cm vai ao forno?" },
-          { "quem": "modelo", "texto": "É sobre um produto. Decide: buscar no catálogo.", "decide": true },
-          { "quem": "ferramenta", "texto": "buscar_produto(\"frigideira 24 cm\") → vai ao forno até 180 °C, sem o cabo de silicone" },
-          { "quem": "modelo", "texto": "Lê o resultado. Já tem o que precisa. Decide: responder.", "decide": true },
-          { "quem": "resposta", "texto": "Vai, até 180 °C, e sem o cabo de silicone.", "certo": true }
+          {
+            "quem": "cliente",
+            "texto": "A frigideira de 24 cm vai ao forno?"
+          },
+          {
+            "quem": "modelo",
+            "texto": "É sobre um produto. Decide: buscar no catálogo.",
+            "decide": true,
+            "curto": "é sobre um produto: vou buscar no catálogo"
+          },
+          {
+            "quem": "ferramenta",
+            "texto": "buscar_produto(\"frigideira 24 cm\") → vai ao forno até 180 °C, sem o cabo de silicone",
+            "curto": "buscar_produto → até 180 °C, sem o cabo"
+          },
+          {
+            "quem": "modelo",
+            "texto": "Lê o resultado. Já tem o que precisa. Decide: responder.",
+            "decide": true,
+            "curto": "já tenho o que preciso: vou responder"
+          },
+          {
+            "quem": "resposta",
+            "texto": "Vai, até 180 °C, e sem o cabo de silicone.",
+            "certo": true
+          }
         ]
       }
     }
-  ]
+  ],
+  "sobre": "Cada passo do meio tem também a frase `curto`, que a figura 1.1 mostra; a frase inteira fica na figura em texto."
 }

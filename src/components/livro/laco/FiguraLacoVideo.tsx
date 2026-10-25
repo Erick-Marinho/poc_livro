@@ -1,25 +1,24 @@
 /**
- * A ilha do gráfico do laço, no 1.1 (docs/capacidades/laco-do-agente.md): a composição (LacoAnimado.tsx), contínua e com
- * câmera, no player do leitor (palco/TocaGrafico.tsx). Na parte do agente, o gráfico para quando a pergunta chega a
- * decidir, e o leitor investe no que o agente decide; depois, segue, e a figura diz se bateu. Com menos movimento, a
- * câmera fica parada.
+ * A ilha da figura 1.1 (docs/capacidades/laco-do-agente.md): a composição (LacoAnimado.tsx), um jeito por vez, no
+ * player do leitor (palco/TocaGrafico.tsx). Antes da vez do fluxo fixo com a frigideira, o gráfico para e o leitor
+ * investe no que ele faz; depois, segue, e a figura diz se bateu. Com menos movimento, os passos aparecem sem deslizar.
  * Largo no computador, coluna no celular. Ao carregar, a ilha mostra o vídeo e fecha a figura em texto, que sem JS fica
  * aberta (FiguraLaco.astro). No celular, a figura sobe para o topo da tela quando o pedido para investir aparece: o
- * pedido cobre a parte de baixo, e decidir, onde a decisão acontece, fica à vista.
+ * pedido cobre a parte de baixo, e a mensagem fica à vista.
  */
 import { type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import TocaGrafico from "../palco/TocaGrafico";
-import { cenaEm, type Desenho, type Entrada, FPS, montarCenas, pausaDe } from "./laco";
+import { type Desenho, type Entrada, FPS, montarTrechos, pausaDe, trechoEm } from "./laco";
 import { LacoAnimado, quadroDoLaco } from "./LacoAnimado";
 
 const estreito = () => matchMedia("(max-width: 640px)").matches;
 
 export default function FiguraLacoVideo({ laco, tresJeitos, clientes }: Entrada) {
   const [desenho, setDesenho] = useState<Desenho>("largo");
-  const m = useMemo(() => montarCenas({ laco, tresJeitos }), [laco, tresJeitos]);
+  const m = useMemo(() => montarTrechos({ laco, tresJeitos, clientes }), [laco, tresJeitos, clientes]);
   const [movimento, setMovimento] = useState(true);
   const pausa = useMemo(() => pausaDe(m), [m]);
-  const q = useMemo(() => quadroDoLaco({ laco, tresJeitos }, desenho), [laco, tresJeitos, desenho]);
+  const q = useMemo(() => quadroDoLaco({ laco, tresJeitos, clientes }, desenho), [laco, tresJeitos, clientes, desenho]);
   const props = useMemo(() => ({ laco, tresJeitos, clientes, desenho, movimento }), [laco, tresJeitos, clientes, desenho, movimento]);
   const [escolha, setEscolha] = useState<number | null | undefined>(undefined); // undefined: ainda não investiu; null: pulou
   const primeira = useRef<HTMLButtonElement>(null);
@@ -65,10 +64,10 @@ export default function FiguraLacoVideo({ laco, tresJeitos, clientes }: Entrada)
 
   return <div ref={caixa} className="laco-video">
     <TocaGrafico chave={desenho} component={LacoAnimado} inputProps={props} duracao={q.duracao} fps={q.fps} largura={q.largura} altura={q.altura}
-      primeiro="▶ Ver quem decide" anuncio={(f) => cenaEm(m, f / FPS).cena.legenda} pausa={pausa ? { quadro: pausa.quadro, conteudo: perguntar } : undefined} />
+      primeiro="▶ Ver quem decide" anuncio={(f) => { const t = trechoEm(m, f / FPS).trecho; return t.vez ? `${t.vez.nome}, com ${t.vez.rotulo}: quem decide é ${t.vez.quemDecide}.` : t.legenda ?? ""; }} pausa={pausa ? { quadro: pausa.quadro, conteudo: perguntar } : undefined} />
     <p className="laco-resultado" aria-live="polite">
       {pausa && typeof escolha === "number" ? (
-        <>Você investiu em <b>{pausa.opcoes[escolha]}</b> · o agente decidiu <b>{pausa.opcoes[pausa.certa]}</b> {escolha === pausa.certa ? "✓" : "✗"}</>
+        <>Você investiu em <b>{pausa.opcoes[escolha]}</b> · o {pausa.jeito} <b>{pausa.opcoes[pausa.certa]}</b> {escolha === pausa.certa ? "✓" : "✗"}</>
       ) : null}
     </p>
   </div>;

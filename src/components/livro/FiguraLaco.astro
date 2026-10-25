@@ -1,20 +1,20 @@
 ---
 /**
  * A figura do laço, no 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos de usar um
- * modelo. A animação (laco/FiguraLacoVideo.tsx) que o leitor avança cena a cena, com a pausa para investir na cena do
- * agente; e, embaixo, a mesma figura em texto, para quem lê sem JS ou com leitor de tela. Sem JS, só a figura em texto,
+ * modelo, um jeito por vez. O gráfico (laco/FiguraLacoVideo.tsx), que o leitor toca e pausa, com a pausa para investir
+ * antes da vez do fluxo fixo com a frigideira; e, embaixo, a mesma figura em texto, para quem lê sem JS ou com leitor de tela. Sem JS, só a figura em texto,
  * aberta; com JS, o vídeo aparece e ela se fecha (a ilha faz as duas coisas); na impressão, abre de novo. Os dados
- * são os "três jeitos" (tres-jeitos.json), as cenas (laco.json) e os clientes da loja; a montagem confere as cenas e a
+ * são os "três jeitos" (tres-jeitos.json), as vezes (laco.json) e os clientes da loja; a montagem confere as vezes e a
  * pausa contra eles (laco/laco.ts).
  */
 import FiguraLacoVideo from "./laco/FiguraLacoVideo";
-import { montarCenas, montarElenco, pausaDe, type Entrada } from "./laco/laco";
+import { montarElenco, montarTrechos, pausaDe, type Entrada } from "./laco/laco";
 
 interface Props extends Entrada { numero: string; legenda: string }
 const { laco, tresJeitos, clientes, numero, legenda } = Astro.props;
 /* confere no build o que a ilha vai montar no navegador: o elenco, as cenas e a pausa */
-montarElenco({ laco, tresJeitos, clientes });
-pausaDe(montarCenas({ laco, tresJeitos }));
+montarElenco({ tresJeitos, clientes });
+pausaDe(montarTrechos({ laco, tresJeitos, clientes }));
 ---
 <figure class="laco" data-laco>
   <FiguraLacoVideo client:visible={{ rootMargin: "400px" }} laco={laco} tresJeitos={tresJeitos} clientes={clientes} />
@@ -68,7 +68,8 @@ pausaDe(montarCenas({ laco, tresJeitos }));
   @media (max-width: 640px) {
     .laco-video { padding: 6px }
     .laco-opcoes { grid-template-columns: 1fr }
-    .laco-investir { bottom: 6px; padding: 10px 12px 8px; gap: 6px }
+    /* no celular, logo abaixo da mensagem: na hora da pausa, ali ainda não há passo, e a barra do capítulo fica longe */
+    .laco-investir { top: 44%; bottom: auto; padding: 10px 12px 8px; gap: 6px }
     .laco-opcoes button { padding: 7px 6px }
   }
   @media print { .laco-video { display: none } }

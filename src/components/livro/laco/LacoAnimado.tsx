@@ -1,185 +1,151 @@
 /**
- * A animação do laço, no 1.1 (Remotion; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos
- * de usar um modelo. O elenco parado e com nome (docs/RITMO.md): a cliente e a mensagem, o laço (decidir, agir, observar,
- * de volta a decidir), o sistema da loja com as ferramentas, e a resposta. Em cada cena, a pergunta (um ponto) anda
- * pelos passos de um jeito dos "três jeitos", de peça em peça pelas setas; a ficha de quem decide acende, o que o jeito
- * não usa fica apagado, e embaixo vão a legenda e o passo de agora. O quadro final soma os acertos de cada jeito. Cor
- * com sentido fixo: acento é o que acontece agora, verde é o certo, âmbar é o erro. O desenho é da loja, com as palavras
- * do livro. É um gráfico contínuo, com o desenho inteiro à vista o tempo todo; com `movimento` falso, o ponto pula de
- * peça em peça. O leitor toca e pausa (a ilha); o último quadro é o do modo direto. O Studio do my-video importa esta composição.
+ * A figura 1.1 (Remotion; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, um jeito por vez. Na tela, só
+ * a vez de agora: o jeito, quem decide nele, a mensagem da cliente e os passos, em frase curta, aparecendo um a um, com o
+ * selo "decide" (no agente, a segunda vez é "decide de novo"), até a resposta, certa (verde) ou errada (âmbar), com o
+ * porquê. Quando a vez termina, ela vira uma linha de resumo no topo, e a comparação se monta aos poucos; no fim, só os
+ * resumos e a conclusão. Com `movimento` falso, os passos aparecem sem deslizar. O leitor toca e pausa (a ilha); o
+ * último quadro é o do modo direto. O Studio do my-video importa esta composição.
  */
+import { Brain, Check, Code, MessageSquare, Wrench, X } from "lucide-react";
 import { useMemo } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
-import { ANDA, type Caixa, caixas, type Cena, cenaEm, type Desenho, type Entrada, montarCenas, montarElenco, type Peca, placar, pontoDaSeta, rota, type Seta, setas, VISTA } from "./laco";
+import { ANIMA, type Cartao, type Desenho, type Entrada, montarTrechos, resumindo, trechoEm, type Vez } from "./laco";
 
-/** `movimento`: falso para quem pede menos movimento (o ponto pula de peça em peça) */
+/** `movimento`: falso para quem pede menos movimento (os passos aparecem sem deslizar) */
 export type Props = Entrada & { desenho: Desenho; movimento?: boolean };
 
-const TOPO = 56; // a pergunta
-const FAIXA: Record<Desenho, number> = { largo: 92, coluna: 128 }; // a legenda e o passo de agora
-export const tamanho = (desenho: Desenho) => ({ w: VISTA[desenho].w, h: TOPO + VISTA[desenho].h + FAIXA[desenho] });
+const TAMANHO: Record<Desenho, { w: number; h: number }> = { largo: { w: 720, h: 540 }, coluna: { w: 360, h: 720 } };
+export const tamanho = (desenho: Desenho) => TAMANHO[desenho];
 
-const APAGADO = 0.28;
+const verde = "color-mix(in srgb, var(--ok, #1f7a4c) 12%, var(--papel, #f6f2ea))";
+const ambar = "color-mix(in srgb, var(--aviso, #9a5b00) 12%, var(--papel, #f6f2ea))";
 
-type Estilo = { borda: string; grossa?: boolean; opacidade: number };
-const Caixinha = ({ c, children, e }: { c: Caixa; children?: React.ReactNode; e: Estilo }) => (
-  <g opacity={e.opacidade}>
-    <rect x={c.x} y={c.y} width={c.w} height={c.h} rx={12} fill={cor.papel} stroke={e.borda} strokeWidth={e.grossa ? 2.5 : 1.5} />
-    {children}
-  </g>
-);
-
-// o nome de uma peça do laço, no meio da caixa
-const Nome = ({ c, texto, dy = 0 }: { c: Caixa; texto: string; dy?: number }) => (
-  <text x={c.x + c.w / 2} y={c.y + c.h / 2 + 5 + dy} textAnchor="middle" style={{ font: `600 16px ${ui}`, fill: cor.texto }}>{texto}</text>
-);
-
-// as duas fichas de quem pode decidir, dentro de "decidir"; a de quem decide nesta cena acende
-const Fichas = ({ c, quem, acesa }: { c: Caixa; quem: { modelo: string; codigo: string }; acesa?: "modelo" | "codigo" }) => {
-  const larg = (t: string) => t.length * 7 + 20;
-  const a = larg(quem.modelo), b = larg(quem.codigo), x0 = c.x + (c.w - a - b - 8) / 2, y = c.y + c.h - 34;
-  return (
-    <g style={{ font: `500 12.5px ${ui}` }}>
-      {([["modelo", quem.modelo, x0, a], ["codigo", quem.codigo, x0 + a + 8, b]] as const).map(([id, t, x, w]) => {
-        const sim = id === acesa;
-        return (
-          <g key={id}>
-            <rect x={x} y={y} width={w} height={22} rx={11} fill={sim ? cor.acento : cor.nota} stroke={sim ? cor.acento : cor.linha} />
-            <text x={x + w / 2} y={y + 15} textAnchor="middle" fill={sim ? cor.papel : cor.fraco} style={{ fontWeight: sim ? 700 : 500 }}>{t}</text>
-          </g>
-        );
-      })}
-    </g>
-  );
+// quem fez o passo: o ícone e o nome
+const QUEM: Record<string, { icone: typeof Brain; nome: (n: Record<string, string>) => string }> = {
+  modelo: { icone: Brain, nome: (n) => n.modelo },
+  "código": { icone: Code, nome: (n) => n["código"] },
+  ferramenta: { icone: Wrench, nome: (n) => n.ferramenta },
+  resposta: { icone: MessageSquare, nome: (n) => n.resposta },
 };
 
-const caminhoDaSeta = (s: Seta) => (s.curva ? `M ${s.de[0]} ${s.de[1]} Q ${s.curva[0]} ${s.curva[1]} ${s.para[0]} ${s.para[1]}` : `M ${s.de[0]} ${s.de[1]} L ${s.para[0]} ${s.para[1]}`);
-
-const Flecha = ({ s, id, opacidade, acesa }: { s: Seta; id: string; opacidade: number; acesa?: boolean }) => (
-  <g opacity={opacidade}>
-    <path d={caminhoDaSeta(s)} fill="none" stroke={acesa ? cor.acento : cor.fraco} strokeWidth={acesa ? 2.4 : 1.6} strokeDasharray={s.volta ? "6 4" : undefined}
-      markerEnd={`url(#${id}${acesa ? "-acesa" : ""})`} />
-    {s.rotulo && s.em ? (
-      <text x={s.em[0]} y={s.em[1]} textAnchor="middle" style={{ font: `italic 13px ${ui}`, fill: acesa ? cor.acento : cor.fraco, paintOrder: "stroke", stroke: cor.nota, strokeWidth: 4 }}>{s.rotulo}</text>
-    ) : null}
-  </g>
+const Marca = ({ certo, tam = 20 }: { certo: boolean; tam?: number }) => (
+  <span style={{ flex: "none", display: "inline-grid", placeItems: "center", width: tam, height: tam, borderRadius: 999, background: certo ? cor.ok : cor.aviso, color: cor.papel }}>
+    {certo ? <Check size={tam * 0.65} strokeWidth={3.2} /> : <X size={tam * 0.65} strokeWidth={3.2} />}
+  </span>
 );
 
-// quebra um texto em linhas de até n letras, sem cortar palavra
-const linhas = (texto: string, n: number) => texto.split(" ").reduce<string[]>((ls, p) => {
-  const u = ls[ls.length - 1];
-  if (u !== undefined && (u + " " + p).length <= n) ls[ls.length - 1] = u + " " + p; else ls.push(p);
-  return ls;
-}, []);
+// a linha de resumo de uma vez que já passou
+const Resumo = ({ vez, opacidade, coluna }: { vez: Vez; opacidade: number; coluna: boolean }) => (
+  <div style={{ opacity: opacidade, display: "flex", alignItems: "flex-start", gap: 8, font: `${coluna ? 14 : 15}px/1.4 ${ui}`, color: cor.texto }}>
+    <Marca certo={vez.certo} />
+    <span><b>{vez.nome}</b> <span style={{ color: cor.fraco }}>com {vez.rotulo}:</span> <span style={{ color: vez.certo ? cor.ok : cor.aviso }}>{vez.porque}</span></span>
+  </div>
+);
 
-/** Onde está o ponto (a pergunta) num momento da cena, e por que setas ele anda agora. */
-function ponto(cena: Cena, v: number, sx: Record<string, Seta>, cx: Record<Peca, Caixa>, movimento: boolean) {
-  const ps = cena.paradas;
-  if (!ps.length || v < ps[0].em - 0.3) return null;
-  const centro = (p: Peca): [number, number] => [cx[p].x + cx[p].w - 16, cx[p].y + 14];
-  let i = ps.filter((p) => p.em <= v + ANDA + 0.1).length - 1; // a parada para onde ele vai, ou onde está
-  i = Math.max(0, i);
-  const chegada = ps[i].em - 0.1, partida = chegada - ANDA;
-  if (!movimento && v < chegada && i > 0) return { xy: centro(ps[i - 1].peca), andando: [] as string[], aparece: 1 }; // com menos movimento, pula
-  if (i === 0 || v >= chegada || ps[i].peca === ps[i - 1].peca) return { xy: centro(ps[i].peca), andando: [] as string[], aparece: kf(v, [[ps[0].em - 0.3, 0], [ps[0].em, 1]]) };
-  const ids = rota(ps[i - 1].peca, ps[i].peca);
-  const k = kf(v, [[partida, 0], [chegada, 1]], suave) * ids.length;
-  const seg = Math.min(ids.length - 1, Math.floor(k));
-  return { xy: pontoDaSeta(sx[ids[seg]], k - seg), andando: ids, aparece: 1 };
-}
+// um passo: aparece deslizando um pouco; quem fez, o que fez, e o selo de decisão
+const PassoVisto = ({ c, v, nomes, movimento, coluna }: { c: Cartao; v: number; nomes: Record<string, string>; movimento: boolean; coluna: boolean }) => {
+  const k = movimento ? kf(v, [[c.em, 0], [c.em + ANIMA, 1]], suave) : 1;
+  const q = QUEM[c.quem];
+  const Icone = q.icone;
+  const resposta = c.quem === "resposta";
+  const ferramenta = c.quem === "ferramenta";
+  const quem = (
+    <span style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 5, width: coluna ? undefined : 118, font: `600 11.5px ${ui}`, color: cor.fraco, textTransform: "uppercase", letterSpacing: ".03em", whiteSpace: "nowrap" }}>
+      <Icone size={15} strokeWidth={2.2} />{q.nome(nomes)}
+    </span>
+  );
+  const frase = (
+    <span style={{ flex: 1, minWidth: 0, font: `${ferramenta ? 14 : 15}px/1.35 ${ferramenta ? mono : ui}`, color: cor.texto }}>
+      {resposta ? <>“{c.curto}”</> : c.curto}
+    </span>
+  );
+  const selo = c.decide ? (
+    <span style={{ flex: "none", marginLeft: "auto", padding: "0 7px", borderRadius: 999, border: `1.5px solid ${cor.acento}`, color: cor.acento, font: `700 10.5px/18px ${ui}`, textTransform: "uppercase", letterSpacing: ".03em", whiteSpace: "nowrap" }}>
+      {c.deNovo ? nomes.de_novo : nomes.decide}
+    </span>
+  ) : resposta ? <span style={{ marginLeft: "auto" }}><Marca certo={!!c.certo} tam={22} /></span> : null;
+  const caixa = { opacity: k, transform: `translateY(${(1 - k) * 10}px)`, padding: coluna ? "7px 10px" : "8px 12px", borderRadius: 10,
+    background: resposta ? (c.certo ? verde : ambar) : cor.papel, border: `${resposta ? 2 : 1.5}px solid ${resposta ? (c.certo ? cor.ok : cor.aviso) : cor.linha}` };
+  // no celular, quem fez (e o selo) em cima, a frase embaixo; no computador, tudo numa linha
+  return coluna
+    ? <div style={{ ...caixa, display: "grid", gap: 3 }}><div style={{ display: "flex", alignItems: "center", gap: 8 }}>{quem}{selo}</div>{frase}</div>
+    : <div style={{ ...caixa, display: "flex", alignItems: "center", gap: 10 }}>{quem}{frase}{selo}</div>;
+};
 
 export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desenho, movimento = true }) => {
-  const elenco = useMemo(() => montarElenco({ laco, tresJeitos, clientes }), [laco, tresJeitos, clientes]);
-  const m = useMemo(() => montarCenas({ laco, tresJeitos }), [laco, tresJeitos]);
-  const soma = useMemo(() => placar(tresJeitos), [tresJeitos]);
-  const cx = useMemo(() => caixas(desenho), [desenho]);
-  const sx = useMemo(() => setas(desenho, elenco.setas), [desenho, elenco.setas]);
+  const m = useMemo(() => montarTrechos({ laco, tresJeitos, clientes }), [laco, tresJeitos, clientes]);
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const { cena, v } = cenaEm(m, frame / fps);
-  const vista = VISTA[desenho];
+  const { trecho, v } = trechoEm(m, frame / fps);
   const coluna = desenho === "coluna";
-  const marca = `laco-${desenho}-seta`;
-  const n = elenco.nomes;
-
-  const jeito = !!cena.jeito;
-  const chegou = cena.paradas.filter((p) => p.em <= v);
-  const agora = chegou[chegou.length - 1];
-  const fim = chegou.find((p) => p.resultado);
-  const ficha = [...chegou].reverse().find((p) => p.ficha)?.ficha;
-  const chamada = chegou.find((p) => p.ferramenta)?.ferramenta;
-  const pt = ponto(cena, v, sx, cx, movimento);
-  const usa = (id: string) => !jeito || cena.usa.includes(id);
-  const estilo = (p: Peca): Estilo => {
-    if (p === "responder" && fim) return { borda: fim.resultado === "certo" ? cor.ok : cor.aviso, grossa: true, opacidade: 1 };
-    return { borda: agora?.peca === p ? cor.acento : cor.linha, grossa: agora?.peca === p, opacidade: usa(p) ? 1 : APAGADO };
-  };
-  const mensagem = cena.mensagem ?? elenco.cliente.mensagem;
-  const quem = mensagem === elenco.cliente.mensagem ? elenco.cliente.nome : "outra cliente";
-
-  // a faixa: a legenda da cena e, embaixo, o passo de agora (ou, no fim, o placar)
-  const passo = cena.final ? (
-    <>No pedido e na frigideira: {soma.map((s, i) => (
-      <span key={s.nome}>{i ? " · " : ""}{s.nome} {s.acertos.map((a, j) => <b key={j} style={{ color: a ? cor.ok : cor.aviso }}>{a ? "✓" : "✗"}</b>).reduce<React.ReactNode[]>((xs, x, j) => (j ? [...xs, " ", x] : [x]), [])}</span>
-    ))}</>
-  ) : agora?.resultado ? (
-    <span style={{ color: agora.resultado === "certo" ? cor.ok : cor.aviso }}>“{agora.texto}” <b>{agora.resultado === "certo" ? "✓" : "✗"}</b>{agora.erro ? <span style={{ color: cor.fraco }}> · {agora.erro}</span> : null}</span>
-  ) : agora && agora.peca !== "cliente" ? <span style={{ fontFamily: agora.peca === "sistema" || agora.peca === "observar" ? mono : ui }}>{agora.texto}</span> : null;
+  const n = m.nomes;
+  const r = resumindo(trecho, v);
+  const vez = trecho.vez;
+  // os resumos à vista: os das vezes que já passaram; o da vez de agora entra quando ela termina
+  const passadas = trecho.tipo === "fim" ? m.vezes : m.vezes.slice(0, trecho.tipo === "vez" ? trecho.k : 0);
+  const entra = (t: number) => (movimento ? kf(v, [[0, 0], [t, 1]]) : 1);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: cor.nota, fontFamily: ui }}>
-      <div style={{ height: TOPO, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "0 20px", font: `600 ${coluna ? 17 : 20}px ${ui}`, color: cor.texto }}>
-        <span>{elenco.pergunta}</span>
-        <span style={{ font: `600 11px ${mono}`, letterSpacing: ".08em", textTransform: "uppercase", color: cor.fraco }}>ilustração</span>
+    <AbsoluteFill style={{ backgroundColor: cor.nota, fontFamily: ui, padding: coluna ? "14px 14px" : "18px 22px", display: "flex", flexDirection: "column", gap: coluna ? 12 : 14 }}>
+      <div style={{ display: "flex", flexDirection: coluna ? "column" : "row", alignItems: coluna ? "flex-start" : "baseline", justifyContent: "space-between", gap: coluna ? 2 : 12 }}>
+        <span style={{ font: `700 ${coluna ? 18 : 21}px ${ui}`, color: cor.texto }}>{m.pergunta}</span>
+        <span style={{ font: `600 10.5px ${mono}`, letterSpacing: ".08em", textTransform: "uppercase", color: cor.fraco }}>ilustração</span>
       </div>
-      <svg viewBox={`0 0 ${vista.w} ${vista.h}`} width={vista.w} height={vista.h} style={{ position: "absolute", left: 0, top: TOPO }}>
-        <defs>
-          {([["", cor.fraco], ["-acesa", cor.acento]] as const).map(([sufixo, c]) => (
-            <marker key={sufixo} id={`${marca}${sufixo}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill={c} />
-            </marker>
-          ))}
-        </defs>
-        {Object.entries(sx).map(([id, s]) => {
-          const op = s.extra ? (jeito && cena.usa.includes(id) ? kf(v, [[0, 0], [0.4, 1]]) : 0) : usa(id) ? 1 : APAGADO;
-          return op ? <Flecha key={id} s={s} id={marca} opacidade={op} acesa={pt?.andando.includes(id)} /> : null;
-        })}
-        {/* a cliente e a mensagem dela */}
-        <Caixinha c={cx.cliente} e={estilo("cliente")}>
-          <text x={cx.cliente.x + 14} y={cx.cliente.y + 24} style={{ font: `600 13px ${ui}`, fill: cor.fraco }}>{quem}</text>
-          {linhas(mensagem, coluna ? 40 : 22).map((l, i) => (
-            <text key={i} x={cx.cliente.x + 14} y={cx.cliente.y + 48 + i * 21} style={{ font: `16px ${ui}`, fill: cor.texto }}>{l}</text>
-          ))}
-        </Caixinha>
-        {/* o laço */}
-        <Caixinha c={cx.decidir} e={estilo("decidir")}><Nome c={cx.decidir} texto={n.decidir} dy={-18} /><Fichas c={cx.decidir} quem={n.quem} acesa={ficha} /></Caixinha>
-        <Caixinha c={cx.agir} e={estilo("agir")}><Nome c={cx.agir} texto={n.agir} /></Caixinha>
-        <Caixinha c={cx.observar} e={estilo("observar")}><Nome c={cx.observar} texto={n.observar} /></Caixinha>
-        <Caixinha c={cx.responder} e={estilo("responder")}>
-          <Nome c={cx.responder} texto={fim ? `${n.responder} ${fim.resultado === "certo" ? "✓" : "✗"}` : n.responder} />
-        </Caixinha>
-        {/* o sistema da loja, com as ferramentas que o agente chama; a chamada desta cena acende */}
-        <Caixinha c={cx.sistema} e={estilo("sistema")}>
-          <text x={cx.sistema.x + 14} y={cx.sistema.y + 24} style={{ font: `600 14px ${ui}`, fill: cor.texto }}>{n.sistema}</text>
-          {elenco.ferramentas.map((f, i) => (
-            <text key={f} x={cx.sistema.x + 14} y={cx.sistema.y + 46 + i * 19} style={{ font: `${f === chamada ? 700 : 400} 12.5px ${mono}`, fill: f === chamada ? cor.acento : cor.fraco }}>{f}</text>
-          ))}
-        </Caixinha>
-        {/* a pergunta, andando */}
-        {pt ? <circle cx={pt.xy[0]} cy={pt.xy[1]} r={8} fill={cor.acento} stroke={cor.papel} strokeWidth={3} opacity={pt.aparece} /> : null}
-      </svg>
-      <div style={{ position: "absolute", left: 0, right: 0, top: TOPO + vista.h, padding: coluna ? "6px 16px" : "8px 24px", display: "grid", gap: 6 }}>
-        <div style={{ font: `${coluna ? 16 : 19}px/1.35 ${ui}`, color: cor.texto, opacity: kf(v, [[0, 0], [0.4, 1]]) }}>{cena.legenda}</div>
-        <div style={{ font: `${coluna ? 13.5 : 15}px/1.4 ${ui}`, color: cor.fraco }}>{passo}</div>
-      </div>
+
+      {/* o que já passou: uma linha por vez */}
+      {passadas.length || r ? (
+        <div style={{ display: "grid", gap: trecho.tipo === "fim" ? 10 : 6, ...(trecho.tipo === "fim" ? { marginTop: "auto" } : {}) }}>
+          {passadas.map((p) => <Resumo key={`${p.jeito}-${p.pergunta}`} vez={p} opacidade={1} coluna={coluna} />)}
+          {vez && r ? <Resumo vez={vez} opacidade={r} coluna={coluna} /> : null}
+        </div>
+      ) : null}
+
+      {/* a abertura: os três jeitos que vão passar */}
+      {trecho.tipo === "abertura" ? (
+        <div style={{ opacity: entra(0.5), display: "grid", gap: 14, alignContent: "center", flex: 1 }}>
+          <div style={{ font: `${coluna ? 18 : 21}px/1.4 ${ui}`, color: cor.texto }}>{trecho.legenda}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {tresJeitos.modos.map((j, i) => (
+              <span key={j.id} style={{ padding: "6px 12px", borderRadius: 999, border: `1.5px solid ${cor.linha}`, background: cor.papel, font: `600 ${coluna ? 14 : 15}px ${ui}`, color: cor.texto }}>
+                {i + 1}. {j.nome}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {/* a vez de agora */}
+      {vez ? (
+        <div style={{ opacity: 1 - r, display: "grid", gap: coluna ? 9 : 10, alignContent: "start", padding: coluna ? "12px 12px" : "14px 16px", borderRadius: 14, border: `1.5px solid ${cor.linha}`, background: "color-mix(in srgb, var(--papel, #f6f2ea) 55%, transparent)" }}>
+          <div style={{ opacity: entra(0.4), display: "grid", gap: 2 }}>
+            <b style={{ font: `700 ${coluna ? 17 : 19}px ${ui}`, color: cor.texto }}>{vez.nome}</b>
+            <span style={{ font: `${coluna ? 13 : 14}px ${ui}`, color: cor.fraco }}>quem decide: <b style={{ color: cor.texto, fontWeight: 600 }}>{vez.quemDecide}</b></span>
+          </div>
+          <div style={{ opacity: entra(0.6), display: "grid", gap: 2, padding: coluna ? "8px 10px" : "9px 12px", borderRadius: 10, background: cor.papel, border: `1.5px solid ${cor.linha}` }}>
+            <span style={{ font: `600 12px ${ui}`, color: cor.fraco }}>{vez.cliente} escreve:</span>
+            <span style={{ font: `${coluna ? 16 : 17}px/1.35 ${ui}`, color: cor.texto }}>“{vez.mensagem}”</span>
+          </div>
+          {vez.cartoes.filter((c) => c.em <= v).map((c, i) => <PassoVisto key={i} c={c} v={v} nomes={n} movimento={movimento} coluna={coluna} />)}
+          {vez.cartoes[vez.cartoes.length - 1].em <= v ? (
+            <div style={{ font: `600 ${coluna ? 13 : 14}px/1.35 ${ui}`, color: vez.certo ? cor.ok : cor.aviso, paddingLeft: 2 }}>{vez.porque}</div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* no fim, a conclusão, logo depois dos resumos */}
+      {trecho.tipo === "fim" ? (
+        <div style={{ opacity: entra(0.5), marginBottom: "auto", padding: coluna ? "12px 12px" : "14px 16px", borderRadius: 12, background: cor.papel, border: `1.5px solid ${cor.linha}`, font: `600 ${coluna ? 17 : 19}px/1.4 ${ui}`, color: cor.texto }}>
+          {trecho.legenda}
+        </div>
+      ) : null}
     </AbsoluteFill>
   );
 };
 
 /** As medidas do vídeo de cada desenho. */
-export function quadroDoLaco(props: Pick<Entrada, "laco" | "tresJeitos">, desenho: Desenho) {
-  const m = montarCenas(props);
+export function quadroDoLaco(props: Entrada, desenho: Desenho) {
+  const m = montarTrechos(props);
   const { w, h } = tamanho(desenho);
   return { fps: 30, largura: w, altura: h, duracao: m.quadros };
 }

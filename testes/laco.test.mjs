@@ -1,53 +1,85 @@
-/** O laço do agente, no 1.1 (docs/capacidades/laco-do-agente.md): o elenco sai dos dados do livro, e o desenho cabe, sem
- *  peça em cima de peça, no computador e no celular. E a base das animações, que o mapa da introdução já usa. */
+/** A figura 1.1 (docs/capacidades/laco-do-agente.md): quem decide o próximo passo, um jeito por vez. Os passos são os de
+ *  tres-jeitos.json, em frase curta; cada vez vira uma linha de resumo; o investimento é no fluxo fixo, antes da
+ *  frigideira. Tudo sai dos dados do livro e cabe no docs/RITMO.md. E a base das animações cena a cena, que o mapa da
+ *  introdução usa. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const json = (p) => JSON.parse(ler(p));
-const { montarElenco, caixas, setas, VISTA, PECAS } = await import("../src/components/livro/laco/laco.ts");
+const L = await import("../src/components/livro/laco/laco.ts");
 const laco = json("livros/ciclo-de-vida/figuras/laco.json");
 const tresJeitos = json("livros/ciclo-de-vida/figuras/tres-jeitos.json");
 const clientes = json("livros/ciclo-de-vida/projeto/dados/clientes.json");
+const m = L.montarTrechos({ laco, tresJeitos, clientes });
 
-test("o elenco é o da loja: a cliente do e-mail da pergunta, a mensagem dela e as ferramentas que o agente chama", () => {
-  const e = montarElenco({ laco, tresJeitos, clientes });
-  assert.equal(e.cliente.nome, "Carla Mendes");
-  assert.equal(e.cliente.mensagem, "Quando chega o BT-1003?");
-  assert.deepEqual(e.ferramentas, ["consultar_pedido", "buscar_produto"]);
-  assert.deepEqual([e.nomes.decidir, e.nomes.agir, e.nomes.observar, e.nomes.responder], ["decidir", "agir", "observar", "responder"]);
+test("a cliente é a do e-mail da pergunta, nos clientes da loja", () => {
+  assert.equal(L.montarElenco({ tresJeitos, clientes }).nome, "Carla Mendes");
   const outra = structuredClone(tresJeitos);
   outra.perguntas[0].texto = "Quando chega? E-mail ninguem@exemplo.test";
-  assert.throws(() => montarElenco({ laco, tresJeitos: outra, clientes }), /não é de um cliente da loja/);
+  assert.throws(() => L.montarElenco({ tresJeitos: outra, clientes }), /não é de um cliente da loja/);
 });
 
-test("no computador e no celular, cada peça cabe no desenho e nenhuma fica em cima da outra; as setas também cabem", () => {
-  for (const desenho of ["largo", "coluna"]) {
-    const c = caixas(desenho), v = VISTA[desenho];
-    for (const p of PECAS) {
-      const b = c[p];
-      assert.ok(b.x >= 0 && b.y >= 0 && b.x + b.w <= v.w && b.y + b.h <= v.h, `${desenho}: ${p} sai do desenho`);
-      for (const q of PECAS) {
-        if (p >= q) continue;
-        const o = c[q], folga = 8;
-        const longe = b.x + b.w + folga <= o.x || o.x + o.w + folga <= b.x || b.y + b.h + folga <= o.y || o.y + o.h + folga <= b.y;
-        assert.ok(longe, `${desenho}: ${p} e ${q} se encostam`);
-      }
-    }
-    for (const [id, s] of Object.entries(setas(desenho, laco.setas))) {
-      for (const [x, y] of [s.de, s.para, ...(s.em ? [s.em] : [])]) assert.ok(x >= 0 && x <= v.w && y >= 0 && y <= v.h, `${desenho}: a seta ${id} sai do desenho`);
-      if (!s.rotulo) continue;
-      // o rótulo (centrado em `em`, 13 px, cerca de 6,6 px por letra) não fica embaixo de nenhuma caixa
-      const r = { x: s.em[0] - (s.rotulo.length * 6.6) / 2, y: s.em[1] - 12, w: s.rotulo.length * 6.6, h: 16 };
-      assert.ok(r.x >= 0 && r.x + r.w <= v.w, `${desenho}: o rótulo "${s.rotulo}" sai do desenho`);
-      for (const p of PECAS) {
-        const o = c[p];
-        assert.ok(r.x + r.w <= o.x || o.x + o.w <= r.x || r.y + r.h <= o.y || o.y + o.h <= r.y, `${desenho}: o rótulo "${s.rotulo}" fica embaixo de ${p}`);
-      }
-    }
-    assert.ok(setas(desenho, laco.setas).de_novo.volta, `${desenho}: a volta do laço não está marcada`);
+test("um jeito por vez, na ordem da história: o modelo sozinho e o fluxo com o pedido, o fluxo e o agente com a frigideira", () => {
+  assert.deepEqual(m.vezes.map((v) => [v.jeito, v.pergunta]), [["modelo", "pedido"], ["fluxo", "pedido"], ["fluxo", "produto"], ["agente", "produto"]]);
+  assert.deepEqual(m.trechos.map((t) => t.tipo), ["abertura", "vez", "vez", "vez", "vez", "fim"]);
+});
+
+test("cada vez mostra os passos do seu jeito, em frase curta de uma linha, devagar, e termina como nos três jeitos", () => {
+  for (const v of m.vezes) {
+    const passos = tresJeitos.modos.find((x) => x.id === v.jeito).passos[v.pergunta];
+    assert.equal(v.mensagem, passos[0].texto, "a mensagem é a da cliente");
+    assert.deepEqual(v.cartoes.map((c) => c.texto), passos.slice(1).map((p) => p.texto), `${v.nome}, ${v.pergunta}`);
+    for (const c of v.cartoes) if (c.quem !== "resposta") assert.ok(c.curto.length <= 48, `"${c.curto}" passa de uma linha`);
+    for (let i = 1; i < v.cartoes.length; i++) assert.ok(v.cartoes[i].em - v.cartoes[i - 1].em >= 2.5, `${v.nome}: um passo com menos de 2,5 s`);
+    const fim = passos[passos.length - 1];
+    assert.equal(v.certo, !!fim.certo);
+    assert.equal(v.porque, fim.certo ? laco.nomes.certo : fim.erro, "o resumo diz o porquê dos três jeitos");
   }
+  const semCurto = structuredClone(tresJeitos);
+  delete semCurto.modos[1].passos.pedido[1].curto;
+  assert.throws(() => L.montarTrechos({ laco, tresJeitos: semCurto, clientes }), /não tem a frase curta/);
+});
+
+test("só o agente decide de novo; no fluxo fixo, quem decide é o código; o modelo sozinho não decide", () => {
+  const vez = (j, q) => m.vezes.find((v) => v.jeito === j && v.pergunta === q);
+  assert.equal(vez("modelo", "pedido").cartoes.filter((c) => c.decide).length, 0);
+  for (const q of ["pedido", "produto"]) assert.ok(vez("fluxo", q).cartoes.filter((c) => c.decide).every((c) => c.quem === "código"));
+  assert.ok(vez("agente", "produto").cartoes.some((c) => c.deNovo && c.quem === "modelo"));
+  assert.ok(m.vezes.filter((v) => v.jeito !== "agente").every((v) => !v.cartoes.some((c) => c.deNovo)));
+});
+
+test("cada vez vira um resumo ao terminar, e o fim mostra só os resumos e a conclusão", () => {
+  for (const t of m.trechos.filter((x) => x.tipo === "vez")) {
+    const ultimo = t.vez.cartoes[t.vez.cartoes.length - 1];
+    assert.equal(L.resumindo(t, ultimo.em + 1.5), 0, `${t.vez.nome}: a resposta some antes de dar para ler`);
+    assert.ok(L.resumindo(t, t.segundos) > 0.99, `${t.vez.nome}: a vez não vira resumo`);
+  }
+  assert.equal(m.trechos[m.trechos.length - 1].tipo, "fim");
+});
+
+test("antes da frigideira, o leitor investe no que o fluxo fixo faz, e a certa é o primeiro passo dele", () => {
+  const p = L.pausaDe(m);
+  const t = m.trechos.find((x) => x.vez?.investir);
+  assert.deepEqual([t.vez.jeito, t.vez.pergunta], ["fluxo", "produto"]);
+  assert.ok(p.quadro > Math.round(t.inicio * L.FPS) && p.quadro < Math.round((t.inicio + t.vez.cartoes[0].em) * L.FPS), "a pausa não vem entre a mensagem e o primeiro passo");
+  assert.match(t.vez.cartoes[0].texto.toLowerCase(), new RegExp(p.opcoes[p.certa]));
+  const errada = structuredClone(laco);
+  errada.vezes.find((v) => v.investir).investir.certa = 0;
+  assert.throws(() => L.pausaDe(L.montarTrechos({ laco: errada, tresJeitos, clientes })), /não é o que o fluxo fixo faz primeiro/);
+});
+
+test("a figura cabe no docs/RITMO.md: até 45 s, legendas de até 12 palavras", () => {
+  assert.ok(m.total <= 45, `${m.total} s`);
+  for (const l of [laco.abertura.legenda, laco.fim.legenda]) assert.ok(l.split(/\s+/).length <= 12, l);
+});
+
+test("a composição mostra uma vez por vez, sem câmera, sem colunas lado a lado e sem o diagrama abstrato", () => {
+  assert.equal(L.camera, undefined, "o laço ainda tem câmera");
+  const comp = ler("src/components/livro/laco/LacoAnimado.tsx");
+  assert.doesNotMatch(comp, /camera\(|setas\(|caixas\(/);
+  assert.doesNotMatch(comp, /repeat\(3/, "as três colunas lado a lado voltaram");
 });
 
 test("o mapa da introdução avança sobre a base das animações, e não tem um Player só dele", () => {
@@ -55,62 +87,6 @@ test("o mapa da introdução avança sobre a base das animações, e não tem um
   assert.match(ilha, /import AvancaCena from "\.\.\/palco\/AvancaCena"/);
   assert.doesNotMatch(ilha, /@remotion\/player/);
   assert.match(ler("src/components/livro/palco/AvancaCena.tsx"), /prefers-reduced-motion/);
-});
-
-/* as cenas (etapa 2): cada uma anda pelos passos de um jeito, e o quadro final soma os acertos */
-const { montarCenas, cortes, placar, rota } = await import("../src/components/livro/laco/laco.ts");
-
-test("cada cena anda pelos passos do seu jeito, da cliente à resposta, só por setas do laço, e termina como nos três jeitos", () => {
-  const m = montarCenas({ laco, tresJeitos });
-  for (const c of m.cenas.filter((x) => x.jeito)) {
-    const passos = tresJeitos.modos.find((x) => x.id === c.jeito).passos[c.pergunta];
-    assert.equal(c.paradas[0].peca, "cliente");
-    const fim = c.paradas[c.paradas.length - 1];
-    assert.equal(fim.peca, "responder");
-    assert.equal(fim.resultado, passos.find((p) => p.quem === "resposta").certo ? "certo" : "erro", `${c.jeito}, ${c.pergunta}`);
-    c.paradas.forEach((p, i) => { if (i) assert.ok(rota(c.paradas[i - 1].peca, p.peca), `${c.jeito}: de ${c.paradas[i - 1].peca} para ${p.peca}`); });
-    for (let i = 1; i < c.paradas.length; i++) assert.ok(c.paradas[i].em - c.paradas[i - 1].em >= 1, `${c.jeito}: um passo com menos de 1 s`);
-  }
-});
-
-test("só o agente decide de novo; o fluxo fixo segue a ordem do código; o modelo sozinho faz uma passada e não decide", () => {
-  const m = montarCenas({ laco, tresJeitos });
-  const cena = (j, q) => m.cenas.find((c) => c.jeito === j && c.pergunta === q);
-  assert.ok(cena("agente", "produto").usa.includes("de_novo"));
-  for (const [j, q] of [["fluxo", "pedido"], ["fluxo", "produto"], ["modelo", "pedido"]]) assert.ok(!cena(j, q).usa.includes("de_novo"), `${j}, ${q} decide de novo`);
-  assert.ok(cena("fluxo", "pedido").usa.includes("segue"));
-  for (const [j, q] of [["fluxo", "pedido"], ["agente", "produto"]]) assert.ok(cena(j, q).usa.includes("agir"), `${j}: a pergunta passa por agir, e ele fica apagado`);
-  assert.ok(cena("modelo", "pedido").usa.includes("direto") && !cena("modelo", "pedido").usa.includes("decidir"));
-  assert.deepEqual(cena("fluxo", "pedido").paradas.filter((p) => p.ficha).map((p) => p.ficha), ["codigo"]);
-  assert.deepEqual(cena("agente", "produto").paradas.filter((p) => p.ficha).map((p) => p.ficha), ["modelo", "modelo"]);
-});
-
-test("a animação cabe no docs/RITMO.md, e o quadro final soma os acertos dos três jeitos", () => {
-  const m = montarCenas({ laco, tresJeitos });
-  assert.ok(m.cenas.length <= 6 && m.total <= 45);
-  assert.equal(cortes(m).length, m.cenas.length);
-  assert.ok(m.cenas.some((c) => c.chave && c.jeito === "agente"), "o momento-chave é o do agente");
-  assert.ok(m.cenas[m.cenas.length - 1].final, "a última cena é o quadro final");
-  assert.deepEqual(placar(tresJeitos).map((p) => [p.nome, p.acertos]), [["só o modelo", [false, false]], ["fluxo fixo", [true, false]], ["agente", [true, true]]]);
-  const longa = structuredClone(laco);
-  longa.cenas[2].segundos = 4;
-  assert.throws(() => montarCenas({ laco: longa, tresJeitos }), /curta demais/);
-});
-
-/* no 1.1 (etapa 3): a figura no lugar dos três jeitos, com a pausa para investir na cena do agente */
-test("a pausa da cena do agente pergunta o que ele decide, antes de a ficha acender, e a certa é a decisão dos três jeitos", async () => {
-  const { pausaDe, FPS } = await import("../src/components/livro/laco/laco.ts");
-  const m = montarCenas({ laco, tresJeitos });
-  const p = pausaDe(m);
-  const cena = m.cenas.find((c) => c.investir);
-  assert.ok(cena?.chave && cena.jeito === "agente", "o investimento é na cena-chave, a do agente");
-  const decide = cena.paradas.find((x) => x.peca === "decidir");
-  assert.ok(p.quadro < Math.round((cena.inicio + decide.em) * FPS), "a pausa vem depois de a ficha acender");
-  assert.ok(p.quadro > Math.round((cena.inicio + cena.paradas[0].em) * FPS), "a pausa vem antes de a pergunta chegar");
-  assert.match(decide.texto, new RegExp(p.opcoes[p.certa]), "a opção certa não é a decisão do agente nos três jeitos");
-  const errada = structuredClone(laco);
-  errada.cenas.find((c) => c.investir).investir.certa = 0;
-  assert.throws(() => pausaDe(montarCenas({ laco: errada, tresJeitos })), /não é a decisão/);
 });
 
 test("o 1.1 tem a figura do laço no lugar dos três jeitos e do Pendente, com a figura em texto, e diz \"observar\"", async () => {
@@ -126,15 +102,6 @@ test("o 1.1 tem a figura do laço no lugar dos três jeitos e do Pendente, com a
   assert.doesNotMatch(mdx, /<Pendente o="Figura: o laço/);
   assert.match(mdx, /observar o resultado e decidir de novo/);
   assert.doesNotMatch(mdx, /cena a cena/, "o texto fala em cenas, e o gráfico é contínuo");
-});
-
-/* o laço inteiro à vista (etapa 5): sem câmera, o leitor vê o todo o tempo todo */
-test("a composição mostra o desenho inteiro em todo quadro, sem câmera", async () => {
-  const L = await import("../src/components/livro/laco/laco.ts");
-  assert.equal(L.camera, undefined, "o laço ainda tem câmera");
-  const comp = ler("src/components/livro/laco/LacoAnimado.tsx");
-  assert.match(comp, /viewBox=\{`0 0 \$\{vista\.w\} \$\{vista\.h\}`\}/, "o viewBox do desenho não é o desenho inteiro");
-  assert.doesNotMatch(comp, /camera\(/);
 });
 
 test("a figura do 1.1 toca contínua, só com play e pausar, e não cena a cena", () => {
