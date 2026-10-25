@@ -38,26 +38,23 @@ ficam escondidos, desligados do desenho.
 2. A animação: as 6 cenas, aprovadas antes no Studio, com o avançar, as apostas ao lado, menos movimento e modo direto.
 3. O "você está aqui" com o anel em miniatura.
 
-## Etapa 2, detalhada
+## Etapa 3, detalhada
 
-- **Arquivos:** `figuras/ciclo-animado.json` (as cenas), `ciclo/cenas.ts` (a linha do tempo, sem JSX),
-  `ciclo/CicloAnimado.tsx` (a composição), `ciclo/FiguraCiclo.tsx` (a ilha), `ciclo/Anel.tsx` (o estilo junto do
-  desenho, e os nós com realce), `MapaDoCiclo.astro`, `testes/ciclo-animado.test.mjs`. No `my-video`: a prévia no Studio.
-- **Muda:** seis cenas: o elenco; o pedido de outra pessoa pego em Planejar; a conta pega em Observar; a pergunta
-  imprevista falha no uso, cai em "Quando dá errado" e volta pela seta como caso da régua (o momento-chave, mais lento);
-  o modelo novo entra por Evoluir e volta a Construir; o fim, com Governar aceso. Cada problema fica na fase que o
-  pegou, com a aposta do leitor ao lado (lida da aposta da página). O leitor avança cena a cena; a fase por onde o
-  problema passa acende o cartão. Menos movimento: o avançar vai direto ao fim da cena. Modo direto: o quadro final.
-- **Antes da ilha:** as cenas vão ao Studio para o ok do responsável.
-- **Evidência:** `npm test` (as cenas são os problemas da aposta; a fase que pega cada um está no caminho dele; até 6
-  cenas, 45 s, 8 s por cena e 12 palavras por legenda); o teste falha sem as cenas; no navegador, as seis cenas com o
-  avançar, a aposta ao lado, os cartões acendendo, em 1280 e 360 px.
-- **Fora:** a miniatura (etapa 3).
+- **Arquivos:** `CicloAqui.astro`, `ciclo/Anel.tsx` (o desenho decorativo, sem foco nem rótulo), a página do capítulo
+  (`[capitulo].astro`, que passa os capítulos de cada fase), `testes/ciclo-animado.test.mjs`.
+- **Muda:** na abertura dos capítulos, a faixa de nomes vira o anel em miniatura (cerca de 120 px, só as formas), com a
+  fase do capítulo acesa, e ao lado "você está aqui: <fase> · cap. N" e o link para o mapa. Para leitor de tela, a
+  miniatura fica oculta e a lista das fases continua, com a atual marcada. No celular, a mesma miniatura: sem rótulos,
+  ela não fica ilegível.
+- **Evidência:** `npm test`; o teste novo falha com a faixa de hoje; capturas da abertura dos capítulos 1 e 2 em 1280
+  e 360 px.
+- **Fora:** outros livros (o "você está aqui" só aparece onde há `ciclo.json`).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `bc13d31` | `npm test` com 84 testes; o teste novo falha com o mapa de antes; no navegador: anel em 1280 e coluna em 360 px, o clique no nó abre e acende o cartão, na impressão e no modo direto os 8 cartões abertos, console limpo | Erick, 25/10/2026 |
+| 2 | `d5e1da3` | `npm test` com 88 testes (4 novos: as cenas contra a aposta e os limites do RITMO.md); na versão de antes só falta a animação; no navegador: as 6 cenas avançadas a clique, com a aposta real ao lado (✓, ✗ e "não apostou") e os cartões acendendo, em 1280 e 360 px, com menos movimento e no modo direto; console limpo; aprovada antes no Studio | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
