@@ -31,6 +31,10 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 - (5) Os termos e as definições ficam num JSON do livro (`termos.json`); o componente `Termos`, posto uma vez no
   capítulo, marca no navegador cada ocorrência no corpo, fora de código, SVG, vídeo, botão e link. Sem JS, o texto
   fica como está. Só a introdução usa, por ora: no capítulo 1 a régua é construída.
+- (6) O nó ganha o ícone `Info` do Lucide no canto e um nome que diz o que abre; o modal é um `<dialog>` nativo,
+  preenchido com o cartão da fase (que segue na página, escondido): fecha com Esc, no × ou fora. Os cartões voltam à
+  vista sem JS, no modo direto e na impressão. O balão do termo passa a `position: fixed`, para abrir também por
+  cima do modal.
 
 ## Peças
 
@@ -54,16 +58,15 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 6. Os cartões das fases num modal, aberto pelo nó da fase.
 7. "A conta que cresce" diz que é o gasto com o modelo.
 
-## Etapa atual: 5
+## Etapa atual: 6
 
-**Arquivos.** `livros/ciclo-de-vida/termos.json` (novo: a régua e a definição), `src/lib/termos.ts` (novo: acha os
-termos num texto), `src/components/livro/Termos.astro` (novo: marca e mostra a definição), `00-introducao.mdx`,
-`testes/termos.test.mjs` (novo).
+**Arquivos.** `ciclo/Anel.tsx` (o ícone no nó e o nome dele), `MapaDoCiclo.astro` (o modal, a dica e os cartões
+escondidos), `Termos.astro` (o balão por cima do modal), `testes/ciclo-animado.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha sem o código; na página, a régua sublinhada no texto, na
-resposta do "invista" e no pare e pense, e a definição aberta ao tocar.
+**Evidência.** Os testes do livro passam; o teste novo falha sem o código; no navegador, o nó com o ícone, o modal
+aberto pelo clique no nó (no desenho e no vídeo) e fechado com Esc, em 1280 e 390 px; os cartões à vista no modo direto.
 
-**Fora.** O texto dentro do desenho e do vídeo (SVG); a impressão, que fica com o texto como está.
+**Fora.** O conteúdo dos cartões; a miniatura do "você está aqui", que não abre nada.
 
 ## Registro
 
@@ -73,5 +76,6 @@ resposta do "invista" e no pare e pense, e a definição aberta ao tocar.
 | 2 | `da066d1` | 91 testes do livro; o teste novo (`vocabulario.test.mjs`) falha com o texto de antes ("Aposte em qual."); nenhum "apost…" nas páginas locais da introdução, dos capítulos 1 e 2 e do experimento | Erick, 25/10/2026 |
 | 3 | `429b6b7` | 92 testes do livro; o teste novo falha sem o código; quadros da composição renderizados pelo Remotion: a pergunta sem investimento, a afirmação com, "✓ onde você investiu" e "você investiu em Avaliar" na faixa | Erick, 25/10/2026 |
 | 4 | `5d8e572` | 93 testes do livro; o teste novo falha sem o código; a caixa aberta na página, com a lâmpada e o olho | Erick, 25/10/2026 |
+| 5 | `370b3ce` | 96 testes do livro; o teste novo falha sem o código; no navegador, 10 réguas marcadas na introdução e o balão aberto, em 1280 e 390 px | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
