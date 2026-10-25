@@ -35,3 +35,43 @@ test("um cartão por fase, com o nome e a pergunta à vista, e o resto dentro", 
     assert.ok(normal(c.text).includes(f.ganha), `o cartão de ${f.id} não tem o que o agente ganha`);
   }
 });
+
+/* a animação (etapa 2): as cenas respondem a aposta, nos limites do docs/RITMO.md */
+const { montarCenas, limites } = await import("../src/components/livro/ciclo/cenas.ts");
+const cenas = JSON.parse(ler("livros/ciclo-de-vida/figuras/ciclo-animado.json"));
+const aposta = JSON.parse(ler("livros/ciclo-de-vida/figuras/onde-se-pega.json"));
+const pagina = parse(ler("dist/ciclo-de-vida/00-introducao/index.html"));
+
+test("cada problema da aposta entra numa cena e para na fase que o pega, a resposta da aposta", () => {
+  const m = montarCenas({ ciclo, cenas, aposta });
+  const comProblema = m.cenas.filter((c) => c.problema !== undefined);
+  assert.deepEqual(comProblema.map((c) => c.problema).toSorted(), aposta.mensagens.map((_, i) => i));
+  for (const c of comProblema) {
+    const msg = aposta.mensagens[c.problema];
+    assert.equal(c.pega.nome, msg.opcoes[msg.fez], `"${msg.texto}"`);
+    assert.equal(c.ida[c.ida.length - 1].fase, c.pega.id);
+  }
+  assert.ok(m.cenas.some((c) => c.chave && c.volta.some((x) => x.fase === "avaliar")), "o momento-chave não volta a Avaliar");
+});
+
+test("a animação cabe no docs/RITMO.md: até 6 cenas, 45 s, 8 s por cena e 12 palavras por legenda", () => {
+  const m = montarCenas({ ciclo, cenas, aposta });
+  assert.ok(m.cenas.length <= 6, `${m.cenas.length} cenas`);
+  assert.ok(m.total <= 45, `${m.total} s`);
+  for (const c of m.cenas) {
+    assert.ok(c.segundos <= 8, `"${c.legenda}": ${c.segundos} s`);
+    assert.ok(c.legenda.split(/\s+/).length <= 12, `"${c.legenda}" passa de 12 palavras`);
+  }
+  assert.equal(limites(m).length, m.cenas.length);
+});
+
+test("cenas que contradizem a aposta não montam a figura", () => {
+  const trocada = structuredClone(cenas);
+  trocada.cenas.find((c) => c.problema === 1).caminho = ["planejar", "construir"];
+  assert.throws(() => montarCenas({ ciclo, cenas: trocada, aposta }), /a fase que pega o problema \(observar\) não está no caminho/);
+});
+
+test("o mapa da introdução tem a animação, além do desenho parado", () => {
+  assert.ok(pagina.querySelectorAll("astro-island").some((i) => (i.getAttribute("component-url") ?? "").includes("FiguraCiclo")), "o mapa não tem a animação");
+  assert.ok(pagina.querySelector('#mapa-do-ciclo svg[data-desenho="anel"]'), "sem JS, o desenho parado sumiu");
+});

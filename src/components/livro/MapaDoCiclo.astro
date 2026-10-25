@@ -5,13 +5,18 @@
  * da loja ganha e em que capítulo dentro. O nó e o cartão andam juntos: clicar num acende o outro. Os dados vêm de
  * `figuras/ciclo.json`; os capítulos, do `sumario.json`. Abrir um cartão não é ação do leitor (docs/RITMO.md).
  * Sem JS, os cartões abrem sozinhos (são <details>); no modo direto e na impressão, abrem todos.
+ * Com as cenas e a aposta, o desenho vira a animação (ciclo/FiguraCiclo.tsx), que o leitor avança cena a cena; sem JS e
+ * na impressão, fica o desenho parado.
  */
-import Anel from "./ciclo/Anel";
+import Anel, { ESTILO } from "./ciclo/Anel";
+import FiguraCiclo from "./ciclo/FiguraCiclo";
+import type { Entrada } from "./ciclo/cenas";
 
 type Fase = { id: string; nome: string; capitulos: number[]; pergunta: string; ganha: string; nas_fontes: string; transversal?: boolean };
 type Ciclo = { fases: Fase[]; fontes: { nome: string; titulo: string; url: string }[] };
-interface Props { ciclo: Ciclo; sumario: { capitulos: { numero: number; titulo: string }[] }; numero: string; legenda: string; aqui?: string }
-const { ciclo, sumario, numero, legenda, aqui = "planejar" } = Astro.props;
+interface Props { ciclo: Ciclo; sumario: { capitulos: { numero: number; titulo: string }[] }; numero: string; legenda: string; aqui?: string;
+  cenas?: Entrada["cenas"]; aposta?: Entrada["aposta"] }
+const { ciclo, sumario, numero, legenda, aqui = "planejar", cenas, aposta } = Astro.props;
 const titulo = (n: number) => sumario.capitulos.find((c) => c.numero === n)?.titulo ?? (() => { throw new Error(`MapaDoCiclo: o capítulo ${n} não está no sumário`); })();
 const caps = (f: Fase) => f.capitulos.map((n) => `cap. ${n}`).join(" e ");
 /* os cartões na ordem do anel: a ida, Evoluir, e Governar por último */
@@ -23,6 +28,7 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
       <Anel fases={ciclo.fases} desenho="anel" aceso={aqui} />
       <Anel fases={ciclo.fases} desenho="coluna" aceso={aqui} />
     </div>
+    {cenas && aposta && <FiguraCiclo client:visible={{ rootMargin: "400px" }} ciclo={ciclo} cenas={cenas} aposta={aposta} />}
     <div class="mc-cartoes">
       {ordem.map((f) => (
         <details class="mc-cartao" data-cartao={f.id} id={`fase-${f.id}`} data-aceso={f.id === aqui ? "" : undefined}>
@@ -57,6 +63,8 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
       n.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); acender(n.dataset.no!, true); } });
     });
     cartoes.forEach((c) => c.addEventListener("toggle", () => { if (c.open && !emLote) acender(c.dataset.cartao!, false); }));
+    /* a animação avisa por onde o problema passa (e qual nó do vídeo foi clicado) */
+    fig.addEventListener("ciclo:fase", (e) => { const { id, abrir } = (e as CustomEvent<{ id: string; abrir: boolean }>).detail; acender(id, abrir); });
     /* no modo direto e na impressão, todos abertos */
     const todos = (sim: boolean) => { emLote = true; cartoes.forEach((c) => { c.open = sim; }); setTimeout(() => { emLote = false; }); };
     if (document.documentElement.hasAttribute("data-direto")) todos(true);
@@ -65,27 +73,13 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
   });
 </script>
 
+<Fragment set:html={`<style>${ESTILO}</style>`} />
+
 <style is:global>
   .mc { margin: 1.8em auto 2em }
   .mc-quadro { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 16px; display: grid; gap: 14px; font: 15px/1.5 var(--f-ui) }
   .mc-desenho svg { display: block; width: 100%; height: auto }
   .mc-desenho .an-coluna { display: none }
-
-  /* o desenho */
-  .an-halo { fill: none; stroke: var(--linha); stroke-width: 1.5; stroke-dasharray: 6 6 }
-  .an-ida { fill: none; stroke: var(--ink-2); stroke-width: 1.6; opacity: .75 }
-  .an-seta, .an-seta-evoluir { fill: var(--ink-2) }
-  .an-erro { fill: none; stroke: var(--aviso); stroke-width: 3 }
-  .an-seta-erro { fill: var(--aviso) }
-  .an-rotulo-erro { font: 600 13px var(--f-ui); fill: var(--aviso) }
-  .an-fundo-rotulo { fill: var(--nota) }
-  .an-evoluir { fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-dasharray: 5 4 }
-  .an-no { cursor: pointer; outline: none }
-  .an-caixa { fill: var(--papel); stroke: var(--linha); stroke-width: 1.5 }
-  .an-no:hover .an-caixa, .an-no:focus-visible .an-caixa { stroke: var(--acento) }
-  .an-no.an-aceso .an-caixa { stroke: var(--acento); stroke-width: 2.5; fill: color-mix(in srgb, var(--acento) 10%, var(--papel)) }
-  .an-nome { font: 600 15px var(--f-ui); fill: var(--ink) }
-  .an-cap { font: 12px var(--f-mono); fill: var(--ink-2) }
 
   /* os cartões */
   .mc-cartoes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
@@ -104,6 +98,18 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
   .mc-c-fontes { font-size: 13px !important }
   .mc figcaption { margin-top: 8px; font: 13.5px/1.5 var(--f-ui); color: var(--ink-2) }
 
+  /* a animação: no lugar do desenho parado, quando a ilha carrega; o botão de avançar, discreto, embaixo */
+  /* antes de a ilha carregar, 1 px e não display: none: o client:visible só carrega o que chega a aparecer na tela */
+  .mc-video { height: 1px; overflow: hidden }
+  .mc[data-animado] .mc-video { height: auto; overflow: visible }
+  .mc[data-animado] .mc-desenho { display: none }
+  .mc-avancar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; font: 13px var(--f-ui); color: var(--ink-2) }
+  .mc-avancar button { border: 1px solid var(--linha); border-radius: 999px; background: var(--papel); color: var(--ink); padding: 6px 14px;
+    font: 600 14px var(--f-ui); cursor: pointer }
+  .mc-avancar button:hover { border-color: var(--acento) }
+  .mc-avancar button:disabled { cursor: default; opacity: .65 }
+  .mc-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+
   @media (max-width: 640px) {
     .mc-quadro { padding: 10px }
     .mc-desenho .an-anel { display: none }
@@ -111,5 +117,5 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
     .mc-cartoes { grid-template-columns: 1fr }
   }
   /* na impressão, os cartões abertos, mesmo onde o navegador não avisa antes de imprimir */
-  @media print { .mc-cartao { break-inside: avoid } .mc-cartao::details-content { content-visibility: visible; display: block } .mc-c-topo::after { content: none } }
+  @media print { .mc .mc-video { display: none !important } .mc[data-animado] .mc-desenho { display: block } .mc-cartao { break-inside: avoid } .mc-cartao::details-content { content-visibility: visible; display: block } .mc-c-topo::after { content: none } }
 </style>

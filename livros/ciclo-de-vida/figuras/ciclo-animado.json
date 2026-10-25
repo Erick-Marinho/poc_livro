@@ -1,0 +1,17 @@
+{
+  "sobre": "As cenas da animação do mapa do ciclo, na introdução (MapaDoCiclo; docs/capacidades/ciclo-animado.md). Cada cena com problema aponta uma mensagem da aposta (figuras/onde-se-pega.json, pelo número); o caminho são fases do ciclo.json, e a fase que pega o problema na aposta está nele. O problema para na fase que o pega; o resto do caminho é a volta, que um fantasma percorre. O teste confere isso e os limites do docs/RITMO.md.",
+  "pergunta": "Onde cada problema é pego?",
+  "cenas": [
+    { "legenda": "Quatro problemas e um ciclo. Onde cada um é pego?", "segundos": 5 },
+    { "problema": 2, "rotulo": "pedido de outra pessoa", "caminho": ["planejar"], "segundos": 6,
+      "legenda": "Antes de existir código, ele já é um caso da régua." },
+    { "problema": 1, "rotulo": "conta que cresce", "caminho": ["planejar", "construir", "avaliar", "por-no-ar", "observar"], "segundos": 7,
+      "legenda": "A conta só aparece olhando o que aconteceu em cada conversa." },
+    { "problema": 0, "rotulo": "pergunta imprevista", "caminho": ["planejar", "construir", "avaliar", "por-no-ar", "observar", "errado", "avaliar"],
+      "falha": "observar", "chave": true, "segundos": 8,
+      "legenda": "Ninguém previu: falha no uso e volta como caso novo da régua." },
+    { "problema": 3, "rotulo": "modelo novo", "caminho": ["evoluir", "construir"], "segundos": 7,
+      "legenda": "Trocar o modelo é Evoluir: volta a Construir, medido pela mesma régua." },
+    { "legenda": "E Governar vale em todas: quem pode o quê, e quem decidiu.", "governar": true, "segundos": 5 }
+  ]
+}
