@@ -23,13 +23,10 @@ A regra está em `docs/RITMO.md`; este plano é o caminho até ela valer no buil
 - (3a) As mensagens das ações vêm do `referencia.jsonl`; o que o agente apressado fez e as frases da troca de prompt são
   ilustração, e a página diz.
 
-## Etapa atual: 3a
+## Etapa atual: 3b
 
-Arquivos: `components/livro/Aposta.astro`, `Pilhas.astro`, `Troca.astro`; `figuras/agente-apressado.json` e
-`figuras/troca-de-prompt.json` (o que é ilustração); o capítulo 1 (1.2 a 1.4); `scripts/ritmo.mjs` (os três contam);
-os testes. As mensagens vêm do `referencia.jsonl` pelo id, e o build falha se o caso não existir. No modo direto, as
-três mostram a resposta sem pedir a ação. Evidência: o relógio do capítulo 1 sem trecho acima de 400; as três
-funcionando na página; teste de cada uma. Fica fora: o experimento (3b) e falhar no build (3c).
+A skill `revisar-ritmo` no experimento do segundo cérebro: a proposta primeiro, a decisão do Erick depois, e só então
+a mudança no texto. Evidência: a proposta; depois, o relógio do experimento sem trecho acima de 400.
 
 ## Registro
 
@@ -37,3 +34,4 @@ funcionando na página; teste de cada uma. Fica fora: o experimento (3b) e falha
 |---|---|---|---|
 | 1 | `f4435ed` | o relógio dos textos de hoje (788 no capítulo 1, 412 no experimento); teste do que conta como ação | 25/10 |
 | 2 | skill salva | a skill `revisar-ritmo` revisada e salva pelo Erick; lê o `RITMO.md`, não guarda número | 25/10 |
+| 3a | `fc10873` | o capítulo 1 sem trecho acima de 400 (788 virou 39, 183, 189, 230); as três ações usadas na página | 25/10 |
