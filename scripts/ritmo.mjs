@@ -12,6 +12,7 @@ export const AVISO = 200, FALHA = 400;
 
 /* cada componente: conta como ação (pede uma decisão do leitor) ou não. Novo componente sem classificação para tudo. */
 const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exercicio: true, Rastro: true, Aposta: true, Pilhas: true, Troca: true,
+  Rascunho: true, /* a ação sugerida pela skill: conta como se aceita, para o relógio mostrar o ritmo da proposta */
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
   Nota: false, Terminal: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
   Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false };

@@ -44,3 +44,14 @@ test("um Rascunho só aceita uma ação do leitor, e diz se o dado é real ou il
   assert.throws(() => conferirRascunho({ acao: "Taximetro", dado: "real: x" }), /Taximetro não existe no livro/);
   assert.throws(() => conferirRascunho({ acao: "Aposta", dado: "o referencia.jsonl" }), /começa com "real: " ou "ilustração: "/);
 });
+
+test("nenhum capítulo ou experimento publica com Rascunho: cada um vira o componente de verdade, ou sai", () => {
+  const sobram = textos().flatMap(({ nome, texto: mdx }) => mdx.split("\n").flatMap((l, i) => /^<Rascunho\b/.test(l)
+    ? [`${nome}, linha ${i + 1}: ${l.match(/acao="([^"]+)"/)?.[1] ?? "?"}`] : []));
+  assert.deepEqual(sobram, [], `rascunho de ação ainda no texto (docs/capacidades/ritmo-no-texto.md); troque pelo componente ou apague:\n${sobram.join("\n")}`);
+});
+
+test("o relógio conta o Rascunho como ação, e o texto de dentro não entra", () => {
+  const t = medir(texto(`${vinte}\n<Rascunho acao="Pilhas" frase="f" verbo="separa" dado="real: x">\n${vinte}\n</Rascunho>\n${vinte}`));
+  assert.deepEqual(t.map((x) => [x.palavras, x.ate]), [[20, "Rascunho"], [20, null]]);
+});
