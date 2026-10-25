@@ -104,16 +104,14 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
    livro, o modo direto e o movimento reduzido no último quadro, e o teste.
 7. Sem JS e na impressão: a conversa do R01 em texto.
 
-## Etapa 6, detalhada
+## Etapa 7, detalhada
 
-- **Arquivos:** `agente/cenarios.ts`, `agente/tempos.ts` e `agente/FiguraAgenteVideo.tsx` (novos); `agente/AgenteAoVivo.tsx` (troca);
-  `agente/cena.ts` e `agente/agente.css` (saem); `FiguraAgente.astro`; `testes/figura-agente.test.mjs` (novo).
-  No `my-video`: o Studio importa a composição daqui.
-- **Muda:** o prefácio mostra o vídeo de 43 s no Player, só com tocar e pausar. O nome e as iniciais da loja vêm do
-  `loja.json`. O `@xyflow/react` fica (o rastro usa).
-- **Evidência:** `npm test`; o teste novo falha com a figura de antes; o build continua falhando com a escolha do R12
-  trocada; o Studio do `my-video` abre a composição daqui; a página vista pelo responsável.
-- **Fora:** sem JS e impressão (etapa 7).
+- **Arquivos:** `FiguraAgente.astro`; `testes/figura-agente.test.mjs`.
+- **Muda:** abaixo do vídeo, um trecho estático com a conversa do R01 (a pergunta, a resposta e uma linha com o que o
+  agente consultou, o selo e a decisão), montado dos mesmos cenários. Escondido na tela; aparece na impressão
+  (`@media print`, que esconde o vídeo) e sem JS (`<noscript>` com a mesma troca). Cores do papel, para imprimir.
+- **Evidência:** `npm test`; o teste novo falha antes do código; capturas sem JS e com a mídia de impressão.
+- **Fora:** o vídeo no celular (decidido: fica pequeno).
 
 ## Registro
 
@@ -123,5 +121,6 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 | 2 | `9d5899c` | `npm test`; o build falha com a escolha do R12 trocada e com o R12 visitando "política"; capturas dos 4 cenários | Erick, 23/10/2026 |
 | 3 | `94ea90d` + correção `1d22089` | `npm test`; capturas do selo R12, abas 2×2, movimento reduzido, sem JS e impressão; contraste das pílulas; build rejeita marca de 21 caracteres; selo corrigido por palavras conferido em 1100 px | Erick, 23/10/2026 |
 | 4 | `4d862d3` | `npm test`; o build falha com a escolha do R12 trocada e com trecho fora da política; capturas dos 4 cenários em 1100 px, celular em 390 px (iframe), movimento reduzido e sem JS; console sem mensagens | Erick, 23/10/2026 |
+| 6 | `c5618ab` + revisão `cd7bc20` | `npm test` com 75 testes (4 da figura: o vídeo, os 45 s, a aposta antes da decisão, o roteiro que contradiz o contrato); o teste falha com a figura antiga (worktree); no navegador (Chrome headless, build de produção): pôster "45 s · 4 situações", parada na aposta aos 17,9 s com o foco no 1º botão, resultado "o contrato decidiu recusar", fim aos 45,8 s, console limpo; quadros renderizados da câmera e da legenda | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
