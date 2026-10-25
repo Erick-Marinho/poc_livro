@@ -14,16 +14,15 @@ quando uma escala explica melhor, e deixa o agente do capítulo 2 num ponto dela
 
 ## Decisões
 
-- (0) Ideias de um livro da O'Reilly (o laço, a autonomia delimitada, a escala) entram sem texto, tabela ou figura
-  dele, e com citação.
+- (0) Ideias de *AI Agents: The Definitive Guide* (Nicole Koenigstein, O'Reilly, 2026): o laço, a autonomia
+  delimitada e a escala entram sem texto, tabela ou figura dele, e com citação no 1.1.
 - (1) A seção do contrato abre com a política da loja, que já é um combinado; o texto que já existia (a palavra, o
   Meyer, a troca de prompt, a definição) fica nela.
 - (2) O laço será a primeira cena do fluxograma animado do ciclo, uma capacidade à parte; até lá, `Pendente` no 1.1.
 
-## Etapa atual: 3
+## Etapa atual: nenhuma
 
-O pare e pense depois da figura 2.1 pergunta onde o agente fica na escala do capítulo 1; a resposta: no roteador, e o
-capítulo 3 o leva a agente. Um teste confere que o 2.1 diz "roteador". Evidência: `npm test`; a página.
+Capacidade fechada em 25/10/2026. Fica para depois: o laço do 1.1 (`Pendente`), primeira cena do fluxograma animado.
 
 ## Registro
 
@@ -31,3 +30,4 @@ capítulo 3 o leva a agente. Um teste confere que o 2.1 diz "roteador". Evidênc
 |---|---|---|---|
 | 1 | `aa39ef2` | `npm test` com 76 testes; o menu com 1.4 "O que é um contrato" e 1.5 "As quatro decisões"; o relógio da 1.4 em 273 (aviso) | 25/10 |
 | 2 | `347782d` · `44a8717` · `e5740ca` | o texto do 1.1 (atendente, escala, limite); a skill escreveu 2 rascunhos (9 linhas, 0 removidas); a escala virou Aposta com teste, o laço virou Pendente; o 1.1 em 161 · 196 · 97 · 112 | 25/10 |
+| 3 | `0945922` | o 2.1 diz "No roteador", conferido no teste; o relógio do 2.1 igual (111 · 67); a citação do livro no 1.1 | 25/10 |
