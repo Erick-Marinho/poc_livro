@@ -38,7 +38,7 @@ import saidas from "./saidas.json";
 
 Circula por aí um tutorial de "segundo cérebro 100% local": você instala um app, liga o seu e-mail, a sua agenda e as gravações das suas reuniões, e ele monta um grafo das suas notas que responde perguntas sobre o seu trabalho ([o artigo do Daily Dose of Data Science](https://www.dailydoseofds.com/p/build-your-own-100-local-ai-second-brain/)). A promessa é boa. Três coisas nela não fecham.
 
-<Aposta dados={promessas} pergunta="O artigo promete três coisas. Antes de ler, aposte: cada uma vale inteira, vale só em parte, ou o artigo não mostra?" />
+<Aposta dados={promessas} pergunta="O artigo promete três coisas. Antes de ler, invista: cada uma vale inteira, vale só em parte, ou o artigo não mostra?" />
 
 O "100% local" vale para o modelo, e só se ele rodar na sua máquina: o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem. A tese central (um resumo não acompanha o que mudou, como um prazo adiado entre dois e-mails) é afirmada, mas não aparece funcionando. E nada é medido: não há um número que diga quantas perguntas o cérebro acerta.
 
@@ -78,7 +78,7 @@ De quando é cada nota. As três que dizem 14/11 são de 20/10 a 03/11; o e-mail
 
 ## Mão na massa
 
-O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno rodando no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você aposta no que vai sair.
+O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno rodando no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você investe no que vai sair.
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua", "4": "O modelo", "5": "As pessoas" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do experimento. As respostas do modelo (llama3.2:3b, no Ollama) foram gravadas uma vez e são repetidas pelo site." />
 

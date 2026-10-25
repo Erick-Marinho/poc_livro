@@ -122,8 +122,8 @@ const Faixa = ({ cena, v, apostas, aposta, coluna, top }: { cena: Cena; v: numbe
         <div style={{ font: `${coluna ? 14 : 16}px/1.4 ${ui}`, color: cor.fraco, opacity: kf(v, [[pegaEm + 0.2, 0], [pegaEm + 0.6, 1]]) }}>
           Capturado em: <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
           {" · "}
-          {escolha === undefined || escolha === null ? "você não apostou" : (
-            <>você apostou: <b style={{ color: acertou ? cor.ok : cor.aviso }}>{m.opcoes[escolha]} {acertou ? "✓" : "✗"}</b></>
+          {escolha === undefined || escolha === null ? "você não investiu" : (
+            <>você investiu em: <b style={{ color: acertou ? cor.ok : cor.aviso }}>{m.opcoes[escolha]} {acertou ? "✓" : "✗"}</b></>
           )}
         </div>
       ) : null}

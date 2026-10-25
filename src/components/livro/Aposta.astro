@@ -15,11 +15,11 @@ const { referencia = "", dados, pergunta, ilustracao } = Astro.props;
 const textos = dados.mensagens.map((m) => m.texto ?? casos(referencia, [m.caso ?? "(sem caso nem texto)"], "Aposta")[0].pergunta);
 dados.mensagens.forEach((m) => { if (!m.opcoes[m.fez]) throw new Error(`Aposta: o que aconteceu com "${m.caso ?? m.texto}" não está entre as opções`); });
 const resultado = dados.resultado ?? "O agente fez";
-const fechos = dados.fechos ?? { nenhum: "Você apostou que ele faria diferente em todas. Ele fez o que parecia razoável em todas.",
+const fechos = dados.fechos ?? { nenhum: "Você investiu em outra coisa em todas. Ele fez o que parecia razoável em todas.",
   alguns: "Você acertou o que ele faria em {n} de {total}. Em nenhuma ele fez o certo." };
 ---
 <div class="apo" data-aposta data-nenhum={fechos.nenhum} data-alguns={fechos.alguns}>
-  <p class="apo-rotulo">aposte</p>
+  <p class="apo-rotulo">invista</p>
   <p class="apo-pergunta">{pergunta}</p>
   {dados.mensagens.map((m, i) => (
     <div class="apo-msg" data-fez={m.fez}>
