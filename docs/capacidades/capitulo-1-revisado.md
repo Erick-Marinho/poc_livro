@@ -19,13 +19,15 @@ quando uma escala explica melhor, e deixa o agente do capítulo 2 num ponto dela
 - (1) A seção do contrato abre com a política da loja, que já é um combinado; o texto que já existia (a palavra, o
   Meyer, a troca de prompt, a definição) fica nela.
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-`01-o-problema-e-o-contrato.mdx`: o título "1.4 O que é um contrato", um parágrafo de abertura com a política da loja
-(`dados/politica.md`), e "1.5 As quatro decisões" a partir do pare e pense dos nomes; "seção anterior" vira "seção
-1.3"; a renumeração em `passos/01.json`, na IDE e nos testes. Evidência: `npm test`; o menu com 1.4 e 1.5; o relógio.
+Pelo fluxo do livro: primeiro o texto (o 1.1 com o atendente fazendo o laço com o BT-1003, a escala no lugar de
+"fluxo fixo ou agente", e a liberdade dentro de um desenho fechando a seção), depois a `revisar-ritmo` escrevendo os
+rascunhos, num commit à parte. Evidência: os dois commits (o dos rascunhos sem linha removida), o relógio do 1.1 e a
+página com os rascunhos. Fora: preencher os rascunhos (só com o pedido do Erick).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `aa39ef2` | `npm test` com 76 testes; o menu com 1.4 "O que é um contrato" e 1.5 "As quatro decisões"; o relógio da 1.4 em 273 (aviso) | 25/10 |
