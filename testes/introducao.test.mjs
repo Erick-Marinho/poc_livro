@@ -34,3 +34,14 @@ test("a página tem a aposta, o mapa com as oito fases e as quatro referências"
   assert.equal([...html.matchAll(/data-detalhe="/g)].length, ciclo.fases.length);
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
+
+test("na abertura de cada capítulo, a fase acesa é a do ciclo.json, e o link leva ao mapa da introdução", () => {
+  assert.match(html, /id="mapa-do-ciclo"/);
+  for (const [arq, n] of [["01-o-problema-e-o-contrato", 1], ["02-o-primeiro-agente", 2]]) {
+    const pagina = ler(`dist/ciclo-de-vida/${arq}/index.html`);
+    const fase = ciclo.fases.find((f) => f.capitulos.includes(n));
+    assert.match(pagina, new RegExp(`data-ciclo-aqui="${fase.id}"`), `capítulo ${n}`);
+    assert.equal([...pagina.matchAll(/aria-current="step"/g)].length, 1);
+    assert.match(pagina, /href="\/ciclo-de-vida\/00-introducao\/#mapa-do-ciclo"/);
+  }
+});

@@ -1,0 +1,29 @@
+---
+/**
+ * "Você está aqui": o caminho do ciclo de vida em miniatura, na abertura de um capítulo, com a fase dele acesa e um
+ * link para o mapa inteiro (MapaDoCiclo, na introdução). Vem do `figuras/ciclo.json` do livro, montado na página.
+ */
+export type CicloAqui = { fases: { id: string; nome: string; transversal?: boolean }[]; aceso: string; mapa?: string };
+interface Props { ciclo: CicloAqui }
+const { ciclo } = Astro.props;
+const aceso = ciclo.fases.find((f) => f.id === ciclo.aceso)!;
+---
+<nav class="aqui" aria-label="Onde este capítulo fica no ciclo de vida do agente" data-ciclo-aqui={ciclo.aceso}>
+  <span class="aqui-rotulo">você está aqui</span>
+  <ol>
+    {ciclo.fases.filter((f) => !f.transversal).map((f) => (
+      <li class:list={{ aceso: f.id === ciclo.aceso }} aria-current={f.id === ciclo.aceso ? "step" : undefined}>{f.nome}</li>
+    ))}
+  </ol>
+  <span class="aqui-nota">{aceso.transversal ? `${aceso.nome}: vale em todas as fases.` : ""} {ciclo.mapa && <a href={ciclo.mapa}>o mapa do ciclo</a>}</span>
+</nav>
+
+<style is:global>
+  .aqui { margin: 0 auto 1.4em; display: grid; gap: 6px; font: 13px/1.4 var(--f-ui); color: var(--ink-2) }
+  .aqui-rotulo { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .aqui ol { list-style: none; margin: 0; padding: 0 0 0 4px; display: flex; flex-wrap: wrap; gap: 4px 18px }
+  .aqui li { position: relative; padding: 2px 8px; border-radius: 999px; white-space: nowrap }
+  .aqui li + li::before { content: "→"; position: absolute; left: -15px; color: var(--ink-2); opacity: .55 }
+  .aqui li.aceso { color: var(--papel); background: var(--acento); font-weight: 600 }
+  .aqui a { color: inherit }
+</style>

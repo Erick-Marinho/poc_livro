@@ -15,7 +15,7 @@ const ida = ["planejar", "construir", "avaliar", "por-no-ar", "observar", "errad
 const evoluir = fase("evoluir"), governar = fase("governar");
 const caps = (f: Fase) => f.capitulos.map((n) => `cap. ${n}`).join(" e ");
 ---
-<figure class="mc" data-mapa-ciclo>
+<figure class="mc" id="mapa-do-ciclo" data-mapa-ciclo>
   <div class="mc-quadro">
     <ol class="mc-ida">
       {ida.map((f) => (
