@@ -1,0 +1,68 @@
+---
+/**
+ * Ação do leitor: apostar o que um agente faz com cada mensagem, antes de ver o que ele fez (docs/RITMO.md: "parece,
+ * mas não é" pede prever antes, mostrar depois). As mensagens vêm do referencia.jsonl pelo id; o que o agente fez vem
+ * de um JSON do livro e é ilustração, e a figura diz. No modo direto, o que ele fez aparece sem pedir a aposta.
+ */
+import { casos } from "../../lib/referencia.ts";
+
+type Mensagem = { caso: string; opcoes: string[]; fez: number; porque: string };
+interface Props { referencia: string; dados: { mensagens: Mensagem[] }; pergunta: string; ilustracao: string }
+const { referencia, dados, pergunta, ilustracao } = Astro.props;
+const lista = casos(referencia, dados.mensagens.map((m) => m.caso), "Aposta");
+dados.mensagens.forEach((m) => { if (!m.opcoes[m.fez]) throw new Error(`Aposta: o que o agente fez com ${m.caso} não está entre as opções`); });
+---
+<div class="apo" data-aposta>
+  <p class="apo-rotulo">aposte</p>
+  <p class="apo-pergunta">{pergunta}</p>
+  {dados.mensagens.map((m, i) => (
+    <div class="apo-msg" data-fez={m.fez}>
+      <q>{lista[i].pergunta}</q>
+      <div class="apo-opcoes">{m.opcoes.map((o, j) => <button type="button" data-j={j} aria-pressed="false">{o}</button>)}</div>
+      <p class="apo-fez" hidden><b>O agente fez: {m.opcoes[m.fez]}.</b> {m.porque}</p>
+    </div>
+  ))}
+  <p class="apo-placar" data-placar hidden></p>
+  <p class="apo-ilustracao">{ilustracao}</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-aposta]").forEach((fig) => {
+    const msgs = [...fig.querySelectorAll<HTMLElement>(".apo-msg")];
+    const placar = fig.querySelector<HTMLElement>("[data-placar]")!;
+    let feitas = 0, iguais = 0;
+    msgs.forEach((m) => m.querySelectorAll<HTMLButtonElement>("button").forEach((b) => b.addEventListener("click", () => {
+      if (m.classList.contains("feita")) return;
+      m.classList.add("feita");
+      m.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      b.setAttribute("aria-pressed", "true");
+      m.querySelector<HTMLElement>(".apo-fez")!.hidden = false;
+      feitas++; if (b.dataset.j === m.dataset.fez) iguais++;
+      if (feitas === msgs.length) {
+        placar.hidden = false;
+        placar.textContent = iguais === 0 ? "Você apostou que ele faria diferente nas três. Ele fez o que parecia razoável nas três."
+          : `Você acertou o que ele faria em ${iguais} de ${msgs.length}. Em nenhuma ele fez o certo.`;
+      }
+    })));
+  });
+</script>
+
+<style is:global>
+  .apo { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px; font: 15.5px/1.55 var(--f-ui) }
+  .apo-rotulo { margin: 0 0 4px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .apo-pergunta { margin: 0 0 12px; font: 600 17px/1.4 var(--f-ui) }
+  .apo-msg { border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 11px 13px; margin-bottom: 10px }
+  .apo-msg q { display: block; font: italic 16px/1.45 var(--f-texto); margin-bottom: 8px }
+  .apo-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .apo-opcoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .apo-opcoes button:not(:disabled):hover { border-color: var(--acento) }
+  .apo-opcoes button:disabled { cursor: default; opacity: .6 }
+  .apo-opcoes button[aria-pressed="true"] { opacity: 1; border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .apo-fez { margin: 10px 0 0; padding: 7px 10px; border-left: 3px solid var(--aviso); background: var(--papel-2); border-radius: 0 8px 8px 0; font-size: 14.5px }
+  .apo-fez b { color: var(--aviso) }
+  .apo-placar { margin: 4px 0 0; font-weight: 500 }
+  .apo-ilustracao { margin: 10px 0 0; font-size: 13px; color: var(--ink-2) }
+  /* modo direto: o que o agente fez, sem pedir a aposta */
+  html[data-direto] .apo-fez { display: block !important }
+  html[data-direto] .apo-opcoes { display: none }
+</style>

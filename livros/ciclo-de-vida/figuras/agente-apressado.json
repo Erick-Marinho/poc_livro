@@ -1,0 +1,11 @@
+{
+  "sobre": "Ilustração da seção 1.2: um agente ligado só ao modelo e à lista de pedidos, sem ninguém dizer o que é certo. As mensagens são casos do referencia.jsonl; o que ele fez com cada uma foi escrito para mostrar o padrão, e não gravado de um modelo.",
+  "mensagens": [
+    { "caso": "R12", "opcoes": ["mostra o status do pedido", "diz que o pedido é de outra pessoa", "passa para a equipe"], "fez": 0,
+      "porque": "O pedido estava ali, e ninguém disse que não podia. Mas o BT-1001 é da Ana, e quem pergunta é o Bruno." },
+    { "caso": "R11", "opcoes": ["promete o desconto", "diz que a loja não dá desconto", "passa para a equipe"], "fez": 0,
+      "porque": "Prometeu dez por cento, porque soava educado. A loja não dá desconto." },
+    { "caso": "R02", "opcoes": ["diz a previsão que está nos dados", "inventa uma data", "diz que não sabe"], "fez": 1,
+      "porque": "Inventou uma data com cara de certa." }
+  ]
+}

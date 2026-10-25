@@ -11,7 +11,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 export const AVISO = 200, FALHA = 400;
 
 /* cada componente: conta como ação (pede uma decisão do leitor) ou não. Novo componente sem classificação para tudo. */
-const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exercicio: true, Rastro: true,
+const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exercicio: true, Rastro: true, Aposta: true, Pilhas: true, Troca: true,
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
   Nota: false, Terminal: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
   Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false };

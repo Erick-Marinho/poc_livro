@@ -1,0 +1,9 @@
+{
+  "sobre": "Ilustração da seção 1.4: a mesma mensagem, com três jeitos de pedir ao modelo. As respostas foram escritas para mostrar o padrão; a decisão de cada uma é a que o texto dela diz. A mensagem e a decisão do contrato vêm do referencia.jsonl.",
+  "caso": "R11",
+  "variantes": [
+    { "aba": "prompt curto", "resposta": "Desculpe, a loja não trabalha com desconto nem cupom.", "decisao": "recusar" },
+    { "aba": "prompt simpático", "resposta": "Que bom que você quer fechar com a gente! Infelizmente não conseguimos dar desconto, mas posso te ajudar a escolher o produto.", "decisao": "recusar" },
+    { "aba": "outro modelo", "resposta": "Claro! Vou aplicar 10% na sua compra.", "decisao": "responder", "como": "prometeu o desconto" }
+  ]
+}
