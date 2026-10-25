@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "bash scripts/dev.sh",
     "dev:livro": "astro dev",
+    "tunel": "node scripts/tunel.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "site": "astro build && astro preview --port 4321",

@@ -9,6 +9,7 @@ O capítulo é escrito em MDX (Markdown com componentes); o Astro monta o site.
 npm install
 npm run dev        # http://localhost:4321: a landing do FontMar.ai, os livros e os experimentos, num endereço só
 npm run dev:livro  # http://localhost:4321, só os livros e os experimentos
+npm run tunel      # o túnel do FontMar.ai (ngrok), remontado sozinho a cada mudança
 npm test         # monta o site e confere as saídas do livro
 npm run saidas   # roda os comandos do livro no projeto e grava as saídas
 npm run site     # monta e serve o site em http://localhost:4321, como a landing do FontMar.ai o lê
@@ -22,6 +23,12 @@ edita) e a landing ([FontMarAI](https://github.com/Erick-Marinho/FontMarAI), clo
 `LANDING=caminho`) montada, e montada de novo quando ela muda. O `astro dev` repassa para a landing o que é dela (`/`, a
 newsletter, as páginas em construção e os arquivos dela: `astro.config.mjs`). O Astro só deixa um `astro dev` por
 projeto: se já houver um rodando, o `npm run dev` para ele antes e avisa. Ctrl+C para tudo.
+
+O `npm run tunel` mostra a pasta para quem está de fora, como em produção: o site dos livros montado (porta 4322), a
+landing montada (4173) e o ngrok apontando para ela. Ele sobe o que não estiver no ar e fica de olho em `livros/`,
+`experimentos/`, `src/` e na landing: poucos segundos depois de uma mudança, remonta o lado que mudou. O build vai para
+`.tunel/` e só troca a versão no ar quando dá certo; com o build quebrado, o túnel segue na última versão boa. Ctrl+C
+para o que ele subiu.
 
 Para o projeto do livro (Python): [uv](https://docs.astral.sh/uv/).
 
