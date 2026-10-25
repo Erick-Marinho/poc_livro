@@ -65,6 +65,14 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   do roteiro deixa de ser usado.
 - (6) Parada, a figura mostra o fim do R01 (como o servidor desenhava na etapa 4); o play começa do início. No modo
   direto e com movimento reduzido, mostra o último quadro.
+- (25/10/2026, Erick, revisão da etapa 6) Seis ajustes de experiência, sobre os quadros renderizados: (a) uma câmera
+  acompanha quem age (a conversa, o agente e as ferramentas, a decisão); (b) o R01 vai devagar e os outros mais
+  rápido, com uma pausa no selo e na decisão; (c) a legenda vira uma faixa grande embaixo do quadro, como legenda de
+  vídeo; (d) pedido e e-mail não quebram no meio, "nova conversa" marca a troca de cliente, e quem não se identificou
+  aparece como "anônimo"; (e) parada, a figura diz a duração ao lado do play; uma linha fina mostra o
+  progresso, e no fim as quatro abas ficam com ✓; (f) no R12, antes da decisão, o vídeo para e pergunta o que o
+  agente deve fazer; o leitor escolhe uma das quatro (ou pula), e o vídeo mostra a do contrato ao lado da dele.
+- (6) A aposta não aparece no modo direto. Ela é da ilha, não do vídeo: a composição só marca o quadro em que ela para.
 - (6) A linha do tempo fica em `agente/tempos.ts`, sem JSX, para o teste conferir os 45 s.
 - (6) A etapa 5 não foi feita; o teste da etapa 6 faz o que ela pedia (a figura no `npm test`).
 

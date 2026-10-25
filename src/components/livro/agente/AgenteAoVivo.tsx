@@ -31,8 +31,14 @@ const c = {
   meu: "#24426e",
   meuNome: "#a9c2e6",
 };
-const COR: Record<Escolha, string> = { responder: "#2fd394", recusar: "#ffb547", abrir_chamado: "#5fd3e6", passar: "#c6a2ff" };
+export const COR: Record<Escolha, string> = { responder: "#2fd394", recusar: "#ffb547", abrir_chamado: "#5fd3e6", passar: "#c6a2ff" };
 const tinta = (cor: string, alfa: number) => `${cor}${Math.round(alfa * 255).toString(16).padStart(2, "0")}`;
+
+// pedido e e-mail não quebram no meio da linha
+const semQuebra = (texto: string) =>
+  texto.split(/(BT-\d+|[\w.+-]+@[\w-]+(?:\.[\w-]+)+)/).map((p, i) => (i % 2 ? <span key={i} style={{ whiteSpace: "nowrap" }}>{p}</span> : p));
+// quem escreveu sem dizer o e-mail fica sem nome no contrato
+const nomeDe = (cena: { nome: string }) => (cena.nome === "cliente" ? "anônimo" : cena.nome);
 
 // Os ícones da figura do livro (palco/Palco.tsx).
 const IC = {
@@ -106,7 +112,7 @@ const progressoAresta = (cena: Cena, v: number, id: string) => {
 
 /* ---------- a barra de cima: os cenários ---------- */
 
-const Topo: React.FC<{ m: Montado; q: Quadro }> = ({ m, q }) => (
+const Topo: React.FC<{ m: Montado; q: Quadro; t: number }> = ({ m, q, t }) => (
   <div
     style={{
       position: "absolute",
@@ -117,10 +123,14 @@ const Topo: React.FC<{ m: Montado; q: Quadro }> = ({ m, q }) => (
       alignItems: "center",
       gap: 10,
       borderBottom: `1px solid ${c.linha}`,
+      backgroundColor: c.fundo,
     }}
   >
+    {/* quanto do vídeo já passou: uma linha fina, sem ser controle */}
+    <div style={{ position: "absolute", left: 0, bottom: -1, height: 2, width: `${Math.min(t / m.total, 1) * 100}%`, backgroundColor: tinta(c.acento, 0.7) }} />
     {m.cenas.map((x, i) => {
-      const agora = i === q.k;
+      const feito = t >= x.fim;
+      const agora = i === q.k && !feito;
       const cor = COR[x.decisao];
       return (
         <div
@@ -136,10 +146,14 @@ const Topo: React.FC<{ m: Montado; q: Quadro }> = ({ m, q }) => (
             fontWeight: 600,
             border: `1.5px solid ${agora ? cor : c.linha}`,
             backgroundColor: agora ? tinta(cor, 0.14) : "transparent",
-            color: agora ? c.texto : i < q.k ? c.fraco : c.apagado,
+            color: agora ? c.texto : feito ? c.fraco : c.apagado,
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor, opacity: agora ? 1 : 0.6 }} />
+          {feito ? (
+            <span style={{ color: cor, display: "flex" }}><Icone d={IC.certo} tam={16} /></span>
+          ) : (
+            <span style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor, opacity: agora ? 1 : 0.6 }} />
+          )}
           {DECISOES[x.decisao]}
         </div>
       );
@@ -179,6 +193,7 @@ const Pontinhos: React.FC<{ t: number }> = ({ t }) => (
 
 const Mensagens: React.FC<{ m: Montado; q: Quadro; t: number }> = ({ m, q, t }) => {
   const daConversa = m.cenas.filter((x, j) => x.conversa === q.cena.conversa && j <= q.idx);
+  const primeira = daConversa[0];
   return (
     <div
       style={{
@@ -193,6 +208,14 @@ const Mensagens: React.FC<{ m: Montado; q: Quadro; t: number }> = ({ m, q, t }) 
         opacity: q.chat,
       }}
     >
+      {/* outro cliente, outra conversa: a marca no topo diz que mudou */}
+      {primeira.conversa > 0 ? (
+        <Entra em={0} v={primeira === q.cena ? q.v : Infinity} lado="meio">
+          <div style={{ fontFamily: mono, fontSize: 14, color: c.fraco, border: `1px solid ${c.linha}`, borderRadius: 999, padding: "5px 14px", whiteSpace: "nowrap" }}>
+            nova conversa · {nomeDe(primeira)}
+          </div>
+        </Entra>
+      ) : null}
       {daConversa.map((x) => {
         const v = x === q.cena ? q.v : Infinity;
         const pergunta = x.segs.find((s) => s.no === "pergunta")!;
@@ -205,7 +228,7 @@ const Mensagens: React.FC<{ m: Montado; q: Quadro; t: number }> = ({ m, q, t }) 
               <Entra em={pergunta.envia!} v={v} lado="dir">
                 <div style={{ padding: "11px 15px 9px", borderRadius: 18, borderBottomRightRadius: 5, backgroundColor: c.meu }}>
                   {x.nome !== "cliente" ? <div style={{ fontSize: 14, color: c.meuNome, marginBottom: 3 }}>{x.nome}</div> : null}
-                  <div style={{ fontSize: 21, lineHeight: 1.4, overflowWrap: "anywhere" }}>{x.pergunta}</div>
+                  <div style={{ fontSize: 21, lineHeight: 1.4, overflowWrap: "break-word" }}>{semQuebra(x.pergunta)}</div>
                   <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 2, color: lida ? c.acento : c.meuNome }}>
                     <Icone d={IC.certo} tam={15} />
                     {lida ? <span style={{ marginLeft: -9 }}><Icone d={IC.certo} tam={15} /></span> : null}
@@ -222,7 +245,7 @@ const Mensagens: React.FC<{ m: Montado; q: Quadro; t: number }> = ({ m, q, t }) 
               <Entra em={x.responde} v={v} lado="esq">
                 <div style={{ padding: "11px 15px 12px", borderRadius: 18, borderBottomLeftRadius: 5, backgroundColor: c.cartao2, borderLeft: `3px solid ${cor}` }}>
                   <div style={{ fontSize: 14, color: cor, marginBottom: 3 }}>agente</div>
-                  <div style={{ fontSize: 21, lineHeight: 1.4 }}>{x.resposta}</div>
+                  <div style={{ fontSize: 21, lineHeight: 1.4 }}>{semQuebra(x.resposta)}</div>
                 </div>
               </Entra>
             ) : null}
@@ -272,7 +295,7 @@ const Escrever: React.FC<{ q: Quadro; t: number }> = ({ q, t }) => {
       }}
     >
       <div style={{ flex: 1, fontSize: 19, lineHeight: 1.4, color: texto ? c.texto : c.apagado, overflowWrap: "anywhere" }}>
-        {texto || "Escreva uma mensagem…"}
+        {texto ? semQuebra(texto) : "Escreva uma mensagem…"}
         {digitando ? <span style={{ display: "inline-block", width: 2, height: 22, marginLeft: 1, verticalAlign: -4, backgroundColor: c.acento, opacity: Math.floor(t * 3) % 2 ? 1 : 0.2 }} /> : null}
       </div>
       <span
@@ -444,7 +467,7 @@ const NoCliente: React.FC<{ q: Quadro }> = ({ q }) => {
       <Ic d={IC.pessoa} e={e} />
       <div style={{ lineHeight: 1.2 }}>
         <div style={{ fontSize: 14, color: c.fraco }}>cliente</div>
-        <div style={{ fontSize: 19, fontWeight: 600, whiteSpace: "nowrap" }}>{q.cena.nome}</div>
+        <div style={{ fontSize: 19, fontWeight: 600, whiteSpace: "nowrap" }}>{nomeDe(q.cena)}</div>
       </div>
     </div>
   );
@@ -486,7 +509,7 @@ const NoAgente: React.FC<{ q: Quadro; t: number }> = ({ q, t }) => {
                   translate: `${kf(q.v, [[x.em, -10], [x.em + 0.4, 0]])}px 0px`,
                 }}
               >
-                {x.texto}
+                {semQuebra(x.texto)}
               </div>
             ))
         ) : (
@@ -595,27 +618,86 @@ const NoSaida: React.FC<{ q: Quadro; id: "resposta" | "pessoa" }> = ({ q, id }) 
   );
 };
 
-// Uma linha embaixo do grafo dizendo o que o agente está fazendo (o texto do roteiro do livro).
+// O que o agente está fazendo (o texto do roteiro do livro), como legenda de vídeo: grande, na base do quadro, só
+// enquanto o grafo trabalha. Fica fora da câmera.
 const Legenda: React.FC<{ q: Quadro }> = ({ q }) => {
   const s = q.cena.segs.filter((x) => x.de <= q.v && !["pergunta", "cliente", "conversa", "resposta", "pessoa"].includes(x.no)).pop();
-  if (!s) return null;
+  const fala = q.cena.segs.find((x) => x.no === "conversa")!;
+  if (!s || q.v >= fala.de) return null;
   return (
     <div
-      key={`${q.cena.caso}-${s.de}`}
       style={{
         position: "absolute",
-        left: 424,
-        right: 24,
-        top: 670,
-        fontSize: 17,
-        color: c.fraco,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: "26px 48px 18px",
+        background: "linear-gradient(to top, rgba(17, 19, 24, 0.96) 62%, rgba(17, 19, 24, 0))",
+        fontSize: 25,
+        lineHeight: 1.3,
         textAlign: "center",
-        opacity: kf(q.v, [[s.de, 0], [s.de + 0.3, 1]]) * q.grafo,
+        color: c.texto,
+        opacity: kf(q.v, [[s.de, 0], [s.de + 0.3, 1]]) * kf(q.v, [[fala.de - 0.3, 1], [fala.de, 0]]) * q.grafo,
       }}
     >
-      {s.texto}
+      {semQuebra(s.texto)}
     </div>
   );
+};
+
+/* ---------- a câmera: aproxima de quem está agindo ---------- */
+
+type Foco = { x: number; y: number; w: number; h: number };
+const GERAL: Foco = { x: 0, y: 64, w: 1280, h: 656 };
+const CHAT: Foco = { x: 0, y: 360, w: 600, h: 360 };
+const ENTRADA: Foco = { x: 424, y: 90, w: 560, h: 310 };
+const CONSULTA: Foco = { x: 640, y: 90, w: 616, h: 310 };
+const DECIDE: Foco = { x: 640, y: 300, w: 616, h: 360 };
+const ZOOM = 1.5; // até onde aproxima
+const MOVE = 0.7; // quanto leva para ir de um enquadramento a outro
+const VISTA = { y: 64, h: 586 }; // a área do quadro abaixo das abas e acima da legenda
+
+// em cada cenário: a conversa (o cliente digita), a entrada, as ferramentas, a decisão, a conversa (a resposta), o todo
+const planos = (m: Montado) =>
+  m.cenas
+    .flatMap((x) => {
+      const em = (v: number) => x.inicio + TRANSICAO + v;
+      const seg = (f: (s: Seg) => boolean) => x.segs.find(f);
+      const cli = seg((s) => s.no === "cliente");
+      const fer = seg((s) => FERRAMENTAS.includes(s.no));
+      return [
+        { em: x.inicio, foco: GERAL },
+        { em: em(0), foco: CHAT },
+        ...(cli ? [{ em: em(cli.de), foco: ENTRADA }] : []),
+        ...(fer ? [{ em: em(fer.de), foco: CONSULTA }] : []),
+        { em: em(seg((s) => s.no === "decisao")!.de), foco: DECIDE },
+        { em: em(seg((s) => s.no === "conversa")!.de), foco: CHAT },
+        { em: x.fim - 0.9, foco: GERAL },
+      ];
+    })
+    .sort((a, b) => a.em - b.em);
+
+// a escala e o deslocamento que põem o foco no meio da vista, sem mostrar nada fora do quadro
+type Camera = { s: number; tx: number; ty: number };
+const enquadrar = (f: Foco): Camera => {
+  const s = Math.max(1, Math.min(ZOOM, 1280 / f.w, VISTA.h / f.h));
+  const tx = Math.min(0, Math.max(1280 * (1 - s), 640 - s * (f.x + f.w / 2)));
+  const ty = Math.min(VISTA.y * (1 - s), Math.max(720 * (1 - s), VISTA.y + VISTA.h / 2 - s * (f.y + f.h / 2)));
+  return { s, tx, ty };
+};
+const mistura = (a: Camera, b: Camera, k: number): Camera => ({ s: a.s + (b.s - a.s) * k, tx: a.tx + (b.tx - a.tx) * k, ty: a.ty + (b.ty - a.ty) * k });
+const curva = Easing.bezier(0.45, 0, 0.2, 1);
+const avanco = (dt: number) => curva(Math.min(Math.max(dt / MOVE, 0), 1));
+// cada movimento parte de onde o anterior estava, mesmo se ele ainda não tinha chegado
+const cameraEm = (p: ReturnType<typeof planos>, t: number): Camera => {
+  let de = enquadrar(GERAL), para = de, desde = 0;
+  for (const plano of p) {
+    if (plano.em > t) break;
+    de = mistura(de, para, avanco(plano.em - desde));
+    para = enquadrar(plano.foco);
+    desde = plano.em;
+  }
+  return mistura(de, para, avanco(t - desde));
 };
 
 const Grafo: React.FC<{ q: Quadro; t: number }> = ({ q, t }) => (
@@ -645,19 +727,26 @@ const Grafo: React.FC<{ q: Quadro; t: number }> = ({ q, t }) => (
       <NoSaida q={q} id="resposta" />
       <NoSaida q={q} id="pessoa" />
     </div>
-    <Legenda q={q} />
   </>
 );
 
 export const AgenteAoVivo: React.FC<Props> = ({ cenarios, loja }) => {
   const m = useMemo(() => montar({ cenarios, loja }), [cenarios, loja]);
+  const p = useMemo(() => planos(m), [m]);
   const t = useT();
   const q = quadro(m, t);
+  const cam = cameraEm(p, t);
   return (
     <AbsoluteFill style={{ backgroundColor: c.fundo, color: c.texto, fontFamily: ui }}>
-      <Grafo q={q} t={t} />
-      <Conversa m={m} q={q} t={t} />
-      <Topo m={m} q={q} />
+      {/* a câmera move a conversa e o grafo juntos; as abas e a legenda ficam paradas */}
+      <div style={{ position: "absolute", inset: 0, clipPath: "inset(64px 0 0 0)" }}>
+        <div style={{ position: "absolute", inset: 0, transformOrigin: "0 0", transform: `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.s})` }}>
+          <Grafo q={q} t={t} />
+          <Conversa m={m} q={q} t={t} />
+        </div>
+      </div>
+      <Legenda q={q} />
+      <Topo m={m} q={q} t={t} />
     </AbsoluteFill>
   );
 };

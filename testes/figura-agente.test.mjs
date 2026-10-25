@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { parse } from "node-html-parser";
 import { montarCenarios } from "../src/components/livro/agente/cenarios.ts";
-import { quadroDoVideo } from "../src/components/livro/agente/tempos.ts";
+import { montar, quadroDoVideo, TRANSICAO } from "../src/components/livro/agente/tempos.ts";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const json = (p) => JSON.parse(ler(p));
@@ -29,6 +29,16 @@ test("a figura do prefácio é o vídeo, com um cenário para cada decisão, e a
 test("o vídeo cabe em 45 segundos", () => {
   const q = quadroDoVideo({ cenarios: props.cenarios, loja: props.loja });
   assert.ok(q.duracao / q.fps <= 45, `o vídeo tem ${(q.duracao / q.fps).toFixed(1)} s`);
+});
+
+test("a aposta é no R12 e para antes da decisão: nem a pílula nem a legenda contam a resposta antes", () => {
+  const q = quadroDoVideo({ cenarios: props.cenarios, loja: props.loja });
+  const cena = montar({ cenarios: props.cenarios, loja: props.loja }).cenas.find((c) => c.caso === "R12");
+  const decide = (cena.inicio + TRANSICAO + cena.segs.find((s) => s.no === "decisao").de) * q.fps;
+  assert.equal(q.aposta.caso, "R12");
+  assert.equal(q.aposta.decisao, contrato.find((x) => x.id === "R12").decisao);
+  assert.ok(q.aposta.quadro < decide, `a aposta (quadro ${q.aposta.quadro}) vem depois de a decisão começar (${decide})`);
+  assert.ok(q.aposta.quadro < q.aposta.revela && q.aposta.revela < q.aposta.fim);
 });
 
 test("um roteiro que contradiz o contrato não monta a figura", () => {
