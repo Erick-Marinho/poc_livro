@@ -18,13 +18,16 @@ agente têm (IBM, Microsoft, LangChain, Salesforce), e o leitor entrava no probl
 - (1) O endereço antigo `/ciclo-de-vida/00-prefacio` leva à introdução.
 - (1) A introdução fica fora do relógio até ganhar a primeira ação (etapa 2).
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-`sumario.json` com 9 capítulos; `00-prefacio.mdx` vira `00-introducao.mdx` (tipo `introducao`, título Introdução), com
-a lista nova; a referência "capítulo 5" da 2.1 vira 6; o redirecionamento e os testes de rota. Evidência: `npm test`; o
-menu com os 9 e o endereço antigo levando à introdução.
+Na introdução, antes da lista dos capítulos: `Pilhas` com quatro problemas do próprio texto (a conta que cresce, o
+pedido de outra pessoa, o modelo novo que estraga, a pergunta não prevista) e as fases como pilhas; depois, a figura
+`MapaDoCiclo`: as 9 fases em ciclo, a volta de "quando dá errado" para "avaliar", e o clique em cada fase (o que ela
+pergunta, o que o agente ganha, o capítulo), com as quatro fontes. A introdução entra no relógio. Evidência: `npm
+test` com a introdução medida; a separação e o mapa no navegador, em 1280 e 360 px.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `ed60114` | `npm test` com 72 testes; o menu com os 9 capítulos; `/00-prefacio` levando à introdução | 25/10 |
