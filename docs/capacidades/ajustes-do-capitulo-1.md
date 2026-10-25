@@ -9,6 +9,9 @@ soa estranho para o leitor: "executar" é a palavra que ele espera, no texto, na
 - (25/10/2026, Erick) "Rodar" vira "executar" no livro todo: textos, roteiros da IDE, botão e mensagens do terminal,
   nos capítulos e no experimento. O slogan "um livro que roda" vira "um livro que executa", e "rodada" (a vez do
   agente) vira "execução". Saídas reais do terminal e código (`uv run`) não mudam: o livro não pode mentir.
+- (25/10/2026, Erick) A caixa das camadas, no capítulo 1, diz "Onde é capturado", como a da introdução.
+- (2) Onde "executar" pede sujeito que age, a voz passiva: "o modelo é executado no Ollama", "os comandos são
+  executados de verdade". As mensagens de erro da montagem ("rode npm run saidas") são para quem escreve, e ficam.
 
 ## Peças
 
@@ -21,19 +24,24 @@ soa estranho para o leitor: "executar" é a palavra que ele espera, no texto, na
 ## Etapas
 
 1. "O primeiro conserto" vira "a primeira etapa".
-2. "Rodar" vira "executar" no livro todo, com o slogan e "rodada".
+2. "Rodar" vira "executar" no livro todo, com o slogan e "rodada"; e "Quem pega" das camadas vira "Onde é capturado".
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-**Arquivos.** `01-o-problema-e-o-contrato.mdx` (a frase da ferramenta, na seção 1.2), `testes/vocabulario.test.mjs`.
+**Arquivos.** Os capítulos e o experimento (`.mdx`), `roteiros/`, `passos/`, `figuras/` (com `camadas.json`),
+os glossários, `terminal/TerminalAoVivo.tsx`, `ide/IdeCapitulo.tsx`, `comandos/Comandos.tsx`, os layouts e as páginas
+com o slogan, `testes/vocabulario.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; a página mostra "A primeira etapa".
+**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; nenhuma página montada diz "rodar"
+em nenhuma forma, e o botão do terminal diz "▶ Executar".
 
-**Fora.** "Rodar" (etapa 2).
+**Fora.** As saídas gravadas do terminal (`saidas.json`), o código do projeto e os comandos (`uv run`); os nomes
+internos (`tm-rodar`, a ação `rodar`); as mensagens de erro da montagem; a landing (FontMarAI).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `0bc7e3e` | 103 testes do livro; o teste novo falha com o texto de antes; a página mostra "A primeira etapa" e nenhum "conserto" | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
