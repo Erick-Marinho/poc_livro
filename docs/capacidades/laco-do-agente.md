@@ -34,6 +34,12 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
   termina na resposta, ✓ ou ✗, com o porquê. Primeiro o pedido, depois a frigideira; antes da frigideira, o leitor
   investe no que o fluxo fixo faz. No fim, o placar das duas perguntas em cada coluna. No celular, três faixas, uma
   embaixo da outra, com o passo de agora e os anteriores em miniatura. Sai o diagrama do laço (caixas e setas).
+- (25/10/2026, Erick) As três colunas ao mesmo tempo também perderam o leitor ("muita informação… fiquei confuso e
+  perdido… o tempo também não ajudou"): na etapa 7, um jeito por vez, com um resumo de uma linha no topo quando
+  termina, tocando sozinho e devagar (cerca de 3 s por passo), com a pausa para investir.
+- (7) Quatro vezes, na ordem que conta a história: só o modelo com o pedido, o fluxo fixo com o pedido, o fluxo fixo
+  com a frigideira (antes dela, o investimento) e o agente com a frigideira. Cada passo, em frase curta (o `curto` de
+  cada passo nos três jeitos); a frase inteira fica na figura em texto. No fim, só os quatro resumos e a conclusão.
 - (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
   trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
   a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
@@ -62,16 +68,15 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
 5. O laço inteiro à vista, na figura 1.1: sem câmera e sem a barra do tempo.
 6. A figura 1.1 refeita: os três jeitos lado a lado, com os passos concretos e o investimento no fluxo fixo.
+7. Um jeito por vez, com o resumo que se acumula no topo, devagar e com frases curtas.
 
-## Etapa atual: 6
+## Etapa atual: 7
 
-**Arquivos.** `figuras/laco.json` (os trechos e o investimento), `laco/laco.ts` (a linha do tempo de cada coluna,
-conferida contra os "três jeitos"), `laco/LacoAnimado.tsx` (as três colunas e as três faixas),
-`laco/FiguraLacoVideo.tsx`, `FiguraLaco.astro`, o Studio do my-video, `testes/laco.test.mjs`.
+**Arquivos.** `figuras/tres-jeitos.json` (o `curto` de cada passo), `figuras/laco.json` (as quatro vezes),
+`laco/laco.ts`, `laco/LacoAnimado.tsx`, `laco/FiguraLacoVideo.tsx`, `FiguraLaco.astro`, `testes/laco.test.mjs`.
 
-**Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; no navegador, com clique de
-verdade, o gráfico do começo ao fim, o investimento certo e o errado, em 1280 e 390 px; com menos movimento, no modo
-direto e sem JS; o vídeo inteiro renderizado.
+**Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; quadros renderizados de cada vez
+e do fim, em 720 e 360 px; no navegador, com clique de verdade, do play ao fim, com o investimento.
 
 **Fora.** A etapa 4, que segue esperando o capítulo 3.
 
@@ -83,5 +88,6 @@ direto e sem JS; o vídeo inteiro renderizado.
 | 2 | `55578ca` | 110 testes do livro; os 3 novos falham sem o código; quadros das 6 cenas e os vídeos inteiros renderizados pelo Remotion, em 720 e 360 px | Erick, 25/10/2026 |
 | 3 | `0b53f39` | 114 testes do livro; os 4 novos falham sem o código; no navegador, com clique de verdade: o play, a pausa aos 25 s e o investimento certo e o errado, o fim, a barra e o pausar, em 1280 e 390 px; com menos movimento, no modo direto e sem JS; os vídeos inteiros renderizados pelo Remotion | Erick, 25/10/2026 |
 | 5 | `353dc88` | 114 testes do livro; os novos falham com o código de antes; no navegador, o laço inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px | não: "confuso, abstrato" (refeita na 6) |
+| 6 | sem commit | os três jeitos lado a lado, renderizados em 720 e 360 px | não: "muita informação de uma vez" (refeita na 7) |
 
 (redação: claude-opus-5-5)
