@@ -57,16 +57,17 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 5. "Régua" explicada na primeira vez que aparece.
 6. Os cartões das fases num modal, aberto pelo nó da fase.
 7. "A conta que cresce" diz que é o gasto com o modelo.
+8. O vão vazio entre o desenho e o botão, no vídeo do mapa em coluna (celular).
 
-## Etapa atual: 6
+## Etapa atual: 7
 
-**Arquivos.** `ciclo/Anel.tsx` (o ícone no nó e o nome dele), `MapaDoCiclo.astro` (o modal, a dica e os cartões
-escondidos), `Termos.astro` (o balão por cima do modal), `testes/ciclo-animado.test.mjs`.
+**Arquivos.** `00-introducao.mdx` (o primeiro parágrafo), `onde-se-pega.json` (o problema na caixa do "invista"),
+`ciclo-animado.json` (a etiqueta e a legenda da cena), `testes/vocabulario.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha sem o código; no navegador, o nó com o ícone, o modal
-aberto pelo clique no nó (no desenho e no vídeo) e fechado com Esc, em 1280 e 390 px; os cartões à vista no modo direto.
+**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; na página, "gasto" no parágrafo e na
+caixa, e um quadro da composição com a etiqueta nova.
 
-**Fora.** O conteúdo dos cartões; a miniatura do "você está aqui", que não abre nada.
+**Fora.** O vão do vídeo em coluna (etapa 8).
 
 ## Registro
 
@@ -77,5 +78,6 @@ aberto pelo clique no nó (no desenho e no vídeo) e fechado com Esc, em 1280 e 
 | 3 | `429b6b7` | 92 testes do livro; o teste novo falha sem o código; quadros da composição renderizados pelo Remotion: a pergunta sem investimento, a afirmação com, "✓ onde você investiu" e "você investiu em Avaliar" na faixa | Erick, 25/10/2026 |
 | 4 | `5d8e572` | 93 testes do livro; o teste novo falha sem o código; a caixa aberta na página, com a lâmpada e o olho | Erick, 25/10/2026 |
 | 5 | `370b3ce` | 96 testes do livro; o teste novo falha sem o código; no navegador, 10 réguas marcadas na introdução e o balão aberto, em 1280 e 390 px | Erick, 25/10/2026 |
+| 6 | `8ced31f` | 97 testes do livro; o teste novo falha sem o código; no navegador, os nós com o ícone, o modal aberto pelo nó do vídeo e fechado com Esc, a régua por cima do modal, em 1280 e 390 px; no modo direto, os 8 cartões abertos embaixo | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
