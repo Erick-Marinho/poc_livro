@@ -1,0 +1,42 @@
+/** As ações do leitor dos capítulos 1 e 2 (Aposta, Pilhas, Troca): os dados vêm do referencia.jsonl, e a ilustração diz que é. Rode depois de `astro build`. */
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { casos } from "../src/lib/referencia.ts";
+
+const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
+const html = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+const referencia = ler("livros/ciclo-de-vida/projeto/referencia.jsonl");
+const caso = (id) => casos(referencia, [id], "teste")[0];
+
+test("a aposta mostra três mensagens de verdade e diz que o agente é ilustração", () => {
+  assert.equal([...html.matchAll(/class="apo-msg"/g)].length, 3);
+  for (const id of ["R12", "R11", "R02"]) assert.ok(html.includes(caso(id).pergunta), id);
+  assert.match(html, /Ilustração: o agente apressado não existe/);
+});
+
+test("as pilhas separam como o contrato, que vem do referencia.jsonl", () => {
+  const cartas = [...html.matchAll(/class="pil-carta" data-decisao="(\w+)"/g)].map((m) => m[1]);
+  assert.deepEqual(cartas, ["R03", "R06", "R07", "R10", "R15", "R16"].map((id) => caso(id).decisao));
+  assert.equal(new Set(cartas).size, 4, "as quatro decisões aparecem");
+});
+
+test("a troca tem uma variante que o contrato pega, e o veredito sai da comparação", () => {
+  assert.equal([...html.matchAll(/class="tro-ok"/g)].length, 2);
+  assert.equal([...html.matchAll(/class="tro-nao"/g)].length, 1);
+  assert.ok(html.includes(caso("R11").motivo));
+});
+
+test("caso que não existe não monta", () => {
+  assert.throws(() => casos(referencia, ["R99"], "Pilhas"), /Pilhas: o caso R99 não está no referencia.jsonl/);
+});
+
+test("capítulo 2: as pilhas de quem faz cada passo saem do grafo-02.json, e a recusa é do modelo", () => {
+  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  const nos = JSON.parse(ler("livros/ciclo-de-vida/figuras/grafo-02.json")).nos;
+  const cartas = [...h2.matchAll(/class="pil-carta" data-decisao="(\w+)"[^>]*>\s*<q>([^<]+)<\/q>/g)].map((m) => [m[2], m[1]]);
+  const esperado = Object.values(nos).filter((n) => n.tarefa).map((n) => [n.tarefa, n.modelo === "não" ? "codigo" : "modelo"]);
+  assert.deepEqual(cartas.toSorted(), esperado.toSorted());
+  assert.deepEqual(Object.fromEntries(cartas)["Escrever a recusa"], "modelo");
+  assert.equal([...h2.matchAll(/class="pil-grupo"/g)].length, 2);
+});

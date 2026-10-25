@@ -37,3 +37,25 @@ test("o caminho da pergunta: sem a data, 14/11 de uma nota velha; com ela, 21/11
   assert.match(r.com_data.antes.frase, /14\/11/);
   assert.equal(r.frases.filter((f) => f.palavras === r.topo).length, 4);
 });
+
+test("a aposta da abertura: as três promessas, e os números do que o experimento mostrou são os da régua gravada", () => {
+  const promessas = JSON.parse(readFileSync(new URL("../experimentos/segundo-cerebro-local/promessas.json", import.meta.url), "utf8"));
+  const nota = (id) => saidas[id].saida.map(([l]) => l).find((l) => l.startsWith("nota:")).match(/(\d+) de (\d+)/)[0];
+  const medida = promessas.mensagens[2].porque;
+  for (const id of ["sc-nota-ingenua", "sc-nota", "sc-nota-modelo"]) assert.ok(medida.includes(nota(id)), `a aposta não diz ${nota(id)} (${id})`);
+  const r = JSON.parse(saidas["rastro-prazo"].saida[0][0]);
+  assert.match(r.sem_data.frase, /14\/11/); assert.match(r.com_data.frase, /21\/11/);
+  const apo = html.querySelector("[data-aposta]");
+  assert.equal(apo.querySelectorAll(".apo-msg").length, 3);
+  assert.match(apo.querySelector(".apo-fez").text, /^O experimento mostrou: vale só em parte\./);
+  assert.match(apo.getAttribute("data-alguns"), /\{n\} de \{total\}/);
+});
+
+test("as pilhas do fim: três peças ficam na máquina, três saem dela, e a explicação só aparece depois", () => {
+  const pil = html.querySelector("[data-pilhas]");
+  const cartas = pil.querySelectorAll(".pil-carta").map((c) => c.getAttribute("data-decisao"));
+  assert.deepEqual(cartas.toSorted(), ["fica", "fica", "fica", "sai", "sai", "sai"]);
+  assert.deepEqual(pil.querySelectorAll(".pil-grupo b").map((b) => b.text), ["fica na sua máquina", "sai dela"]);
+  assert.ok(pil.querySelector("[data-revelado]").hasAttribute("hidden"));
+  assert.match(pil.querySelector(".pil-explica").text, /localhost/);
+});

@@ -15,7 +15,7 @@ em_breve: Capítulo 3 · As ferramentas
 ---
 import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
-import Pendente from "../../../src/components/livro/Pendente.astro";
+import Pilhas from "../../../src/components/livro/Pilhas.astro";
 import Terminal from "../../../src/components/livro/Terminal.astro";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
@@ -38,27 +38,38 @@ No capítulo 1, o agente era uma promessa: um modelo que decide os próprios pas
 
 O agente deste capítulo faz duas coisas. Primeiro, lê a mensagem e decide o que o contrato manda: responder, abrir chamado, recusar ou passar a vez. Depois, segue o caminho daquela decisão. Dá para escrever isso como uma função cheia de `if`, mas vamos escrever como um **grafo**: cada passo é um **nó**, as **setas** dizem qual nó vem depois, e um **estado** passa de nó em nó levando o que já se sabe.
 
+<PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
+Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem rodar modelo nenhum. No capítulo 5, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
+</PareEPense>
+
 <Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e rodar esse desenho.</Nota>
 
 Clique nos nós do agente que você vai construir. O desenho não foi feito à mão: as setas são as do grafo real.
 
 <GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="desenho" numero="2.1" legenda="O grafo do agente deste capítulo. As setas saíram do grafo real, montado pelo código do projeto; o que cada nó faz aparece embaixo, ao clicar." />
 
-Vale ser honesto com a definição do capítulo 1. Ali, um agente decide os próprios passos, num ciclo, usando ferramentas. O daqui decide só uma coisa, qual caminho seguir, e não tem ferramenta nem ciclo. Ainda é o esqueleto. As ferramentas, e com elas o ciclo, chegam no capítulo 3, e entram nesse mesmo desenho como nós novos.
-
-<PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
-Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem rodar modelo nenhum. No capítulo 5, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
+<PareEPense pergunta="Pela definição do capítulo 1, um agente decide os próprios passos, num ciclo, usando ferramentas. O desenho acima tem tudo isso?">
+Não. O daqui decide só uma coisa, qual caminho seguir, e não tem ferramenta nem ciclo: toda seta termina no fim. Ainda é o esqueleto. As ferramentas, e com elas o ciclo, chegam no capítulo 3, e entram nesse mesmo desenho como nós novos.
 </PareEPense>
 
 ## 2.2 O modelo decide, o contrato dá a forma
 
-Pedir a um modelo "decida o que fazer com esta mensagem" devolve texto: "Acho melhor encaminhar para um atendente, porque...". Texto é ótimo para o cliente ler e péssimo para o código seguir. Qual dos quatro caminhos é "acho melhor encaminhar"?
+Pedir a um modelo "decida o que fazer com esta mensagem" devolve texto: "Acho melhor encaminhar para um atendente, porque...". Texto é ótimo para o cliente ler e péssimo para o código seguir.
+
+<PareEPense pergunta="Responder, abrir chamado, recusar ou passar a vez: qual dos quatro caminhos é “acho melhor encaminhar”?">
+Pode ser abrir chamado, se uma pessoa resolve depois, ou passar a vez, se uma pessoa assume agora. O código teria de adivinhar pelo texto.
+</PareEPense>
 
 Por isso o agente não pede texto. Ele pede uma **saída estruturada**: o modelo responde preenchendo um molde do pydantic, a `Escolha`, com uma decisão e o motivo numa frase. E a decisão não é um texto qualquer: é a `Decisao` do contrato do capítulo 1. Se o modelo inventar uma quinta decisão, o pydantic recusa na hora, antes de o grafo dar um passo.
 
+<Pilhas quem="no grafo" pergunta="Cada passo do agente: quem faz, o modelo ou o código? Separe."
+  cartas={["decidir", "abrir_chamado", "responder", "passar", "recusar"].map((id) => ({ texto: nosDoGrafo.nos[id].tarefa, pilha: nosDoGrafo.nos[id].modelo === "não" ? "codigo" : "modelo" }))}
+  grupos={{
+    modelo: { nome: "o modelo faz", quando: "lê a mensagem e escolhe, ou escreve para o cliente" },
+    codigo: { nome: "o código faz", quando: "frase fixa, sem chamar o modelo" },
+  }}>
 Repare na divisão de trabalho. O modelo faz o que só ele faz: lê uma mensagem em português e escolhe. O código faz o resto: conduz o caminho, e onde não há o que escrever, não chama o modelo. Passar a vez e abrir chamado têm uma frase fixa. Sai mais barato, e na hora de entregar o caso a uma pessoa o modelo não tem o que improvisar.
-
-<Pendente o="Voz dos autores: uma vez em que texto solto de um modelo quebrou o código que vinha depois" parte="dos autores" />
+</Pilhas>
 
 ## 2.3 Testar sem pagar
 
@@ -105,8 +116,6 @@ Veja o caminho de cada pergunta no mesmo desenho da figura 2.1. Comece pelo R12,
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
 Pela nota, sim. Pelo tipo de erro, não. O que respondia tudo "respondeu" a pergunta do Bruno sobre o pedido da Ana, e mostrou a compra de uma pessoa para outra. Este errou sempre para o lado seguro: passou a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
 </PareEPense>
-
-<Pendente o="Voz dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
 
 O cuidado está no agente. O que falta é informação: os pedidos, o catálogo e a política estão na pasta `dados/`, e ele não tem como olhar. Dar a ele esse jeito de olhar é o assunto do capítulo 3, as ferramentas. E a pergunta continua a mesma: a nota sobe sem que ele perca o cuidado?
 

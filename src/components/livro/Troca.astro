@@ -1,0 +1,69 @@
+---
+/**
+ * Ação do leitor: trocar o jeito de pedir ao modelo e ver o que muda (a frase) e o que fica (a decisão do contrato)
+ * (docs/RITMO.md: "depende de" pede um explorável). A mensagem e a decisão do contrato vêm do referencia.jsonl; as
+ * variantes vêm de um JSON do livro e são ilustração, e a figura diz. O veredito sai da comparação, não do JSON.
+ * No modo direto, as variantes aparecem todas, uma embaixo da outra.
+ */
+import { casos, DECISOES } from "../../lib/referencia.ts";
+
+type Variante = { aba: string; resposta: string; decisao: string; como?: string };
+interface Props { referencia: string; dados: { caso: string; variantes: Variante[] }; pergunta: string; ilustracao: string }
+const { referencia, dados, pergunta, ilustracao } = Astro.props;
+const [caso] = casos(referencia, [dados.caso], "Troca");
+dados.variantes.forEach((v) => { if (!DECISOES[v.decisao]) throw new Error(`Troca: a decisão "${v.decisao}" não é do contrato`); });
+if (!dados.variantes.some((v) => v.decisao !== caso.decisao)) throw new Error("Troca: precisa de ao menos uma variante que o contrato pega");
+---
+<div class="tro" data-troca>
+  <p class="tro-rotulo">troque</p>
+  <p class="tro-pergunta">{pergunta}</p>
+  <q class="tro-msg">{caso.pergunta}</q>
+  <div class="tro-abas" role="tablist">{dados.variantes.map((v, i) => <button type="button" role="tab" aria-selected={i === 0 ? "true" : "false"} data-i={i}>{v.aba}</button>)}</div>
+  <div class="tro-variantes">
+    {dados.variantes.map((v, i) => {
+      const ok = v.decisao === caso.decisao;
+      return (
+        <div class="tro-duas" data-v={i} hidden={i !== 0}>
+          <div class="tro-col"><h4>o que muda: a resposta <span class="tro-qual">({v.aba})</span></h4><p class="tro-resposta">{v.resposta}</p></div>
+          <div class="tro-col"><h4>o que fica: o contrato</h4><p class="tro-fica">{DECISOES[caso.decisao].nome}</p><p class="tro-motivo">{caso.motivo}</p>
+            <p class={ok ? "tro-ok" : "tro-nao"}>{ok ? `✓ decidiu ${DECISOES[v.decisao].nome}: cumpriu, com outra frase` : `✗ ${v.como ?? `decidiu ${DECISOES[v.decisao].nome}`}: o contrato pega`}</p></div>
+        </div>
+      );
+    })}
+  </div>
+  <p class="tro-ilustracao">{ilustracao}</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-troca]").forEach((fig) => {
+    const abas = [...fig.querySelectorAll<HTMLButtonElement>("[role=tab]")], vs = [...fig.querySelectorAll<HTMLElement>("[data-v]")];
+    abas.forEach((a) => a.addEventListener("click", () => {
+      abas.forEach((x) => x.setAttribute("aria-selected", String(x === a)));
+      vs.forEach((v) => { v.hidden = v.dataset.v !== a.dataset.i; });
+    }));
+  });
+</script>
+
+<style is:global>
+  .tro { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px; font: 15.5px/1.55 var(--f-ui) }
+  .tro-rotulo { margin: 0 0 4px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .tro-pergunta { margin: 0 0 10px; font: 600 17px/1.4 var(--f-ui) }
+  .tro-msg { display: block; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 10px 13px; margin-bottom: 12px; font: italic 16px/1.45 var(--f-texto) }
+  .tro-abas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px }
+  .tro-abas button { border: 1px solid var(--linha); background: var(--papel); border-radius: 999px; padding: 4px 12px; font: 500 14px var(--f-ui); cursor: pointer }
+  .tro-abas button[aria-selected="true"] { background: var(--ink); color: var(--papel); border-color: var(--ink) }
+  .tro-duas[hidden] { display: none }
+  .tro-duas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px }
+  .tro-col { border: 1px solid var(--linha); border-radius: 10px; padding: 10px 12px; background: var(--papel); min-width: 0 }
+  .tro-col h4 { margin: 0 0 6px; font: 600 12px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2) }
+  .tro-qual { display: none; text-transform: none; letter-spacing: 0 }
+  .tro-resposta { margin: 0; font: italic 15.5px/1.45 var(--f-texto) }
+  .tro-fica { margin: 0; font: 600 16px var(--f-ui) } .tro-motivo { margin: 0; font-size: 14px; color: var(--ink-2) }
+  .tro-ok, .tro-nao { margin: 8px 0 0; font-weight: 600 } .tro-ok { color: var(--ok) } .tro-nao { color: var(--aviso) }
+  .tro-ilustracao { margin: 10px 0 0; font-size: 13px; color: var(--ink-2) }
+  @media (max-width: 560px) { .tro-duas { grid-template-columns: 1fr } }
+  /* modo direto: as três variantes de uma vez, sem abas */
+  html[data-direto] .tro-duas { display: grid !important; margin-bottom: 8px }
+  html[data-direto] .tro-abas { display: none }
+  html[data-direto] .tro-qual { display: inline }
+</style>

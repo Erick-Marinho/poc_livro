@@ -1,12 +1,12 @@
 {
-  "sobre": "A figura do grafo do agente do capítulo 2 (GrafoAgente). As setas não vêm daqui: vêm do grafo real, gravadas pelo comando grafo-02. Aqui fica só o que cada nó faz; o teste falha se um nó daqui não existir no grafo, ou se faltar um.",
+  "sobre": "A figura do grafo do agente do capítulo 2 (GrafoAgente). As setas não vêm daqui: vêm do grafo real, gravadas pelo comando grafo-02. Aqui fica só o que cada nó faz (e a tarefa, curta, que vira carta nas pilhas da seção 2.2); o teste falha se um nó daqui não existir no grafo, ou se faltar um.",
   "nos": {
     "__start__": { "rotulo": "início", "papel": "Por onde a mensagem do cliente entra. O estado começa só com a pergunta." },
-    "decidir": { "modelo": "decide", "papel": "Manda a instrução e a pergunta ao modelo e recebe uma Escolha: uma das quatro decisões do contrato, e o motivo numa frase.", "escreve": ["decisao", "motivo"] },
-    "responder": { "modelo": "escreve", "papel": "Pede ao modelo uma resposta curta para o cliente.", "escreve": ["resposta"] },
-    "recusar": { "modelo": "escreve", "papel": "Pede ao modelo que diga, com educação, que a loja não pode, e por quê.", "escreve": ["resposta"] },
-    "abrir_chamado": { "rotulo": "abrir chamado", "modelo": "não", "papel": "Frase fixa: o agente ainda não abre chamado sozinho, e passa para uma pessoa da equipe abrir.", "escreve": ["resposta"] },
-    "passar": { "rotulo": "passar a vez", "modelo": "não", "papel": "Frase fixa: a mensagem vai para uma pessoa da equipe.", "escreve": ["resposta"] },
+    "decidir": { "tarefa": "Escolher uma das quatro decisões", "modelo": "decide", "papel": "Manda a instrução e a pergunta ao modelo e recebe uma Escolha: uma das quatro decisões do contrato, e o motivo numa frase.", "escreve": ["decisao", "motivo"] },
+    "responder": { "tarefa": "Escrever a resposta ao cliente", "modelo": "escreve", "papel": "Pede ao modelo uma resposta curta para o cliente.", "escreve": ["resposta"] },
+    "recusar": { "tarefa": "Escrever a recusa", "modelo": "escreve", "papel": "Pede ao modelo que diga, com educação, que a loja não pode, e por quê.", "escreve": ["resposta"] },
+    "abrir_chamado": { "tarefa": "A mensagem do chamado", "rotulo": "abrir chamado", "modelo": "não", "papel": "Frase fixa: o agente ainda não abre chamado sozinho, e passa para uma pessoa da equipe abrir.", "escreve": ["resposta"] },
+    "passar": { "tarefa": "A mensagem de passar a vez", "rotulo": "passar a vez", "modelo": "não", "papel": "Frase fixa: a mensagem vai para uma pessoa da equipe.", "escreve": ["resposta"] },
     "__end__": { "rotulo": "fim", "papel": "A conversa termina com a resposta no estado." }
   }
 }
