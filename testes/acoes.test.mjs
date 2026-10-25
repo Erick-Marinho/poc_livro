@@ -58,3 +58,9 @@ test("capítulo 1: a aposta da escala tem um item em cada ponto, e o roteador é
   assert.match(roteador.porque, /capítulo 2/);
   for (const m of escala.mensagens) assert.ok(html.includes(m.texto), m.texto);
 });
+
+test("capítulo 2: o agente do desenho fica no roteador da escala do capítulo 1", () => {
+  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  assert.match(h2, /Na escala do capítulo 1/);
+  assert.match(h2, /No roteador\./);
+});
