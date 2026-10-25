@@ -1,0 +1,14 @@
+{
+  "sobre": "A animação do laço, no 1.1 (LacoAnimado; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos de usar um modelo. As perguntas e os caminhos são os de tres-jeitos.json; a cliente é a do e-mail da pergunta, nos clientes da loja; as ferramentas são as do caminho do agente. O laço tem as palavras do livro: decidir, agir, observar, responder. O teste confere o elenco e o desenho.",
+  "pergunta": "Quem decide o próximo passo?",
+  "elenco": {
+    "decidir": "decidir",
+    "agir": "agir",
+    "observar": "observar",
+    "responder": "responder",
+    "sistema": "o sistema da loja",
+    "quem": { "modelo": "o modelo", "codigo": "o seu código" }
+  },
+  "setas": { "pede": "pede", "volta": "o resultado volta", "de_novo": "decide de novo" },
+  "legenda": "A cliente, o laço e o sistema da loja, com as ferramentas."
+}
