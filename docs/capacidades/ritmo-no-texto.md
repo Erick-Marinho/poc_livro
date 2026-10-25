@@ -28,12 +28,10 @@ longe do texto. O fluxo pedido é linear: escrever → skill → esqueleto **no 
 - (2) A trava é do `npm test`, que é o passo antes de publicar; o `npm run dev` mostra o rascunho normalmente.
 - (3) O teste da skill nova é no capítulo 1, numa cópia: os três textos de hoje já passaram por ela.
 
-## Etapa atual: 3
+## Etapa atual: nenhuma
 
-A skill `revisar-ritmo` com o passo 5 novo: escrever os `Rascunho` no arquivo (e o import), só adicionando, num commit
-só; no chat, o relógio e a lista dos rascunhos. Proposta para o Erick salvar. Teste: o roteiro novo seguido no
-capítulo 1, numa cópia (ramo `teste-esqueleto`, que não entra no `main`). Evidência: o commit da cópia com 0 linhas
-removidas, o relógio com os rascunhos, o `npm test` falhando por eles e a página no `npm run dev`.
+Capacidade fechada em 25/10/2026. A skill `revisar-ritmo` escreve os rascunhos no texto; o `npm test` não publica com
+rascunho.
 
 ## Registro
 
@@ -41,3 +39,4 @@ removidas, o relógio com os rascunhos, o `npm test` falhando por eles e a pági
 |---|---|---|---|
 | 1 | `e7eebb9` | o teste falha sem a conferência do dado; o build para com tipo que não é ação, componente que não existe e dado sem origem; captura do quadro em 1280 e 360 px | 25/10 |
 | 2 | `35de94d` | numa cópia com um rascunho, o relógio vai de 243 a 180 · 63 e o teste falha com "linha 52: Aposta"; sem ele, passa | 25/10 |
+| 3 | `28552d1` | a skill nova salva pelo Erick; seguida no capítulo 1 numa cópia: 9 linhas adicionadas e 0 removidas, 237 e 230 viraram 80 · 157 e 122 · 108, o `npm test` falhou nas linhas 49 e 105, os quadros na página | 25/10 |
