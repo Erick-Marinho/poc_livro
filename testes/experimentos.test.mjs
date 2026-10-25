@@ -38,7 +38,7 @@ test("os endereços antigos dos guias levam aos experimentos", () => {
 /* o molde (docs/capacidades/experimentos.md): os campos do topo o build já confere; aqui, as partes do texto */
 const temChave = (v, chave) => v && typeof v === "object" && (chave in v || Object.values(v).some((x) => temChave(x, chave)));
 
-test("cada experimento tem as partes do texto do molde: o que vamos construir, a IDE com aposta, o inventado e a voz dos autores", () => {
+test("cada experimento tem as partes do texto do molde: o que vamos construir, a IDE com aposta, e o inventado", () => {
   for (const g of experimentos) {
     const mdx = readFileSync(new URL(`experimentos/${g}/experimento.mdx`, raiz), "utf8");
     assert.match(mdx, /^## O que vamos construir$/m, `${g}: falta "## O que vamos construir", mostrado antes da construção`);
@@ -47,7 +47,6 @@ test("cada experimento tem as partes do texto do molde: o que vamos construir, a
     const apostas = roteiros.some((f) => temChave(JSON.parse(readFileSync(new URL(`experimentos/${g}/roteiros/${f}`, raiz), "utf8")), "aposta"));
     assert.ok(apostas, `${g}: o roteiro da IDE não tem nenhuma aposta`);
     assert.match(mdx, /<Nota titulo="o que é inventado">/, `${g}: falta a nota do que é inventado`);
-    assert.match(mdx, /<Pendente\b/, `${g}: falta o lugar da voz dos autores (Pendente)`);
   }
 });
 

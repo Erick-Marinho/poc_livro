@@ -27,9 +27,6 @@ gancho → **prever** → **fazer** → **errar** → consertar → lembrar → 
   por capítulo, de propósito, e o leitor reconhece: "ah, é aquele!".
 - **A loja como lugar.** Os mesmos clientes, a mesma loja, o mesmo "hoje" (10/11/2026). Dado com rosto
   se aprende melhor do que `cliente_01`.
-- **A voz dos autores nas decisões.** "Eu faria assim, e por quê", inclusive "eu errei isso no projeto real".
-  Isso não se copia e é o que separa o livro de uma documentação. Só os autores escrevem: o modelo marca o
-  lugar (componente `Pendente`) e não inventa experiência.
 
 ## Cuidados, para não errar a mão
 

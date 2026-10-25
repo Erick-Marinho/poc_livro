@@ -15,7 +15,6 @@ em_breve: Capítulo 3 · As ferramentas
 ---
 import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
-import Pendente from "../../../src/components/livro/Pendente.astro";
 import Terminal from "../../../src/components/livro/Terminal.astro";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
@@ -57,8 +56,6 @@ Pedir a um modelo "decida o que fazer com esta mensagem" devolve texto: "Acho me
 Por isso o agente não pede texto. Ele pede uma **saída estruturada**: o modelo responde preenchendo um molde do pydantic, a `Escolha`, com uma decisão e o motivo numa frase. E a decisão não é um texto qualquer: é a `Decisao` do contrato do capítulo 1. Se o modelo inventar uma quinta decisão, o pydantic recusa na hora, antes de o grafo dar um passo.
 
 Repare na divisão de trabalho. O modelo faz o que só ele faz: lê uma mensagem em português e escolhe. O código faz o resto: conduz o caminho, e onde não há o que escrever, não chama o modelo. Passar a vez e abrir chamado têm uma frase fixa. Sai mais barato, e na hora de entregar o caso a uma pessoa o modelo não tem o que improvisar.
-
-<Pendente o="Voz dos autores: uma vez em que texto solto de um modelo quebrou o código que vinha depois" parte="dos autores" />
 
 ## 2.3 Testar sem pagar
 
@@ -105,8 +102,6 @@ Veja o caminho de cada pergunta no mesmo desenho da figura 2.1. Comece pelo R12,
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
 Pela nota, sim. Pelo tipo de erro, não. O que respondia tudo "respondeu" a pergunta do Bruno sobre o pedido da Ana, e mostrou a compra de uma pessoa para outra. Este errou sempre para o lado seguro: passou a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
 </PareEPense>
-
-<Pendente o="Voz dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
 
 O cuidado está no agente. O que falta é informação: os pedidos, o catálogo e a política estão na pasta `dados/`, e ele não tem como olhar. Dar a ele esse jeito de olhar é o assunto do capítulo 3, as ferramentas. E a pergunta continua a mesma: a nota sobe sem que ele perca o cuidado?
 

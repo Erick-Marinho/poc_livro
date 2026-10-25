@@ -40,7 +40,7 @@ O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o d
 
 ## Exceções
 
-- Trecho narrativo (a voz dos autores contando um erro real) pode passar de 200 se segura o leitor: quem diz é a leitura.
+- Trecho narrativo (uma história da loja que segura o leitor) pode passar de 200: quem diz é a leitura.
 - Trecho denso pode pedir ação antes de 200: duas frases seguidas com verbo de processo.
 
 ## Animação

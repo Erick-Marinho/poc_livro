@@ -21,7 +21,6 @@ import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import Classificador from "../../../src/components/livro/Classificador.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
-import Pendente from "../../../src/components/livro/Pendente.astro";
 import Rastro from "../../../src/components/livro/Rastro.astro";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
@@ -76,8 +75,6 @@ Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que f
 
 Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
 
-<Pendente o="Voz dos autores: uma vez em que vocês começaram pelo agente, e o que isso custou" parte="dos autores" />
-
 ## 1.3 As perguntas que chegam
 
 O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Estas são algumas mensagens de um dia no atendimento dela.
@@ -99,8 +96,6 @@ Lembra do desconto que o agente apressado prometeu? É a mesma mensagem, agora c
 O contrato também não é o prompt. O prompt é como você pede ao modelo que se comporte; o contrato é como você confere o que ele fez. Você vai trocar de prompt muitas vezes ao longo do livro, e de modelo também. O contrato fica, e é justamente por ficar que ele serve de régua.
 
 <Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
-
-<Pendente o="Voz dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
 As saídas são as pilhas que você separou na seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
 
@@ -130,8 +125,6 @@ Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
 </PareEPense>
-
-<Pendente o="Voz dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
 <PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota de partida?">
 Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:

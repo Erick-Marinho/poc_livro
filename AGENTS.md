@@ -16,7 +16,7 @@ Livros técnicos em que o código se monta e o terminal roda no meio do texto. L
 - O livro não pode mentir: código, saída e erro vêm do projeto real (`livros/<livro>/projeto`, `saidas.json`,
   `roteiros/`), e o build falha se divergirem. Simulação e ilustração dizem o que são.
 - É um livro, não um tutorial: o texto defende uma ideia; comando e código são prova, não roteiro.
-- A voz dos autores ("eu faria assim", "eu errei isso") só os autores escrevem. Marque o lugar com `Pendente`.
+- O texto não tem voz dos autores nem experiência pessoal ("eu errei isso no projeto real"): quem prova é o projeto.
 - Texto redigido por modelo é sinalizado no relatório com `(redação: <modelo>)`, para revisão.
 - Sem push, sem `.env`, sem chave, sem dado real de pessoa, sem decisão escrita do responsável.
 - Commits em português, no estilo do `git log`, com o e-mail configurado no repositório.
