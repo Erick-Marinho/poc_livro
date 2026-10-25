@@ -56,7 +56,7 @@ Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem 
 O seu código. O modelo só pede, e lê o que volta.
 </PareEPense>
 
-O primeiro conserto é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
+A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
 
 Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
 

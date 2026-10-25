@@ -48,3 +48,10 @@ test("o problema do custo diz que é o gasto com o modelo, e não \"a conta\": n
   for (const f of ["onde-se-pega", "ciclo-animado"]) for (const s of lido(JSON.parse(ler(`livros/ciclo-de-vida/figuras/${f}.json`)))) nenhuma(s, conta, `${f}.json`);
   assert.match(texto, /o gasto com o modelo que cresce sem aviso/i);
 });
+
+/* ajustes do capítulo 1 (docs/capacidades/ajustes-do-capitulo-1.md) */
+test("capítulo 1: a ferramenta é a primeira etapa, e não \"o primeiro conserto\"", () => {
+  const texto = visivel(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html"));
+  nenhuma(texto, /.{0,40}\bconserto\b.{0,20}/i, "na página montada");
+  assert.match(texto, /A primeira etapa é deixar o modelo olhar o sistema/);
+});
