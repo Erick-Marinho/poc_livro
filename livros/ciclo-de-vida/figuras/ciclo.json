@@ -29,7 +29,7 @@
       "nas_fontes": "IBM: Operar · Microsoft: Operação contínua · LangChain: Monitor · Salesforce: Observar e monitorar" },
     { "id": "errado", "nome": "Quando dá errado", "capitulos": [7],
       "pergunta": "Qual a causa da falha, e como ela não volta?",
-      "ganha": "Cada falha do uso vira um caso novo da régua, e a régua passa a apanhá-la.",
+      "ganha": "Cada falha do uso vira um caso novo da régua, e a régua passa a capturá-la.",
       "nas_fontes": "LangChain: Iterate · IBM: Operar · Salesforce: o ciclo de feedback" },
     { "id": "evoluir", "nome": "Evoluir", "capitulos": [9],
       "pergunta": "Dá para trocar de modelo ou de instrução sem piorar?",

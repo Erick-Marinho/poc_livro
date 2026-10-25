@@ -96,7 +96,7 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   };
 
   const fim = cena === cortes.length - 1;
-  const rotulo = tocando ? `cena ${cena + 1} de ${cortes.length}…` : cena < 0 ? "▶ Ver onde cada problema é apanhado" : fim ? "↺ Ver de novo" : `▶ Próxima cena (${cena + 2} de ${cortes.length})`;
+  const rotulo = tocando ? `cena ${cena + 1} de ${cortes.length}…` : cena < 0 ? "▶ Ver onde cada problema é capturado" : fim ? "↺ Ver de novo" : `▶ Próxima cena (${cena + 2} de ${cortes.length})`;
   return <div ref={caixa} className="mc-video" onClick={clicar}>
     <Player key={desenho} ref={ref} component={CicloAnimado} inputProps={props} durationInFrames={q.duracao} fps={q.fps}
       compositionWidth={q.largura} compositionHeight={q.altura} initialFrame={direto ? q.duracao - 1 : 0}

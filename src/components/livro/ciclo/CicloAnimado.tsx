@@ -120,7 +120,7 @@ const Faixa = ({ cena, v, apostas, aposta, coluna, top }: { cena: Cena; v: numbe
       <div style={{ font: `${coluna ? 16 : 19}px/1.35 ${ui}`, color: cor.texto, opacity: kf(v, [[0, 0], [0.4, 1]]) }}>{cena.legenda}</div>
       {cena.pega && m ? (
         <div style={{ font: `${coluna ? 14 : 16}px/1.4 ${ui}`, color: cor.fraco, opacity: kf(v, [[pegaEm + 0.2, 0], [pegaEm + 0.6, 1]]) }}>
-          Apanhado em: <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
+          Capturado em: <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
           {" · "}
           {escolha === undefined || escolha === null ? "você não apostou" : (
             <>você apostou: <b style={{ color: acertou ? cor.ok : cor.aviso }}>{m.opcoes[escolha]} {acertou ? "✓" : "✗"}</b></>
