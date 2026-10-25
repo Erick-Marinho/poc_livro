@@ -65,6 +65,7 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   do roteiro deixa de ser usado.
 - (6) Parada, a figura mostra o fim do R01 (como o servidor desenhava na etapa 4); o play começa do início. No modo
   direto e com movimento reduzido, mostra o último quadro.
+- (6) A linha do tempo fica em `agente/tempos.ts`, sem JSX, para o teste conferir os 45 s.
 - (6) A etapa 5 não foi feita; o teste da etapa 6 faz o que ela pedia (a figura no `npm test`).
 
 ## Peças
@@ -97,7 +98,7 @@ O grafo: **cliente** → **agente** (pensa) ⇄ **ferramentas** (pedidos, polít
 
 ## Etapa 6, detalhada
 
-- **Arquivos:** `agente/cenarios.ts` e `agente/FiguraAgenteVideo.tsx` (novos); `agente/AgenteAoVivo.tsx` (troca);
+- **Arquivos:** `agente/cenarios.ts`, `agente/tempos.ts` e `agente/FiguraAgenteVideo.tsx` (novos); `agente/AgenteAoVivo.tsx` (troca);
   `agente/cena.ts` e `agente/agente.css` (saem); `FiguraAgente.astro`; `testes/figura-agente.test.mjs` (novo).
   No `my-video`: o Studio importa a composição daqui.
 - **Muda:** o prefácio mostra o vídeo de 43 s no Player, só com tocar e pausar. O nome e as iniciais da loja vêm do
