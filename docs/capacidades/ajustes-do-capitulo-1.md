@@ -13,6 +13,10 @@ soa estranho para o leitor: "executar" é a palavra que ele espera, no texto, na
 - (2) Onde "executar" pede sujeito que age, a voz passiva: "o modelo é executado no Ollama", "os comandos são
   executados de verdade". As mensagens de erro da montagem ("rode npm run saidas") são para quem escreve, e ficam.
 
+- (25/10/2026, Erick) A opinião dos autores do 1.2 (começar pelo agente, e o que isso custou) sai do relato de Erick:
+  funcionalidades que ninguém previu, outras que faltaram, stacks que não faziam sentido. O modelo redigiu só a partir
+  desse relato, sem acrescentar fato; vai num componente próprio (`Autores.astro`), assinado.
+
 ## Peças
 
 | Peça | Função | Entrada | Saída | Cor |

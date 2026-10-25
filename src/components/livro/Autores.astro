@@ -1,0 +1,21 @@
+---
+/**
+ * A opinião dos autores, em texto (docs/PRINCIPIOS.md: "eu faria assim, e por quê", inclusive "eu errei isso"). Só os
+ * autores escrevem o que vai aqui; o modelo não inventa experiência. Entra no lugar do `Pendente` "Opinião dos autores",
+ * com a assinatura de quem fala.
+ */
+interface Props { quem: string; titulo?: string }
+const { quem, titulo = "dos autores" } = Astro.props;
+---
+<aside class="autores" data-autores={quem}>
+  <b>{titulo}</b>
+  <div class="autores-texto"><slot /></div>
+  <span class="autores-quem">— {quem}</span>
+</aside>
+
+<style is:global>
+  .autores { margin: 1.4em auto 1.6em; padding: 12px 16px 12px 18px; border-left: 3px solid var(--acento); background: var(--papel-2); border-radius: 0 10px 10px 0; font: italic 17px/1.6 var(--f-texto) }
+  .autores > b { display: block; font: 600 11px var(--f-mono); font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: var(--acento); margin-bottom: 4px }
+  .autores-texto p { margin: 0 0 .6em } .autores-texto p:last-child { margin: 0 }
+  .autores-quem { display: block; margin-top: 6px; font: 600 13.5px var(--f-ui); font-style: normal; color: var(--ink-2) }
+</style>

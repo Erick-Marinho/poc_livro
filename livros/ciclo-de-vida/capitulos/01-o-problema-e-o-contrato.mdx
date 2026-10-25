@@ -30,6 +30,7 @@ import pedidosDaLoja from "../projeto/dados/pedidos.json";
 import QuemDecide from "../../../src/components/livro/QuemDecide.astro";
 import NumerosDaPesquisa from "../../../src/components/livro/NumerosDaPesquisa.astro";
 import autonomiaNoMundo from "../figuras/autonomia-no-mundo.json";
+import Autores from "../../../src/components/livro/Autores.astro";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
@@ -110,7 +111,11 @@ Sem essa definição, não existe erro: existe só "o agente fez isso". E sem er
 
 Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
 
-<Pendente o="Opinião dos autores: uma vez em que vocês começaram pelo agente, e o que isso custou" parte="dos autores" />
+<Autores quem="Erick Marinho">
+Eu já comecei pelo agente, antes de planejar. Acabei criando funcionalidades que ninguém tinha previsto, e deixei de criar outras que faziam falta. Chegamos a incluir no projeto stacks que não faziam sentido para o problema.
+
+Olhando para trás, faltou uma coisa só: a lista do que o agente devia fazer com cada pergunta. Sem ela, não havia como dizer o que sobrava e o que faltava. Toda ideia parecia necessária, e nenhuma ausência aparecia.
+</Autores>
 
 ## 1.3 As perguntas que chegam
 
