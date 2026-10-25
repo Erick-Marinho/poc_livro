@@ -11,8 +11,10 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
   todo, inclusive nas composições do Remotion (o Studio do my-video as importa do poc_livro).
 - (25/10/2026, Erick) A animação não repete como pergunta o que o leitor já marcou na aposta.
 - (25/10/2026, Erick) O pare e pense usa ícones do Lucide.
-- (25/10/2026, Erick) "Régua" é explicada onde o leitor a encontra pela primeira vez.
-- (25/10/2026, Erick) O que fica abaixo da animação começa recolhido, para o leitor focar nela.
+- (25/10/2026, Erick) "Régua" é explicada onde o leitor a encontra: um termo explicável, sublinhado, que mostra a
+  definição ao tocar ou passar o mouse, sem alongar o texto (escolhida entre frase no texto, termo e as duas).
+- (25/10/2026, Erick) Os cartões das fases saem de baixo da animação, para o leitor focar nela, e abrem num modal ao
+  clicar no nó da fase; o nó mostra que é clicável.
 - (25/10/2026, Erick) "A conta que cresce" diz o que é a conta: "o gasto com o modelo que cresce sem aviso" e, na
   etiqueta da animação, "gasto que cresce" (escolha do Claude, a pedido de Erick: "a melhor experiência").
 - (1) Muda só o texto que o leitor lê; os nomes internos (`onde-se-pega.json`, o campo `pega`) ficam. "Quem pega" vira
@@ -26,6 +28,9 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 - (4) No pare e pense, `Lightbulb` no rótulo e `Eye` no "Ver a resposta", do `lucide-react` que o projeto já usa
   (https://lucide.dev/guide/packages/lucide-react): num `.astro` sem `client:`, o componente React vira SVG no
   servidor, sem JS (https://docs.astro.build/en/guides/framework-components/). O ícone sai com `aria-hidden`.
+- (5) Os termos e as definições ficam num JSON do livro (`termos.json`); o componente `Termos`, posto uma vez no
+  capítulo, marca no navegador cada ocorrência no corpo, fora de código, SVG, vídeo, botão e link. Sem JS, o texto
+  fica como está. Só a introdução usa, por ora: no capítulo 1 a régua é construída.
 
 ## Peças
 
@@ -36,7 +41,8 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 | `ciclo/FiguraCiclo.tsx`, `ciclo/CicloAnimado.tsx` | o botão, a pergunta do topo e a faixa da animação | as cenas e a aposta do leitor | o vídeo | troca (etapas 1 a 3) |
 | `agente/FiguraAgenteVideo.tsx`, `ide/IdeCapitulo.tsx`, `comandos/Comandos.tsx` | o que a figura do agente, a IDE e o placar dizem da aposta | — | o que o leitor lê | troca (etapa 2) |
 | `PareEPense.astro` | o ícone do rótulo e do "ver a resposta" | `lucide-react` | a caixa do pare e pense | troca (etapa 4) |
-| `MapaDoCiclo.astro` | os cartões das fases, recolhidos abaixo da animação | `ciclo.json` | a Figura 1 | troca (etapa 6) |
+| `termos.json` + `Termos.astro` | o termo explicável e a definição | o corpo do capítulo | o termo sublinhado | nova (etapa 5) |
+| `MapaDoCiclo.astro`, `ciclo/Anel.tsx` | os cartões das fases num modal, aberto pelo nó, que mostra que é clicável | `ciclo.json` | a Figura 1 | troca (etapa 6) |
 
 ## Etapas
 
@@ -45,17 +51,19 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 3. A animação parte do que o leitor já marcou, sem perguntar de novo.
 4. Ícones do Lucide no pare e pense.
 5. "Régua" explicada na primeira vez que aparece.
-6. O que fica abaixo da animação começa recolhido.
+6. Os cartões das fases num modal, aberto pelo nó da fase.
 7. "A conta que cresce" diz que é o gasto com o modelo.
 
-## Etapa atual: 4
+## Etapa atual: 5
 
-**Arquivos.** `PareEPense.astro` (o ícone no rótulo e no "Ver a resposta", no lugar do losango de texto),
-`testes/acoes.test.mjs`.
+**Arquivos.** `livros/ciclo-de-vida/termos.json` (novo: a régua e a definição), `src/lib/termos.ts` (novo: acha os
+termos num texto), `src/components/livro/Termos.astro` (novo: marca e mostra a definição), `00-introducao.mdx`,
+`testes/termos.test.mjs` (novo).
 
-**Evidência.** Os testes do livro passam; o teste novo falha sem o código; a caixa na página, com os dois ícones.
+**Evidência.** Os testes do livro passam; o teste novo falha sem o código; na página, a régua sublinhada no texto, na
+resposta do "invista" e no pare e pense, e a definição aberta ao tocar.
 
-**Fora.** Outras caixas (nota, exercício, ponto de volta).
+**Fora.** O texto dentro do desenho e do vídeo (SVG); a impressão, que fica com o texto como está.
 
 ## Registro
 
@@ -64,5 +72,6 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 | 1 | `313a0e6`, `82eebbf` | 90 testes do livro; o teste novo falha com o texto de antes ("Quem pega"); na página, "capturado" em 13 lugares e nenhum "pego" | Erick, 25/10/2026 ("capturado", no lugar de "apanhado") |
 | 2 | `da066d1` | 91 testes do livro; o teste novo (`vocabulario.test.mjs`) falha com o texto de antes ("Aposte em qual."); nenhum "apost…" nas páginas locais da introdução, dos capítulos 1 e 2 e do experimento | Erick, 25/10/2026 |
 | 3 | `429b6b7` | 92 testes do livro; o teste novo falha sem o código; quadros da composição renderizados pelo Remotion: a pergunta sem investimento, a afirmação com, "✓ onde você investiu" e "você investiu em Avaliar" na faixa | Erick, 25/10/2026 |
+| 4 | `5d8e572` | 93 testes do livro; o teste novo falha sem o código; a caixa aberta na página, com a lâmpada e o olho | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
