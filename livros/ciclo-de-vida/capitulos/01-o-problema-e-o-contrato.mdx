@@ -46,13 +46,15 @@ import trocaDePrompt from "../figuras/troca-de-prompt.json";
 
 Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve outro. Pergunte a ele quando chega o pedido BT-1003 e ele responde com o que parecer mais provável. Ele não sabe nada do pedido, porque o pedido mora no sistema da loja, e não dentro do modelo. Então ele escreve uma data qualquer, com cara de certa.
 
+Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem e decide que precisa olhar o sistema. Abre o pedido BT-1003: enviado pela Transportadora Asa Leve, com previsão de entrega em 14/11. Olha o que viu e decide de novo: isso basta para responder? Basta, e ele responde. Se o pedido estivesse "preparando", ele olharia outra coisa antes. Decidir, agir, olhar o resultado e decidir de novo: é esse laço que o modelo sozinho não faz.
+
 <PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem roda a consulta: o modelo ou o seu código?">
 O seu código. O modelo só pede, e lê o que volta.
 </PareEPense>
 
 O primeiro conserto é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
 
-Com ferramentas na mesa, existem dois jeitos de montar o sistema. No **fluxo fixo**, o seu código decide a ordem: sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. No **agente**, quem decide o próximo passo é o modelo: ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo. Usar outra ferramenta, responder ou parar. Esse ciclo de decidir, agir e olhar o resultado se repete até ele achar que terminou.
+Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
 
 Veja os três jeitos com as mesmas duas perguntas. Avance passo a passo e repare em quem decide:
 
@@ -62,7 +64,11 @@ O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o cami
 
 <Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
 
-Essa liberdade é o que torna o agente útil, e é também o que o torna perigoso. Ele resolve perguntas que você não previu, e pelo mesmo motivo pode fazer coisas que você não queria. Quem decide o próximo passo também pode decidir errado.
+O agente deste livro anda por essa escala. No capítulo 2 ele é um roteador, que escolhe uma de quatro decisões; no capítulo 3, com as ferramentas, passa a ser agente.
+
+<Pendente o="Citação: o livro da O'Reilly de onde vêm o laço, a escala e a liberdade dentro de um desenho (título e autor)" parte="1.1" />
+
+Mesmo no ponto mais livre da escala, o agente não fica solto. Ele escolhe entre as ferramentas que recebeu, dentro do caminho que alguém desenhou, e não reescreve esse caminho. O atendente também é assim: decide muita coisa sozinho, mas dentro da política da loja, e não inventa um desconto. Esse limite não é um defeito: é o que deixa o agente útil sem ser perigoso. Ele resolve perguntas que você não previu, mas só com as escolhas que você deu.
 
 <PareEPense pergunta="Se o fluxo fixo é mais previsível, por que não fazer o atendimento inteiro assim?">
 Dá para começar assim, e muita coisa deveria ficar assim. Se o caminho é sempre o mesmo, como "recebeu a nota fiscal, extrai os campos, grava", um fluxo fixo é mais barato, mais rápido e mais fácil de testar. Agente é para quando o próximo passo depende do que aparece no meio do caminho. O atendimento é assim: a mesma caixa de mensagens recebe pedido, produto, defeito, desconto e cliente irritado, e cada um pede um caminho diferente. Escrever um ramo de código para cada tipo funciona até a primeira pergunta que ninguém previu.
