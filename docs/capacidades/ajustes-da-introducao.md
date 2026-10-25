@@ -59,15 +59,9 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 7. "A conta que cresce" diz que é o gasto com o modelo.
 8. O vão vazio entre o desenho e o botão, no vídeo do mapa em coluna (celular).
 
-## Etapa atual: 7
+## Etapa atual: 8
 
-**Arquivos.** `00-introducao.mdx` (o primeiro parágrafo), `onde-se-pega.json` (o problema na caixa do "invista"),
-`ciclo-animado.json` (a etiqueta e a legenda da cena), `testes/vocabulario.test.mjs`.
-
-**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; na página, "gasto" no parágrafo e na
-caixa, e um quadro da composição com a etiqueta nova.
-
-**Fora.** O vão do vídeo em coluna (etapa 8).
+A detalhar quando o responsável pedir: o vão vazio entre o desenho e o botão, no vídeo do mapa em coluna (celular).
 
 ## Registro
 
@@ -79,5 +73,6 @@ caixa, e um quadro da composição com a etiqueta nova.
 | 4 | `5d8e572` | 93 testes do livro; o teste novo falha sem o código; a caixa aberta na página, com a lâmpada e o olho | Erick, 25/10/2026 |
 | 5 | `370b3ce` | 96 testes do livro; o teste novo falha sem o código; no navegador, 10 réguas marcadas na introdução e o balão aberto, em 1280 e 390 px | Erick, 25/10/2026 |
 | 6 | `8ced31f` | 97 testes do livro; o teste novo falha sem o código; no navegador, os nós com o ícone, o modal aberto pelo nó do vídeo e fechado com Esc, a régua por cima do modal, em 1280 e 390 px; no modo direto, os 8 cartões abertos embaixo | Erick, 25/10/2026 |
+| 7 | `a2690d3` | 98 testes do livro; o teste novo falha com o texto de antes; na página, "o gasto com o modelo" no parágrafo e na caixa, e nenhum "conta que cresce"; o quadro da composição com "gasto que cresce" | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
