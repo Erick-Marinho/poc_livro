@@ -19,14 +19,14 @@ as 20 respostas vieram no formato e 6 estavam certas.
   junto de cada decisão (cap. 8).
 - (1) Quatro camadas: comportamento, formato, ferramenta e execução (a auditoria fica dentro de execução).
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-`01-o-problema-e-o-contrato.mdx`, depois da definição: um parágrafo das camadas, a `Aposta` com quatro falhas (a do
-R12 é real, da gravação do capítulo 2), e o quadro camada · pergunta · capítulo. `figuras/camadas.json` e o teste
-(o R12 decidido como passar na gravação, contra recusar no contrato; os capítulos citados no sumário). Evidência:
-`npm test`, o relógio da 1.4 e a aposta no navegador.
+No capítulo 2, a camada de formato contra a de comportamento com o número gravado: as 20 respostas vieram no molde da
+`Escolha`, e 6 estavam certas. O lugar é o que não estraga o palpite da IDE (o resultado só aparece na 2.6).
+Evidência: `npm test`, com o 20 e o 6 conferidos contra a gravação; o relógio do capítulo 2; a página.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `45cfb79` | `npm test` com 101 testes; a aposta das camadas jogada (3 de 4) e o quadro em 1280 e 360 px; o R12 conferido contra a gravação; a 1.4 em 273 · 177 · 115 | 25/10 |
