@@ -4,7 +4,7 @@ import { z } from "astro/zod";
 
 /**
  * Cada texto do livro é um .mdx em livros/<livro>/capitulos/.
- * Capítulo exige número, "neste capítulo" e ponto de partida; prefácio não tem nada disso, mas tem assinatura.
+ * Capítulo exige número, "neste capítulo" e ponto de partida; a introdução não tem nada disso, mas tem assinatura.
  * Um texto sem os campos do seu tipo não monta.
  */
 const capitulos = defineCollection({
@@ -12,7 +12,7 @@ const capitulos = defineCollection({
   schema: z
     .object({
       livro: z.string(),
-      tipo: z.enum(["capitulo", "prefacio"]).default("capitulo"),
+      tipo: z.enum(["capitulo", "introducao"]).default("capitulo"),
       numero: z.number().int().positive().optional(),
       titulo: z.string(),
       lide: z.string(),
@@ -27,7 +27,7 @@ const capitulos = defineCollection({
     .superRefine((d, ctx) => {
       const falta = (campo: string) => ctx.addIssue({ code: "custom", path: [campo], message: `${d.tipo} precisa de "${campo}"` });
       if (d.tipo === "capitulo") (["numero", "neste", "partida"] as const).forEach((c) => d[c] === undefined && falta(c));
-      if (d.tipo === "prefacio" && !d.assinatura) falta("assinatura");
+      if (d.tipo === "introducao" && !d.assinatura) falta("assinatura");
     }),
 });
 

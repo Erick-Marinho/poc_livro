@@ -59,7 +59,7 @@ export function medir(mdx) {
   return trechos.filter((t) => t.palavras > 0 || t.ate);
 }
 
-/** Os textos medidos: capítulos (menos o prefácio) e experimentos. */
+/** Os textos medidos: capítulos (menos a introdução, por enquanto) e experimentos. */
 export function textos(raiz = new URL("../", import.meta.url)) {
   const lista = [];
   for (const livro of readdirSync(new URL("livros/", raiz))) {

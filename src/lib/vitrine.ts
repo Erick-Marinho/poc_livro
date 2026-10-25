@@ -13,13 +13,13 @@ export type Experimento = { id: string; titulo: string; lide: string; data: stri
 
 const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../livros/*/sumario.json", { eager: true, import: "default" });
 
-/* o título e o lide do prefácio, os autores da assinatura, e os capítulos escritos contra os do sumario.json */
+/* o título e o lide da introdução, os autores da assinatura, e os capítulos escritos contra os do sumario.json */
 export async function estante(): Promise<Livro[]> {
   const textos = await getCollection("capitulos");
   const ids = [...new Set(textos.map((t) => t.id.split("/")[0]))].sort();
   return ids.map((id) => {
     const doLivro = textos.filter((t) => t.id.startsWith(`${id}/`)).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
-    const abertura = doLivro.find((t) => t.data.tipo === "prefacio") ?? doLivro[0];
+    const abertura = doLivro.find((t) => t.data.tipo === "introducao") ?? doLivro[0];
     const escritos = doLivro.filter((t) => t.data.tipo === "capitulo").length;
     const planejados = Object.entries(sumarios).find(([p]) => p.includes(`/livros/${id}/`))?.[1].capitulos.length ?? escritos;
     return {

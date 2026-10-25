@@ -36,7 +36,7 @@ export async function getStaticPaths() {
         return { numero: p.numero, titulo: p.titulo, href: e && endereco(e), atual: e === entrada };
       }),
     ];
-    /* placar: os marcos até este capítulo (no prefácio, nenhum), com o número lido da saída gravada */
+    /* placar: os marcos até este capítulo (na introdução, nenhum), com o número lido da saída gravada */
     const bruto = doLivroArq(placares, livro);
     let placar: Placar | undefined;
     if (bruto) {
