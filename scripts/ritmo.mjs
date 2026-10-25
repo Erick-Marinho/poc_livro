@@ -15,7 +15,7 @@ const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exerci
   Rascunho: true, /* a ação sugerida pela skill: conta como se aceita, para o relógio mostrar o ritmo da proposta */
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
   Nota: false, Terminal: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
-  Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false };
+  MapaDoCiclo: false, Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false };
 /* o texto destes não é lido pelo leitor como texto corrido (ainda não existe, ou é fecho) */
 const SEM_TEXTO = new Set(["Pendente", "PontoDeVolta"]);
 
@@ -59,13 +59,13 @@ export function medir(mdx) {
   return trechos.filter((t) => t.palavras > 0 || t.ate);
 }
 
-/** Os textos medidos: capítulos (menos a introdução, por enquanto) e experimentos. */
+/** Os textos medidos: a introdução, os capítulos e experimentos. */
 export function textos(raiz = new URL("../", import.meta.url)) {
   const lista = [];
   for (const livro of readdirSync(new URL("livros/", raiz))) {
     const pasta = new URL(`livros/${livro}/capitulos/`, raiz);
     if (!existsSync(pasta)) continue;
-    for (const f of readdirSync(pasta).filter((f) => /^\d\d-.*\.mdx$/.test(f) && !f.startsWith("00-")).sort())
+    for (const f of readdirSync(pasta).filter((f) => /^\d\d-.*\.mdx$/.test(f)).sort())
       lista.push({ nome: `${livro}/${f.replace(/\.mdx$/, "")}`, texto: readFileSync(new URL(f, pasta), "utf8") });
   }
   const exp = new URL("experimentos/", raiz);

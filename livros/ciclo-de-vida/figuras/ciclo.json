@@ -1,0 +1,43 @@
+{
+  "sobre": "O mapa do ciclo de vida, na introdução (MapaDoCiclo). As fases juntam as quatro referências; cada capítulo do sumario.json está em uma fase só, e o teste confere. A seta de volta sai de 'quando dá errado' e entra em 'avaliar'.",
+  "fontes": [
+    { "nome": "IBM", "titulo": "Ciclo de vida do desenvolvimento de agentes (ADLC)", "url": "https://www.ibm.com/br-pt/think/topics/agent-development-lifecycle-adlc" },
+    { "nome": "Microsoft", "titulo": "Ciclo de vida de implantação de agentes", "url": "https://learn.microsoft.com/pt-br/agents/architecture/deployment-lifecycle" },
+    { "nome": "LangChain", "titulo": "The agent development lifecycle", "url": "https://www.langchain.com/blog/the-agent-development-lifecycle" },
+    { "nome": "Salesforce", "titulo": "Agent Development Lifecycle (Agentforce)", "url": "https://www.salesforce.com/br/agentforce/agent-development-lifecycle/" }
+  ],
+  "fases": [
+    { "id": "planejar", "nome": "Planejar", "capitulos": [1],
+      "pergunta": "O que o agente deve fazer, e precisa mesmo ser um agente?",
+      "ganha": "O contrato, as 20 perguntas de referência e a nota de partida, antes de existir código.",
+      "nas_fontes": "IBM: Planejar · Microsoft: Descoberta" },
+    { "id": "construir", "nome": "Construir", "capitulos": [2, 3],
+      "pergunta": "Como ele decide o caminho, e como olha o sistema da loja?",
+      "ganha": "O grafo em LangGraph, a resposta no formato do contrato, e as ferramentas de pedido e chamado.",
+      "nas_fontes": "IBM: Programar e criar · Microsoft: Build · LangChain: Build · Salesforce: Projetar e criar" },
+    { "id": "avaliar", "nome": "Avaliar", "capitulos": [4],
+      "pergunta": "Ele está melhorando, e em que tipo de erro?",
+      "ganha": "Uma nota que dá peso aos erros, em perguntas soltas e em conversas inteiras.",
+      "nas_fontes": "IBM: Testar e lançar · LangChain: Test · Salesforce: Testar e avaliar" },
+    { "id": "por-no-ar", "nome": "Pôr no ar", "capitulos": [5],
+      "pergunta": "Como ele sai da sua máquina sem parar no meio?",
+      "ganha": "Retomar de onde parou, esperar uma pessoa aprovar, e voltar atrás se a versão nova piorar.",
+      "nas_fontes": "IBM: Implementar · Microsoft: Deploy · LangChain: Deploy · Salesforce: Implantar e experimentar" },
+    { "id": "observar", "nome": "Observar", "capitulos": [6],
+      "pergunta": "O que aconteceu em cada conversa, e quanto custou?",
+      "ganha": "O rastro de cada conversa, passo a passo, com o tempo e o custo.",
+      "nas_fontes": "IBM: Operar · Microsoft: Operação contínua · LangChain: Monitor · Salesforce: Observar e monitorar" },
+    { "id": "errado", "nome": "Quando dá errado", "capitulos": [7],
+      "pergunta": "Qual a causa da falha, e como ela não volta?",
+      "ganha": "Cada falha do uso vira um caso novo da régua, e a régua passa a pegá-la.",
+      "nas_fontes": "LangChain: Iterate · IBM: Operar · Salesforce: o ciclo de feedback" },
+    { "id": "evoluir", "nome": "Evoluir", "capitulos": [9],
+      "pergunta": "Dá para trocar de modelo ou de instrução sem piorar?",
+      "ganha": "Comparar versões pela mesma régua antes de trocar.",
+      "nas_fontes": "IBM: Operar · LangChain: experimentos · Salesforce: experimentos em produção" },
+    { "id": "governar", "nome": "Governar", "capitulos": [8], "transversal": true,
+      "pergunta": "Quem pode o quê, e quem decidiu?",
+      "ganha": "Dado pessoal protegido, quem aprova o quê, e o registro de cada decisão.",
+      "nas_fontes": "IBM: Monitorar e governança · LangChain: Govern · Salesforce: Controlar e orquestrar" }
+  ]
+}
