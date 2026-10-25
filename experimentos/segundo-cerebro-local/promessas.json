@@ -1,0 +1,19 @@
+{
+  "sobre": "A aposta da abertura: as três promessas do artigo, e o que este experimento mostrou sobre cada uma. Os números vêm das saídas gravadas da régua (sc-nota-ingenua, sc-nota, sc-nota-modelo); o testes/experimento-segundo-cerebro.test.mjs confere.",
+  "resultado": "O experimento mostrou",
+  "fechos": {
+    "nenhum": "Você não acertou nenhuma. A promessa convence justamente porque ninguém mediu.",
+    "alguns": "Você acertou {n} de {total}. O resto do experimento mostra cada uma, com as notas na mão."
+  },
+  "mensagens": [
+    { "texto": "É 100% local: nada do que você escreveu sai da sua máquina.",
+      "opcoes": ["vale inteira", "vale só em parte", "o artigo não mostra"], "fez": 1,
+      "porque": "O modelo pode rodar na sua máquina; o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem." },
+    { "texto": "Acompanha o que mudou, como um prazo adiado entre dois e-mails.",
+      "opcoes": ["vale inteira", "vale só em parte", "o artigo não mostra"], "fez": 2,
+      "porque": "O artigo afirma, mas não mostra. Aqui, buscando só por palavras, o cérebro responde 14/11, a data velha; com a data de cada nota, responde 21/11." },
+    { "texto": "Responde certo as perguntas sobre o seu trabalho.",
+      "opcoes": ["vale inteira", "vale só em parte", "o artigo não mostra"], "fez": 2,
+      "porque": "O artigo não mede. Aqui, com dez perguntas: 7 de 10 buscando só por palavras, 9 de 10 com a data de cada nota, 10 de 10 com o modelo local escrevendo a resposta." }
+  ]
+}

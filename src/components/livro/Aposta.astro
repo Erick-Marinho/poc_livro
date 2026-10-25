@@ -1,29 +1,35 @@
 ---
 /**
- * Ação do leitor: apostar o que um agente faz com cada mensagem, antes de ver o que ele fez (docs/RITMO.md: "parece,
- * mas não é" pede prever antes, mostrar depois). As mensagens vêm do referencia.jsonl pelo id; o que o agente fez vem
- * de um JSON do livro e é ilustração, e a figura diz. No modo direto, o que ele fez aparece sem pedir a aposta.
+ * Ação do leitor: apostar no que acontece com cada item, antes de ver (docs/RITMO.md: "parece, mas não é" pede prever
+ * antes, mostrar depois). Um item é um caso do referencia.jsonl (pelo id, em `caso`) ou um texto escrito (`texto`).
+ * O que aconteceu vem de um JSON do livro; se é ilustração, a figura diz (`ilustracao`). No modo direto, o que
+ * aconteceu aparece sem pedir a aposta.
  */
 import { casos } from "../../lib/referencia.ts";
 
-type Mensagem = { caso: string; opcoes: string[]; fez: number; porque: string };
-interface Props { referencia: string; dados: { mensagens: Mensagem[] }; pergunta: string; ilustracao: string }
-const { referencia, dados, pergunta, ilustracao } = Astro.props;
-const lista = casos(referencia, dados.mensagens.map((m) => m.caso), "Aposta");
-dados.mensagens.forEach((m) => { if (!m.opcoes[m.fez]) throw new Error(`Aposta: o que o agente fez com ${m.caso} não está entre as opções`); });
+type Mensagem = { caso?: string; texto?: string; opcoes: string[]; fez: number; porque: string };
+/** `resultado`: como o que aconteceu é apresentado; `fechos`: a frase do fim, com {n} acertos de {total} */
+type Dados = { mensagens: Mensagem[]; resultado?: string; fechos?: { nenhum: string; alguns: string } };
+interface Props { referencia?: string; dados: Dados; pergunta: string; ilustracao?: string }
+const { referencia = "", dados, pergunta, ilustracao } = Astro.props;
+const textos = dados.mensagens.map((m) => m.texto ?? casos(referencia, [m.caso ?? "(sem caso nem texto)"], "Aposta")[0].pergunta);
+dados.mensagens.forEach((m) => { if (!m.opcoes[m.fez]) throw new Error(`Aposta: o que aconteceu com "${m.caso ?? m.texto}" não está entre as opções`); });
+const resultado = dados.resultado ?? "O agente fez";
+const fechos = dados.fechos ?? { nenhum: "Você apostou que ele faria diferente em todas. Ele fez o que parecia razoável em todas.",
+  alguns: "Você acertou o que ele faria em {n} de {total}. Em nenhuma ele fez o certo." };
 ---
-<div class="apo" data-aposta>
+<div class="apo" data-aposta data-nenhum={fechos.nenhum} data-alguns={fechos.alguns}>
   <p class="apo-rotulo">aposte</p>
   <p class="apo-pergunta">{pergunta}</p>
   {dados.mensagens.map((m, i) => (
     <div class="apo-msg" data-fez={m.fez}>
-      <q>{lista[i].pergunta}</q>
+      <q>{textos[i]}</q>
       <div class="apo-opcoes">{m.opcoes.map((o, j) => <button type="button" data-j={j} aria-pressed="false">{o}</button>)}</div>
-      <p class="apo-fez" hidden><b>O agente fez: {m.opcoes[m.fez]}.</b> {m.porque}</p>
+      <p class="apo-fez" hidden><b>{resultado}: {m.opcoes[m.fez]}.</b> {m.porque}</p>
     </div>
   ))}
   <p class="apo-placar" data-placar hidden></p>
-  <p class="apo-ilustracao">{ilustracao}</p>
+  {ilustracao && <p class="apo-ilustracao">{ilustracao}</p>}
 </div>
 
 <script>
@@ -40,8 +46,7 @@ dados.mensagens.forEach((m) => { if (!m.opcoes[m.fez]) throw new Error(`Aposta: 
       feitas++; if (b.dataset.j === m.dataset.fez) iguais++;
       if (feitas === msgs.length) {
         placar.hidden = false;
-        placar.textContent = iguais === 0 ? "Você apostou que ele faria diferente nas três. Ele fez o que parecia razoável nas três."
-          : `Você acertou o que ele faria em ${iguais} de ${msgs.length}. Em nenhuma ele fez o certo.`;
+        placar.textContent = (iguais === 0 ? fig.dataset.nenhum! : fig.dataset.alguns!).replace("{n}", String(iguais)).replace("{total}", String(msgs.length));
       }
     })));
   });

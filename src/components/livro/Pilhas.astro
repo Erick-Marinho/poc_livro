@@ -1,17 +1,24 @@
 ---
 /**
- * Ação do leitor: separar mensagens em pilhas antes de saber o nome delas, e só então ver como o contrato separa
- * (docs/RITMO.md: "tem um padrão" pede que o leitor separe antes de ler). As mensagens e as decisões vêm do
- * referencia.jsonl pelo id. O texto de dentro (o slot) é a explicação, que aparece depois da separação. Duas separações
- * são iguais se juntam as mesmas mensagens, seja qual for a letra. No modo direto, tudo aparece separado.
+ * Ação do leitor: separar itens em pilhas antes de saber o nome delas, e só então ver como eles se separam de verdade
+ * (docs/RITMO.md: "tem um padrão" pede que o leitor separe antes de ler). Os itens são casos do referencia.jsonl (pelo
+ * id, separados pela decisão do contrato) ou cartas escritas, cada uma com a sua pilha (`cartas` e `grupos`). O texto de
+ * dentro (o slot) é a explicação, que aparece depois da separação. Duas separações são iguais se juntam os mesmos
+ * itens, seja qual for a letra. No modo direto, tudo aparece separado.
  */
 import { casos, DECISOES } from "../../lib/referencia.ts";
 
-interface Props { referencia: string; casos: string[]; pergunta: string }
-const { referencia, casos: ids, pergunta } = Astro.props;
-const lista = casos(referencia, ids, "Pilhas");
-const decisoes = Object.keys(DECISOES).filter((d) => lista.some((c) => c.decisao === d));
-const dados = { cartas: lista.map((c) => ({ id: c.id, pergunta: c.pergunta, decisao: c.decisao })), nomes: DECISOES };
+type Grupo = { nome: string; quando: string };
+interface Props { referencia?: string; casos?: string[]; cartas?: { texto: string; pilha: string }[]; grupos?: Record<string, Grupo>;
+  pergunta: string; quem?: string }
+const { referencia = "", casos: ids, cartas, grupos = DECISOES, pergunta, quem = "contrato" } = Astro.props;
+const lista = ids ? casos(referencia, ids, "Pilhas").map((c) => ({ id: c.id, pergunta: c.pergunta, decisao: c.decisao }))
+  : (cartas ?? []).map((c, i) => ({ id: `carta ${i + 1}`, pergunta: c.texto, decisao: c.pilha }));
+lista.forEach((c) => { if (!grupos[c.decisao]) throw new Error(`Pilhas: "${c.pergunta}" está na pilha "${c.decisao}", que não existe`); });
+if (lista.length < 2) throw new Error("Pilhas: precisa de ao menos duas cartas");
+const DECISOES_ = grupos;
+const decisoes = Object.keys(grupos).filter((d) => lista.some((c) => c.decisao === d));
+const dados = { cartas: lista, nomes: grupos };
 ---
 <div class="pil" data-pilhas>
   <p class="pil-rotulo">separe</p>
@@ -23,17 +30,17 @@ const dados = { cartas: lista.map((c) => ({ id: c.id, pergunta: c.pergunta, deci
         <div class="pil-letras" role="group" aria-label={`pilha de ${c.id}`}>
           {["A", "B", "C", "D"].map((p) => <button type="button" data-p={p} aria-pressed="false" aria-label={`pilha ${p}`}>{p}</button>)}
         </div>
-        <span class="pil-contrato">contrato: {DECISOES[c.decisao].nome}</span>
+        <span class="pil-contrato">{quem}: {DECISOES_[c.decisao].nome}</span>
       </div>
     ))}
   </div>
-  <p class="pil-acao"><button type="button" data-ver disabled>ver como o contrato separa</button></p>
+  <p class="pil-acao"><button type="button" data-ver disabled>ver como {quem === "contrato" ? "o contrato separa" : "se separam"}</button></p>
   <div class="pil-revelado" data-revelado hidden>
     <p class="pil-leitura" data-leitura></p>
     <div class="pil-grupos">
       {decisoes.map((d) => (
-        <div class="pil-grupo"><b>{DECISOES[d].nome}</b><span>{DECISOES[d].quando}</span>
-          <small>{lista.filter((c) => c.decisao === d).length} {lista.filter((c) => c.decisao === d).length === 1 ? "mensagem" : "mensagens"}</small></div>
+        <div class="pil-grupo"><b>{DECISOES_[d].nome}</b><span>{DECISOES_[d].quando}</span>
+          <small>{lista.filter((c) => c.decisao === d).length} {lista.filter((c) => c.decisao === d).length === 1 ? "item" : "itens"}</small></div>
       ))}
     </div>
     <div class="pil-explica"><slot /></div>
@@ -57,7 +64,7 @@ const dados = { cartas: lista.map((c) => ({ id: c.id, pergunta: c.pergunta, deci
     ver.addEventListener("click", () => {
       const k = d.cartas;
       const curto = (i: number) => `“${k[i].pergunta.split(/[?.]/)[0]}”`;
-      const nome = (i: number) => d.nomes[k[i].decisao].nome;
+      const nome = (i: number) => `“${d.nomes[k[i].decisao].nome}”`;
       let juntou: number[] | null = null, separou: number[] | null = null;
       k.forEach((a, i) => k.forEach((b, j) => {
         if (j <= i) return;
@@ -65,9 +72,9 @@ const dados = { cartas: lista.map((c) => ({ id: c.id, pergunta: c.pergunta, deci
         if (!separou && escolha[i] !== escolha[j] && a.decisao === b.decisao) separou = [i, j];
       }));
       const partes: string[] = [];
-      if (juntou) partes.push(`Você juntou ${curto(juntou[0])} e ${curto(juntou[1])}; o contrato separa: uma é ${nome(juntou[0])}, a outra, ${nome(juntou[1])}.`);
-      if (separou) partes.push(`Você separou ${curto(separou[0])} de ${curto(separou[1])}; para o contrato, as duas são ${nome(separou[0])}.`);
-      fig.querySelector("[data-leitura]")!.textContent = partes.length ? partes.join(" ") : "Você separou exatamente como o contrato.";
+      if (juntou) partes.push(`Você juntou ${curto(juntou[0])} e ${curto(juntou[1])}; elas se separam: uma vai em ${nome(juntou[0])}, a outra em ${nome(juntou[1])}.`);
+      if (separou) partes.push(`Você separou ${curto(separou[0])} de ${curto(separou[1])}; as duas vão em ${nome(separou[0])}.`);
+      fig.querySelector("[data-leitura]")!.textContent = partes.length ? partes.join(" ") : "Você separou exatamente assim.";
       rev.hidden = false;
       fig.classList.add("pil-feito");
       ver.disabled = true; ver.textContent = "separado";
@@ -96,7 +103,7 @@ const dados = { cartas: lista.map((c) => ({ id: c.id, pergunta: c.pergunta, deci
   .pil-grupos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px }
   .pil-grupo { border: 1px solid var(--linha); border-radius: 10px; padding: 8px 10px; background: var(--papel) }
   .pil-grupo b { display: block; font-weight: 600 } .pil-grupo span, .pil-grupo small { display: block; font-size: 13px; color: var(--ink-2) }
-  .pil-explica { font: 17px/1.7 var(--f-texto) } .pil-explica p { margin: 0 }
+  .pil-explica { font: 17px/1.7 var(--f-texto) } .pil-explica p { margin: 0 } .pil-explica p + p { margin-top: .8em }
   @media (max-width: 560px) { .pil-carta { grid-template-columns: 1fr } }
   /* modo direto: as pilhas do contrato, sem pedir a separação */
   html[data-direto] .pil-revelado { display: grid !important }
