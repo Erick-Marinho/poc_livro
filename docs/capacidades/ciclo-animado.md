@@ -38,17 +38,10 @@ ficam escondidos, desligados do desenho.
 2. A animação: as 6 cenas, aprovadas antes no Studio, com o avançar, as apostas ao lado, menos movimento e modo direto.
 3. O "você está aqui" com o anel em miniatura.
 
-## Etapa 3, detalhada
+## Etapa atual: nenhuma
 
-- **Arquivos:** `CicloAqui.astro`, `ciclo/Anel.tsx` (o desenho decorativo, sem foco nem rótulo), a página do capítulo
-  (`[capitulo].astro`, que passa os capítulos de cada fase), `testes/ciclo-animado.test.mjs`.
-- **Muda:** na abertura dos capítulos, a faixa de nomes vira o anel em miniatura (cerca de 120 px, só as formas), com a
-  fase do capítulo acesa, e ao lado "você está aqui: <fase> · cap. N" e o link para o mapa. Para leitor de tela, a
-  miniatura fica oculta e a lista das fases continua, com a atual marcada. No celular, a mesma miniatura: sem rótulos,
-  ela não fica ilegível.
-- **Evidência:** `npm test`; o teste novo falha com a faixa de hoje; capturas da abertura dos capítulos 1 e 2 em 1280
-  e 360 px.
-- **Fora:** outros livros (o "você está aqui" só aparece onde há `ciclo.json`).
+A capacidade está fechada (25/10/2026). A frase da introdução antes do mapa passou a dizer que ele se avança e
+responde a aposta (`5d74559`).
 
 ## Registro
 
@@ -56,5 +49,6 @@ ficam escondidos, desligados do desenho.
 |---|---|---|---|
 | 1 | `bc13d31` | `npm test` com 84 testes; o teste novo falha com o mapa de antes; no navegador: anel em 1280 e coluna em 360 px, o clique no nó abre e acende o cartão, na impressão e no modo direto os 8 cartões abertos, console limpo | Erick, 25/10/2026 |
 | 2 | `d5e1da3` | `npm test` com 88 testes (4 novos: as cenas contra a aposta e os limites do RITMO.md); na versão de antes só falta a animação; no navegador: as 6 cenas avançadas a clique, com a aposta real ao lado (✓, ✗ e "não apostou") e os cartões acendendo, em 1280 e 360 px, com menos movimento e no modo direto; console limpo; aprovada antes no Studio | Erick, 25/10/2026 |
+| 3 | `bcbd525` | `npm test` com 89 testes; o teste novo falha com a faixa de antes; a miniatura com Planejar aceso no capítulo 1 e Construir no 2, em 1280 e 360 px, sem as pontas das setas; oculta para leitor de tela, que lê a lista com a fase marcada | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
