@@ -95,6 +95,3 @@ astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibil
   .ac-avancar button:hover { border-color: var(--acento) }
   .ac-avancar button:disabled { cursor: default; opacity: .65 }
   .ac-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
-
-/* o gráfico contínuo (TocaGrafico.tsx): só o play e o pausar */
-.tg-controles button { min-width: 9.5em }

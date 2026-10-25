@@ -1,52 +1,72 @@
 {
-  "sobre": "A figura 1.1 (LacoAnimado; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, um jeito por vez. Cada vez é um jeito com uma pergunta dos três jeitos (tres-jeitos.json): a mensagem da cliente e os passos, em frase curta (o `curto` de cada passo), um a um, até a resposta. Quando a vez termina, ela vira uma linha de resumo no topo, e a comparação se monta aos poucos. Antes da vez do fluxo fixo com a frigideira, o leitor investe no que ele faz; a certa é o primeiro passo dele nos três jeitos. No fim, só os resumos e a conclusão. O teste confere tudo isso contra os três jeitos.",
+  "sobre": "A figura 1.1 (QuemDecide; docs/capacidades/laco-do-agente.md): o leitor faz o papel de cada jeito de usar um modelo, em três rodadas. As mensagens, os resultados das ferramentas e as respostas vêm de tres-jeitos.json (conferidos contra os dados da loja no teste do capítulo 1); aqui ficam as falas da figura, as previsões e o que a ferramenta devolve quando o leitor, no papel do agente, consulta um pedido que a mensagem não tem (ilustração). O teste confere as previsões e o caminho do agente contra os três jeitos.",
   "pergunta": "Quem decide o próximo passo?",
-  "nomes": {
-    "modelo": "o modelo",
-    "código": "o seu código",
-    "ferramenta": "ferramenta",
-    "resposta": "resposta",
-    "decide": "decide",
-    "de_novo": "decide de novo",
-    "certo": "veio dos dados da loja"
+  "modelo": {
+    "titulo": "Só o modelo",
+    "intro": "O modelo sozinho lê e escreve. Ele não vê o sistema da loja.",
+    "prever": {
+      "pergunta": "Ele não consegue abrir o pedido. O que ele responde?",
+      "opcoes": [
+        "a data certa",
+        "uma data com cara de certa",
+        "que não sabe"
+      ],
+      "certa": 1
+    },
+    "licao": "Ninguém decidiu nada: ele escreveu o que parecia provável."
   },
-  "rotulos": {
-    "pedido": "o pedido",
-    "produto": "a frigideira"
+  "fluxo": {
+    "titulo": "Fluxo fixo",
+    "intro": "Aqui o seu código decide a ordem. É sempre esta:",
+    "roteiro": [
+      "procura o número do pedido",
+      "consulta o pedido no sistema",
+      "o modelo escreve a resposta"
+    ],
+    "prever": {
+      "pergunta": "O mesmo roteiro, outra pergunta. O que acontece?",
+      "opcoes": [
+        "responde certo",
+        "para no passo 1",
+        "busca no catálogo"
+      ],
+      "certa": 1,
+      "passo": 1
+    },
+    "licao": "O caminho está no código: decide quem escreveu o roteiro."
   },
-  "abertura": {
-    "legenda": "A mesma loja, três jeitos de montar o atendimento.",
-    "segundos": 3
+  "agente": {
+    "titulo": "Agente: você decide",
+    "intro": "Agora quem decide é o modelo. Faça o papel dele: escolha o próximo passo.",
+    "acoes": [
+      {
+        "id": "consultar_pedido",
+        "rotulo": "consultar o pedido",
+        "sem_dado": "precisa do número do pedido, e a mensagem não tem"
+      },
+      {
+        "id": "buscar_produto",
+        "rotulo": "buscar no catálogo"
+      },
+      {
+        "id": "responder",
+        "rotulo": "responder agora"
+      }
+    ],
+    "licao": "Você decidiu cada passo, olhando o resultado. É isso que o modelo faz num agente."
   },
-  "vezes": [
+  "fim": [
     {
       "jeito": "modelo",
-      "pergunta": "pedido"
+      "quem": "ninguém decide"
     },
     {
       "jeito": "fluxo",
-      "pergunta": "pedido"
-    },
-    {
-      "jeito": "fluxo",
-      "pergunta": "produto",
-      "investir": {
-        "pergunta": "Agora a pergunta é de produto. O que o fluxo fixo faz?",
-        "opcoes": [
-          "busca a frigideira no catálogo",
-          "procura um número de pedido",
-          "responde de cabeça"
-        ],
-        "certa": 1
-      }
+      "quem": "o código decide, sempre igual"
     },
     {
       "jeito": "agente",
-      "pergunta": "produto"
+      "quem": "o modelo decide cada passo"
     }
-  ],
-  "fim": {
-    "legenda": "Fluxo: o caminho está no código. Agente: o modelo decide cada passo.",
-    "segundos": 4
-  }
+  ]
 }
