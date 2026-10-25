@@ -40,10 +40,10 @@ No capítulo 1, o agente era uma promessa: um modelo que decide os próprios pas
 O agente deste capítulo faz duas coisas. Primeiro, lê a mensagem e decide o que o contrato manda: responder, abrir chamado, recusar ou passar a vez. Depois, segue o caminho daquela decisão. Dá para escrever isso como uma função cheia de `if`, mas vamos escrever como um **grafo**: cada passo é um **nó**, as **setas** dizem qual nó vem depois, e um **estado** passa de nó em nó levando o que já se sabe.
 
 <PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
-Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem rodar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
+Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
 </PareEPense>
 
-<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e rodar esse desenho.</Nota>
+<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e executar esse desenho.</Nota>
 
 Clique nos nós do agente que você vai construir. O desenho não foi feito à mão: as setas são as do grafo real.
 
@@ -76,7 +76,7 @@ Repare na divisão de trabalho. O modelo faz o que só ele faz: lê uma mensagem
 
 ## 2.3 Testar sem pagar
 
-Todo teste que chama um modelo de verdade custa dinheiro, demora, e pode dar um resultado diferente a cada rodada. Um teste assim não serve para a pergunta mais básica: o grafo tem o desenho certo?
+Todo teste que chama um modelo de verdade custa dinheiro, demora, e pode dar um resultado diferente a cada execução. Um teste assim não serve para a pergunta mais básica: o grafo tem o desenho certo?
 
 Para essa pergunta, a LangChain tem um **modelo falso**: ele devolve, na ordem, as respostas que você combinou, sem chamar ninguém. Com ele, os testes conferem o desenho e os caminhos. Combina-se "escolha passar a vez" e confere-se que o caminho de passar não pediu nada ao modelo. Combina-se "escolha responder, e escreva tal frase" e confere-se que a frase chegou.
 
@@ -93,7 +93,7 @@ Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%?
 O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com um modelo, isso pede um cuidado a mais, porque ele não responde sempre igual e cada chamada custa. Então a resposta do modelo é gravada uma vez, e o livro repete a gravação, sem chamar o modelo de novo. O terminal da IDE diz de quando é a gravação e de qual modelo. Na sua máquina, o comando chama o modelo de verdade, com a sua chave, e a sua nota pode sair um pouco diferente.
 
 <PareEPense pergunta="Antes de medir: o agente com o GPT-6 Luna, sem acesso aos pedidos, ao catálogo e à política da loja, acerta quanto das 20?">
-Guarde o seu palpite. A IDE vai pedir que você invista num palpite antes de rodar, e a resposta está no fim do capítulo.
+Guarde o seu palpite. A IDE vai pedir que você invista num palpite antes de executar, e a resposta está no fim do capítulo.
 </PareEPense>
 
 ## 2.5 Mão na massa
@@ -142,8 +142,8 @@ O cuidado está no agente. O que falta é informação: os pedidos, o catálogo 
 <Exercicio titulo="Tire a regra de passar a vez">
 
 1. Na `INSTRUCAO` do `agente.py`, apague a frase "Quando a política não diz, não prometa: passe a vez." Deixe as três aspas do fim: elas fecham o texto.
-2. Antes de rodar, escreva num papel: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
-3. Rode `uv run pytest -q` (os testes do grafo continuam passando? por quê?) e depois `uv run python medir.py`, com a sua chave no ambiente. É uma rodada paga, de centavos.
+2. Antes de executar, escreva num papel: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
+3. Execute `uv run pytest -q` (os testes do grafo continuam passando? por quê?) e depois `uv run python medir.py`, com a sua chave no ambiente. É uma execução paga, de centavos.
 4. Compare a nota e a lista de erros com a do livro. Depois, volte a linha.
 
 Dica: os testes não olham a instrução, só o desenho. A régua olha só a decisão, não a resposta que o cliente leria.

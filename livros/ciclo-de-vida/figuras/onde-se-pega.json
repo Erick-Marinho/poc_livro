@@ -13,6 +13,6 @@
     { "texto": "O cliente que pede o pedido de outra pessoa.", "opcoes": ["Planejar", "Pôr no ar", "Observar"], "fez": 0,
       "porque": "É um caso escrito antes de existir agente: o R12 da régua do capítulo 1, em que o Bruno pede o pedido da Ana." },
     { "texto": "A versão nova do modelo que melhora uma coisa e estraga outra.", "opcoes": ["Construir", "Avaliar", "Evoluir"], "fez": 2,
-      "porque": "Trocar de modelo é Evoluir (capítulo 9), e quem mostra o que estragou é a mesma régua, rodada de novo antes da troca." }
+      "porque": "Trocar de modelo é Evoluir (capítulo 9), e quem mostra o que estragou é a mesma régua, executada de novo antes da troca." }
   ]
 }

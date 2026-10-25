@@ -194,7 +194,7 @@
       "id": "sc-prazo-ingenuo",
       "comando": "uv run python cerebro.py \"Quando é a entrega do piloto?\"",
       "espera": 0,
-      "nota": "Respondeu a data velha, e com cara de certeza. A nota mais parecida com a pergunta é o status de 03/11, que estava certo no dia em que foi escrito. Essa é a tese do artigo do Rowboat, agora rodando: o mais parecido não é o que vale hoje.",
+      "nota": "Respondeu a data velha, e com cara de certeza. A nota mais parecida com a pergunta é o status de 03/11, que estava certo no dia em que foi escrito. Essa é a tese do artigo do Rowboat, agora em execução: o mais parecido não é o que vale hoje.",
       "aposta": {
         "pergunta": "Três notas dizem 14/11; o e-mail que você escreveu diz 21/11. O que o cérebro responde?",
         "opcoes": [
@@ -401,7 +401,7 @@
             "id": "sc-nota-parecida-08",
             "rotulo": "0.8",
             "por": "PARECIDA = 0.8",
-            "nota": "Continua 9. Entre 0.8 e 1.0, nada muda neste cofre; num cofre maior, pode mudar. Por isso a régua roda de novo a cada troca."
+            "nota": "Continua 9. Entre 0.8 e 1.0, nada muda neste cofre; num cofre maior, pode mudar. Por isso a régua é executada de novo a cada troca."
           }
         ]
       }
@@ -411,8 +411,8 @@
       "id": "sc-uv-add-ollama",
       "comando": "uv add langchain-ollama",
       "espera": 0,
-      "nota": "A primeira dependência do projeto: a ponte da LangChain para o Ollama. Ela fala com o modelo que roda na sua máquina, sem nada sair dela.",
-      "suavez": "Antes, instale o Ollama (ollama.com/download; no Linux, o script de instalação do site) e baixe o modelo com `ollama pull llama3.2:3b`. São uns 2 GB, e roda sem placa de vídeo, só mais devagar. Depois rode o comando na pasta do projeto."
+      "nota": "A primeira dependência do projeto: a ponte da LangChain para o Ollama. Ela fala com o modelo que é executado na sua máquina, sem nada sair dela.",
+      "suavez": "Antes, instale o Ollama (ollama.com/download; no Linux, o script de instalação do site) e baixe o modelo com `ollama pull llama3.2:3b`. São uns 2 GB, e é executado sem placa de vídeo, só mais devagar. Depois execute o comando na pasta do projeto."
     },
     {
       "acao": "escrever",
@@ -422,12 +422,12 @@
           "linhas": "1-57"
         }
       ],
-      "nota": "O modelo.py usa a busca do cerebro.py para achar as cinco notas e entrega as cinco, numeradas, com o arquivo e a data, a um modelo pequeno rodando no Ollama.",
+      "nota": "O modelo.py usa a busca do cerebro.py para achar as cinco notas e entrega as cinco, numeradas, com o arquivo e a data, a um modelo pequeno executado no Ollama.",
       "blocos": [
         {
           "linhas": "15-18",
           "titulo": "o modelo e a instrução",
-          "texto": "Um modelo de 3 bilhões de parâmetros, rodando na sua máquina, com temperatura zero. A instrução diz o que ele pode usar (só as notas) e o que vale quando elas discordam.",
+          "texto": "Um modelo de 3 bilhões de parâmetros, executado na sua máquina, com temperatura zero. A instrução diz o que ele pode usar (só as notas) e o que vale quando elas discordam.",
           "termos": [
             "ChatOllama",
             "temperature=0"

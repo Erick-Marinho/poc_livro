@@ -45,7 +45,7 @@
     },
     "ChatOllama": {
       "marca": "ChatOllama",
-      "texto": "O modelo de chat do Ollama, pela LangChain. Ele conversa com o servidor do Ollama que roda na sua máquina (localhost:11434): nada vai para a internet."
+      "texto": "O modelo de chat do Ollama, pela LangChain. Ele conversa com o servidor do Ollama que é executado na sua máquina (localhost:11434): nada vai para a internet."
     },
     "temperature=0": {
       "rotulo": "temperature=0",

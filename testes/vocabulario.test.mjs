@@ -12,7 +12,7 @@ const lido = (v) => (typeof v === "string" ? [v] : Array.isArray(v) ? v.flatMap(
 // as frases de um componente (com espaço: nomes internos, como o realce "pego", ficam de fora), sem os comentários e
 // sem as mensagens de erro da montagem, que são para quem escreve
 const frases = (fonte) => fonte.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|\s)\/\/[^\n]*/g, "$1").replace(/new Error\([^\n]*/g, "")
-  .match(/"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`|>[^<>{}\n]+</g)?.map(semCodigo).filter((s) => s.includes(" ")) ?? [];
+  .match(/"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`|>[^<>{}\n]+</g)?.map(semCodigo).filter((s) => s.includes(" ") && !/===|&&|\|\||=>/.test(s)) ?? []; // e sem o que é código entre > e <
 // numa template string, o que está em ${...} é código, não frase
 const semCodigo = (s) => { let fora = "", fundo = 0; for (let i = 0; i < s.length; i++) {
   if (!fundo && s[i] === "$" && s[i + 1] === "{") { fundo = 1; i++; } else if (fundo) fundo += s[i] === "{" ? 1 : s[i] === "}" ? -1 : 0; else fora += s[i];
@@ -54,4 +54,18 @@ test("capítulo 1: a ferramenta é a primeira etapa, e não \"o primeiro consert
   const texto = visivel(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html"));
   nenhuma(texto, /.{0,40}\bconserto\b.{0,20}/i, "na página montada");
   assert.match(texto, /A primeira etapa é deixar o modelo olhar o sistema/);
+});
+
+test("o livro executa, e não roda: nas páginas, nos textos, nos roteiros, nos dados e nos componentes; e a caixa das camadas diz \"Onde é capturado\"", () => {
+  const rodar = /.{0,40}(?<![\w-])(rod(ar|a|am|ou|aram|ando|ado|ada|adas|ados|e|em|ei|amos|asse|ará|aria|o))(?![\w-]).{0,20}/i;
+  // a ação "rodar" dos roteiros é o tipo do passo, e não texto; as saídas gravadas são o que o terminal mostrou
+  const semAcao = (v) => (Array.isArray(v) ? v.map(semAcao) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== "acao").map(([k, x]) => [k, semAcao(x)])) : v);
+  for (const p of arquivos("dist", ".html")) nenhuma(visivel(ler(p)), rodar, p);
+  for (const p of [...arquivos("livros", ".mdx"), ...arquivos("experimentos", ".mdx")]) nenhuma(ler(p).replace(/^import .*$/gm, ""), rodar, p);
+  for (const p of [...arquivos("livros", ".json"), ...arquivos("experimentos", ".json")].filter((p) => !/saidas\.json$|\.estados\.json$/.test(p)))
+    for (const s of lido(semAcao(JSON.parse(ler(p))))) nenhuma(s, rodar, p);
+  for (const p of [...arquivos("src/components", ".astro"), ...arquivos("src/components", ".tsx"), ...arquivos("src/layouts", ".astro"), ...arquivos("src/pages", ".astro")])
+    for (const s of frases(ler(p))) nenhuma(s, rodar, p);
+  assert.match(ler("src/components/livro/terminal/TerminalAoVivo.tsx"), />▶ Executar</);
+  assert.equal(JSON.parse(ler("livros/ciclo-de-vida/figuras/camadas.json")).resultado, "Onde é capturado");
 });

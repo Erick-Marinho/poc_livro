@@ -355,8 +355,8 @@
       "blocos": [
         {
           "linhas": "1-5",
-          "titulo": "o que precisa para rodar",
-          "texto": "Este é o primeiro arquivo que chama um modelo de verdade: precisa da chave da OpenAI no ambiente, e cada rodada custa (pouco).",
+          "titulo": "o que precisa para executar",
+          "texto": "Este é o primeiro arquivo que chama um modelo de verdade: precisa da chave da OpenAI no ambiente, e cada execução custa (pouco).",
           "termos": [
             "docstring"
           ]
@@ -374,7 +374,7 @@
         {
           "linhas": "21-25",
           "titulo": "a régua não muda",
-          "texto": "avaliar é a régua do capítulo 1: recebe um decisor e conta acertos. O decisor aqui roda o agente inteiro e guarda o que ele decidiu, para listar os erros depois sem pagar de novo.",
+          "texto": "avaliar é a régua do capítulo 1: recebe um decisor e conta acertos. O decisor aqui executa o agente inteiro e guarda o que ele decidiu, para listar os erros depois sem pagar de novo.",
           "termos": [
             "{chave: valor}"
           ]

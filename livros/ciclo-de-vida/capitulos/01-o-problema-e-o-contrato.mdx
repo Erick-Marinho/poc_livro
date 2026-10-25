@@ -52,11 +52,11 @@ Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve ou
 
 Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem e decide que precisa olhar o sistema. Abre o pedido BT-1003: enviado pela Transportadora Asa Leve, com previsão de entrega em 14/11. Olha o que viu e decide de novo: isso basta para responder? Basta, e ele responde. Se o pedido estivesse "preparando", ele olharia outra coisa antes. Decidir, agir, olhar o resultado e decidir de novo: é esse laço que o modelo sozinho não faz.
 
-<PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem roda a consulta: o modelo ou o seu código?">
+<PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem executa a consulta: o modelo ou o seu código?">
 O seu código. O modelo só pede, e lê o que volta.
 </PareEPense>
 
-A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para rodar. Repare no verbo: o modelo não roda nada. Ele pede, o seu código roda, e o resultado volta para ele ler.
+A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para executar. Repare no verbo: o modelo não executa nada. Ele pede, o seu código executa, e o resultado volta para ele ler.
 
 Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
 
@@ -116,7 +116,7 @@ O contrato também não é o prompt. O prompt é como você pede ao modelo que s
 
 <Nota titulo="a definição deste livro">Um **contrato** diz o que o agente deve fazer com cada tipo de pergunta, escrito antes do agente, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, que formam uma lista fechada; as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, perguntas de verdade com a decisão esperada para cada uma.</Nota>
 
-Esse é o contrato de comportamento: o que decidir. Ele não é o único. A resposta também tem um molde, cada ferramenta tem o que aceita e o que devolve, e cada rodada do agente segue uma regra que precisa ficar registrada. São camadas do mesmo combinado, e cada uma pega um tipo de falha.
+Esse é o contrato de comportamento: o que decidir. Ele não é o único. A resposta também tem um molde, cada ferramenta tem o que aceita e o que devolve, e cada execução do agente segue uma regra que precisa ficar registrada. São camadas do mesmo combinado, e cada uma pega um tipo de falha.
 
 <Aposta dados={camadas} pergunta="Quatro falhas. Que camada do contrato pega cada uma?" ilustracao="A falha do R12 aconteceu de verdade, na medição do capítulo 2. As da ferramenta e da execução são ilustração: essas camadas chegam nos capítulos 3 e 5." />
 
@@ -125,7 +125,7 @@ Esse é o contrato de comportamento: o que decidir. Ele não é o único. A resp
 | comportamento | o que decidir com cada pergunta? | capítulo 1: as decisões e a régua de casos |
 | formato | em que molde vem a resposta? | capítulo 2: a resposta no formato do contrato |
 | ferramenta | o que entra e o que sai de cada ferramenta? | capítulo 3 |
-| execução | que regra valia nesta rodada, e dá para provar? | capítulo 5, e o registro dela no 8 |
+| execução | que regra valia nesta execução, e dá para provar? | capítulo 5, e o registro dela no 8 |
 
 Um formato perfeito não garante a decisão certa. É por isso que o livro começa pela camada de cima, a do comportamento. A ideia das camadas de baixo, as que conferem o que passa de uma peça para outra, segue Nicole Koenigstein, em *AI Agents: The Definitive Guide*.
 
@@ -156,7 +156,7 @@ Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: 
 
 ## 1.6 Mão na massa
 
-Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota de partida em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos rodam de verdade, e alguns dão errado de propósito.
+Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota de partida em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos são executados de verdade, e alguns dão errado de propósito.
 
 <IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.6a": "O projeto", "1.6b": "O contrato", "1.6c": "As perguntas", "1.6d": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
@@ -192,8 +192,8 @@ Com o contrato escrito, as perguntas de referência no lugar e a nota de partida
 <Exercicio titulo="Cinco perguntas novas">
 
 1. Acrescente 5 perguntas ao `referencia.jsonl`, de R21 a R25: uma de cada decisão e mais uma de pedido de outra pessoa, usando um par de pedido e cliente diferente do Bruno e da Ana.
-2. Antes de rodar, escreva num papel qual vai ser a nova nota de partida.
-3. Rode `uv run pytest -q` até os testes ficarem verdes, e depois `uv run python baseline.py`. A nota bateu com a sua previsão?
+2. Antes de executar, escreva num papel qual vai ser a nova nota de partida.
+3. Execute `uv run pytest -q` até os testes ficarem verdes, e depois `uv run python baseline.py`. A nota bateu com a sua previsão?
 
 Dica: a nota de partida só acerta as perguntas de passar a vez. Conte quantas você acrescentou.
 

@@ -19,7 +19,7 @@ resultado:
   - rotulo: "modelo local (llama3.2:3b, no Ollama)"
     saida: "sc-nota-modelo"
 achado: "A busca devolve a data velha com toda a segurança: três notas dizem 14/11, e só o e-mail diz 21/11. E o modelo pequeno estropiou nomes de arquivo com acento ao citar a fonte; com as notas numeradas, acertou as dez."
-custo: "A busca com a data roda na hora, em qualquer máquina, sem nada para instalar. O modelo pede 2 GB e uns 7 segundos por pergunta numa CPU sem placa de vídeo."
+custo: "A busca com a data é executada na hora, em qualquer máquina, sem nada para instalar. O modelo pede 2 GB e uns 7 segundos por pergunta numa CPU sem placa de vídeo."
 ---
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import FiguraCaminho from "../../src/components/livro/FiguraCaminho.astro";
@@ -40,7 +40,7 @@ Circula por aí um tutorial de "segundo cérebro 100% local": você instala um a
 
 <Aposta dados={promessas} pergunta="O artigo promete três coisas. Antes de ler, invista: cada uma vale inteira, vale só em parte, ou o artigo não mostra?" />
 
-O "100% local" vale para o modelo, e só se ele rodar na sua máquina: o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem. A tese central (um resumo não acompanha o que mudou, como um prazo adiado entre dois e-mails) é afirmada, mas não aparece funcionando. E nada é medido: não há um número que diga quantas perguntas o cérebro acerta.
+O "100% local" vale para o modelo, e só se ele for executado na sua máquina: o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem. A tese central (um resumo não acompanha o que mudou, como um prazo adiado entre dois e-mails) é afirmada, mas não aparece funcionando. E nada é medido: não há um número que diga quantas perguntas o cérebro acerta.
 
 Aqui você faz o caminho contrário: constrói o mecanismo, vê ele errar do jeito que o artigo descreve, conserta e mede.
 
@@ -78,11 +78,11 @@ De quando é cada nota. As três que dizem 14/11 são de 20/10 a 03/11; o e-mail
 
 ## Mão na massa
 
-O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno rodando no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você investe no que vai sair.
+O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas moram num cofre do [Obsidian](https://obsidian.md), e a nota em que o prazo muda é você quem escreve. No fim, um modelo pequeno executado no [Ollama](https://ollama.com), na sua máquina, escreve as respostas, e a mesma régua mede. Antes de cada comando que importa, você investe no que vai sair.
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cofre", "2": "O cérebro", "3": "A régua", "4": "O modelo", "5": "As pessoas" }} numero="3" legenda="O segundo cérebro construído numa IDE só, da pasta vazia à nota. As notas são inventadas; o código, os comandos e as saídas são os do projeto do experimento. As respostas do modelo (llama3.2:3b, no Ollama) foram gravadas uma vez e são repetidas pelo site." />
 
-<Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não roda ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
+<Nota titulo="o que é inventado">As notas são de uma gerente de produto inventada, tocando o piloto de um app de agendamento para uma clínica que não existe. Nenhuma pessoa, empresa ou e-mail é real. O Obsidian não é executado ao montar o site: o cérebro lê a pasta, e o Obsidian é onde você escreve e lê as notas. Ele é gratuito, mas não é código aberto; as notas são Markdown e saem de lá quando você quiser.</Nota>
 
 ## O que fica local
 
@@ -96,10 +96,10 @@ O projeto nasce numa pasta vazia, e o chat da IDE guia cada passo. As notas mora
     { texto: "As gravações das reuniões", pilha: "sai" },
   ]}
   grupos={{
-    fica: { nome: "fica na sua máquina", quando: "mora no seu disco ou roda nele, sem ligar para fora" },
+    fica: { nome: "fica na sua máquina", quando: "mora no seu disco ou é executado nele, sem ligar para fora" },
     sai: { nome: "sai dela", quando: "vem de um servidor de fora, com uma autorização para ler" },
   }}>
-Neste experimento, nada do que você escreveu sai da sua máquina: o cofre é uma pasta, o cérebro é código que você leu, e o modelo roda no Ollama, no endereço `localhost`. O "100% local" vale aqui por um motivo simples: nada foi ligado a um serviço de fora.
+Neste experimento, nada do que você escreveu sai da sua máquina: o cofre é uma pasta, o cérebro é código que você leu, e o modelo é executado no Ollama, no endereço `localhost`. O "100% local" vale aqui por um motivo simples: nada foi ligado a um serviço de fora.
 
 Ligar o e-mail, a agenda e as reuniões muda isso. As notas continuam no seu disco, mas a fonte delas fica nos servidores do Google e dos serviços de reunião, com uma autorização para ler a sua caixa de entrada. E o cofre passa a guardar e-mail em texto puro: proteja a pasta como você protege a caixa de entrada.
 </Pilhas>

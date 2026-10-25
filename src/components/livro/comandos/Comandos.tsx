@@ -205,7 +205,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
               as notas subiram em média 0,47 desvio-padrão, e quem só assistia tinha cerca de 1,5 vez mais chance de reprovar <cite>(Freeman et al., 2014)</cite>.</p>
             <p>Em programação, a ordem que funciona é conhecida: prever o que o código faz, rodar, investigar, modificar, e só então criar o seu.
               Numa avaliação com 493 estudantes de 13 escolas, quem aprendeu nessa ordem foi melhor no teste final do que o grupo de controle
-              <cite> (Sentance, Waite e Kallia, 2019)</cite>. O livro segue esse caminho: o "pare e pense" pede a previsão, e a IDE e o terminal são onde você roda e investiga.</p>
+              <cite> (Sentance, Waite e Kallia, 2019)</cite>. O livro segue esse caminho: o "pare e pense" pede a previsão, e a IDE e o terminal são onde você executa e investiga.</p>
             <p>Errar também ensina, desde que o erro seja corrigido logo depois. Errar e receber a correção fixa mais do que acertar de primeira <cite>(Metcalfe, 2017)</cite>,
               e tentar resolver antes de receber a explicação melhora a compreensão <cite>(Kapur, 2008)</cite>. Por isso o código deste livro erra de propósito no caminho, como erra o de qualquer projeto de verdade.</p>
             <ol className="cm-refs">

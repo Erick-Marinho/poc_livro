@@ -34,7 +34,7 @@
           "linhas": "1-10"
         }
       ],
-      "nota": "O README diz o que é a loja e como rodar o que vai existir."
+      "nota": "O README diz o que é a loja e como executar o que vai existir."
     },
     {
       "acao": "rodar",
@@ -62,7 +62,7 @@
       "duvidas": [
         {
           "pergunta": "E se eu instalar sem o --dev?",
-          "resposta": "Na sua máquina, funciona igual. Muda onde ele fica anotado: sem o `--dev`, o pytest entra nas dependências do projeto e vai junto quando o agente for instalado para atender de verdade, onde ninguém roda teste. Com ele, fica no grupo `dev` do `pyproject.toml`."
+          "resposta": "Na sua máquina, funciona igual. Muda onde ele fica anotado: sem o `--dev`, o pytest entra nas dependências do projeto e vai junto quando o agente for instalado para atender de verdade, onde ninguém executa teste. Com ele, fica no grupo `dev` do `pyproject.toml`."
         }
       ]
     },
@@ -293,7 +293,7 @@
           "linhas": "7-8"
         }
       ],
-      "nota": "AQUI é a pasta do projeto, de onde quer que você rode."
+      "nota": "AQUI é a pasta do projeto, de onde quer que você execute."
     },
     {
       "acao": "inserir",
@@ -410,7 +410,7 @@
         {
           "linhas": "40-41",
           "titulo": "uma regra para o caso inteiro",
-          "texto": "O decorador diz ao pydantic: depois de conferir cada campo, rode esta função com o caso pronto.",
+          "texto": "O decorador diz ao pydantic: depois de conferir cada campo, execute esta função com o caso pronto.",
           "termos": [
             "@model_validator",
             "mode=\"after\"",
@@ -563,7 +563,7 @@
         {
           "linhas": "1-6",
           "titulo": "o que os testes usam",
-          "texto": "O pytest procura arquivos que começam com test_ e roda as funções que começam com test_. Daqui ele só precisa do contrato e das datas.",
+          "texto": "O pytest procura arquivos que começam com test_ e executa as funções que começam com test_. Daqui ele só precisa do contrato e das datas.",
           "termos": [
             "pytest",
             "from … import"
@@ -784,8 +784,8 @@
         },
         {
           "linhas": "24-30",
-          "titulo": "rodar o arquivo",
-          "texto": "Este trecho só roda quando o arquivo é chamado direto, com uv run python baseline.py. Ele mede o sempre_passar e imprime a nota.",
+          "titulo": "executar o arquivo",
+          "texto": "Este trecho só é executado quando o arquivo é chamado direto, com uv run python baseline.py. Ele mede o sempre_passar e imprime a nota.",
           "termos": [
             "if __name__ == \"__main__\"",
             "f\"{d:<14}\"",
