@@ -72,6 +72,8 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   aparece como "anônimo"; (e) parada, a figura diz a duração ao lado do play; uma linha fina mostra o
   progresso, e no fim as quatro abas ficam com ✓; (f) no R12, antes da decisão, o vídeo para e pergunta o que o
   agente deve fazer; o leitor escolhe uma das quatro (ou pula), e o vídeo mostra a do contrato ao lado da dele.
+- (25/10/2026, Erick, ao ver a etapa 7) Até 60 s, e não 45: em 45 ficou acelerado. O tempo a mais vai para digitar, ler, o
+  passo do grafo, as pausas do selo e da decisão, a câmera e o fim parado.
 - (6) A aposta não aparece no modo direto. Ela é da ilha, não do vídeo: a composição só marca o quadro em que ela para.
 - (6) A linha do tempo fica em `agente/tempos.ts`, sem JSX, para o teste conferir os 45 s.
 - (6) A etapa 5 não foi feita; o teste da etapa 6 faz o que ela pedia (a figura no `npm test`).

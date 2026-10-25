@@ -654,7 +654,7 @@ const ENTRADA: Foco = { x: 424, y: 90, w: 560, h: 310 };
 const CONSULTA: Foco = { x: 640, y: 90, w: 616, h: 310 };
 const DECIDE: Foco = { x: 640, y: 300, w: 616, h: 360 };
 const ZOOM = 1.5; // até onde aproxima
-const MOVE = 0.7; // quanto leva para ir de um enquadramento a outro
+const MOVE = 0.9; // quanto leva para ir de um enquadramento a outro
 const VISTA = { y: 64, h: 586 }; // a área do quadro abaixo das abas e acima da legenda
 
 // em cada cenário: a conversa (o cliente digita), a entrada, as ferramentas, a decisão, a conversa (a resposta), o todo

@@ -1,4 +1,4 @@
-/** A figura do agente no prefácio: o vídeo recebe os cenários do contrato e cabe em 45 s. Rode depois de `astro build`. */
+/** A figura do agente no prefácio: o vídeo recebe os cenários do contrato e cabe em 60 s. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -26,9 +26,9 @@ test("a figura do prefácio é o vídeo, com um cenário para cada decisão, e a
   assert.equal(props.loja, json(`${livro}projeto/dados/loja.json`).nome);
 });
 
-test("o vídeo cabe em 45 segundos", () => {
+test("o vídeo cabe em 60 segundos", () => {
   const q = quadroDoVideo({ cenarios: props.cenarios, loja: props.loja });
-  assert.ok(q.duracao / q.fps <= 45, `o vídeo tem ${(q.duracao / q.fps).toFixed(1)} s`);
+  assert.ok(q.duracao / q.fps <= 60, `o vídeo tem ${(q.duracao / q.fps).toFixed(1)} s`);
 });
 
 test("a aposta é no R12 e para antes da decisão: nem a pílula nem a legenda contam a resposta antes", () => {

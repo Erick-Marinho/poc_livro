@@ -6,15 +6,15 @@
 import { type Cenario, FERRAMENTAS, type Passo } from "./cenarios.ts";
 
 export type Props = { cenarios: Cenario[]; loja: string };
-export const ARESTA = 0.45; // a bolinha atravessando uma seta
-export const TRANSICAO = 0.6; // entre um cenário e outro (a câmera volta para o quadro inteiro)
-const FIM = 1.2; // no fim, o quadro inteiro, com as quatro abas feitas
-const LETRAS_POR_SEGUNDO = 60; // o cliente digitando
-const LEITURA_POR_SEGUNDO = 55; // quanto da resposta dá para ler por segundo
-const DIGITANDO = 0.7; // os três pontinhos do agente, antes da resposta
-const RITMO = [1.3, 0.7]; // o passo do grafo: o primeiro cenário, e os outros
-const SELO = 0.5; // a pausa quando o selo aparece
-const ESCOLHA = 0.5; // a pausa depois de a decisão acender
+export const ARESTA = 0.6; // a bolinha atravessando uma seta
+export const TRANSICAO = 0.8; // entre um cenário e outro (a câmera volta para o quadro inteiro)
+const FIM = 1.8; // no fim, o quadro inteiro, com as quatro abas feitas
+const LETRAS_POR_SEGUNDO = 46; // o cliente digitando
+const LEITURA_POR_SEGUNDO = 42; // quanto da resposta dá para ler por segundo
+const DIGITANDO = 1; // os três pontinhos do agente, antes da resposta
+const RITMO = [1.5, 0.95]; // o passo do grafo: o primeiro cenário, e os outros
+const SELO = 0.9; // a pausa quando o selo aparece
+const ESCOLHA = 0.9; // a pausa depois de a decisão acender
 export const APOSTA = "R12"; // o cenário em que o vídeo para e pergunta o que o agente deve fazer
 
 export type Seg = Passo & { de: number; ate: number; envia?: number };
@@ -49,7 +49,7 @@ export function montar({ cenarios, loja }: Props) {
     const segs: Seg[] = cen.passos.map((p) => {
       const seg: Seg = { ...p, de: v, ate: v };
       if (p.no === "pergunta") { seg.envia = v + 0.3 + cen.pergunta.length / LETRAS_POR_SEGUNDO; seg.ate = seg.envia + 0.6; }
-      else if (p.no === "conversa") seg.ate = v + DIGITANDO + Math.max(1.8, p.texto.length / LEITURA_POR_SEGUNDO) + (cen.decisao === "passar" ? 1 : 0);
+      else if (p.no === "conversa") seg.ate = v + DIGITANDO + Math.max(2.6, p.texto.length / LEITURA_POR_SEGUNDO) + (cen.decisao === "passar" ? 1 : 0);
       else seg.ate = v + duracao(p) * ritmo + (p.marca ? SELO : 0) + (p.no === "decisao" ? ESCOLHA : 0);
       v = seg.ate;
       return seg;
