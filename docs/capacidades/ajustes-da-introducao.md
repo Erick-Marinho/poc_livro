@@ -23,6 +23,9 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 - (3) "Já sabe" é o leitor que investiu em ao menos um problema, ou está no modo direto (lá a resposta aparece sem
   pedir). Para ele, o título e a primeira cena afirmam, e a faixa só diz onde foi capturado e se bateu com o
   investimento. Quem não investiu continua vendo a pergunta: para ele, a animação é a resposta.
+- (4) No pare e pense, `Lightbulb` no rótulo e `Eye` no "Ver a resposta", do `lucide-react` que o projeto já usa
+  (https://lucide.dev/guide/packages/lucide-react): num `.astro` sem `client:`, o componente React vira SVG no
+  servidor, sem JS (https://docs.astro.build/en/guides/framework-components/). O ícone sai com `aria-hidden`.
 
 ## Peças
 
@@ -45,16 +48,14 @@ tiram o foco dela. "A conta que cresce" confunde: não diz que a conta é o gast
 6. O que fica abaixo da animação começa recolhido.
 7. "A conta que cresce" diz que é o gasto com o modelo.
 
-## Etapa atual: 3
+## Etapa atual: 4
 
-**Arquivos.** `ciclo-animado.json` (o título e a primeira legenda de quem já sabe), `ciclo/cenas.ts` (quem já sabe,
-o título e a legenda de cada caso), `ciclo/CicloAnimado.tsx` (o título e a faixa), `ciclo/FiguraCiclo.tsx` (lê o
-investimento quando o leitor clica na caixa, e o botão), `testes/ciclo-animado.test.mjs`.
+**Arquivos.** `PareEPense.astro` (o ícone no rótulo e no "Ver a resposta", no lugar do losango de texto),
+`testes/acoes.test.mjs`.
 
-**Evidência.** Os testes do livro passam; o teste novo falha sem o código; dois quadros da composição renderizados
-pelo Remotion, um sem investimento (a pergunta) e um com (a afirmação e a faixa curta).
+**Evidência.** Os testes do livro passam; o teste novo falha sem o código; a caixa na página, com os dois ícones.
 
-**Fora.** A caixa do "invista" em si; os cartões abaixo da animação (etapa 6); "conta que cresce" (etapa 7).
+**Fora.** Outras caixas (nota, exercício, ponto de volta).
 
 ## Registro
 
@@ -62,5 +63,6 @@ pelo Remotion, um sem investimento (a pergunta) e um com (a afirmação e a faix
 |---|---|---|---|
 | 1 | `313a0e6`, `82eebbf` | 90 testes do livro; o teste novo falha com o texto de antes ("Quem pega"); na página, "capturado" em 13 lugares e nenhum "pego" | Erick, 25/10/2026 ("capturado", no lugar de "apanhado") |
 | 2 | `da066d1` | 91 testes do livro; o teste novo (`vocabulario.test.mjs`) falha com o texto de antes ("Aposte em qual."); nenhum "apost…" nas páginas locais da introdução, dos capítulos 1 e 2 e do experimento | Erick, 25/10/2026 |
+| 3 | `429b6b7` | 92 testes do livro; o teste novo falha sem o código; quadros da composição renderizados pelo Remotion: a pergunta sem investimento, a afirmação com, "✓ onde você investiu" e "você investiu em Avaliar" na faixa | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
