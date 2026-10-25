@@ -17,6 +17,10 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 - (1) As animações dividem uma base só (`palco/AvancaCena.tsx`): o Player do Remotion avançado cena a cena com `seekTo`,
   `play` e `pause`, parado pelo evento `frameupdate` (https://www.remotion.dev/docs/player/player); o modo direto, o menos
   movimento e o anúncio para leitor de tela. As cores e as curvas das composições ficam em `palco/video.ts`.
+- (2) Cada cena é um jeito com uma pergunta dos "três jeitos", e anda pelos passos de lá: o ponto que é a pergunta vai
+  de peça em peça pelas setas do laço; a ficha de quem decide acende; embaixo, a legenda da cena e o passo de agora (a
+  chamada, o resultado, a resposta com ✓ ou ✗). O que o jeito não usa fica apagado. O quadro final soma os acertos
+  de cada jeito nas duas perguntas, saídos dos mesmos dados.
 
 ## Peças
 
@@ -38,22 +42,21 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
    movimento, sem JS; "olhar" vira "observar".
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-**Arquivos.** `palco/AvancaCena.tsx` e `palco/video.ts` (novos), `ciclo/FiguraCiclo.tsx` e `ciclo/CicloAnimado.tsx`
-(sobre a base, sem mudar o que o leitor vê), `MapaDoCiclo.astro` (o estilo do botão vai para a base),
-`figuras/laco.json`, `laco/laco.ts` e `laco/LacoAnimado.tsx` (novos: o elenco parado, em largo e em coluna), o Studio
-do my-video (a composição nova), `testes/laco.test.mjs` (novo).
+**Arquivos.** `figuras/laco.json` (as 6 cenas), `laco/laco.ts` (a linha do tempo, conferida contra os "três jeitos" e o
+`docs/RITMO.md`), `laco/LacoAnimado.tsx` (o ponto andando, as fichas, o apagado, a faixa e o quadro final),
+`testes/laco.test.mjs`.
 
-**Evidência.** Os testes do livro passam; os testes novos falham sem o código; no navegador, o mapa da introdução avança
-as 6 cenas como antes, com menos movimento e no modo direto; o elenco parado renderizado pelo Remotion, em largo e a
-360 px.
+**Evidência.** Os testes do livro passam; os testes novos falham sem o código; quadros das 6 cenas renderizados pelo
+Remotion, em largo e a 360 px.
 
-**Fora.** As cenas (etapa 2); a página (etapa 3).
+**Fora.** A página e a pausa para investir (etapa 3).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `37a2834` | 107 testes do livro; os 3 novos falham sem o código; no navegador, o mapa da introdução sobre a base: as 6 cenas com clique de verdade (5, 6, 7, 8, 7 e 5 s), com menos movimento e no modo direto, iguais a antes; o elenco renderizado em 720 e 360 px | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
