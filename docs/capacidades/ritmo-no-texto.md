@@ -25,14 +25,17 @@ longe do texto. O fluxo pedido é linear: escrever → skill → esqueleto **no 
 - (1) O quadro do `Rascunho` tem borda contínua, não tracejada.
 - (1) A regra que dá para testar sem o build (o tipo é uma ação; o dado diz se é real ou ilustração) fica em
   `scripts/ritmo.mjs`; o componente só desenha.
+- (2) A trava é do `npm test`, que é o passo antes de publicar; o `npm run dev` mostra o rascunho normalmente.
 
-## Etapa atual: 1
+## Etapa atual: 2
 
-`Rascunho.astro` com as props `acao`, `frase`, `verbo`, `dado` e a sugestão dentro; `eAcao` e `conferirRascunho` em
-`scripts/ritmo.mjs`, com teste. Fora: o relógio e a trava (etapa 2), a skill (etapa 3). Evidência: o teste falha com
-um tipo que não é ação e com um dado sem "real:" ou "ilustração:"; captura do quadro numa cópia do experimento.
+`scripts/ritmo.mjs`: o `Rascunho` conta como ação (o texto de dentro não entra na conta). `testes/ritmo.test.mjs`: um
+teste falha se algum capítulo ou experimento tiver `Rascunho`, e diz o arquivo e a linha. Fora: a skill (etapa 3).
+Evidência: o `npm test` passa hoje; numa cópia com um `Rascunho`, o relógio fecha o trecho nele e o teste falha
+dizendo onde.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `e7eebb9` | o teste falha sem a conferência do dado; o build para com tipo que não é ação, componente que não existe e dado sem origem; captura do quadro em 1280 e 360 px | 25/10 |
