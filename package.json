@@ -15,7 +15,8 @@
     "experimentos:conferir": "for g in experimentos/*/; do python3 scripts/saidas.py \"${g%/}\" --conferir || exit 1; done",
     "leitor": "python3 scripts/saidas.py ciclo-de-vida --conferir --leitor .leitor/atendimento-bemtevi",
     "gravacao:testar": "uv run --frozen --project livros/ciclo-de-vida/projeto pytest -q -p no:cacheprovider testes/test_gravacao.py",
-    "gravar": "LIVRO_GRAVACAO_MODO=gravar python3 scripts/saidas.py ciclo-de-vida"
+    "gravar": "LIVRO_GRAVACAO_MODO=gravar python3 scripts/saidas.py ciclo-de-vida",
+    "ritmo": "node scripts/ritmo.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.2",
