@@ -11,7 +11,7 @@ A regra está em `docs/RITMO.md`; este plano é o caminho até ela valer no buil
 3a. O capítulo 1 abaixo de 400: as ações Aposta, Pilhas e Troca do protótipo, como componentes do livro.
 3b. O experimento do segundo cérebro abaixo de 400.
 3c. O limite de 400 passa a falhar no `npm test`.
-4. A skill aplicada no capítulo 2 e no experimento do segundo cérebro, que ela não ajudou a escrever.
+4. A skill aplicada no capítulo 2, que ela não ajudou a escrever (o experimento já passou por ela na 3b).
 
 ## Decisões
 
@@ -25,10 +25,11 @@ A regra está em `docs/RITMO.md`; este plano é o caminho até ela valer no buil
 - (3b) Antes da figura 1 do experimento, nenhuma ação: espera o vídeo da figura em vídeo ganhar a aposta (Erick, 25/10/2026).
 - (3b) Aposta e Pilhas aceitam itens escritos, além dos casos do `referencia.jsonl`.
 
-## Etapa atual: 3c
+## Etapa atual: 4
 
-O `npm test` roda o relógio com `--estrito`: um trecho acima de 400 faz o teste falhar e diz qual. Evidência: o
-`npm test` passando hoje (o maior trecho é 322, na 2.2) e falhando numa cópia com um trecho de 401 palavras.
+A skill `revisar-ritmo` no capítulo 2: a proposta primeiro (os trechos de 236, na 2.1, e 322, na 2.2), a decisão do
+Erick depois, e só então a mudança no texto. Evidência: a proposta; depois, o relógio do capítulo 2 e as ações no
+navegador.
 
 ## Registro
 
@@ -38,3 +39,4 @@ O `npm test` roda o relógio com `--estrito`: um trecho acima de 400 faz o teste
 | 2 | skill salva | a skill `revisar-ritmo` revisada e salva pelo Erick; lê o `RITMO.md`, não guarda número | 25/10 |
 | 3a | `fc10873` | o capítulo 1 sem trecho acima de 400 (788 virou 39, 183, 189, 230); as três ações usadas na página | 25/10 |
 | 3b | `2e5e1e7` | o experimento sem trecho acima de 400 (412 virou 67, 243, 102, 74, 66); aposta, pare e pense e pilhas no navegador; números da aposta conferidos contra a régua | 25/10 |
+| 3c | `b24d961` | o `npm test` passa com os textos de hoje (maior trecho: 322); numa cópia com 401 na 2.2, falha e diz o trecho; com 400, passa com aviso | 25/10 |
