@@ -1,0 +1,18 @@
+{
+  "sobre": "A aposta da escala, no 1.1: quatro sistemas escritos para o exemplo, e o ponto de cada um na escala (fluxo fixo, roteador, agente, vários agentes). O do roteador é o agente do capítulo 2, que escolhe uma das quatro decisões do contrato; o teste confere.",
+  "resultado": "Fica em",
+  "fechos": {
+    "nenhum": "Nenhuma bateu. A pergunta que separa é sempre a mesma: quem decide o próximo passo, e quantas vezes?",
+    "alguns": "Você acertou {n} de {total}. A pergunta que separa é sempre a mesma: quem decide o próximo passo, e quantas vezes?"
+  },
+  "mensagens": [
+    { "texto": "Extrair os campos de toda nota fiscal que chega.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 0,
+      "porque": "O caminho é sempre o mesmo, e quem o decide é o código. O modelo só lê a nota." },
+    { "texto": "Separar cada mensagem do atendimento em uma de quatro decisões.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 1,
+      "porque": "O modelo decide uma vez, entre caminhos que alguém desenhou. É o agente do capítulo 2." },
+    { "texto": "Atender o cliente consultando o pedido, e de novo se precisar.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 2,
+      "porque": "O modelo decide o próximo passo a cada volta, como o atendente: olha, decide se basta, olha de novo." },
+    { "texto": "Um coordenador que divide o atendimento entre um especialista em trocas e outro em entregas.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 3,
+      "porque": "Cada especialista é um agente, e um deles coordena os outros." }
+  ]
+}
