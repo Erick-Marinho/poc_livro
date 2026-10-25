@@ -35,6 +35,17 @@ test("a página tem a aposta, o mapa com as oito fases e as quatro referências"
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
+test("o leitor lê \"apanhado\", e não \"pego\", na introdução: no texto, na aposta, nas cenas, nos cartões e na animação", () => {
+  const pega = /.{0,40}\b(pego|pegos|pega|pegam|pegá-la|pegá-lo|pegou)\b.{0,20}/i;
+  const sem = (s, onde) => assert.equal(s.match(pega)?.[0], undefined, onde);
+  const texto = html.replace(/<(script|style)[\s\S]*?<\/\1>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  sem(texto, "na página montada");
+  const lido = (v) => (typeof v === "string" ? [v] : Array.isArray(v) ? v.flatMap(lido) : v && typeof v === "object" ? Object.entries(v).filter(([k]) => k !== "sobre").flatMap(([, x]) => lido(x)) : []);
+  for (const f of ["onde-se-pega", "ciclo-animado", "ciclo"]) for (const s of lido(json(`livros/ciclo-de-vida/figuras/${f}.json`))) sem(s, `${f}.json`);
+  for (const f of ["FiguraCiclo", "CicloAnimado"]) for (const s of ler(`src/components/livro/ciclo/${f}.tsx`).match(/"[^"\n]* [^"\n]*"|`[^`\n]* [^`\n]*`|>[^<>{}\n]+</g)) sem(s, `${f}.tsx`); // frases, não nomes internos ("pego" é um realce)
+  assert.match(texto, /apanhado/);
+});
+
 test("na abertura de cada capítulo, a fase acesa é a do ciclo.json, e o link leva ao mapa da introdução", () => {
   assert.match(html, /id="mapa-do-ciclo"/);
   for (const [arq, n] of [["01-o-problema-e-o-contrato", 1], ["02-o-primeiro-agente", 2]]) {

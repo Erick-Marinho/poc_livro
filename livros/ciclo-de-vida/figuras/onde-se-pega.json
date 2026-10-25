@@ -1,13 +1,13 @@
 {
   "sobre": "A aposta da introdução: os quatro problemas do primeiro parágrafo, e a fase do ciclo que pega cada um (figuras/ciclo.json). O R12 é o caso da régua do capítulo 1; o teste confere que os problemas estão no texto e que as fases existem.",
-  "resultado": "Quem pega",
+  "resultado": "Onde é apanhado",
   "fechos": {
     "nenhum": "Nenhuma bateu, e tudo bem: o mapa logo abaixo é para isso.",
     "alguns": "Você acertou {n} de {total}. O mapa logo abaixo mostra onde fica cada fase."
   },
   "mensagens": [
     { "texto": "As perguntas que ninguém tinha previsto.", "opcoes": ["Planejar", "Quando dá errado", "Evoluir"], "fez": 1,
-      "porque": "Ninguém escreve caso para o que não previu. Quando a pergunta aparece no uso, vira caso novo da régua, e a régua passa a pegá-la (capítulo 7)." },
+      "porque": "Ninguém escreve caso para o que não previu. Quando a pergunta aparece no uso, vira caso novo da régua, e a régua passa a apanhá-la (capítulo 7)." },
     { "texto": "A conta que cresce sem aviso.", "opcoes": ["Avaliar", "Observar", "Pôr no ar"], "fez": 1,
       "porque": "O custo só aparece olhando o que aconteceu em cada conversa (capítulo 6). Pôr um teto no gasto já é Governar (capítulo 8)." },
     { "texto": "O cliente que pede o pedido de outra pessoa.", "opcoes": ["Planejar", "Pôr no ar", "Observar"], "fez": 0,
