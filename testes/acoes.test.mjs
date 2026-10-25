@@ -1,4 +1,4 @@
-/** As ações do leitor do capítulo 1 (Aposta, Pilhas, Troca): os dados vêm do referencia.jsonl, e a ilustração diz que é. Rode depois de `astro build`. */
+/** As ações do leitor dos capítulos 1 e 2 (Aposta, Pilhas, Troca): os dados vêm do referencia.jsonl, e a ilustração diz que é. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -29,4 +29,14 @@ test("a troca tem uma variante que o contrato pega, e o veredito sai da compara�
 
 test("caso que não existe não monta", () => {
   assert.throws(() => casos(referencia, ["R99"], "Pilhas"), /Pilhas: o caso R99 não está no referencia.jsonl/);
+});
+
+test("capítulo 2: as pilhas de quem faz cada passo saem do grafo-02.json, e a recusa é do modelo", () => {
+  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  const nos = JSON.parse(ler("livros/ciclo-de-vida/figuras/grafo-02.json")).nos;
+  const cartas = [...h2.matchAll(/class="pil-carta" data-decisao="(\w+)"[^>]*>\s*<q>([^<]+)<\/q>/g)].map((m) => [m[2], m[1]]);
+  const esperado = Object.values(nos).filter((n) => n.tarefa).map((n) => [n.tarefa, n.modelo === "não" ? "codigo" : "modelo"]);
+  assert.deepEqual(cartas.toSorted(), esperado.toSorted());
+  assert.deepEqual(Object.fromEntries(cartas)["Escrever a recusa"], "modelo");
+  assert.equal([...h2.matchAll(/class="pil-grupo"/g)].length, 2);
 });
