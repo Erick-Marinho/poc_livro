@@ -18,11 +18,9 @@ agente têm (IBM, Microsoft, LangChain, Salesforce), e o leitor entrava no probl
 - (1) O endereço antigo `/ciclo-de-vida/00-prefacio` leva à introdução.
 - (1) A introdução fica fora do relógio até ganhar a primeira ação (etapa 2).
 
-## Etapa atual: 3
+## Etapa atual: nenhuma
 
-"Você está aqui": na abertura de cada capítulo, o caminho do ciclo em miniatura, com a fase do capítulo acesa e um link
-para o mapa da introdução. Vem do `figuras/ciclo.json` do livro, se existir (o `src/` não sabe o nome do livro).
-Evidência: `npm test` (a fase acesa de cada capítulo é a do `ciclo.json`); a abertura dos capítulos 1 e 2 em 1280 e 360 px.
+Capacidade fechada em 25/10/2026. Capítulo novo entra numa fase do `figuras/ciclo.json`, ou não monta.
 
 ## Registro
 
@@ -30,3 +28,4 @@ Evidência: `npm test` (a fase acesa de cada capítulo é a do `ciclo.json`); a 
 |---|---|---|---|
 | 1 | `ed60114` | `npm test` com 72 testes; o menu com os 9 capítulos; `/00-prefacio` levando à introdução | 25/10 |
 | 2 | `0007690` | a introdução de 922 palavras sem ação para 73 · 297 · 245 · 210; testes do ciclo contra o sumário, da aposta contra o texto e o R12; aposta e mapa em 1280 e 360 px | 25/10 |
+| 3 | `9a64a62` | a fase acesa do 1 (Planejar) e do 2 (Construir) conferida contra o `ciclo.json`; o link leva ao mapa; 1280 e 360 px sem rolagem lateral | 25/10 |
