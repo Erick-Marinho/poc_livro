@@ -1,21 +1,28 @@
 /**
  * A linha do tempo da figura do agente em vídeo (AgenteAoVivo.tsx): quando cada coisa acontece, em segundos, em cada
- * cenário. O tempo de cada passo é do vídeo, não do `duracao` do roteiro. Sem JSX, para os testes lerem.
- * O primeiro cenário vai devagar (é nele que o leitor aprende a ler a figura); os outros, mais rápido.
+ * cenário. O tempo de cada passo é do vídeo, não do `duracao` do roteiro: vem do texto que está na tela, no ritmo de
+ * quem lê e acompanha a animação ao mesmo tempo. Sem JSX, para os testes lerem.
  */
-import { type Cenario, FERRAMENTAS, type Passo } from "./cenarios.ts";
+import { type Cenario, type Passo } from "./cenarios.ts";
 
 export type Props = { cenarios: Cenario[]; loja: string };
 export const ARESTA = 0.6; // a bolinha atravessando uma seta
 export const TRANSICAO = 0.8; // entre um cenário e outro (a câmera volta para o quadro inteiro)
 const FIM = 1.8; // no fim, o quadro inteiro, com as quatro abas feitas
-const LETRAS_POR_SEGUNDO = 46; // o cliente digitando
-const LEITURA_POR_SEGUNDO = 42; // quanto da resposta dá para ler por segundo
+const DIGITA_POR_SEGUNDO = 46; // o cliente digitando
+const LER_PERGUNTA = 1; // depois de enviada, o tempo de ler a pergunta
+/* a legenda se lê enquanto a animação anda: abaixo das ~17 letras por segundo da legendagem, que contam com o olho só
+   no texto */
+const LEGENDA_POR_SEGUNDO = 13;
+const LEGENDA_MINIMA = 2;
+const RESPOSTA_POR_SEGUNDO = 15;
+const RESPOSTA_MINIMA = 2.6;
 const DIGITANDO = 1; // os três pontinhos do agente, antes da resposta
-const RITMO = [1.5, 0.95]; // o passo do grafo: o primeiro cenário, e os outros
-const SELO = 0.9; // a pausa quando o selo aparece
-const ESCOLHA = 0.9; // a pausa depois de a decisão acender
+const SELO = 0.6; // a pausa quando o selo aparece
 export const APOSTA = "R12"; // o cenário em que o vídeo para e pergunta o que o agente deve fazer
+
+/** Os passos sem legenda: a pergunta e a resposta estão na conversa; chegar ao cliente e à saída é só a seta. */
+export const SEM_LEGENDA = ["pergunta", "cliente", "conversa", "resposta", "pessoa"];
 
 export type Seg = Passo & { de: number; ate: number; envia?: number };
 export type Cena = Cenario & {
@@ -28,29 +35,24 @@ export type Cena = Cenario & {
   sistema?: number; // a conversa passa para a equipe
 };
 
-// o tempo de cada passo do grafo, antes do ritmo do cenário
+// o tempo de cada passo do grafo: o da legenda dele, ou o da seta quando ele não tem legenda
 const duracao = (p: Passo) => {
-  if (p.no === "cliente") return 0.4;
-  if (p.trajeto === "cliente-agente") return 0.9;
-  if (FERRAMENTAS.includes(p.no)) return 1;
-  if (p.trajeto?.endsWith("-agente")) return 0.9;
-  if (p.no === "decisao") return 1.1;
-  if (p.no === "resposta" || p.no === "pessoa") return 0.6;
-  return 0.8;
+  if (p.no === "cliente") return 0.6;
+  if (p.no === "resposta" || p.no === "pessoa") return 0.9;
+  return Math.max(LEGENDA_MINIMA, p.texto.length / LEGENDA_POR_SEGUNDO) + (p.marca ? SELO : 0);
 };
 
 export function montar({ cenarios, loja }: Props) {
   let t = 0, conversa = -1, nomeAntes = "";
-  const cenas: Cena[] = cenarios.map((cen, k) => {
+  const cenas: Cena[] = cenarios.map((cen) => {
     if (cen.nome === "cliente" || cen.nome !== nomeAntes) conversa++;
     nomeAntes = cen.nome;
-    const ritmo = RITMO[Math.min(k, 1)];
     let v = 0;
     const segs: Seg[] = cen.passos.map((p) => {
       const seg: Seg = { ...p, de: v, ate: v };
-      if (p.no === "pergunta") { seg.envia = v + 0.3 + cen.pergunta.length / LETRAS_POR_SEGUNDO; seg.ate = seg.envia + 0.6; }
-      else if (p.no === "conversa") seg.ate = v + DIGITANDO + Math.max(2.6, p.texto.length / LEITURA_POR_SEGUNDO) + (cen.decisao === "passar" ? 1 : 0);
-      else seg.ate = v + duracao(p) * ritmo + (p.marca ? SELO : 0) + (p.no === "decisao" ? ESCOLHA : 0);
+      if (p.no === "pergunta") { seg.envia = v + 0.3 + cen.pergunta.length / DIGITA_POR_SEGUNDO; seg.ate = seg.envia + LER_PERGUNTA; }
+      else if (p.no === "conversa") seg.ate = v + DIGITANDO + Math.max(RESPOSTA_MINIMA, p.texto.length / RESPOSTA_POR_SEGUNDO) + (cen.decisao === "passar" ? 1.2 : 0);
+      else seg.ate = v + duracao(p);
       v = seg.ate;
       return seg;
     });

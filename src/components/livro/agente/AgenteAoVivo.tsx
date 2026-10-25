@@ -7,7 +7,7 @@
 import { useMemo } from "react";
 import { AbsoluteFill, Easing, interpolate, interpolateColors, useCurrentFrame, useVideoConfig } from "remotion";
 import { DECISOES, type Escolha, FERRAMENTAS } from "./cenarios";
-import { ARESTA, type Cena, iniciais, type Montado, montar, type Props, type Seg, TRANSICAO } from "./tempos";
+import { ARESTA, type Cena, iniciais, type Montado, montar, type Props, SEM_LEGENDA, type Seg, TRANSICAO } from "./tempos";
 
 export { type Props, quadroDoVideo } from "./tempos";
 
@@ -621,7 +621,7 @@ const NoSaida: React.FC<{ q: Quadro; id: "resposta" | "pessoa" }> = ({ q, id }) 
 // O que o agente está fazendo (o texto do roteiro do livro), como legenda de vídeo: grande, na base do quadro, só
 // enquanto o grafo trabalha. Fica fora da câmera.
 const Legenda: React.FC<{ q: Quadro }> = ({ q }) => {
-  const s = q.cena.segs.filter((x) => x.de <= q.v && !["pergunta", "cliente", "conversa", "resposta", "pessoa"].includes(x.no)).pop();
+  const s = q.cena.segs.filter((x) => x.de <= q.v && !SEM_LEGENDA.includes(x.no)).pop();
   const fala = q.cena.segs.find((x) => x.no === "conversa")!;
   if (!s || q.v >= fala.de) return null;
   return (

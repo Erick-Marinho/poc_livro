@@ -74,6 +74,9 @@ A decisão final de cada cenário vem do `referencia.jsonl`, e o build falha se 
   agente deve fazer; o leitor escolhe uma das quatro (ou pula), e o vídeo mostra a do contrato ao lado da dele.
 - (25/10/2026, Erick, ao ver a etapa 7) Até 60 s, e não 45: em 45 ficou acelerado. O tempo a mais vai para digitar, ler, o
   passo do grafo, as pausas do selo e da decisão, a câmera e o fim parado.
+- (25/10/2026, Erick) Cerca de 2 min (até 130 s), e não 60: em 60 não dava para ler a legenda e acompanhar ao mesmo
+  tempo. O tempo de cada passo vem do texto na tela: legenda a 13 letras/s (mínimo 2 s), resposta a 15 (mínimo 2,6 s),
+  1 s para ler a pergunta enviada; abaixo das ~17 letras/s da legendagem, que contam com o olho só no texto.
 - (6) A aposta não aparece no modo direto. Ela é da ilha, não do vídeo: a composição só marca o quadro em que ela para.
 - (6) A linha do tempo fica em `agente/tempos.ts`, sem JSX, para o teste conferir os 45 s.
 - (6) A etapa 5 não foi feita; o teste da etapa 6 faz o que ela pedia (a figura no `npm test`).

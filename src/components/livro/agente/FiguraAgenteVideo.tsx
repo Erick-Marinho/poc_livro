@@ -12,6 +12,8 @@ import { AgenteAoVivo, COR, type Props, quadroDoVideo } from "./AgenteAoVivo";
 import { DECISOES, type Escolha } from "./cenarios";
 import "../palco/palco.css";
 
+// "45 s", ou "2 min" a partir de um minuto e meio
+const duracaoLegivel = (s: number) => (s >= 90 ? `${Math.round(s / 60)} min` : `${Math.round(s)} s`);
 type Aposta = { fase: "esperando" | "perguntando" | "feita"; escolha: Escolha | null };
 const vidro = { background: "rgba(17, 19, 24, .78)", border: "1px solid rgba(231, 233, 238, .18)", color: "var(--palco-texto)" } as const;
 
@@ -116,7 +118,7 @@ export default function FiguraAgenteVideo({ cenarios, loja }: Props) {
     {!comecou && !perguntando ? (
       <span aria-hidden="true" style={{ ...vidro, position: "absolute", right: 50, bottom: 14, borderRadius: 999, padding: "4px 10px",
         font: "12px var(--f-ui)", opacity: .85 }}>
-        {Math.round(q.duracao / q.fps)} s · {cenarios.length} situações
+        {duracaoLegivel(q.duracao / q.fps)} · {cenarios.length} situações
       </span>
     ) : null}
     {perguntando ? null : <button type="button" onClick={alternar} aria-label={tocando ? "pausar a simulação" : "tocar a simulação"}
