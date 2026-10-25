@@ -75,3 +75,17 @@ test("o mapa da introdução tem a animação, além do desenho parado", () => {
   assert.ok(pagina.querySelectorAll("astro-island").some((i) => (i.getAttribute("component-url") ?? "").includes("FiguraCiclo")), "o mapa não tem a animação");
   assert.ok(pagina.querySelector('#mapa-do-ciclo svg[data-desenho="anel"]'), "sem JS, o desenho parado sumiu");
 });
+
+/* o "você está aqui" (etapa 3): o mesmo anel, em miniatura, com a fase do capítulo acesa */
+test("na abertura dos capítulos, o anel em miniatura acende a fase do capítulo, e o leitor de tela lê a lista", () => {
+  for (const [pasta, n] of [["01-o-problema-e-o-contrato", 1], ["02-o-primeiro-agente", 2]]) {
+    const aqui = parse(ler(`dist/ciclo-de-vida/${pasta}/index.html`)).querySelector("[data-ciclo-aqui]");
+    const fase = ciclo.fases.find((f) => f.capitulos.includes(n));
+    const mini = aqui.querySelector('svg[data-desenho="anel"]');
+    assert.ok(mini, `capítulo ${n}: falta o anel em miniatura`);
+    assert.equal(mini.getAttribute("aria-hidden"), "true", `capítulo ${n}: a miniatura é desenho, não é lida`);
+    assert.deepEqual(mini.querySelectorAll(".an-aceso").map((g) => g.getAttribute("data-no")), [fase.id], `capítulo ${n}`);
+    assert.equal(mini.querySelectorAll("[tabindex]").length, 0, `capítulo ${n}: a miniatura não recebe foco`);
+    assert.ok(aqui.querySelector('[aria-current="step"]')?.text.includes(fase.nome), `capítulo ${n}: a lista não marca ${fase.nome}`);
+  }
+});

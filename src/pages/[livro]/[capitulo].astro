@@ -60,7 +60,7 @@ export async function getStaticPaths() {
     const fase = entrada.data.tipo === "capitulo" ? doCiclo?.fases.find((f) => f.capitulos.includes(entrada.data.numero!)) : undefined;
     if (doCiclo && entrada.data.tipo === "capitulo" && !fase) throw new Error(`figuras/ciclo.json de ${livro}: o capítulo ${entrada.data.numero} não está em nenhuma fase`);
     const intro = doLivro.find((e) => e.data.tipo === "introducao");
-    const ciclo = doCiclo && fase ? { fases: doCiclo.fases.map(({ id, nome, transversal }) => ({ id, nome, transversal })), aceso: fase.id, mapa: intro && `${endereco(intro)}#mapa-do-ciclo` } : undefined;
+    const ciclo = doCiclo && fase ? { fases: doCiclo.fases.map(({ id, nome, capitulos, transversal }) => ({ id, nome, capitulos, transversal })), aceso: fase.id, mapa: intro && `${endereco(intro)}#mapa-do-ciclo` } : undefined;
     return {
       params: { livro, capitulo: entrada.id.split("/").pop()! },
       props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens, placar, ciclo },

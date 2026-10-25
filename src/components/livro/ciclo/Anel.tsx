@@ -10,7 +10,8 @@ type Fase = { id: string; nome: string; capitulos: number[]; transversal?: boole
 export type Desenho = "anel" | "coluna";
 export type Realce = "erro" | "pego";
 /** `prefixo`: os ids dos marcadores das setas; cada desenho da página precisa do seu, ou as pontas somem */
-type Props = { fases: Fase[]; desenho: Desenho; aceso?: string; realces?: Record<string, Realce>; governar?: boolean; prefixo?: string };
+/** `decorativo`: só o desenho (a miniatura do "você está aqui"), oculto para leitor de tela e sem foco nos nós */
+type Props = { fases: Fase[]; desenho: Desenho; aceso?: string; realces?: Record<string, Realce>; governar?: boolean; prefixo?: string; decorativo?: boolean };
 
 const IDA = ["planejar", "construir", "avaliar", "por-no-ar", "observar", "errado"];
 export type Caixa = { x: number; y: number; w: number; h: number };
@@ -93,8 +94,8 @@ const Seta = ({ id, classe }: { id: string; classe: string }) => (
   </marker>
 );
 
-const No = ({ f, caixa, aceso, realce, compacto }: { f: Fase; caixa: Caixa; aceso: boolean; realce?: Realce; compacto?: boolean }) => (
-  <g data-no={f.id} role="button" tabIndex={0} aria-label={`${f.nome}, ${caps(f)}`} aria-pressed={aceso}
+const No = ({ f, caixa, aceso, realce, compacto, decorativo }: { f: Fase; caixa: Caixa; aceso: boolean; realce?: Realce; compacto?: boolean; decorativo?: boolean }) => (
+  <g data-no={f.id} {...(decorativo ? {} : { role: "button", tabIndex: 0, "aria-label": `${f.nome}, ${caps(f)}`, "aria-pressed": aceso })}
     className={["an-no", aceso ? "an-aceso" : "", realce ? `an-realce-${realce}` : ""].filter(Boolean).join(" ")}>
     <rect x={caixa.x} y={caixa.y} width={caixa.w} height={caixa.h} rx={compacto ? caixa.h / 2 : 12} className="an-caixa" />
     {compacto ? (
@@ -110,18 +111,19 @@ const No = ({ f, caixa, aceso, realce, compacto }: { f: Fase; caixa: Caixa; aces
   </g>
 );
 
-export default function Anel({ fases, desenho, aceso, realces = {}, governar: haloAceso, prefixo = desenho }: Props) {
+export default function Anel({ fases, desenho, aceso, realces = {}, governar: haloAceso, prefixo = desenho, decorativo }: Props) {
   const fase = (id: string) => fases.find((f) => f.id === id) ?? (() => { throw new Error(`Anel: a fase ${id} não está no ciclo.json`); })();
   const ida = IDA.map(fase);
   const evoluir = fase("evoluir"), governar = fases.find((f) => f.transversal) ?? fase("governar");
   const m = (nome: string) => `${prefixo}-${nome}`;
   const halo = haloAceso ? "an-halo an-halo-aceso" : "an-halo";
-  const no = (f: Fase, caixa: Caixa, compacto?: boolean) => <No key={f.id} f={f} caixa={caixa} aceso={f.id === aceso} realce={realces[f.id]} compacto={compacto} />;
+  const no = (f: Fase, caixa: Caixa, compacto?: boolean) => <No key={f.id} f={f} caixa={caixa} aceso={f.id === aceso} realce={realces[f.id]} compacto={compacto} decorativo={decorativo} />;
+  const leitura = decorativo ? { "aria-hidden": true } : { role: "group" };
 
   if (desenho === "anel") {
     const e = noDoAnel(5), a = noDoAnel(2);
     return (
-      <svg data-desenho="anel" viewBox={`0 0 ${VISTA.anel.w} ${VISTA.anel.h}`} className="an an-anel" role="group" aria-label="O ciclo de vida de um agente, em anel">
+      <svg data-desenho="anel" viewBox={`0 0 ${VISTA.anel.w} ${VISTA.anel.h}`} className="an an-anel" {...leitura} aria-label={decorativo ? undefined : "O ciclo de vida de um agente, em anel"}>
         <defs>
           <Seta id={m("ida")} classe="an-seta" />
           <Seta id={m("erro")} classe="an-seta-erro" />
@@ -152,7 +154,7 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
   }
 
   return (
-    <svg data-desenho="coluna" viewBox={`0 0 ${VISTA.coluna.w} ${VISTA.coluna.h}`} className="an an-coluna" role="group" aria-label="O ciclo de vida de um agente, em coluna">
+    <svg data-desenho="coluna" viewBox={`0 0 ${VISTA.coluna.w} ${VISTA.coluna.h}`} className="an an-coluna" {...leitura} aria-label={decorativo ? undefined : "O ciclo de vida de um agente, em coluna"}>
       <defs>
         <Seta id={m("ida")} classe="an-seta" />
         <Seta id={m("erro")} classe="an-seta-erro" />
