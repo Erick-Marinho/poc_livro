@@ -6,8 +6,8 @@
  */
 type Fase = { id: string; nome: string; capitulos: number[]; transversal?: boolean };
 type Mensagem = { texto?: string; opcoes: string[]; fez: number };
-export type CenaDados = { legenda: string; segundos: number; problema?: number; rotulo?: string; caminho?: string[]; falha?: string; chave?: boolean; governar?: boolean };
-export type Entrada = { ciclo: { fases: Fase[] }; cenas: { pergunta: string; cenas: CenaDados[] }; aposta: { mensagens: Mensagem[] } };
+export type CenaDados = { legenda: string; sabendo?: string; segundos: number; problema?: number; rotulo?: string; caminho?: string[]; falha?: string; chave?: boolean; governar?: boolean };
+export type Entrada = { ciclo: { fases: Fase[] }; cenas: { pergunta: string; sabendo: string; cenas: CenaDados[] }; aposta: { mensagens: Mensagem[] } };
 export type Chegada = { fase: string; em: number };
 export type Cena = CenaDados & {
   inicio: number; // no vídeo, em segundos
@@ -51,9 +51,15 @@ export function montarCenas({ ciclo, cenas, aposta }: Entrada) {
   });
   const usados = lista.flatMap((c) => (c.problema === undefined ? [] : [c.problema]));
   if (new Set(usados).size !== aposta.mensagens.length || usados.length !== aposta.mensagens.length) falhar("cada problema da aposta entra em uma cena, e só em uma.");
-  return { pergunta: cenas.pergunta, cenas: lista, total: t, quadros: Math.round(t * FPS) };
+  return { pergunta: cenas.pergunta, sabendo: cenas.sabendo, cenas: lista, total: t, quadros: Math.round(t * FPS) };
 }
 export type Montado = ReturnType<typeof montarCenas>;
+
+/** O leitor já sabe onde cada problema é capturado: investiu em ao menos um, ou está no modo direto, em que a caixa
+ *  mostra as respostas sem pedir. Para ele, o título e a legenda afirmam, em vez de perguntar. */
+export const jaSabe = (apostas: (number | null)[] | undefined, direto: boolean) => direto || !!apostas?.some((a) => a !== null && a !== undefined);
+export const titulo = (m: Montado, sabe: boolean) => (sabe ? m.sabendo : m.pergunta);
+export const legenda = (c: CenaDados, sabe: boolean) => (sabe && c.sabendo ? c.sabendo : c.legenda);
 
 /** Onde cada cena começa e termina, em quadros: o avançar toca de um até o outro e para. */
 export const limites = (m: Montado) => m.cenas.map((c) => ({ de: Math.round(c.inicio * FPS), ate: Math.round(c.fim * FPS) - 1 }));

@@ -60,9 +60,24 @@ test("a animação cabe no docs/RITMO.md: até 6 cenas, 45 s, 8 s por cena e 12 
   assert.ok(m.total <= 45, `${m.total} s`);
   for (const c of m.cenas) {
     assert.ok(c.segundos <= 8, `"${c.legenda}": ${c.segundos} s`);
-    assert.ok(c.legenda.split(/\s+/).length <= 12, `"${c.legenda}" passa de 12 palavras`);
+    for (const l of [c.legenda, c.sabendo].filter(Boolean)) assert.ok(l.split(/\s+/).length <= 12, `"${l}" passa de 12 palavras`);
   }
   assert.equal(limites(m).length, m.cenas.length);
+});
+
+/* ajustes da introdução (etapa 3): quem já investiu não é perguntado de novo */
+test("quem já investiu, ou está no modo direto, lê o caminho, e não a pergunta; quem não investiu, a pergunta", async () => {
+  const { jaSabe, titulo, legenda } = await import("../src/components/livro/ciclo/cenas.ts");
+  const m = montarCenas({ ciclo, cenas, aposta });
+  assert.equal(jaSabe([null, null, null, null], false), false);
+  assert.equal(jaSabe(undefined, false), false);
+  assert.equal(jaSabe([null, 1, null, null], false), true);
+  assert.equal(jaSabe([null, null, null, null], true), true, "no modo direto, a caixa já mostra as respostas");
+  assert.equal(titulo(m, false), cenas.pergunta);
+  assert.match(titulo(m, false), /\?$/);
+  assert.doesNotMatch(titulo(m, true), /\?/, "o título pergunta o que o leitor já sabe");
+  for (const c of m.cenas) assert.doesNotMatch(legenda(c, true), /\?/, `"${legenda(c, true)}" pergunta o que o leitor já sabe`);
+  assert.match(legenda(m.cenas[0], false), /\?$/);
 });
 
 test("cenas que contradizem a aposta não montam a figura", () => {

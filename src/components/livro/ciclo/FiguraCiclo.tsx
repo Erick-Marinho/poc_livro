@@ -1,7 +1,7 @@
 /**
  * A ilha do mapa do ciclo animado (docs/capacidades/ciclo-animado.md): a composição (CicloAnimado.tsx) no Player, que o
- * leitor avança cena a cena, num botão discreto embaixo; nada toca sozinho. A aposta de cada problema é lida da aposta
- * da página (Aposta.astro), a cada avanço. A fase por onde o problema passa acende o cartão dela, e clicar num nó do
+ * leitor avança cena a cena, num botão discreto embaixo; nada toca sozinho. O investimento em cada problema é lido da
+ * caixa da página (Aposta.astro), ao carregar e a cada clique nela: quem já investiu lê o caminho, e não a pergunta. A fase por onde o problema passa acende o cartão dela, e clicar num nó do
  * vídeo abre o cartão: a ilha só avisa a figura (evento "ciclo:fase"), e o MapaDoCiclo acende. Com menos movimento, o
  * avançar vai direto ao fim da cena; no modo direto, o quadro final, sem botão. Sem JS, fica o mapa parado.
  */
@@ -10,7 +10,7 @@ import { type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useDireto } from "../palco/direto";
 import type { Desenho } from "./Anel";
 import { CicloAnimado, quadroDoCiclo } from "./CicloAnimado";
-import { type Entrada, FPS, faseAcesa, limites, montarCenas } from "./cenas";
+import { type Entrada, FPS, faseAcesa, jaSabe, legenda, limites, montarCenas } from "./cenas";
 
 // a aposta da página com os mesmos problemas: o índice da opção que o leitor marcou em cada um, ou null
 const lerApostas = (aposta: Entrada["aposta"]) => {
@@ -39,7 +39,16 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   const alvo = useRef(-1); // o quadro onde a cena de agora termina
   const acesa = useRef<string | undefined>(undefined);
   const q = useMemo(() => quadroDoCiclo({ ciclo, cenas, aposta }, desenho), [ciclo, cenas, aposta, desenho]);
-  const props = useMemo(() => ({ ciclo, cenas, aposta, desenho, apostas }), [ciclo, cenas, aposta, desenho, apostas]);
+  const sabe = jaSabe(apostas, direto);
+  const props = useMemo(() => ({ ciclo, cenas, aposta, desenho, apostas, sabe }), [ciclo, cenas, aposta, desenho, apostas, sabe]);
+
+  /* o investimento do leitor: o que já está marcado quando a ilha carrega, e cada clique na caixa depois */
+  useEffect(() => {
+    setApostas(lerApostas(aposta));
+    const clique = (e: Event) => { if ((e.target as Element).closest?.("[data-aposta] button")) setApostas(lerApostas(aposta)); };
+    document.addEventListener("click", clique);
+    return () => document.removeEventListener("click", clique);
+  }, [aposta]);
 
   /* a figura passa a mostrar o vídeo no lugar do mapa parado; e escolhe anel ou coluna pela largura */
   useEffect(() => {
@@ -75,7 +84,6 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   const avancar = (e: MouseEvent) => {
     const p = ref.current;
     if (!p || tocando) return;
-    setApostas(lerApostas(aposta));
     const k = cena + 1 >= cortes.length ? 0 : cena + 1;
     setCena(k);
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -96,7 +104,7 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   };
 
   const fim = cena === cortes.length - 1;
-  const rotulo = tocando ? `cena ${cena + 1} de ${cortes.length}…` : cena < 0 ? "▶ Ver onde cada problema é capturado" : fim ? "↺ Ver de novo" : `▶ Próxima cena (${cena + 2} de ${cortes.length})`;
+  const rotulo = tocando ? `cena ${cena + 1} de ${cortes.length}…` : cena < 0 ? (sabe ? "▶ Ver o caminho de cada problema" : "▶ Ver onde cada problema é capturado") : fim ? "↺ Ver de novo" : `▶ Próxima cena (${cena + 2} de ${cortes.length})`;
   return <div ref={caixa} className="mc-video" onClick={clicar}>
     <Player key={desenho} ref={ref} component={CicloAnimado} inputProps={props} durationInFrames={q.duracao} fps={q.fps}
       compositionWidth={q.largura} compositionHeight={q.altura} initialFrame={direto ? q.duracao - 1 : 0}
@@ -106,7 +114,7 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
         <button type="button" onClick={avancar} disabled={tocando} aria-label={rotulo.replace(/^[▶↺] /, "")}>{rotulo}</button>
         <span>{cena >= 0 ? `cena ${cena + 1} de ${cortes.length}` : "cena a cena: você avança quando quiser"}</span>
         {/* para quem não vê o vídeo: a legenda de cada cena, anunciada */}
-        <span className="mc-anuncio" aria-live="polite">{cena >= 0 ? m.cenas[cena].legenda : ""}</span>
+        <span className="mc-anuncio" aria-live="polite">{cena >= 0 ? legenda(m.cenas[cena], sabe) : ""}</span>
       </div>
     )}
   </div>;

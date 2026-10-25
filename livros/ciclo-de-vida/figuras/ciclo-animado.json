@@ -1,8 +1,10 @@
 {
-  "sobre": "As cenas da animação do mapa do ciclo, na introdução (MapaDoCiclo; docs/capacidades/ciclo-animado.md). Cada cena com problema aponta uma mensagem da aposta (figuras/onde-se-pega.json, pelo número); o caminho são fases do ciclo.json, e a fase que pega o problema na aposta está nele. O problema para na fase que o pega; o resto do caminho é a volta, que um fantasma percorre. O teste confere isso e os limites do docs/RITMO.md.",
+  "sobre": "As cenas da animação do mapa do ciclo, na introdução (MapaDoCiclo; docs/capacidades/ciclo-animado.md). Cada cena com problema aponta uma mensagem da aposta (figuras/onde-se-pega.json, pelo número); o caminho são fases do ciclo.json, e a fase que pega o problema na aposta está nele. O problema para na fase que o pega; o resto do caminho é a volta, que um fantasma percorre. Quem já investiu lê o \"sabendo\" no lugar da pergunta (docs/capacidades/ajustes-da-introducao.md). O teste confere isso e os limites do docs/RITMO.md.",
   "pergunta": "Onde cada problema é capturado?",
+  "sabendo": "O caminho de cada problema até a fase que o captura.",
   "cenas": [
-    { "legenda": "Quatro problemas e um ciclo. Onde cada um é capturado?", "segundos": 5 },
+    { "legenda": "Quatro problemas e um ciclo. Onde cada um é capturado?",
+      "sabendo": "Você já sabe onde cada um é capturado. Agora, o caminho.", "segundos": 5 },
     { "problema": 2, "rotulo": "pedido de outra pessoa", "caminho": ["planejar"], "segundos": 6,
       "legenda": "Antes de existir código, ele já é um caso da régua." },
     { "problema": 1, "rotulo": "conta que cresce", "caminho": ["planejar", "construir", "avaliar", "por-no-ar", "observar"], "segundos": 7,

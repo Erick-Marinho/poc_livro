@@ -8,9 +8,10 @@
 import { useMemo } from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import Anel, { type Caixa, caixas, type Desenho, ESTILO, type Realce, VISTA } from "./Anel";
-import { type Cena, cenaEm, type Entrada, faseAcesa, montarCenas } from "./cenas";
+import { type Cena, cenaEm, type Entrada, faseAcesa, jaSabe, legenda, montarCenas, titulo } from "./cenas";
 
-export type Props = Entrada & { desenho: Desenho; apostas?: (number | null)[] };
+/** `sabe`: o leitor já sabe onde cada problema é capturado (jaSabe); sem ele, vale o que as apostas dizem */
+export type Props = Entrada & { desenho: Desenho; apostas?: (number | null)[]; sabe?: boolean };
 
 const TOPO = 56; // a pergunta
 const FAIXA: Record<Desenho, number> = { anel: 124, coluna: 156 }; // a legenda e o resultado
@@ -49,7 +50,7 @@ const Etiqueta = ({ x, y, texto, borda, fantasma, opacidade = 1, largura }: { x:
   );
 };
 
-export const CicloAnimado: React.FC<Props> = ({ ciclo, cenas, aposta, desenho, apostas }) => {
+export const CicloAnimado: React.FC<Props> = ({ ciclo, cenas, aposta, desenho, apostas, sabe = jaSabe(apostas, false) }) => {
   const m = useMemo(() => montarCenas({ ciclo, cenas, aposta }), [ciclo, cenas, aposta]);
   const cx = useMemo(() => caixas(desenho), [desenho]);
   const frame = useCurrentFrame();
@@ -73,7 +74,7 @@ export const CicloAnimado: React.FC<Props> = ({ ciclo, cenas, aposta, desenho, a
     <AbsoluteFill style={{ backgroundColor: cor.nota, fontFamily: ui }}>
       <style>{`${ESTILO} .ca-anel svg { display: block; width: 100%; height: auto }`}</style>
       <div style={{ height: TOPO, display: "flex", alignItems: "center", padding: "0 20px", font: `600 ${coluna ? 17 : 20}px ${ui}`, color: cor.texto }}>
-        {m.pergunta}
+        {titulo(m, sabe)}
       </div>
       {/* o desenho, e por cima, nas mesmas coordenadas, os problemas andando */}
       <div className="ca-anel" style={{ position: "absolute", left: 0, top: TOPO, width: vista.w, height: vista.h }}>
@@ -104,26 +105,26 @@ export const CicloAnimado: React.FC<Props> = ({ ciclo, cenas, aposta, desenho, a
           );
         })}
       </svg>
-      <Faixa cena={cena} v={v} apostas={apostas} aposta={aposta} coluna={coluna} top={TOPO + vista.h} />
+      <Faixa cena={cena} v={v} apostas={apostas} aposta={aposta} sabe={sabe} coluna={coluna} top={TOPO + vista.h} />
     </AbsoluteFill>
   );
 };
 
-// a legenda da cena e, depois que o problema é pego, quem pegou e o que o leitor apostou
-const Faixa = ({ cena, v, apostas, aposta, coluna, top }: { cena: Cena; v: number; apostas?: (number | null)[]; aposta: Entrada["aposta"]; coluna: boolean; top: number }) => {
+// a legenda da cena e, depois que o problema é capturado, onde, e se bateu com o investimento do leitor: só o que a
+// caixa do "invista" ainda não disse (quem não investiu não é cobrado)
+const Faixa = ({ cena, v, apostas, aposta, sabe, coluna, top }: { cena: Cena; v: number; apostas?: (number | null)[]; aposta: Entrada["aposta"]; sabe: boolean; coluna: boolean; top: number }) => {
   const pegaEm = cena.ida.length ? cena.ida[cena.ida.length - 1].em : Infinity;
   const m = cena.problema !== undefined ? aposta.mensagens[cena.problema] : undefined;
   const escolha = cena.problema !== undefined ? apostas?.[cena.problema] : undefined;
-  const acertou = m && escolha !== undefined && escolha !== null && escolha === m.fez;
+  const investiu = m && escolha !== undefined && escolha !== null;
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top, padding: coluna ? "6px 16px" : "8px 24px", display: "grid", gap: 8, alignContent: "start" }}>
-      <div style={{ font: `${coluna ? 16 : 19}px/1.35 ${ui}`, color: cor.texto, opacity: kf(v, [[0, 0], [0.4, 1]]) }}>{cena.legenda}</div>
+      <div style={{ font: `${coluna ? 16 : 19}px/1.35 ${ui}`, color: cor.texto, opacity: kf(v, [[0, 0], [0.4, 1]]) }}>{legenda(cena, sabe)}</div>
       {cena.pega && m ? (
         <div style={{ font: `${coluna ? 14 : 16}px/1.4 ${ui}`, color: cor.fraco, opacity: kf(v, [[pegaEm + 0.2, 0], [pegaEm + 0.6, 1]]) }}>
-          Capturado em: <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
-          {" · "}
-          {escolha === undefined || escolha === null ? "você não investiu" : (
-            <>você investiu em: <b style={{ color: acertou ? cor.ok : cor.aviso }}>{m.opcoes[escolha]} {acertou ? "✓" : "✗"}</b></>
+          Capturado em <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
+          {!investiu ? null : escolha === m.fez ? <> · <b style={{ color: cor.ok }}>✓ onde você investiu</b></> : (
+            <> · você investiu em <b style={{ color: cor.aviso }}>{m.opcoes[escolha]}</b></>
           )}
         </div>
       ) : null}
