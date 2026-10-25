@@ -25,11 +25,10 @@ A regra está em `docs/RITMO.md`; este plano é o caminho até ela valer no buil
 - (3b) Antes da figura 1 do experimento, nenhuma ação: espera o vídeo da figura em vídeo ganhar a aposta (Erick, 25/10/2026).
 - (3b) Aposta e Pilhas aceitam itens escritos, além dos casos do `referencia.jsonl`.
 
-## Etapa atual: 4
+## Etapa atual: nenhuma
 
-A skill `revisar-ritmo` no capítulo 2: a proposta primeiro (os trechos de 236, na 2.1, e 322, na 2.2), a decisão do
-Erick depois, e só então a mudança no texto. Evidência: a proposta; depois, o relógio do capítulo 2 e as ações no
-navegador.
+Capacidade fechada em 25/10/2026. Texto novo passa pela skill `revisar-ritmo` antes das interações, e o `npm test`
+barra trecho acima de 400.
 
 ## Registro
 
@@ -40,3 +39,4 @@ navegador.
 | 3a | `fc10873` | o capítulo 1 sem trecho acima de 400 (788 virou 39, 183, 189, 230); as três ações usadas na página | 25/10 |
 | 3b | `2e5e1e7` | o experimento sem trecho acima de 400 (412 virou 67, 243, 102, 74, 66); aposta, pare e pense e pilhas no navegador; números da aposta conferidos contra a régua | 25/10 |
 | 3c | `b24d961` | o `npm test` passa com os textos de hoje (maior trecho: 322); numa cópia com 401 na 2.2, falha e diz o trecho; com 400, passa com aviso | 25/10 |
+| 4 | `c6f9a3f` | a proposta da skill aprovada (A a D); o capítulo 2 sem trecho acima de 200 (236 e 322 viraram 111, 67, 33, 65, 147); as pilhas saem do `grafo-02.json`, conferidas no teste; capturas em 1280 e 360 px | 25/10 |
