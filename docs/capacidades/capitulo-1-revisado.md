@@ -18,16 +18,16 @@ quando uma escala explica melhor, e deixa o agente do capítulo 2 num ponto dela
   dele, e com citação.
 - (1) A seção do contrato abre com a política da loja, que já é um combinado; o texto que já existia (a palavra, o
   Meyer, a troca de prompt, a definição) fica nela.
+- (2) O laço será a primeira cena do fluxograma animado do ciclo, uma capacidade à parte; até lá, `Pendente` no 1.1.
 
-## Etapa atual: 2
+## Etapa atual: 3
 
-Pelo fluxo do livro: primeiro o texto (o 1.1 com o atendente fazendo o laço com o BT-1003, a escala no lugar de
-"fluxo fixo ou agente", e a liberdade dentro de um desenho fechando a seção), depois a `revisar-ritmo` escrevendo os
-rascunhos, num commit à parte. Evidência: os dois commits (o dos rascunhos sem linha removida), o relógio do 1.1 e a
-página com os rascunhos. Fora: preencher os rascunhos (só com o pedido do Erick).
+O pare e pense depois da figura 2.1 pergunta onde o agente fica na escala do capítulo 1; a resposta: no roteador, e o
+capítulo 3 o leva a agente. Um teste confere que o 2.1 diz "roteador". Evidência: `npm test`; a página.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `aa39ef2` | `npm test` com 76 testes; o menu com 1.4 "O que é um contrato" e 1.5 "As quatro decisões"; o relógio da 1.4 em 273 (aviso) | 25/10 |
+| 2 | `347782d` · `44a8717` · `e5740ca` | o texto do 1.1 (atendente, escala, limite); a skill escreveu 2 rascunhos (9 linhas, 0 removidas); a escala virou Aposta com teste, o laço virou Pendente; o 1.1 em 161 · 196 · 97 · 112 | 25/10 |
