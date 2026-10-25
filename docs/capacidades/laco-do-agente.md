@@ -40,6 +40,12 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 - (7) Quatro vezes, na ordem que conta a história: só o modelo com o pedido, o fluxo fixo com o pedido, o fluxo fixo
   com a frigideira (antes dela, o investimento) e o agente com a frigideira. Cada passo, em frase curta (o `curto` de
   cada passo nos três jeitos); a frase inteira fica na figura em texto. No fim, só os quatro resumos e a conclusão.
+- (25/10/2026, Erick) "Ainda não está bom… não se limite às minhas referências, faça o que proporcionará a melhor
+  experiência": na etapa 8, a figura 1.1 deixa de ser vídeo e vira uma figura em que o leitor faz o papel de cada
+  jeito (docs/PRINCIPIOS.md: o leitor aprende com o que faz). Três rodadas, uma por vez: prevê o que o modelo sozinho
+  responde; executa o roteiro do fluxo fixo com o pedido e, depois de prever, com a frigideira; e, como o modelo de um
+  agente, escolhe cada passo até responder, vendo o laço que fez. Sai do Remotion: a composição do laço, o player
+  contínuo e as composições do Studio deixam de existir.
 - (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
   trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
   a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
@@ -69,14 +75,17 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 5. O laço inteiro à vista, na figura 1.1: sem câmera e sem a barra do tempo.
 6. A figura 1.1 refeita: os três jeitos lado a lado, com os passos concretos e o investimento no fluxo fixo.
 7. Um jeito por vez, com o resumo que se acumula no topo, devagar e com frases curtas.
+8. A figura 1.1 em que o leitor decide: três rodadas, e o laço que ele mesmo faz.
 
-## Etapa atual: 7
+## Etapa atual: 8
 
-**Arquivos.** `figuras/tres-jeitos.json` (o `curto` de cada passo), `figuras/laco.json` (as quatro vezes),
-`laco/laco.ts`, `laco/LacoAnimado.tsx`, `laco/FiguraLacoVideo.tsx`, `FiguraLaco.astro`, `testes/laco.test.mjs`.
+**Arquivos.** `figuras/laco.json` (as três rodadas), `laco/quemDecide.ts` (novo: as rodadas montadas dos três jeitos e
+conferidas), `laco/QuemDecide.tsx` (novo: a ilha), `FiguraLaco.astro`; saem `laco/laco.ts`, `laco/LacoAnimado.tsx`,
+`laco/FiguraLacoVideo.tsx`, `palco/TocaGrafico.tsx` e as composições do laço no my-video; `testes/laco.test.mjs`.
 
-**Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; quadros renderizados de cada vez
-e do fim, em 720 e 360 px; no navegador, com clique de verdade, do play ao fim, com o investimento.
+**Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; no navegador, com clique de
+verdade, as três rodadas do começo ao fim (as previsões certas e erradas, o laço com um desvio), em 1280 e 390 px; com
+menos movimento, no modo direto e sem JS.
 
 **Fora.** A etapa 4, que segue esperando o capítulo 3.
 
@@ -89,5 +98,6 @@ e do fim, em 720 e 360 px; no navegador, com clique de verdade, do play ao fim, 
 | 3 | `0b53f39` | 114 testes do livro; os 4 novos falham sem o código; no navegador, com clique de verdade: o play, a pausa aos 25 s e o investimento certo e o errado, o fim, a barra e o pausar, em 1280 e 390 px; com menos movimento, no modo direto e sem JS; os vídeos inteiros renderizados pelo Remotion | Erick, 25/10/2026 |
 | 5 | `353dc88` | 114 testes do livro; os novos falham com o código de antes; no navegador, o laço inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px | não: "confuso, abstrato" (refeita na 6) |
 | 6 | sem commit | os três jeitos lado a lado, renderizados em 720 e 360 px | não: "muita informação de uma vez" (refeita na 7) |
+| 7 | `7d74e64` | 115 testes do livro; no navegador, do play ao fim, com o investimento, em 1280 e 390 px; os vídeos inteiros | não: "ainda não está bom" (refeita na 8) |
 
 (redação: claude-opus-5-5)
