@@ -34,6 +34,7 @@ import glossario from "../glossario.json";
 import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import Pilhas from "../../../src/components/livro/Pilhas.astro";
+import Pendente from "../../../src/components/livro/Pendente.astro";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
 import trocaDePrompt from "../figuras/troca-de-prompt.json";
@@ -79,6 +80,8 @@ Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que f
 
 Por isso este livro começa sem agente. Neste capítulo você vai escrever o que o agente deve fazer com cada tipo de pergunta, num formato que uma máquina consegue conferir. É o que chamamos de contrato.
 
+<Pendente o="Opinião dos autores: uma vez em que vocês começaram pelo agente, e o que isso custou" parte="dos autores" />
+
 ## 1.3 As perguntas que chegam
 
 O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Estas são algumas mensagens de um dia no atendimento dela.
@@ -104,6 +107,8 @@ O contrato também não é o prompt. O prompt é como você pede ao modelo que s
 <PareEPense pergunta="Na seção anterior, você separou as mensagens em pilhas sem nome. Que nome você daria a cada uma?">
 O contrato chama as pilhas de responder, abrir chamado, recusar e passar a vez. A tabela abaixo diz quando vale cada uma.
 </PareEPense>
+
+<Pendente o="Opinião dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
 As saídas são as pilhas que você separou na seção anterior. Para toda pergunta, o agente toma uma de quatro decisões:
 
@@ -133,6 +138,8 @@ Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia
 <PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
 Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
 </PareEPense>
+
+<Pendente o="Opinião dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
 <PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota de partida?">
 Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
