@@ -26,22 +26,15 @@ soa estranho para o leitor: "executar" é a palavra que ele espera, no texto, na
 1. "O primeiro conserto" vira "a primeira etapa".
 2. "Rodar" vira "executar" no livro todo, com o slogan e "rodada"; e "Quem pega" das camadas vira "Onde é capturado".
 
-## Etapa atual: 2
+## Etapa atual: nenhuma
 
-**Arquivos.** Os capítulos e o experimento (`.mdx`), `roteiros/`, `passos/`, `figuras/` (com `camadas.json`),
-os glossários, `terminal/TerminalAoVivo.tsx`, `ide/IdeCapitulo.tsx`, `comandos/Comandos.tsx`, os layouts e as páginas
-com o slogan, `testes/vocabulario.test.mjs`.
-
-**Evidência.** Os testes do livro passam; o teste novo falha com o texto de antes; nenhuma página montada diz "rodar"
-em nenhuma forma, e o botão do terminal diz "▶ Executar".
-
-**Fora.** As saídas gravadas do terminal (`saidas.json`), o código do projeto e os comandos (`uv run`); os nomes
-internos (`tm-rodar`, a ação `rodar`); as mensagens de erro da montagem; a landing (FontMarAI).
+A capacidade está fechada (25/10/2026).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `0bc7e3e` | 103 testes do livro; o teste novo falha com o texto de antes; a página mostra "A primeira etapa" e nenhum "conserto" | Erick, 25/10/2026 |
+| 2 | `f832da9` | 104 testes do livro; o teste novo falha com o texto de antes ("código que roda de verdade"); nenhum "rodar" nas páginas locais; no navegador, "▶ Executar" no terminal do capítulo 1 | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
