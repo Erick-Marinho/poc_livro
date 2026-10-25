@@ -22,10 +22,14 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
   chamada, o resultado, a resposta com ✓ ou ✗). O que o jeito não usa fica apagado. O quadro final soma os acertos
   de cada jeito nas duas perguntas, saídos dos mesmos dados. "Decide de novo" é só do agente: o modelo sozinho faz "uma
   passada", e o fluxo fixo "segue a ordem", duas setas que só aparecem na cena que as usa.
-- (3) Na cena do agente, o vídeo para quando a pergunta chega a decidir, antes de a ficha acender, e pergunta o que o
-  agente decide; a opção certa é a decisão dos "três jeitos" (o teste confere). A pausa é da base: com menos
-  movimento, o avanço para nela antes de ir ao fim da cena; no modo direto, não há pausa. Sem JS, fica a figura em
-  texto (a dos "três jeitos"), aberta na impressão.
+- (25/10/2026, Erick) A figura 1.1 é um gráfico animado contínuo, com câmera, e não cena a cena: começa no play do
+  leitor (play, pausar e uma barra para voltar), e para quando a pergunta chega a decidir, na parte do agente, para o
+  leitor investir. As "cenas" do laco.json viram trechos de um gráfico só.
+- (3) A câmera aproxima o que está acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
+  trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
+  a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
+  cena (`AvancaCena`) segue no mapa da introdução. No modo direto, o quadro final, sem pausa. Sem JS, a figura em
+  texto, aberta.
 
 ## Peças
 
@@ -36,27 +40,27 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 | `ciclo/FiguraCiclo.tsx` | o mapa animado da introdução, sobre a base | — | a ilha | troca (etapa 1) |
 | `figuras/laco.json` + `laco/laco.ts` | o elenco, o desenho do laço e as cenas | `tres-jeitos.json` | as caixas e a linha do tempo | nova (etapas 1 e 2) |
 | `laco/LacoAnimado.tsx` | a composição: o laço, quem decide, o caminho de cada jeito | `laco.json` | o vídeo | nova (etapas 1 e 2) |
-| `FiguraLaco.astro` + ilha | a animação no 1.1, com a pausa para investir | a composição | a figura | nova (etapa 3) |
+| `palco/TocaGrafico.tsx` | o gráfico contínuo: play, pausar, a barra, a pausa para investir | a composição | a ilha | nova (etapa 3) |
+| `FiguraLaco.astro` + ilha | o gráfico no 1.1, com a pausa para investir e a figura em texto | a composição | a figura | nova (etapa 3) |
 
 ## Etapas
 
 1. A base comum do player (o mapa da introdução passa a usá-la, igual para o leitor) e o elenco parado da animação, no
    Studio.
 2. As cenas da animação no Studio: só o modelo, fluxo fixo com as duas perguntas, o agente e o quadro final.
-3. A animação no 1.1, no lugar dos "três jeitos" e do `Pendente`: a pausa para investir, o modo direto, o menos
-   movimento, sem JS; "olhar" vira "observar".
+3. O gráfico animado no 1.1, contínuo e com câmera, no lugar dos "três jeitos" e do `Pendente`: o play do leitor, a
+   pausa para investir, o modo direto, o menos movimento, sem JS; "olhar" vira "observar".
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
 
 ## Etapa atual: 3
 
-**Arquivos.** `palco/AvancaCena.tsx` (a pausa para investir), `figuras/laco.json` (o investimento da cena do agente),
-`laco/laco.ts` (o quadro da pausa, conferido), `laco/FiguraLacoVideo.tsx` e `FiguraLaco.astro` (novos: a ilha e a
-figura, com a versão em texto), `01-o-problema-e-o-contrato.mdx` (a figura no lugar dos "três jeitos" e do `Pendente`;
-"olhar" vira "observar"), `scripts/ritmo.mjs` (a figura conta como ação), `testes/laco.test.mjs`.
+**Arquivos.** `laco/laco.ts` (a câmera de cada momento e a pausa, conferidas), `laco/LacoAnimado.tsx` (a câmera sobre o
+desenho), `palco/TocaGrafico.tsx` (novo), `laco/FiguraLacoVideo.tsx` e `FiguraLaco.astro` (novos), `figuras/laco.json`
+(o investimento), `01-o-problema-e-o-contrato.mdx`, `scripts/ritmo.mjs`, `testes/laco.test.mjs`.
 
-**Evidência.** Os testes do livro passam; os testes novos falham sem o código; no navegador, com clique de verdade, as 6
-cenas, a pausa na cena do agente e o investimento certo e o errado, em 1280 e 390 px; com menos movimento, no modo
-direto e sem JS.
+**Evidência.** Os testes do livro passam; os testes novos falham sem o código; no navegador, com clique de verdade: o
+play, a câmera, a pausa e o investimento certo e o errado, a barra para voltar, em 1280 e 390 px; com menos movimento,
+no modo direto e sem JS; o vídeo inteiro renderizado pelo Remotion.
 
 **Fora.** O componente `Rastro`, que fica no repositório sem uso; o capítulo 3 (etapa 4).
 
