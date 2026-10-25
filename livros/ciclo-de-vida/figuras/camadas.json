@@ -1,0 +1,18 @@
+{
+  "sobre": "A aposta das camadas do contrato, na 1.4. A falha do R12 é real: na gravação do capítulo 2 (r02-medir), a resposta veio no formato e decidiu passar a vez, e o contrato pede recusar. A da ferramenta e a da execução são ilustração: as camadas delas chegam nos capítulos 3 e 5. O teste confere.",
+  "resultado": "Quem pega",
+  "fechos": {
+    "nenhum": "Nenhuma bateu. Cada falha mora numa camada diferente, e por isso o contrato não é uma coisa só.",
+    "alguns": "Você acertou {n} de {total}. Cada falha mora numa camada diferente, e por isso o contrato não é uma coisa só."
+  },
+  "mensagens": [
+    { "texto": "O modelo responde \"acho melhor encaminhar\", em vez de uma das quatro decisões.", "opcoes": ["comportamento", "formato", "ferramenta", "execução"], "fez": 1,
+      "porque": "É texto solto onde devia vir uma decisão: quem pega é o molde da resposta, no capítulo 2." },
+    { "texto": "No formato certo, o agente decide passar a vez no R12, a pergunta do Bruno sobre o pedido da Ana.", "opcoes": ["comportamento", "formato", "ferramenta", "execução"], "fez": 0,
+      "porque": "O formato está perfeito; a decisão é que está errada. O contrato manda recusar, e só a régua de casos pega isso. Aconteceu de verdade, no capítulo 2." },
+    { "texto": "A ferramenta de pedidos recebe \"bt1003\", sem o hífen, e não acha nada.", "opcoes": ["comportamento", "formato", "ferramenta", "execução"], "fez": 2,
+      "porque": "O que entra numa ferramenta também tem molde: quem pega é a entrada tipada da ferramenta, no capítulo 3." },
+    { "texto": "Ninguém sabe dizer que instrução o agente seguia na conversa de ontem.", "opcoes": ["comportamento", "formato", "ferramenta", "execução"], "fez": 3,
+      "porque": "Cada rodada precisa fixar e carimbar a regra em vigor: é a execução, no capítulo 5, e o registro dela, no 8." }
+  ]
+}
