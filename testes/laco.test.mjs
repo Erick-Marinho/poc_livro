@@ -56,3 +56,43 @@ test("o mapa da introdução avança sobre a base das animações, e não tem um
   assert.doesNotMatch(ilha, /@remotion\/player/);
   assert.match(ler("src/components/livro/palco/AvancaCena.tsx"), /prefers-reduced-motion/);
 });
+
+/* as cenas (etapa 2): cada uma anda pelos passos de um jeito, e o quadro final soma os acertos */
+const { montarCenas, cortes, placar, rota } = await import("../src/components/livro/laco/laco.ts");
+
+test("cada cena anda pelos passos do seu jeito, da cliente à resposta, só por setas do laço, e termina como nos três jeitos", () => {
+  const m = montarCenas({ laco, tresJeitos });
+  for (const c of m.cenas.filter((x) => x.jeito)) {
+    const passos = tresJeitos.modos.find((x) => x.id === c.jeito).passos[c.pergunta];
+    assert.equal(c.paradas[0].peca, "cliente");
+    const fim = c.paradas[c.paradas.length - 1];
+    assert.equal(fim.peca, "responder");
+    assert.equal(fim.resultado, passos.find((p) => p.quem === "resposta").certo ? "certo" : "erro", `${c.jeito}, ${c.pergunta}`);
+    c.paradas.forEach((p, i) => { if (i) assert.ok(rota(c.paradas[i - 1].peca, p.peca), `${c.jeito}: de ${c.paradas[i - 1].peca} para ${p.peca}`); });
+    for (let i = 1; i < c.paradas.length; i++) assert.ok(c.paradas[i].em - c.paradas[i - 1].em >= 1, `${c.jeito}: um passo com menos de 1 s`);
+  }
+});
+
+test("só o agente decide de novo; o fluxo fixo segue a ordem do código; o modelo sozinho faz uma passada e não decide", () => {
+  const m = montarCenas({ laco, tresJeitos });
+  const cena = (j, q) => m.cenas.find((c) => c.jeito === j && c.pergunta === q);
+  assert.ok(cena("agente", "produto").usa.includes("de_novo"));
+  for (const [j, q] of [["fluxo", "pedido"], ["fluxo", "produto"], ["modelo", "pedido"]]) assert.ok(!cena(j, q).usa.includes("de_novo"), `${j}, ${q} decide de novo`);
+  assert.ok(cena("fluxo", "pedido").usa.includes("segue"));
+  for (const [j, q] of [["fluxo", "pedido"], ["agente", "produto"]]) assert.ok(cena(j, q).usa.includes("agir"), `${j}: a pergunta passa por agir, e ele fica apagado`);
+  assert.ok(cena("modelo", "pedido").usa.includes("direto") && !cena("modelo", "pedido").usa.includes("decidir"));
+  assert.deepEqual(cena("fluxo", "pedido").paradas.filter((p) => p.ficha).map((p) => p.ficha), ["codigo"]);
+  assert.deepEqual(cena("agente", "produto").paradas.filter((p) => p.ficha).map((p) => p.ficha), ["modelo", "modelo"]);
+});
+
+test("a animação cabe no docs/RITMO.md, e o quadro final soma os acertos dos três jeitos", () => {
+  const m = montarCenas({ laco, tresJeitos });
+  assert.ok(m.cenas.length <= 6 && m.total <= 45);
+  assert.equal(cortes(m).length, m.cenas.length);
+  assert.ok(m.cenas.some((c) => c.chave && c.jeito === "agente"), "o momento-chave é o do agente");
+  assert.ok(m.cenas[m.cenas.length - 1].final, "a última cena é o quadro final");
+  assert.deepEqual(placar(tresJeitos).map((p) => [p.nome, p.acertos]), [["só o modelo", [false, false]], ["fluxo fixo", [true, false]], ["agente", [true, true]]]);
+  const longa = structuredClone(laco);
+  longa.cenas[2].segundos = 4;
+  assert.throws(() => montarCenas({ laco: longa, tresJeitos }), /curta demais/);
+});

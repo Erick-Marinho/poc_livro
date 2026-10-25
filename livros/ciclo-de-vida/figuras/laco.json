@@ -1,5 +1,5 @@
 {
-  "sobre": "A animação do laço, no 1.1 (LacoAnimado; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos de usar um modelo. As perguntas e os caminhos são os de tres-jeitos.json; a cliente é a do e-mail da pergunta, nos clientes da loja; as ferramentas são as do caminho do agente. O laço tem as palavras do livro: decidir, agir, observar, responder. O teste confere o elenco e o desenho.",
+  "sobre": "A animação do laço, no 1.1 (LacoAnimado; docs/capacidades/laco-do-agente.md): quem decide o próximo passo, em três jeitos de usar um modelo. As perguntas e os caminhos são os de tres-jeitos.json; a cliente é a do e-mail da pergunta, nos clientes da loja; as ferramentas são as do caminho do agente. O laço tem as palavras do livro: decidir, agir, observar, responder. Cada cena é um jeito com uma pergunta, e anda pelos passos de tres-jeitos.json; o quadro final soma os acertos de cada jeito. O teste confere o elenco, o desenho, as cenas contra os três jeitos e os limites do docs/RITMO.md.",
   "pergunta": "Quem decide o próximo passo?",
   "elenco": {
     "decidir": "decidir",
@@ -7,8 +7,52 @@
     "observar": "observar",
     "responder": "responder",
     "sistema": "o sistema da loja",
-    "quem": { "modelo": "o modelo", "codigo": "o seu código" }
+    "quem": {
+      "modelo": "o modelo",
+      "codigo": "o seu código"
+    }
   },
-  "setas": { "pede": "pede", "volta": "o resultado volta", "de_novo": "decide de novo" },
-  "legenda": "A cliente, o laço e o sistema da loja, com as ferramentas."
+  "setas": {
+    "pede": "pede",
+    "volta": "o resultado volta",
+    "de_novo": "decide de novo",
+    "direto": "uma passada",
+    "segue": "segue a ordem"
+  },
+  "cenas": [
+    {
+      "legenda": "A cliente, o laço e o sistema da loja, com as ferramentas.",
+      "segundos": 4
+    },
+    {
+      "jeito": "modelo",
+      "pergunta": "pedido",
+      "legenda": "Só o modelo: uma passada, sem olhar o sistema.",
+      "segundos": 6
+    },
+    {
+      "jeito": "fluxo",
+      "pergunta": "pedido",
+      "legenda": "Fluxo fixo: o seu código decide a ordem, sempre a mesma.",
+      "segundos": 8
+    },
+    {
+      "jeito": "fluxo",
+      "pergunta": "produto",
+      "legenda": "Mesma ordem, outra pergunta: procura um pedido que não veio.",
+      "segundos": 6
+    },
+    {
+      "jeito": "agente",
+      "pergunta": "produto",
+      "legenda": "Agente: o modelo decide, age, observa e decide de novo.",
+      "segundos": 8,
+      "chave": true
+    },
+    {
+      "final": true,
+      "legenda": "Fluxo: o caminho está no código. Agente: o modelo dirige.",
+      "segundos": 6
+    }
+  ]
 }
