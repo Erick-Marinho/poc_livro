@@ -4,16 +4,30 @@
  * Aqui, no build, o roteiro é conferido contra o contrato (agente/cenarios.ts): o caso existe, a escolha é a do
  * referencia.jsonl, as ferramentas visitadas são as do `precisa`, a saída é a do canal da decisão.
  * O que cada ferramenta devolve ("o que o agente já sabe") sai dos dados da loja, não do roteiro.
+ * Sem JS e na impressão, no lugar do vídeo fica a conversa do primeiro cenário em texto.
  */
 import FiguraAgenteVideo from "./agente/FiguraAgenteVideo";
 import { nomeDaLoja } from "../../lib/livroDaPagina.ts";
-import { type Entrada, montarCenarios } from "./agente/cenarios";
+import { DECISOES, type Entrada, FERRAMENTAS, montarCenarios } from "./agente/cenarios";
 
 type Props = Entrada;
 const cenarios = montarCenarios(Astro.props);
+const loja = nomeDaLoja(Astro.url);
+/* o primeiro cenário em texto: a conversa, e por dentro o que ele consultou, o selo e a decisão */
+const primeiro = cenarios[0];
+const consultou = [...new Set(primeiro.passos.flatMap((p) => [p.no, ...(p.trajeto?.split("-") ?? [])]).filter((no) => FERRAMENTAS.includes(no)))];
+const selo = primeiro.passos.find((p) => p.marca)?.marca;
+const porDentro = [consultou.length ? `consultou ${consultou.join(", ")}` : "sem consultar ferramentas", selo, `decisão: ${DECISOES[primeiro.decisao]}`];
 ---
 <figure class="figura-agente largo">
-  <FiguraAgenteVideo client:visible={{ rootMargin: "400px" }} cenarios={cenarios} loja={nomeDaLoja(Astro.url)} />
+  <FiguraAgenteVideo client:visible={{ rootMargin: "400px" }} cenarios={cenarios} loja={loja} />
+  <div class="fa-texto">
+    <p class="fa-loja">{loja} · atendimento · simulação {primeiro.caso}</p>
+    <p class="fa-msg fa-cliente"><small>{primeiro.nome === "cliente" ? "anônimo" : primeiro.nome}</small>{primeiro.pergunta}</p>
+    <p class="fa-msg fa-agente"><small>agente</small>{primeiro.resposta}</p>
+    <p class="fa-dentro">por dentro: {porDentro.filter(Boolean).join(" · ")}</p>
+  </div>
+  <noscript><style>.figura-agente .fa-texto { display: block } .figura-agente astro-island { display: none }</style></noscript>
   <figcaption><b>Figura P.1</b> · Simulação do agente que você vai construir. As perguntas e as decisões vêm do contrato do&nbsp;capítulo&nbsp;1; o que as ferramentas devolvem vem dos dados da loja.</figcaption>
 </figure>
 
@@ -22,4 +36,18 @@ const cenarios = montarCenarios(Astro.props);
   .figura-agente { margin-block: 1.8em 2em; width: min(920px, 100vw - 32px); max-width: none; margin-left: calc(50% - min(460px, 50vw - 16px)) }
   figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
   figcaption b { color: var(--ink); font-weight: 600 }
+
+  /* sem JS e na impressão: a conversa em texto, nas cores do papel */
+  .fa-texto { display: none; padding: 14px 16px; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); font: 15px/1.5 var(--f-ui); color: var(--ink) }
+  .fa-texto p { margin: 0 0 8px }
+  .fa-loja { font: 12px var(--f-mono); color: var(--ink-2) }
+  .fa-msg { width: fit-content; max-width: 85%; padding: 8px 12px; border-radius: 12px }
+  .fa-msg small { display: block; font-size: 12px; color: var(--ink-2) }
+  .fa-cliente { margin-left: auto !important; background: var(--papel-2) }
+  .fa-agente { background: var(--papel); border-left: 3px solid var(--ok) }
+  .fa-texto .fa-dentro { margin: 4px 0 0; font-size: 13px; color: var(--ink-2) }
+  @media print {
+    .fa-texto { display: block }
+    .figura-agente :global(astro-island) { display: none }
+  }
 </style>

@@ -41,6 +41,17 @@ test("a aposta é no R12 e para antes da decisão: nem a pílula nem a legenda c
   assert.ok(q.aposta.quadro < q.aposta.revela && q.aposta.revela < q.aposta.fim);
 });
 
+test("sem JS e na impressão, fica a conversa do R01 em texto: a pergunta do contrato e a resposta do roteiro", () => {
+  const texto = html.querySelector(".figura-agente .fa-texto");
+  assert.ok(texto, "a figura não tem o trecho em texto");
+  const normal = (s) => s.replace(/\s+/g, " ").trim();
+  const r01 = json(`${livro}figuras/agente.json`).cenarios.find((c) => c.caso === "R01");
+  assert.ok(normal(texto.text).includes(normal(contrato.find((x) => x.id === "R01").pergunta)), "falta a pergunta do R01");
+  assert.ok(normal(texto.text).includes(normal(r01.passos.find((p) => p.no === "conversa").texto)), "falta a resposta do R01");
+  assert.match(normal(texto.text), /decisão: responder/);
+  assert.ok(html.querySelector(".figura-agente noscript"), "sem JS, nada troca o vídeo pelo texto");
+});
+
 test("um roteiro que contradiz o contrato não monta a figura", () => {
   const roteiro = json(`${livro}figuras/agente.json`);
   const entrada = { roteiro, referencia: ler(`${livro}projeto/referencia.jsonl`), clientes: json(`${livro}projeto/dados/clientes.json`),
