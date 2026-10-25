@@ -46,6 +46,11 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
   responde; executa o roteiro do fluxo fixo com o pedido e, depois de prever, com a frigideira; e, como o modelo de um
   agente, escolhe cada passo até responder, vendo o laço que fez. Sai do Remotion: a composição do laço, o player
   contínuo e as composições do Studio deixam de existir.
+- (25/10/2026, Erick) "Ainda está abstrata e complexa… como se fosse para uma pessoa leiga, sem background nenhum":
+  na etapa 9, três histórias em quadrinhos com o elenco da loja (docs/RITMO.md: analogia só do elenco da loja, e o fim
+  diz onde ela quebra). O atendente sem acesso ao sistema (o modelo sozinho), o atendente com a ficha (o fluxo fixo;
+  o centro é a frigideira, que a ficha não prevê) e a atendente que é o leitor (o agente). Um quadro por vez, no ritmo
+  do leitor; sem jargão nos quadros, e o nome técnico só no fim de cada história.
 - (25/10/2026, Erick) Sem a figura em texto embaixo da 1.1. Sem JS, fica só um aviso de que a figura precisa dele; na
   impressão, a figura não sai (só a legenda).
 - (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
@@ -78,16 +83,16 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 6. A figura 1.1 refeita: os três jeitos lado a lado, com os passos concretos e o investimento no fluxo fixo.
 7. Um jeito por vez, com o resumo que se acumula no topo, devagar e com frases curtas.
 8. A figura 1.1 em que o leitor decide: três rodadas, e o laço que ele mesmo faz.
+9. A figura 1.1 em três histórias de atendentes, para quem começa do zero.
 
-## Etapa atual: 8
+## Etapa atual: 9
 
-**Arquivos.** `figuras/laco.json` (as três rodadas), `laco/quemDecide.ts` (novo: as rodadas montadas dos três jeitos e
-conferidas), `laco/QuemDecide.tsx` (novo: a ilha), `FiguraLaco.astro`; saem `laco/laco.ts`, `laco/LacoAnimado.tsx`,
-`laco/FiguraLacoVideo.tsx`, `palco/TocaGrafico.tsx` e as composições do laço no my-video; `testes/laco.test.mjs`.
+**Arquivos.** `figuras/laco.json` (as três histórias, quadro a quadro), `laco/quemDecide.ts`, `laco/QuemDecide.tsx`,
+`FiguraLaco.astro`, `testes/laco.test.mjs`.
 
 **Evidência.** Os testes do livro passam; os testes novos falham com o código de antes; no navegador, com clique de
-verdade, as três rodadas do começo ao fim (as previsões certas e erradas, o laço com um desvio), em 1280 e 390 px; com
-menos movimento, no modo direto e sem JS.
+verdade, as três histórias do começo ao fim (as previsões certas e erradas, a atendente com um desvio e sem olhar), em
+1280 e 390 px; com menos movimento e no modo direto.
 
 **Fora.** A etapa 4, que segue esperando o capítulo 3.
 
