@@ -1,8 +1,8 @@
 /**
  * A base dos gráficos animados contínuos (docs/capacidades/laco-do-agente.md): a composição no Player do Remotion,
- * parada até o leitor apertar o play; depois, pausar, continuar, ver de novo e uma barra para voltar ou adiantar.
- * Nada toca sozinho (docs/RITMO.md). Com `pausa`, o gráfico para uma vez naquele quadro, quando chega lá tocando (arrastar
- * a barra não para), à espera de uma decisão do leitor (o que `conteudo` mostra por cima), e segue quando ele decide. No
+ * parada até o leitor apertar o play; depois, só pausar, continuar e ver de novo, sem barra de tempo: o leitor vê o
+ * todo. Nada toca sozinho (docs/RITMO.md). Com `pausa`, o gráfico para uma vez naquele quadro, quando chega lá tocando,
+ * à espera de uma decisão do leitor (o que `conteudo` mostra por cima), e segue quando ele decide. No
  * modo direto, o quadro final, sem controles nem pausa. Para quem não vê o gráfico, o trecho de agora é anunciado. O
  * Player: https://www.remotion.dev/docs/player/player (play, pause, seekTo, isPlaying e os eventos play, pause e
  * frameupdate).
@@ -24,7 +24,6 @@ type Props<P extends Record<string, unknown>> = {
   pausa?: { quadro: number; conteudo: (seguir: (e?: MouseEvent) => void) => ReactNode };
 };
 
-const tempo = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 export default function TocaGrafico<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, primeiro, anuncio, pausa }: Props<P>) {
   const ref = useRef<PlayerRef>(null);
@@ -44,7 +43,7 @@ export default function TocaGrafico<P extends Record<string, unknown>>({ compone
     const parar = () => setTocando(false);
     const andar = (e: { detail: { frame: number } }) => {
       const f = e.detail.frame;
-      setQuadro((q) => (Math.abs(f - q) >= 3 || f === 0 || f >= duracao - 1 ? f : q)); // a barra anda sem refazer tudo a cada quadro
+      setQuadro((q) => (Math.abs(f - q) >= 3 || f === 0 || f >= duracao - 1 ? f : q)); // o anúncio e o fim, sem refazer tudo a cada quadro
       const q = quadroDaPausa.current;
       if (q !== undefined && !decidiu.current && p.isPlaying() && f >= q && f < q + 15) { p.pause(); p.seekTo(q); setQuadro(q); setParado(true); }
     };
@@ -66,7 +65,6 @@ export default function TocaGrafico<P extends Record<string, unknown>>({ compone
     p.play(e);
   };
   const seguir = (e?: MouseEvent) => { decidiu.current = true; setParado(false); ref.current?.play(e); };
-  const ir = (f: number) => { const p = ref.current; if (!p) return; p.seekTo(f); setQuadro(f); };
 
   const rotulo = !comecou ? primeiro : tocando ? "❚❚ Pausar" : fim ? "↺ Ver de novo" : "▶ Continuar";
   return <>
@@ -79,9 +77,6 @@ export default function TocaGrafico<P extends Record<string, unknown>>({ compone
     {direto ? null : (
       <div className="ac-avancar tg-controles">
         <button type="button" onClick={alternar} disabled={parado} aria-label={rotulo.replace(/^(▶|↺|❚❚) /, "")}>{rotulo}</button>
-        <input type="range" min={0} max={duracao - 1} step={1} value={quadro} disabled={parado} aria-label="posição no gráfico"
-          aria-valuetext={`${tempo(quadro / fps)} de ${tempo(duracao / fps)}`} onChange={(e) => ir(Number(e.currentTarget.value))} />
-        <span className="tg-tempo">{tempo(quadro / fps)} / {tempo(duracao / fps)}</span>
         <span className="ac-anuncio" aria-live="polite">{comecou ? anuncio(quadro) : ""}</span>
       </div>
     )}

@@ -5,16 +5,15 @@
  * pelos passos de um jeito dos "três jeitos", de peça em peça pelas setas; a ficha de quem decide acende, o que o jeito
  * não usa fica apagado, e embaixo vão a legenda e o passo de agora. O quadro final soma os acertos de cada jeito. Cor
  * com sentido fixo: acento é o que acontece agora, verde é o certo, âmbar é o erro. O desenho é da loja, com as palavras
- * do livro. É um gráfico contínuo: a câmera (laco.ts) aproxima a peça de agora e a seguinte, e abre para o quadro
- * inteiro entre um trecho e outro; com `movimento` falso, ela fica parada e o ponto pula de peça em peça. O leitor toca
- * e pausa (a ilha); o último quadro é o do modo direto. O Studio do my-video importa esta composição.
+ * do livro. É um gráfico contínuo, com o desenho inteiro à vista o tempo todo; com `movimento` falso, o ponto pula de
+ * peça em peça. O leitor toca e pausa (a ilha); o último quadro é o do modo direto. O Studio do my-video importa esta composição.
  */
 import { useMemo } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
-import { ANDA, type Caixa, caixas, camera, type Cena, cenaEm, type Desenho, type Entrada, montarCenas, montarElenco, type Peca, placar, pontoDaSeta, rota, type Seta, setas, VISTA } from "./laco";
+import { ANDA, type Caixa, caixas, type Cena, cenaEm, type Desenho, type Entrada, montarCenas, montarElenco, type Peca, placar, pontoDaSeta, rota, type Seta, setas, VISTA } from "./laco";
 
-/** `movimento`: falso para quem pede menos movimento (a câmera parada, o ponto pulando) */
+/** `movimento`: falso para quem pede menos movimento (o ponto pula de peça em peça) */
 export type Props = Entrada & { desenho: Desenho; movimento?: boolean };
 
 const TOPO = 56; // a pergunta
@@ -99,7 +98,6 @@ export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desen
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { cena, v } = cenaEm(m, frame / fps);
-  const cam = camera(m, frame / fps, desenho, movimento);
   const vista = VISTA[desenho];
   const coluna = desenho === "coluna";
   const marca = `laco-${desenho}-seta`;
@@ -135,8 +133,7 @@ export const LacoAnimado: React.FC<Props> = ({ laco, tresJeitos, clientes, desen
         <span>{elenco.pergunta}</span>
         <span style={{ font: `600 11px ${mono}`, letterSpacing: ".08em", textTransform: "uppercase", color: cor.fraco }}>ilustração</span>
       </div>
-      {/* a câmera: o viewBox é a janela de agora sobre o desenho */}
-      <svg viewBox={`${cam.x} ${cam.y} ${cam.w} ${cam.h}`} width={vista.w} height={vista.h} style={{ position: "absolute", left: 0, top: TOPO }}>
+      <svg viewBox={`0 0 ${vista.w} ${vista.h}`} width={vista.w} height={vista.h} style={{ position: "absolute", left: 0, top: TOPO }}>
         <defs>
           {([["", cor.fraco], ["-acesa", cor.acento]] as const).map(([sufixo, c]) => (
             <marker key={sufixo} id={`${marca}${sufixo}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

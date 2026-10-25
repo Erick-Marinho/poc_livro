@@ -125,44 +125,24 @@ test("o 1.1 tem a figura do laço no lugar dos três jeitos e do Pendente, com a
   const mdx = ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx");
   assert.doesNotMatch(mdx, /<Pendente o="Figura: o laço/);
   assert.match(mdx, /observar o resultado e decidir de novo/);
+  assert.doesNotMatch(mdx, /cena a cena/, "o texto fala em cenas, e o gráfico é contínuo");
 });
 
-/* o gráfico contínuo (etapa 3): a câmera acompanha a pergunta e abre entre um trecho e outro */
-test("a câmera não sai do desenho nem dá saltos, aproxima o laço no agente e abre para o quadro inteiro no começo e no fim", async () => {
-  const { camera, FPS } = await import("../src/components/livro/laco/laco.ts");
-  const m = montarCenas({ laco, tresJeitos });
-  for (const desenho of ["largo", "coluna"]) {
-    const v = VISTA[desenho];
-    let antes;
-    for (let f = 0; f < m.quadros; f++) {
-      const c = camera(m, f / FPS, desenho);
-      assert.ok(c.x >= -0.01 && c.y >= -0.01 && c.x + c.w <= v.w + 0.01 && c.y + c.h <= v.h + 0.01, `${desenho}, quadro ${f}: a câmera sai do desenho`);
-      // um salto é andar mais de 25 unidades num quadro (a 30 quadros por segundo)
-      if (antes) assert.ok(Math.abs(c.w - antes.w) < 25 && Math.abs(c.x - antes.x) < 25 && Math.abs(c.y - antes.y) < 25, `${desenho}, quadro ${f}: a câmera salta`);
-      antes = c;
-    }
-    const inteiro = (t) => { const c = camera(m, t, desenho); return c.x === 0 && c.y === 0 && c.w === v.w && c.h === v.h; };
-    assert.ok(inteiro(1), `${desenho}: no elenco, o quadro inteiro`);
-    assert.ok(inteiro(m.total - 0.5), `${desenho}: no fim, o quadro inteiro`);
-    // na parte do agente, a câmera aproxima; e, quando a pergunta chega a uma peça, a peça está dentro dela
-    const agente = m.cenas.find((c) => c.jeito === "agente");
-    let aproximou = false;
-    for (let f = Math.round(agente.inicio * FPS); f < Math.round(agente.fim * FPS); f++) if (camera(m, f / FPS, desenho).w < v.w) aproximou = true;
-    for (const p of agente.paradas) {
-      const c = camera(m, agente.inicio + p.em + 0.2, desenho), b = caixas(desenho)[p.peca];
-      assert.ok(b.x >= c.x - 1 && b.y >= c.y - 1 && b.x + b.w <= c.x + c.w + 1 && b.y + b.h <= c.y + c.h + 1, `${desenho}: quando a pergunta chega a ${p.peca}, a câmera não mostra`);
-    }
-    assert.ok(aproximou, `${desenho}: no agente, a câmera não aproxima`);
-  }
-  const parada = camera(m, 12, "largo", false);
-  assert.deepEqual([parada.x, parada.y, parada.w, parada.h], [0, 0, VISTA.largo.w, VISTA.largo.h], "com menos movimento, a câmera fica parada");
+/* o laço inteiro à vista (etapa 5): sem câmera, o leitor vê o todo o tempo todo */
+test("a composição mostra o desenho inteiro em todo quadro, sem câmera", async () => {
+  const L = await import("../src/components/livro/laco/laco.ts");
+  assert.equal(L.camera, undefined, "o laço ainda tem câmera");
+  const comp = ler("src/components/livro/laco/LacoAnimado.tsx");
+  assert.match(comp, /viewBox=\{`0 0 \$\{vista\.w\} \$\{vista\.h\}`\}/, "o viewBox do desenho não é o desenho inteiro");
+  assert.doesNotMatch(comp, /camera\(/);
 });
 
-test("a figura do 1.1 toca contínua, no player do leitor, e não cena a cena", () => {
+test("a figura do 1.1 toca contínua, só com play e pausar, e não cena a cena", () => {
   const ilha = ler("src/components/livro/laco/FiguraLacoVideo.tsx");
   assert.match(ilha, /import TocaGrafico from "\.\.\/palco\/TocaGrafico"/);
   assert.doesNotMatch(ilha, /AvancaCena/);
   const base = ler("src/components/livro/palco/TocaGrafico.tsx");
-  assert.match(base, /type="range"/, "sem a barra para voltar");
-  assert.match(base, /isPlaying\(\)/, "a pausa para investir não confere se está tocando (arrastar a barra não pode parar)");
+  assert.doesNotMatch(base, /type="range"/, "a barra do tempo ficou");
+  assert.doesNotMatch(base, /tg-tempo/, "o tempo ficou");
+  assert.match(base, /isPlaying\(\)/, "a pausa para investir não confere se está tocando");
 });

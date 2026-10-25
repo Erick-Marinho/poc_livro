@@ -43,7 +43,7 @@ pausaDe(montarCenas({ laco, tresJeitos }));
 
 <style is:global>
   .laco { margin: 1.8em auto 2em }
-  .laco-video { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 12px }
+  .laco-video { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 12px; scroll-margin-top: 76px } /* abaixo do topo fixo */
   /* antes de a ilha carregar (e sem JS), 1 px e não display: none: o client:visible só carrega o que chega a aparecer na tela */
   .laco:not([data-animado]) .laco-video { height: 1px; overflow: hidden; padding: 0; border: 0 }
   .laco figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
@@ -68,7 +68,8 @@ pausaDe(montarCenas({ laco, tresJeitos }));
   @media (max-width: 640px) {
     .laco-video { padding: 6px }
     .laco-opcoes { grid-template-columns: 1fr }
-    .laco-investir { position: static; translate: none; width: auto; margin-top: 8px }
+    .laco-investir { bottom: 6px; padding: 10px 12px 8px; gap: 6px }
+    .laco-opcoes button { padding: 7px 6px }
   }
   @media print { .laco-video { display: none } }
 </style>

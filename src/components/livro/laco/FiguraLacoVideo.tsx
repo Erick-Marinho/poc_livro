@@ -4,7 +4,8 @@
  * decidir, e o leitor investe no que o agente decide; depois, segue, e a figura diz se bateu. Com menos movimento, a
  * câmera fica parada.
  * Largo no computador, coluna no celular. Ao carregar, a ilha mostra o vídeo e fecha a figura em texto, que sem JS fica
- * aberta (FiguraLaco.astro). No celular, o pedido para investir vem para o meio da tela.
+ * aberta (FiguraLaco.astro). No celular, a figura sobe para o topo da tela quando o pedido para investir aparece: o
+ * pedido cobre a parte de baixo, e decidir, onde a decisão acontece, fica à vista.
  */
 import { type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import TocaGrafico from "../palco/TocaGrafico";
@@ -48,7 +49,7 @@ export default function FiguraLacoVideo({ laco, tresJeitos, clientes }: Entrada)
       <div role="group" aria-label="invista" className="laco-investir" ref={(el) => {
         if (!el) return;
         primeira.current?.focus({ preventScroll: true }); // o foco não rola a página no meio do toque
-        if (estreito()) el.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        if (estreito()) caixa.current?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       }}>
         <span className="laco-pista">“{pausa.pista}”</span>
         <b>{pausa.pergunta}</b>

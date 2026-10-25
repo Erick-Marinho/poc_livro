@@ -197,58 +197,5 @@ export function pausaDe(m: Montado) {
   return { quadro: Math.round((cena.inicio + decide.em - 0.25) * FPS), pergunta, opcoes, certa, pista: cena.mensagem ?? "" };
 }
 
-/* ---------- a câmera ---------- */
-
-/** O ponto (a pergunta) leva isto para ir de uma peça à seguinte, e chega um pouco antes da parada; a câmera anda junto. */
+/** O ponto (a pergunta) leva isto para ir de uma peça à seguinte, e chega um pouco antes da parada. */
 export const ANDA = 0.6;
-const CHEGA_ANTES = 0.1;
-const CAMERA = 1; // a câmera sai antes do ponto e chega com ele: anda devagar, sem tranco
-const MOVE_MINIMO = 0.7; // se falta tempo, ela chega um pouco depois do ponto, mas nunca dá tranco
-const ENTRA = 0.7; // no começo de um trecho, a câmera sai do quadro inteiro para a primeira peça
-const SAI = 0.9; // no fim, volta ao quadro inteiro
-const FOLGA = 36;
-const ZOOM_MAXIMO: Record<Desenho, number> = { largo: 1.7, coluna: 1.5 };
-
-export type Janela = { x: number; y: number; w: number; h: number };
-const inteira = (desenho: Desenho): Janela => ({ x: 0, y: 0, ...VISTA[desenho] });
-
-/** A janela que mostra estas peças, com folga, na proporção do desenho, sem passar do zoom máximo nem sair dele. */
-function enquadrar(pecas: Peca[], desenho: Desenho): Janela {
-  const c = CAIXAS[desenho], v = VISTA[desenho];
-  const x0 = Math.min(...pecas.map((p) => c[p].x)) - FOLGA, y0 = Math.min(...pecas.map((p) => c[p].y)) - FOLGA;
-  const x1 = Math.max(...pecas.map((p) => c[p].x + c[p].w)) + FOLGA, y1 = Math.max(...pecas.map((p) => c[p].y + c[p].h)) + FOLGA;
-  const escala = Math.min(ZOOM_MAXIMO[desenho], Math.max(1, Math.min(v.w / (x1 - x0), v.h / (y1 - y0))));
-  const w = v.w / escala, h = v.h / escala;
-  const x = Math.min(Math.max(0, (x0 + x1) / 2 - w / 2), v.w - w), y = Math.min(Math.max(0, (y0 + y1) / 2 - h / 2), v.h - h);
-  return { x, y, w, h };
-}
-
-const misturar = (a: Janela, b: Janela, k: number): Janela => ({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, w: a.w + (b.w - a.w) * k, h: a.h + (b.h - a.h) * k });
-const suavizar = (k: number) => (k <= 0 ? 0 : k >= 1 ? 1 : k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
-const entre = (v: number, de: number, ate: number) => suavizar((v - de) / (ate - de));
-
-/** O que a câmera mostra num momento (em segundos): a peça de agora e a seguinte, aproximadas; no elenco, no quadro
- *  final e entre um trecho e outro, o quadro inteiro. Entre dois pontos-chave (a hora e o enquadramento), ela anda suave,
- *  e um movimento só começa quando o anterior acaba. Com menos movimento, fica parada no quadro inteiro. */
-export function camera(m: Montado, t: number, desenho: Desenho, movimento = true): Janela {
-  const tudo = inteira(desenho);
-  const { cena, v } = cenaEm(m, t);
-  const ps = cena.paradas;
-  if (!movimento || !ps.length) return tudo;
-  // a janela de cada parada: a peça dela, a seguinte e as que ficam no caminho (de decidir ao sistema, agir)
-  const alvo = (i: number) => enquadrar([...new Set([ps[i].peca, ...(ps[i + 1] ? [ps[i + 1].peca, ...(PASSA[`${ps[i].peca}>${ps[i + 1].peca}`] ?? [])] : [])])], desenho);
-  const chave: [number, Janela][] = [[0, tudo]];
-  const ir = (ate: number, j: Janela, saida: number) => { // fica onde está até `saida`, e chega a `j` em `ate`
-    const ultimo = chave[chave.length - 1];
-    const de = Math.min(Math.max(ultimo[0], saida), ate);
-    if (de > ultimo[0]) chave.push([de, ultimo[1]]);
-    chave.push([Math.max(ate, de + 0.01), j]);
-  };
-  ir(ps[0].em + ENTRA, alvo(0), 0);
-  for (let i = 1; i < ps.length; i++) { const chega = ps[i].em - CHEGA_ANTES; ir(Math.max(chega, chave[chave.length - 1][0] + MOVE_MINIMO), alvo(i), chega - CAMERA); }
-  ir(cena.segundos - 0.05, tudo, cena.segundos - SAI);
-  const j = chave.findIndex(([h]) => h > v);
-  if (j < 0) return chave[chave.length - 1][1];
-  const [h0, a] = chave[j - 1], [h1, b] = chave[j];
-  return misturar(a, b, entre(v, h0, h1));
-}
