@@ -52,17 +52,10 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
    pausa para investir, o modo direto, o menos movimento, sem JS; "olhar" vira "observar".
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
 
-## Etapa atual: 3
+## Etapa atual: 4
 
-**Arquivos.** `laco/laco.ts` (a câmera de cada momento e a pausa, conferidas), `laco/LacoAnimado.tsx` (a câmera sobre o
-desenho), `palco/TocaGrafico.tsx` (novo), `laco/FiguraLacoVideo.tsx` e `FiguraLaco.astro` (novos), `figuras/laco.json`
-(o investimento), `01-o-problema-e-o-contrato.mdx`, `scripts/ritmo.mjs`, `testes/laco.test.mjs`.
-
-**Evidência.** Os testes do livro passam; os testes novos falham sem o código; no navegador, com clique de verdade: o
-play, a câmera, a pausa e o investimento certo e o errado, a barra para voltar, em 1280 e 390 px; com menos movimento,
-no modo direto e sem JS; o vídeo inteiro renderizado pelo Remotion.
-
-**Fora.** O componente `Rastro`, que fica no repositório sem uso; o capítulo 3 (etapa 4).
+Espera o capítulo 3 ("As ferramentas") existir, com a gravação real do agente com ferramentas. Até lá, a capacidade fica
+parada nesta etapa.
 
 ## Registro
 
@@ -70,5 +63,6 @@ no modo direto e sem JS; o vídeo inteiro renderizado pelo Remotion.
 |---|---|---|---|
 | 1 | `37a2834` | 107 testes do livro; os 3 novos falham sem o código; no navegador, o mapa da introdução sobre a base: as 6 cenas com clique de verdade (5, 6, 7, 8, 7 e 5 s), com menos movimento e no modo direto, iguais a antes; o elenco renderizado em 720 e 360 px | Erick, 25/10/2026 |
 | 2 | `55578ca` | 110 testes do livro; os 3 novos falham sem o código; quadros das 6 cenas e os vídeos inteiros renderizados pelo Remotion, em 720 e 360 px | Erick, 25/10/2026 |
+| 3 | `0b53f39` | 114 testes do livro; os 4 novos falham sem o código; no navegador, com clique de verdade: o play, a pausa aos 25 s e o investimento certo e o errado, o fim, a barra e o pausar, em 1280 e 390 px; com menos movimento, no modo direto e sem JS; os vídeos inteiros renderizados pelo Remotion | Erick, 25/10/2026 |
 
 (redação: claude-opus-5-5)
