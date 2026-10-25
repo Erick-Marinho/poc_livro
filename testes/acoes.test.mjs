@@ -10,7 +10,8 @@ const referencia = ler("livros/ciclo-de-vida/projeto/referencia.jsonl");
 const caso = (id) => casos(referencia, [id], "teste")[0];
 
 test("a aposta mostra três mensagens de verdade e diz que o agente é ilustração", () => {
-  assert.equal([...html.matchAll(/class="apo-msg"/g)].length, 3);
+  const apressado = html.split("data-aposta").slice(1).find((b) => b.includes("agente apressado"));
+  assert.equal([...apressado.matchAll(/class="apo-msg"/g)].length, 3);
   for (const id of ["R12", "R11", "R02"]) assert.ok(html.includes(caso(id).pergunta), id);
   assert.match(html, /Ilustração: o agente apressado não existe/);
 });
@@ -46,6 +47,22 @@ test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de
   assert.match(html, /consulta o pedido BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
   const resposta = html.match(/separou as mensagens em pilhas sem nome[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
   for (const { nome } of Object.values(DECISOES)) assert.ok(resposta.includes(nome), `a resposta não nomeia "${nome}"`);
+});
+
+test("capítulo 1: a aposta da escala tem um item em cada ponto, e o roteador é o agente do capítulo 2, de quatro decisões", () => {
+  const escala = JSON.parse(ler("livros/ciclo-de-vida/figuras/escala.json"));
+  const pontos = escala.mensagens[0].opcoes;
+  assert.deepEqual(escala.mensagens.map((m) => m.opcoes[m.fez]), pontos);
+  const roteador = escala.mensagens.find((m) => m.opcoes[m.fez] === "roteador");
+  assert.match(roteador.texto, new RegExp(["uma", "duas", "três", "quatro", "cinco"][Object.keys(DECISOES).length - 1] + " decisões"));
+  assert.match(roteador.porque, /capítulo 2/);
+  for (const m of escala.mensagens) assert.ok(html.includes(m.texto), m.texto);
+});
+
+test("capítulo 2: o agente do desenho fica no roteador da escala do capítulo 1", () => {
+  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  assert.match(h2, /Na escala do capítulo 1/);
+  assert.match(h2, /No roteador\./);
 });
 
 /* ajustes da introdução (etapa 4): o pare e pense com os ícones do Lucide, no lugar do losango de texto */
