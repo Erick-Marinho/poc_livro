@@ -25,7 +25,9 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 - (25/10/2026, Erick) A figura 1.1 é um gráfico animado contínuo, com câmera, e não cena a cena: começa no play do
   leitor (play, pausar e uma barra para voltar), e para quando a pergunta chega a decidir, na parte do agente, para o
   leitor investir. As "cenas" do laco.json viram trechos de um gráfico só.
-- (3) A câmera aproxima o que está acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
+- (25/10/2026, Erick) Sem câmera e sem a barra do tempo: o leitor vê o laço inteiro o tempo todo, e controla só com
+  play e pausar ("a experiência piorou com a câmera, melhor ele ver o todo"). Vale da etapa 5 em diante.
+- (3, até a 5) A câmera aproximava o que estava acontecendo (a peça de agora e a seguinte) e abre para o quadro inteiro entre um
   trecho e outro; com menos movimento, ela fica parada e o ponto pula de peça em peça. A opção certa do investimento é
   a decisão dos "três jeitos" (o teste confere). O player fluido é uma base nova (`palco/TocaGrafico.tsx`); a de cena a
   cena (`AvancaCena`) segue no mapa da introdução. No modo direto, o quadro final, sem pausa. Sem JS, a figura em
@@ -51,11 +53,17 @@ uma decisão do leitor antes do momento-chave. E agir e observar, por dentro de 
 3. O gráfico animado no 1.1, contínuo e com câmera, no lugar dos "três jeitos" e do `Pendente`: o play do leitor, a
    pausa para investir, o modo direto, o menos movimento, sem JS; "olhar" vira "observar".
 4. A animação de agir e observar, no capítulo 3, com a gravação real.
+5. O laço inteiro à vista, na figura 1.1: sem câmera e sem a barra do tempo.
 
-## Etapa atual: 4
+## Etapa atual: 5
 
-Espera o capítulo 3 ("As ferramentas") existir, com a gravação real do agente com ferramentas. Até lá, a capacidade fica
-parada nesta etapa.
+**Arquivos.** `laco/laco.ts` (sai a câmera), `laco/LacoAnimado.tsx` (o desenho inteiro, sempre), `palco/TocaGrafico.tsx`
+e `palco/palco.css` (saem a barra e o tempo; ficam o play, o pausar e a pausa para investir), `testes/laco.test.mjs`.
+
+**Evidência.** Os testes do livro passam; o teste novo falha com o código de antes; no navegador, com clique de verdade,
+o gráfico inteiro do começo ao fim, a pausa e o investimento, em 1280 e 390 px.
+
+**Fora.** A etapa 4, que segue esperando o capítulo 3.
 
 ## Registro
 
