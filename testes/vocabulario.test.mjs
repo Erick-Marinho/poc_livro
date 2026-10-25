@@ -40,3 +40,11 @@ test("o leitor investe, e não aposta, no livro todo: nas páginas, nos textos, 
   for (const p of [...arquivos("src/components", ".astro"), ...arquivos("src/components", ".tsx")]) for (const s of frases(ler(p))) nenhuma(s, aposta, p);
   assert.match(visivel(ler("dist/ciclo-de-vida/00-introducao/index.html")), /\binvista\b/i);
 });
+
+test("o problema do custo diz que é o gasto com o modelo, e não \"a conta\": no texto, na caixa e na animação", () => {
+  const conta = /.{0,40}\bconta (que cresce|só aparece)\b.{0,20}/i;
+  const texto = visivel(ler("dist/ciclo-de-vida/00-introducao/index.html"));
+  nenhuma(texto, conta, "na página montada");
+  for (const f of ["onde-se-pega", "ciclo-animado"]) for (const s of lido(JSON.parse(ler(`livros/ciclo-de-vida/figuras/${f}.json`)))) nenhuma(s, conta, `${f}.json`);
+  assert.match(texto, /o gasto com o modelo que cresce sem aviso/i);
+});

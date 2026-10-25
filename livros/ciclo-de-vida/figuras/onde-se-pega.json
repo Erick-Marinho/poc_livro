@@ -8,7 +8,7 @@
   "mensagens": [
     { "texto": "As perguntas que ninguém tinha previsto.", "opcoes": ["Planejar", "Quando dá errado", "Evoluir"], "fez": 1,
       "porque": "Ninguém escreve caso para o que não previu. Quando a pergunta aparece no uso, vira caso novo da régua, e a régua passa a capturá-la (capítulo 7)." },
-    { "texto": "A conta que cresce sem aviso.", "opcoes": ["Avaliar", "Observar", "Pôr no ar"], "fez": 1,
+    { "texto": "O gasto com o modelo que cresce sem aviso.", "opcoes": ["Avaliar", "Observar", "Pôr no ar"], "fez": 1,
       "porque": "O custo só aparece olhando o que aconteceu em cada conversa (capítulo 6). Pôr um teto no gasto já é Governar (capítulo 8)." },
     { "texto": "O cliente que pede o pedido de outra pessoa.", "opcoes": ["Planejar", "Pôr no ar", "Observar"], "fez": 0,
       "porque": "É um caso escrito antes de existir agente: o R12 da régua do capítulo 1, em que o Bruno pede o pedido da Ana." },
