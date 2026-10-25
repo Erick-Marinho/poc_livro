@@ -22,11 +22,13 @@ A regra está em `docs/RITMO.md`; este plano é o caminho até ela valer no buil
 - (1) O experimento do segundo cérebro também passa de 400: entra na etapa 3, antes de a falha valer no build.
 - (3a) As mensagens das ações vêm do `referencia.jsonl`; o que o agente apressado fez e as frases da troca de prompt são
   ilustração, e a página diz.
+- (3b) Antes da figura 1 do experimento, nenhuma ação: espera o vídeo da figura em vídeo ganhar a aposta (Erick, 25/10/2026).
+- (3b) Aposta e Pilhas aceitam itens escritos, além dos casos do `referencia.jsonl`.
 
-## Etapa atual: 3b
+## Etapa atual: 3c
 
-A skill `revisar-ritmo` no experimento do segundo cérebro: a proposta primeiro, a decisão do Erick depois, e só então
-a mudança no texto. Evidência: a proposta; depois, o relógio do experimento sem trecho acima de 400.
+O `npm test` roda o relógio com `--estrito`: um trecho acima de 400 faz o teste falhar e diz qual. Evidência: o
+`npm test` passando hoje (o maior trecho é 322, na 2.2) e falhando numa cópia com um trecho de 401 palavras.
 
 ## Registro
 
@@ -35,3 +37,4 @@ a mudança no texto. Evidência: a proposta; depois, o relógio do experimento s
 | 1 | `f4435ed` | o relógio dos textos de hoje (788 no capítulo 1, 412 no experimento); teste do que conta como ação | 25/10 |
 | 2 | skill salva | a skill `revisar-ritmo` revisada e salva pelo Erick; lê o `RITMO.md`, não guarda número | 25/10 |
 | 3a | `fc10873` | o capítulo 1 sem trecho acima de 400 (788 virou 39, 183, 189, 230); as três ações usadas na página | 25/10 |
+| 3b | `2e5e1e7` | o experimento sem trecho acima de 400 (412 virou 67, 243, 102, 74, 66); aposta, pare e pense e pilhas no navegador; números da aposta conferidos contra a régua | 25/10 |
