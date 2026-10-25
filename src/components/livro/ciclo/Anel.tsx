@@ -3,9 +3,12 @@
  * servidor. Dois desenhos: o anel (computador) e a coluna (celular). As seis fases de ida em volta; a volta de
  * "quando dá errado" para "avaliar" por dentro, em destaque; Evoluir por fora, de Observar de volta a Construir;
  * Governar como halo em volta de tudo. Cada nó tem `data-no` com o id da fase do ciclo.json, para o mapa ligar o nó
- * ao cartão. O mesmo desenho serve ao mapa parado, à animação (CicloAnimado.tsx) e à miniatura; as cores vêm do
+ * ao cartão; o nó que não é decorativo mostra, com o ícone de informação, que abre o cartão da fase (num modal, no
+ * MapaDoCiclo). O mesmo desenho serve ao mapa parado, à animação (CicloAnimado.tsx) e à miniatura; as cores vêm do
  * ESTILO abaixo, com as variáveis do livro e uma cor de reserva para fora dele (o Studio).
  */
+import { Info } from "lucide-react";
+
 type Fase = { id: string; nome: string; capitulos: number[]; transversal?: boolean };
 export type Desenho = "anel" | "coluna";
 export type Realce = "erro" | "pego";
@@ -15,6 +18,7 @@ type Props = { fases: Fase[]; desenho: Desenho; aceso?: string; realces?: Record
 
 const IDA = ["planejar", "construir", "avaliar", "por-no-ar", "observar", "errado"];
 export type Caixa = { x: number; y: number; w: number; h: number };
+const ABRE = 15; // o ícone que diz que o nó abre o cartão
 const caps = (f: Fase) => `cap. ${f.capitulos.join(" e ")}`;
 
 /* ---------- o anel ---------- */
@@ -83,6 +87,8 @@ export const ESTILO = `
 .an-no.an-realce-erro .an-caixa { stroke: var(--aviso, #9a5b00); stroke-width: 2.5 }
 .an-no.an-realce-pego .an-caixa { stroke: var(--ok, #1f7a4c); stroke-width: 2.5 }
 .an-nome { font: 600 15px var(--f-ui, "IBM Plex Sans", system-ui, sans-serif); fill: var(--ink, #24201a) }
+.an-abre { color: var(--ink-2, #6b6357); pointer-events: none }
+.an-no:hover .an-abre, .an-no:focus-visible .an-abre, .an-no.an-aceso .an-abre { color: var(--acento, #2a4fb5) }
 .an-cap { font: 12px var(--f-mono, "JetBrains Mono", ui-monospace, monospace); fill: var(--ink-2, #6b6357) }
 `;
 
@@ -95,11 +101,11 @@ const Seta = ({ id, classe }: { id: string; classe: string }) => (
 );
 
 const No = ({ f, caixa, aceso, realce, compacto, decorativo }: { f: Fase; caixa: Caixa; aceso: boolean; realce?: Realce; compacto?: boolean; decorativo?: boolean }) => (
-  <g data-no={f.id} {...(decorativo ? {} : { role: "button", tabIndex: 0, "aria-label": `${f.nome}, ${caps(f)}`, "aria-pressed": aceso })}
+  <g data-no={f.id} {...(decorativo ? {} : { role: "button", tabIndex: 0, "aria-label": `${f.nome}, ${caps(f)}: ver o que o agente ganha`, "aria-pressed": aceso })}
     className={["an-no", aceso ? "an-aceso" : "", realce ? `an-realce-${realce}` : ""].filter(Boolean).join(" ")}>
     <rect x={caixa.x} y={caixa.y} width={caixa.w} height={caixa.h} rx={compacto ? caixa.h / 2 : 12} className="an-caixa" />
     {compacto ? (
-      <text x={caixa.x + caixa.w / 2} y={caixa.y + caixa.h / 2 + 5} textAnchor="middle" className="an-nome">
+      <text x={caixa.x + (caixa.w - (decorativo ? 0 : ABRE + 6)) / 2} y={caixa.y + caixa.h / 2 + 5} textAnchor="middle" className="an-nome">
         {f.nome} <tspan className="an-cap">· {caps(f)}</tspan>
       </text>
     ) : (
@@ -108,6 +114,9 @@ const No = ({ f, caixa, aceso, realce, compacto, decorativo }: { f: Fase; caixa:
         <text x={caixa.x + 12} y={caixa.y + caixa.h - 11} className="an-cap">{caps(f)}</text>
       </>
     )}
+    {/* abre o cartão: no canto de baixo, onde o nome não chega; na pílula, na ponta */}
+    {decorativo ? null : <Info className="an-abre" size={ABRE} strokeWidth={2} x={caixa.x + caixa.w - ABRE - (compacto ? 12 : 8)}
+      y={compacto ? caixa.y + (caixa.h - ABRE) / 2 : caixa.y + caixa.h - ABRE - 8} />}
   </g>
 );
 

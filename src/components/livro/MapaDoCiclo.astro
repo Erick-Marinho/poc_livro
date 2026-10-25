@@ -1,13 +1,15 @@
 ---
 /**
  * O mapa do ciclo de vida de um agente (docs/capacidades/ciclo-animado.md): o anel (a coluna, no celular), com as voltas
- * por dentro e por fora e Governar como halo, e embaixo um cartão por fase: o nome e a pergunta à vista, o que o agente
- * da loja ganha e em que capítulo dentro. O nó e o cartão andam juntos: clicar num acende o outro. Os dados vêm de
- * `figuras/ciclo.json`; os capítulos, do `sumario.json`. Abrir um cartão não é ação do leitor (docs/RITMO.md).
- * Sem JS, os cartões abrem sozinhos (são <details>); no modo direto e na impressão, abrem todos.
+ * por dentro e por fora e Governar como halo, e um cartão por fase: o nome e a pergunta, o que o agente da loja ganha e
+ * em que capítulo. Com JS, os cartões saem de baixo do desenho, para o leitor focar nele, e o nó abre o cartão da fase
+ * num modal (docs/capacidades/ajustes-da-introducao.md). Os dados vêm de `figuras/ciclo.json`; os capítulos, do
+ * `sumario.json`. Abrir um cartão não é ação do leitor (docs/RITMO.md). Sem JS, no modo direto e na impressão, os
+ * cartões ficam embaixo (são <details>); no modo direto e na impressão, abrem todos.
  * Com as cenas e a aposta, o desenho vira a animação (ciclo/FiguraCiclo.tsx), que o leitor avança cena a cena; sem JS e
  * na impressão, fica o desenho parado.
  */
+import { X } from "lucide-react";
 import Anel, { ESTILO } from "./ciclo/Anel";
 import FiguraCiclo from "./ciclo/FiguraCiclo";
 import type { Entrada } from "./ciclo/cenas";
@@ -29,6 +31,7 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
       <Anel fases={ciclo.fases} desenho="coluna" aceso={aqui} />
     </div>
     {cenas && aposta && <FiguraCiclo client:visible={{ rootMargin: "400px" }} ciclo={ciclo} cenas={cenas} aposta={aposta} />}
+    <p class="mc-dica" hidden>Toque numa fase para ver o que o agente ganha nela.</p>
     <div class="mc-cartoes">
       {ordem.map((f) => (
         <details class="mc-cartao" data-cartao={f.id} id={`fase-${f.id}`} data-aceso={f.id === aqui ? "" : undefined}>
@@ -45,6 +48,11 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
       ))}
     </div>
   </div>
+  <dialog class="mc-modal" aria-labelledby={`mc-modal-titulo-${numero}`}>
+    <button type="button" class="mc-modal-fechar" aria-label="Fechar"><X size={18} /></button>
+    <h3 id={`mc-modal-titulo-${numero}`} class="mc-modal-titulo"></h3>
+    <div class="mc-modal-corpo"></div>
+  </dialog>
   <figcaption><b>Figura {numero}</b> · {legenda} Referências: {ciclo.fontes.map((r, i) => <>{i ? ", " : ""}<a href={r.url} target="_blank" rel="noopener">{r.nome}</a></>)}.</figcaption>
 </figure>
 
@@ -52,11 +60,31 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
   document.querySelectorAll<HTMLElement>("[data-mapa-ciclo]").forEach((fig) => {
     const cartoes = [...fig.querySelectorAll<HTMLDetailsElement>("details[data-cartao]")];
     const nos = [...fig.querySelectorAll<SVGGElement>("[data-no]")];
+    const modal = fig.querySelector<HTMLDialogElement>("dialog.mc-modal")!;
+    const direto = () => document.documentElement.hasAttribute("data-direto");
     let emLote = false;
-    /* o nó e o cartão de uma fase acendem juntos; clicar no nó também abre o cartão */
+    /* com JS, os cartões saem de baixo do desenho e o nó abre o da fase num modal; no modo direto, ficam embaixo */
+    const usarModal = (sim: boolean) => { fig.toggleAttribute("data-modal", sim); fig.querySelector<HTMLElement>(".mc-dica")!.hidden = !sim; };
+    usarModal(!direto());
+    /* o modal mostra o cartão da fase: o nome e o capítulo no título; a pergunta e o resto embaixo */
+    const mostrar = (id: string) => {
+      const c = cartoes.find((x) => x.dataset.cartao === id);
+      if (!c) return;
+      modal.querySelector(".mc-modal-titulo")!.replaceChildren(...[...c.querySelector(".mc-c-topo")!.childNodes].map((n) => n.cloneNode(true)));
+      modal.querySelector(".mc-modal-corpo")!.replaceChildren(c.querySelector(".mc-c-pergunta")!.cloneNode(true), ...[...c.querySelector(".mc-c-mais")!.children].map((n) => n.cloneNode(true)));
+      if (!modal.open) modal.showModal();
+    };
+    modal.querySelector(".mc-modal-fechar")!.addEventListener("click", () => modal.close());
+    /* tocar fora do cartão fecha: o clique no fundo chega ao próprio <dialog>, mas o do espaço de dentro também */
+    modal.addEventListener("click", (e) => {
+      const r = modal.getBoundingClientRect();
+      if (e.target === modal && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) modal.close();
+    });
+    /* o nó e o cartão de uma fase acendem juntos; clicar no nó abre o cartão (no modal, ou embaixo no modo direto) */
     const acender = (id: string, abrir: boolean) => {
       nos.forEach((n) => { const sim = n.dataset.no === id; n.classList.toggle("an-aceso", sim); n.setAttribute("aria-pressed", String(sim)); });
-      cartoes.forEach((c) => { const sim = c.dataset.cartao === id; c.toggleAttribute("data-aceso", sim); if (sim && abrir) c.open = true; });
+      cartoes.forEach((c) => { const sim = c.dataset.cartao === id; c.toggleAttribute("data-aceso", sim); if (sim && abrir && !fig.hasAttribute("data-modal")) c.open = true; });
+      if (abrir && fig.hasAttribute("data-modal")) mostrar(id);
     };
     nos.forEach((n) => {
       n.addEventListener("click", () => acender(n.dataset.no!, true));
@@ -67,8 +95,8 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
     fig.addEventListener("ciclo:fase", (e) => { const { id, abrir } = (e as CustomEvent<{ id: string; abrir: boolean }>).detail; acender(id, abrir); });
     /* no modo direto e na impressão, todos abertos */
     const todos = (sim: boolean) => { emLote = true; cartoes.forEach((c) => { c.open = sim; }); setTimeout(() => { emLote = false; }); };
-    if (document.documentElement.hasAttribute("data-direto")) todos(true);
-    addEventListener("fontmar:direto", (e) => todos((e as CustomEvent<boolean>).detail));
+    if (direto()) todos(true);
+    addEventListener("fontmar:direto", (e) => { const sim = (e as CustomEvent<boolean>).detail; todos(sim); usarModal(!sim); if (sim) modal.close(); });
     addEventListener("beforeprint", () => todos(true));
   });
 </script>
@@ -96,6 +124,19 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
   .mc-c-mais p { margin: 6px 0 0; font-size: 14px }
   .mc-c-cap, .mc-c-fontes { color: var(--ink-2) }
   .mc-c-fontes { font-size: 13px !important }
+  /* com JS, os cartões no modal; embaixo, só a dica */
+  .mc[data-modal] .mc-cartoes { display: none }
+  .mc-dica { margin: -4px 0 0; font: 13.5px var(--f-ui); color: var(--ink-2) }
+  .mc-modal { width: min(460px, calc(100vw - 32px)); padding: 18px 20px 16px; border: 1px solid var(--linha); border-radius: 14px; background: var(--papel);
+    color: var(--ink); box-shadow: 0 12px 40px rgb(0 0 0 / .2); font: 15px/1.5 var(--f-ui) }
+  .mc-modal::backdrop { background: rgb(0 0 0 / .35) }
+  .mc-modal-titulo { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin: 0 28px 6px 0; font: 600 18px var(--f-ui) }
+  .mc-modal-titulo small { font: 12.5px var(--f-mono); color: var(--ink-2); font-weight: 400 }
+  .mc-modal-corpo .mc-c-pergunta { display: block; margin-bottom: 8px; font: italic 17px/1.4 var(--f-texto) }
+  .mc-modal-corpo p { margin: 8px 0 0; font-size: 14.5px }
+  .mc-modal-fechar { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px;
+    background: none; color: var(--ink-2); cursor: pointer }
+  .mc-modal-fechar:hover { background: var(--papel-2); color: var(--ink) }
   .mc figcaption { margin-top: 8px; font: 13.5px/1.5 var(--f-ui); color: var(--ink-2) }
 
   /* a animação: no lugar do desenho parado, quando a ilha carrega; o botão de avançar, discreto, embaixo */
@@ -117,5 +158,5 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
     .mc-cartoes { grid-template-columns: 1fr }
   }
   /* na impressão, os cartões abertos, mesmo onde o navegador não avisa antes de imprimir */
-  @media print { .mc .mc-video { display: none !important } .mc[data-animado] .mc-desenho { display: block } .mc-cartao { break-inside: avoid } .mc-cartao::details-content { content-visibility: visible; display: block } .mc-c-topo::after { content: none } }
+  @media print { .mc .mc-video, .mc-dica, .mc-modal { display: none !important } .mc[data-modal] .mc-cartoes { display: grid } .mc[data-animado] .mc-desenho { display: block } .mc-cartao { break-inside: avoid } .mc-cartao::details-content { content-visibility: visible; display: block } .mc-c-topo::after { content: none } }
 </style>

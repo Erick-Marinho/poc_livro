@@ -3,7 +3,7 @@
  * Os termos explicáveis de um capítulo (livros/<livro>/termos.json; docs/capacidades/ajustes-da-introducao.md): posto
  * uma vez no capítulo, marca no navegador cada ocorrência no corpo, e a definição abre ao passar o mouse, ao focar ou
  * ao tocar. Fora de código, SVG, vídeo, botão, link e resumo de <details>. A definição fica fora do texto (um balão só,
- * no fim da página): quem lê o texto de um trecho (a ilha do mapa lê as mensagens da caixa) lê o mesmo de antes. Sem
+ * no fim da página, ou dentro do modal aberto, que fica numa camada acima de tudo): quem lê o texto de um trecho (a ilha do mapa lê as mensagens da caixa) lê o mesmo de antes. Sem
  * JS, o texto fica como está.
  */
 import type { Termo } from "../../lib/termos.ts";
@@ -58,12 +58,14 @@ const definicoes = Object.fromEntries(Object.entries(termos).filter(([nome]) => 
       aberto?.setAttribute("aria-expanded", "false");
       aberto = b; b.setAttribute("aria-expanded", "true");
       balao.textContent = definicoes[b.dataset.termo!];
+      const dono = b.closest("dialog") ?? document.body;
+      if (balao.parentElement !== dono) dono.append(balao);
       balao.hidden = false;
       const r = b.getBoundingClientRect(), w = balao.offsetWidth, h = balao.offsetHeight;
       const x = Math.min(Math.max(8, r.left - 12), innerWidth - w - 8); // começa no termo, sem sair da tela
       const acima = r.top - h - 10 > 8;
-      balao.style.left = `${x + scrollX}px`;
-      balao.style.top = `${(acima ? r.top - h - 10 : r.bottom + 10) + scrollY}px`;
+      balao.style.left = `${x}px`;
+      balao.style.top = `${acima ? r.top - h - 10 : r.bottom + 10}px`;
     };
     const fechar = () => { aberto?.setAttribute("aria-expanded", "false"); aberto = null; fixo = false; balao.hidden = true; };
     corpo.addEventListener("pointerover", (e) => { const b = (e.target as Element).closest<HTMLButtonElement>("button.termo"); if (b && !fixo) abrir(b); });
@@ -76,7 +78,7 @@ const definicoes = Object.fromEntries(Object.entries(termos).filter(([nome]) => 
       else if (aberto) fechar();
     });
     addEventListener("keydown", (e) => { if (e.key === "Escape" && aberto) fechar(); });
-    addEventListener("scroll", () => { if (aberto && !fixo) fechar(); }, { passive: true });
+    addEventListener("scroll", () => { if (aberto) fechar(); }, { passive: true, capture: true }); // o balão é fixo na tela
   }
 </script>
 
@@ -84,7 +86,7 @@ const definicoes = Object.fromEntries(Object.entries(termos).filter(([nome]) => 
   .termo { all: unset; cursor: help; text-decoration: underline dotted var(--acento) 1.5px; text-underline-offset: 3px; border-radius: 3px }
   .termo:hover, .termo[aria-expanded="true"] { background: var(--papel-2) }
   .termo:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px }
-  .termo-balao { position: absolute; z-index: 50; max-width: min(300px, calc(100vw - 16px)); padding: 8px 11px; border: 1px solid var(--linha);
+  .termo-balao { position: fixed; z-index: 50; max-width: min(300px, calc(100vw - 16px)); padding: 8px 11px; border: 1px solid var(--linha);
     border-radius: 8px; background: var(--papel); color: var(--ink); box-shadow: 0 4px 14px rgb(0 0 0 / .12); font: 14px/1.45 var(--f-ui); pointer-events: none }
   @media print { .termo { text-decoration: none } .termo-balao { display: none } }
 </style>

@@ -65,6 +65,22 @@ test("a animação cabe no docs/RITMO.md: até 6 cenas, 45 s, 8 s por cena e 12 
   assert.equal(limites(m).length, m.cenas.length);
 });
 
+/* ajustes da introdução (etapa 6): os cartões abrem num modal, pelo nó, que mostra que é clicável */
+test("cada nó do mapa mostra que abre o cartão, e o mapa tem o modal e a dica; a miniatura não abre nada", () => {
+  for (const desenho of ["anel", "coluna"]) {
+    for (const no of mapa.querySelectorAll(`svg[data-desenho="${desenho}"] [data-no]`)) {
+      assert.ok(no.querySelector("svg.lucide-info"), `${desenho}: o nó ${no.getAttribute("data-no")} não mostra que é clicável`);
+      assert.match(no.getAttribute("aria-label"), /o que o agente ganha/, `${desenho}: o nome do nó ${no.getAttribute("data-no")} não diz o que abre`);
+    }
+  }
+  const modal = mapa.querySelector("dialog.mc-modal");
+  assert.ok(modal, "o mapa não tem o modal");
+  assert.ok(modal.getAttribute("aria-labelledby") && modal.querySelector(`#${modal.getAttribute("aria-labelledby")}`), "o modal não tem título");
+  assert.ok(mapa.querySelector(".mc-dica"), "o mapa não diz que a fase se toca");
+  const mini = parse(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html")).querySelector("[data-ciclo-aqui]");
+  assert.equal(mini.querySelectorAll("svg.lucide-info").length, 0, "a miniatura mostra o ícone de abrir");
+});
+
 /* ajustes da introdução (etapa 3): quem já investiu não é perguntado de novo */
 test("quem já investiu, ou está no modo direto, lê o caminho, e não a pergunta; quem não investiu, a pergunta", async () => {
   const { jaSabe, titulo, legenda } = await import("../src/components/livro/ciclo/cenas.ts");
