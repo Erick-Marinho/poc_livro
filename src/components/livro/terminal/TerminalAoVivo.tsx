@@ -32,7 +32,7 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
 
   function linhas(v: string) { return (saida.variantes ? saida.variantes[v] : saida.saida) ?? []; }
   const inicio = (m: Modo): Item[] => m === "guiado"
-    ? [{ tipo: "prompt", texto: saida.comando }, { tipo: "livro", texto: "aperte ▶ Rodar" }]
+    ? [{ tipo: "prompt", texto: saida.comando }, { tipo: "livro", texto: "aperte ▶ Executar" }]
     : [{ tipo: "livro", texto: "Digite o comando desta seção (Tab completa; help mostra o que este terminal sabe)." }];
 
   /* ao hidratar, e quando o leitor muda onde faz o projeto: a tela limpa esperando por ele */
@@ -60,7 +60,7 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
     if (cmd === "clear") { setTela([]); return; }
     if (cmd === "help") {
       setTela((x) => [...x, { tipo: "livro", texto: "Este terminal mostra a saída gravada do projeto do livro. Ele conhece:" },
-        { tipo: "linha", texto: `  ${saida.comando}` }, { tipo: "livro", texto: "e também: clear, history, pwd. Rode o mesmo comando no terminal da sua IDE para ver a saída de verdade na sua máquina." }]);
+        { tipo: "linha", texto: `  ${saida.comando}` }, { tipo: "livro", texto: "e também: clear, history, pwd. Execute o mesmo comando no terminal da sua IDE para ver a saída de verdade na sua máquina." }]);
       return;
     }
     if (cmd === "pwd") { setTela((x) => [...x, { tipo: "linha", texto: pasta.replace(/^~/, "/home/voce") }]); return; }
@@ -101,7 +101,7 @@ export default function TerminalAoVivo({ saida, pasta = "~/projeto", rotulos = {
       <div className="tm-acoes">
         {variantes.map((v) => <button key={v} type="button" className="tm-sec" aria-pressed={v === variante} onClick={() => escolherVariante(v)}>{rotulos[v] ?? v}</button>)}
         <span className="tm-esp" />
-        {modo === "guiado" && !direto && <button type="button" className="tm-rodar" onClick={rodar}>▶ Rodar</button>}
+        {modo === "guiado" && !direto && <button type="button" className="tm-rodar" onClick={rodar}>▶ Executar</button>}
       </div>
     )}
     <div className="tm-corpo" ref={corpo} onClick={() => modo === "interativo" && campo.current?.focus()} aria-live="polite">

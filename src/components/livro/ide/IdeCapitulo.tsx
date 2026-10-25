@@ -34,8 +34,8 @@ function suaVez(a: AcaoIde, obra: Obra): string {
 }
 function suaVezBase(a: AcaoIde, obra: Obra): string {
   /* o comando que chama um modelo de verdade: na máquina do leitor ele custa, pede a chave, e pode responder diferente */
-  if (a.tipo === "rodar" && a.gravacao) return `Rode o comando no seu terminal, na pasta do projeto, com a sua chave no ambiente (\`OPENAI_API_KEY\`). Ele chama o ${a.gravacao.modelo} de verdade, e cada rodada custa centavos. A sua nota pode sair diferente da daqui: o modelo não responde sempre igual.`;
-  if (a.tipo === "rodar") return `Rode o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
+  if (a.tipo === "rodar" && a.gravacao) return `Execute o comando no seu terminal, na pasta do projeto, com a sua chave no ambiente (\`OPENAI_API_KEY\`). Ele chama o ${a.gravacao.modelo} de verdade, e cada execução custa centavos. A sua nota pode sair diferente da daqui: o modelo não responde sempre igual.`;
+  if (a.tipo === "rodar") return `Execute o comando no seu terminal${a.onde === "~" ? ", na sua pasta de usuário" : ", na pasta do projeto"}. Compare a saída com a do terminal aqui.`;
   if (a.tipo === "apagar") return `Apague o \`${a.arquivo}\` no seu projeto.`;
   if (a.tipo === "copiar") return `Copie a pasta \`${pastaCopiada(a)}/\` do repositório do ${obra} para o seu projeto. Digitar dado inventado não ensina nada.`;
   if (DADO.test(a.arquivo)) return a.novo ? `Crie o \`${a.arquivo}\` com este conteúdo; copiar do repositório do ${obra} vale.` : `Faça a mesma mudança no seu \`${a.arquivo}\`.`;
@@ -75,8 +75,8 @@ function Mensagem({ f, ia }: { f: Fala; ia: string }) {
 
 /* como a IA conta a ação que acabou de fazer (no comando, quem rodou pode ter sido o leitor) */
 function feito(a: AcaoIde, leitor = false): string {
-  if (a.tipo === "rodar" && leitor) return "Rodou.";
-  if (a.tipo === "rodar") return `Rodei \`${a.comando.length > 60 ? a.comando.slice(0, 57) + "…" : a.comando}\` no terminal.`;
+  if (a.tipo === "rodar" && leitor) return "Executou.";
+  if (a.tipo === "rodar") return `Executei \`${a.comando.length > 60 ? a.comando.slice(0, 57) + "…" : a.comando}\` no terminal.`;
   if (a.tipo === "apagar") return `Apaguei o \`${a.arquivo}\`.`;
   if (a.tipo === "copiar") return `Copiei ${a.arquivos.length} arquivos para a pasta \`${pastaCopiada(a)}/\`.`;
   return a.novo ? `Criei o \`${a.arquivo}\`.` : `Mexi no \`${a.arquivo}\`.`;
@@ -291,10 +291,10 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     const cmd = junta(bruto), certo = junta(acao.comando), nome = cmd.split(" ")[0];
     if (cmd === certo) { rodarComando("leitor"); return; }
     const aviso = !cmd ? null
-      : cmd === "help" ? `Este terminal mostra a saída gravada do projeto do ${obra}, e só roda o comando deste passo: ${acao.comando}`
+      : cmd === "help" ? `Este terminal mostra a saída gravada do projeto do ${obra}, e só executa o comando deste passo: ${acao.comando}`
       : certo.startsWith(cmd) ? "Quase: o comando é mais longo. Aperte Tab para completar."
       : nome === certo.split(" ")[0] ? `Não é esse. O comando deste passo é: ${acao.comando}`
-      : `${nome}: este terminal do ${obra} só roda o comando deste passo. Digite help.`;
+      : `${nome}: este terminal do ${obra} só executa o comando deste passo. Digite help.`;
     setTentativas((t) => [...t, { texto: bruto, aviso }]);
   };
   const tecla = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -444,10 +444,10 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       /* no terminal interativo, o leitor roda: o chat pede o comando, e a aposta vem depois do Enter, antes da saída */
       const doLeitor = a.tipo === "rodar" && interativo, quem = rodou[x.k];
       const vez = doLeitor ? [ia("c", <p>Agora é você: digite no terminal da IDE <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando}</code> e aperte Enter.</p>),
-        ...(quem === "pediu" ? [pessoa("rp", <p>Roda pra mim.</p>)] : [])] : [];
+        ...(quem === "pediu" ? [pessoa("rp", <p>Executa pra mim.</p>)] : [])] : [];
       if (doLeitor && quem === undefined) return vez;
       const pede = comAposta ? [ia("e", doLeitor ? <p>Antes de ver a saída: o que você acha que vai acontecer? Invista comigo no terminal.</p>
-        : <p>Antes de eu rodar <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando.split(" ").slice(0, 3).join(" ")}</code>: o que você acha que vai acontecer? Invista comigo no terminal.</p>)] : [];
+        : <p>Antes de eu executar <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando.split(" ").slice(0, 3).join(" ")}</code>: o que você acha que vai acontecer? Invista comigo no terminal.</p>)] : [];
       if (comAposta && aposta === undefined) return [...vez, ...pede];
       return [
         ...vez,
@@ -680,7 +680,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
                   autoCapitalize="off" autoComplete="off" autoCorrect="off" spellCheck={false} enterKeyHint="go" />
               </label>
               <div className="ic-entrada-dica">digite o comando do chat · Tab completa
-                <button type="button" onClick={() => rodarComando("pediu")}>roda pra mim</button></div>
+                <button type="button" onClick={() => rodarComando("pediu")}>executa pra mim</button></div>
             </div>}
             {esperando && !aDigitar && acao?.tipo === "rodar" && <div>
               <div>{prompt(acao.onde)}{acao.comando}</div>

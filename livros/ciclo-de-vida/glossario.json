@@ -111,7 +111,7 @@
       "texto": "Do pydantic: marca uma função que confere o caso inteiro, e não só um campo."
     },
     "mode=\"after\"": {
-      "texto": "A conferência roda depois de cada campo já ter sido conferido e convertido."
+      "texto": "A conferência é executada depois de cada campo já ter sido conferido e convertido."
     },
     "self": {
       "marca": "self",
@@ -138,7 +138,7 @@
     },
     "pytest": {
       "marca": "pytest",
-      "texto": "A ferramenta que roda os testes. Cada função que começa com test_ é um teste."
+      "texto": "A ferramenta que executa os testes. Cada função que começa com test_ é um teste."
     },
     "{chave: valor for …}": {
       "texto": "Monta um dicionário numa linha: para cada pedido, a chave é o número e o valor é o pedido."
@@ -181,7 +181,7 @@
       "texto": "Soma ao que já tinha. Verdadeiro conta como 1 e falso como 0, então somar um acerto é somar a comparação."
     },
     "if __name__ == \"__main__\"": {
-      "texto": "Só roda quando o arquivo é chamado direto, e não quando outro arquivo faz import dele."
+      "texto": "Só é executado quando o arquivo é chamado direto, e não quando outro arquivo faz import dele."
     },
     "f\"{d:<14}\"": {
       "texto": "O texto alinhado à esquerda, ocupando 14 espaços, para as colunas ficarem retas."
@@ -209,7 +209,7 @@
     },
     "invoke": {
       "marca": "invoke",
-      "texto": "Roda: chama o modelo, ou o grafo, com uma entrada e espera a resposta."
+      "texto": "Executa: chama o modelo, ou o grafo, com uma entrada e espera a resposta."
     },
     "def dentro de def": {
       "texto": "escrever(pedido) não escreve nada: ela monta e devolve um nó que escreve com aquele pedido. A função de dentro lembra o pedido de quem a criou."
@@ -226,7 +226,7 @@
     },
     "add_node": {
       "marca": "add_node",
-      "texto": "Põe um nó no grafo: um nome e a função que roda quando o grafo chega nele."
+      "texto": "Põe um nó no grafo: um nome e a função que é executada quando o grafo chega nele."
     },
     "add_edge": {
       "marca": "add_edge",
@@ -245,7 +245,7 @@
     },
     "compile": {
       "marca": "compile",
-      "texto": "Confere o grafo (nó sem saída, seta para um nó que não existe) e devolve o agente pronto para rodar."
+      "texto": "Confere o grafo (nó sem saída, seta para um nó que não existe) e devolve o agente pronto para ser executado."
     },
     "GenericFakeChatModel": {
       "marca": "GenericFakeChatModel",

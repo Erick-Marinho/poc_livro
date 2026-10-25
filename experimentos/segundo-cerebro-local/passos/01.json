@@ -14,7 +14,7 @@
       "ate": 3,
       "objetivo": "uma pasta de projeto, sem nenhuma dependência.",
       "temos": "o `segundo-cerebro`, com nome e descrição.",
-      "pedido": "Quero um segundo cérebro para as minhas notas, rodando na minha máquina. Começa criando o projeto com o uv.",
+      "pedido": "Quero um segundo cérebro para as minhas notas, executado na minha máquina. Começa criando o projeto com o uv.",
       "antes": [
         "Antes do código, a pasta. O cérebro vai ser Python puro: nada para instalar além do próprio Python."
       ]
@@ -84,7 +84,7 @@
       "temos": "a nota de partida (7 de 10) e a do conserto (9 de 10).",
       "pedido": "Como eu sei se ele presta? Mede com umas perguntas de referência.",
       "depois": [
-        "A que sobrou errada é a próxima parte do experimento: um modelo rodando na sua máquina, medido com esta mesma régua."
+        "A que sobrou errada é a próxima parte do experimento: um modelo executado na sua máquina, medido com esta mesma régua."
       ]
     },
     {
@@ -94,11 +94,11 @@
       "curta": "o modelo",
       "de": 20,
       "ate": 23,
-      "objetivo": "um modelo rodando na sua máquina, que lê as notas achadas e escreve a resposta.",
+      "objetivo": "um modelo executado na sua máquina, que lê as notas achadas e escreve a resposta.",
       "temos": "o `modelo.py`: o Ollama escreve, e o código confere a fonte.",
-      "pedido": "Agora quero um modelo de verdade, rodando aqui na minha máquina, escrevendo a resposta.",
+      "pedido": "Agora quero um modelo de verdade, executado aqui na minha máquina, escrevendo a resposta.",
       "antes": [
-        "Nada sai da sua máquina: a busca é a do cerebro.py, e o modelo roda no Ollama, aí do seu lado."
+        "Nada sai da sua máquina: a busca é a do cerebro.py, e o modelo é executado no Ollama, aí do seu lado."
       ]
     },
     {

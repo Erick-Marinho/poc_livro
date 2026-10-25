@@ -103,7 +103,7 @@
       "objetivo": "um teste do desenho do grafo, com o modelo falso da LangChain.",
       "temos": "um teste que falha, e o porquê.",
       "antes": [
-        "Testar com o modelo de verdade custa e muda a cada rodada. A LangChain tem um modelo falso, que devolve o que a gente combinar. E um dos passos dá errado de verdade."
+        "Testar com o modelo de verdade custa e muda a cada execução. A LangChain tem um modelo falso, que devolve o que a gente combinar. E um dos passos dá errado de verdade."
       ],
       "depois": [
         "O erro diz que o modelo falso não sabe fazer saída estruturada. Ela usa ferramentas por baixo, e o falso não sabe receber ferramentas."
@@ -142,7 +142,7 @@
       "depois": [
         "Tudo verde, e nenhuma chamada paga até aqui."
       ],
-      "pedido": "Agora um teste para cada caminho, e roda tudo junto com os testes do capítulo 1."
+      "pedido": "Agora um teste para cada caminho, e executa tudo junto com os testes do capítulo 1."
     },
     {
       "id": "openai",

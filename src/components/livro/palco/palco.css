@@ -87,3 +87,11 @@ astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibil
   .palco-chat footer { display: none }
   .palco-mensagens { padding: 12px 10px }
 }
+
+/* o avançar cena a cena (AvancaCena.tsx): discreto, embaixo do vídeo */
+  .ac-avancar { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; font: 13px var(--f-ui); color: var(--ink-2) }
+  .ac-avancar button { border: 1px solid var(--linha); border-radius: 999px; background: var(--papel); color: var(--ink); padding: 6px 14px;
+    font: 600 14px var(--f-ui); cursor: pointer }
+  .ac-avancar button:hover { border-color: var(--acento) }
+  .ac-avancar button:disabled { cursor: default; opacity: .65 }
+  .ac-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }

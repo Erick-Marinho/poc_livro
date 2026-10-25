@@ -8,7 +8,7 @@
   "mensagens": [
     { "texto": "É 100% local: nada do que você escreveu sai da sua máquina.",
       "opcoes": ["vale inteira", "vale só em parte", "o artigo não mostra"], "fez": 1,
-      "porque": "O modelo pode rodar na sua máquina; o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem." },
+      "porque": "O modelo pode ser executado na sua máquina; o e-mail, a agenda e as reuniões continuam vindo de serviços na nuvem." },
     { "texto": "Acompanha o que mudou, como um prazo adiado entre dois e-mails.",
       "opcoes": ["vale inteira", "vale só em parte", "o artigo não mostra"], "fez": 2,
       "porque": "O artigo afirma, mas não mostra. Aqui, buscando só por palavras, o cérebro responde 14/11, a data velha; com a data de cada nota, responde 21/11." },

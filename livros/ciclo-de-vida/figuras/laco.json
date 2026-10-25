@@ -1,0 +1,95 @@
+{
+  "sobre": "A figura 1.1 (QuemDecide; docs/capacidades/laco-do-agente.md): três histórias de atendentes da loja, em quadrinhos, para quem começa do zero. O atendente sem acesso ao sistema é o modelo sozinho; o atendente com a ficha é o fluxo fixo (a ficha é o código); a atendente é o leitor, no papel do agente. As mensagens, o que o sistema e o catálogo devolvem e as respostas vêm de tres-jeitos.json; aqui ficam as falas, em linguagem simples, e o nome técnico de cada história, que só aparece no fim dela. O teste confere as previsões, os passos da ficha e o caminho da atendente contra os três jeitos.",
+  "pergunta": "Quem decide o próximo passo?",
+  "historias": {
+    "modelo": {
+      "titulo": "O atendente sem acesso ao sistema",
+      "pensa": "Não tenho como abrir o pedido… Mas a cliente quer uma resposta.",
+      "prever": {
+        "pergunta": "O que ele responde?",
+        "opcoes": [
+          "a data certa",
+          "uma data que parece certa",
+          "que não sabe"
+        ],
+        "certa": 1
+      },
+      "conclusao": "Ele chutou. Respondeu o que parecia certo, sem olhar nada.",
+      "nome": "Isto é um modelo sozinho",
+      "explica": "o modelo de linguagem lê a pergunta e escreve a resposta mais provável. Ele não vê o sistema da loja."
+    },
+    "fluxo": {
+      "titulo": "O atendente com a ficha",
+      "ficha": [
+        "ache o número do pedido na mensagem",
+        "procure esse pedido no sistema",
+        "responda com o que achou"
+      ],
+      "ficha_diz": "A ficha diz o que fazer, sempre nesta ordem:",
+      "outra": "Agora chega outra pergunta. Ele segue a mesma ficha.",
+      "prever": {
+        "pergunta": "A pergunta é sobre um produto. O que acontece?",
+        "opcoes": [
+          "ele acha a resposta",
+          "ele trava no passo 1",
+          "ele olha o catálogo"
+        ],
+        "certa": 1,
+        "passo": 1
+      },
+      "nao_preve": "A ficha não prevê pergunta de produto. Não tem um passo para isso.",
+      "conclusao": "Com o pedido, deu certo. Com a frigideira, a ficha não serviu.",
+      "nome": "Isto é um fluxo fixo",
+      "explica": "quem decide os passos é a ficha, que no livro é o seu código. Funciona no que alguém previu, e só nisso."
+    },
+    "agente": {
+      "titulo": "Agora a atendente é você",
+      "diz": "Você tem três coisas à mão. Escolha o que fazer:",
+      "acoes": [
+        {
+          "id": "consultar_pedido",
+          "rotulo": "olhar o sistema de pedidos",
+          "fez": "Você olhou o sistema de pedidos",
+          "sem_dado": "não há número de pedido na mensagem"
+        },
+        {
+          "id": "buscar_produto",
+          "rotulo": "olhar o catálogo de produtos",
+          "fez": "Você olhou o catálogo"
+        },
+        {
+          "id": "responder",
+          "rotulo": "responder à cliente",
+          "fez": "Você respondeu"
+        }
+      ],
+      "de_novo": "Você viu o resultado. E agora?",
+      "sem_olhar": "Você respondeu sem olhar nada: foi o que o atendente sem sistema fez.",
+      "caminho": "O seu caminho",
+      "conclusao": "Você decidiu cada passo: escolheu onde olhar, viu o resultado e decidiu de novo.",
+      "nome": "Isto é um agente",
+      "explica": "o modelo faz o que você fez: decide o próximo passo, usa uma ferramenta, vê o resultado e decide de novo."
+    }
+  },
+  "fim": {
+    "titulo": "Então, quem decide o próximo passo?",
+    "linhas": [
+      {
+        "jeito": "modelo",
+        "quem": "o atendente sem sistema",
+        "decide": "ninguém: ele chuta"
+      },
+      {
+        "jeito": "fluxo",
+        "quem": "o atendente com a ficha",
+        "decide": "a ficha, que é o código"
+      },
+      {
+        "jeito": "agente",
+        "quem": "você, a atendente",
+        "decide": "o modelo, a cada passo"
+      }
+    ],
+    "quebra": "Onde a comparação quebra: o agente não é uma pessoa. É o modelo escolhendo entre as ferramentas que o código deixa ele usar."
+  }
+}

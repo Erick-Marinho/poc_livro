@@ -6,7 +6,8 @@
  * é o do modo direto. O Studio do my-video importa esta composição.
  */
 import { useMemo } from "react";
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { cor, kf, suave, ui } from "../palco/video";
 import Anel, { type Caixa, caixas, type Desenho, ESTILO, type Realce, VISTA } from "./Anel";
 import { type Cena, cenaEm, type Entrada, faseAcesa, jaSabe, legenda, montarCenas, titulo } from "./cenas";
 
@@ -16,13 +17,6 @@ export type Props = Entrada & { desenho: Desenho; apostas?: (number | null)[]; s
 const TOPO = 56; // a pergunta
 const FAIXA: Record<Desenho, number> = { anel: 124, coluna: 156 }; // a legenda e o resultado
 export const tamanho = (desenho: Desenho) => ({ w: VISTA[desenho].w, h: TOPO + VISTA[desenho].h + FAIXA[desenho] });
-
-const ui = 'var(--f-ui, "IBM Plex Sans", system-ui, sans-serif)';
-const cor = { texto: "var(--ink, #24201a)", fraco: "var(--ink-2, #6b6357)", acento: "var(--acento, #2a4fb5)", ok: "var(--ok, #1f7a4c)", aviso: "var(--aviso, #9a5b00)", papel: "var(--papel, #f6f2ea)", nota: "var(--nota, #fbf8f2)" };
-
-const suave = Easing.bezier(0.45, 0, 0.2, 1);
-const kf = (t: number, pontos: [number, number][], easing = Easing.linear) =>
-  interpolate(t, pontos.map((p) => p[0]), pontos.map((p) => p[1]), { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing });
 
 // a etiqueta do problema fica logo abaixo da caixa da fase, sem tampar o nome nem o capítulo
 const ancora = (c: Caixa) => ({ x: c.x + c.w / 2, y: c.y + c.h + 15 });
