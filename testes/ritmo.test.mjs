@@ -25,8 +25,12 @@ test("componente novo sem classificação para o relógio", () => {
   assert.throws(() => medir(texto(`${vinte}\n<FiguraNova numero="1" />`)), /FiguraNova não está classificado/);
 });
 
-test("o relatório dos textos de verdade (etapa 1: avisa, ainda não falha)", (t) => {
+test("nenhum texto passa de 400 palavras sem o leitor agir; acima de 200, só um aviso no relatório", (t) => {
+  const falhas = [];
   for (const { nome, texto: mdx } of textos())
-    for (const x of medir(mdx).filter((x) => x.palavras > AVISO))
-      t.diagnostic(`${x.palavras > FALHA ? "acima do limite de falha" : "aviso"}: ${nome}, ${x.secao}: ${x.palavras} palavras até ${x.ate ?? "o fim"}`);
+    for (const x of medir(mdx).filter((x) => x.palavras > AVISO)) {
+      const linha = `${nome}, ${x.secao}: ${x.palavras} palavras até ${x.ate ?? "o fim"}`;
+      if (x.palavras > FALHA) falhas.push(linha); else t.diagnostic(`aviso: ${linha}`);
+    }
+  assert.deepEqual(falhas, [], `trecho acima de ${FALHA} palavras sem ação (docs/RITMO.md); ponha uma ação do leitor antes:\n${falhas.join("\n")}`);
 });

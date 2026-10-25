@@ -6,7 +6,7 @@ Vale para capítulo e experimento. O `npm run ritmo` mede; a skill `revisar-ritm
 ## As três camadas
 
 1. **Quando: o relógio.** Palavras lidas sem o leitor agir, de uma ação à próxima. **Aviso acima de 200** (cerca de
-   1 minuto). **Falha acima de 400** (sem exceção que se sustente).
+   1 minuto). ✓ **Falha acima de 400** (sem exceção que se sustente): o `npm test` para e diz qual trecho.
 2. **O quê: o verbo da frase principal** do trecho, a que o resumo citaria. Ele escolhe o dispositivo:
 
    | A frase diz... | Dispositivo |
