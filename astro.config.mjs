@@ -10,10 +10,12 @@ const landing = process.env.URL_LANDING;
 const daLanding = "^/(?:$|\\?|assets/|favicon\\.svg|newsletter|ferramentas|entrar)";
 
 export default defineConfig({
-  /* react: só nas figuras que precisam de uma ilha interativa (a do agente, no prefácio) */
+  /* react: só nas figuras que precisam de uma ilha interativa (a do agente, na introdução) */
   integrations: [mdx(), react()],
   /* os guias viraram experimentos (docs/capacidades/experimentos.md): link antigo já compartilhado não quebra */
-  redirects: { "/guias": "/experimentos", "/guias/[experimento]": "/experimentos/[experimento]" },
+  redirects: { "/guias": "/experimentos", "/guias/[experimento]": "/experimentos/[experimento]",
+    /* o prefácio virou introdução (25/10/2026): link já compartilhado não quebra */
+    "/ciclo-de-vida/00-prefacio": "/ciclo-de-vida/00-introducao" },
   /* smartypants desligado: as aspas e os traços saem como o autor escreveu */
   markdown: { processor: unified({ rehypePlugins: [secoesNumeradas], smartypants: false }) },
   vite: landing ? { server: { proxy: { [daLanding]: { target: landing, changeOrigin: true } } } } : {},

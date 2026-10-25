@@ -25,6 +25,9 @@ gancho → **prever** → **fazer** → **errar** → consertar → lembrar → 
   "O seu agente bate os 25%?" é uma meta do leitor, e o progresso é real.
 - **Preparar e cobrar.** Um caso plantado volta depois (Ana e Bruno: capítulo 1, cobrado no 6). Uma semente
   por capítulo, de propósito, e o leitor reconhece: "ah, é aquele!".
+- **A opinião dos autores nas decisões.** "Eu faria assim, e por quê", inclusive "eu errei isso no projeto real",
+  em texto (sem áudio: o livro não é curso). Isso não se copia e é o que separa o livro de uma documentação. Só os
+  autores escrevem: o modelo marca o lugar (`Pendente`) e não inventa experiência.
 - **A loja como lugar.** Os mesmos clientes, a mesma loja, o mesmo "hoje" (10/11/2026). Dado com rosto
   se aprende melhor do que `cliente_01`.
 

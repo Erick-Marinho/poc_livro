@@ -9,9 +9,9 @@ const destino = (p) => ler(p).match(/http-equiv="refresh" content="0;url=([^"]+)
 
 test("a raiz leva à estante", () => assert.equal(destino("/index.html"), "/livros/"));
 
-test("/ciclo-de-vida/ abre o livro pelo prefácio, uma página que existe", () => {
+test("/ciclo-de-vida/ abre o livro pela introdução, uma página que existe", () => {
   const href = destino("/ciclo-de-vida/index.html");
-  assert.equal(href, "/ciclo-de-vida/00-prefacio/");
+  assert.equal(href, "/ciclo-de-vida/00-introducao/");
   assert.ok(existsSync(new URL(`dist${href}index.html`, raiz)));
 });
 
@@ -36,4 +36,9 @@ test("em toda página a marca leva à home, e as páginas do site têm o Início
     for (const a of doc.querySelectorAll(".topo-site a")) if (a.text === "Início") homes.add(a.getAttribute("href"));
   }
   assert.equal(homes.size, 1, `a marca e o Início apontam para lugares diferentes: ${[...homes].join(", ")}`);
+});
+
+test("o endereço antigo do prefácio leva à introdução", () => {
+  const html = readFileSync(new URL("../dist/ciclo-de-vida/00-prefacio/index.html", import.meta.url), "utf8");
+  assert.match(html, /url=\/ciclo-de-vida\/00-introducao/);
 });

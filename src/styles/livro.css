@@ -78,7 +78,7 @@ code { font: .84em var(--f-mono); background: var(--papel-2); padding: .08em .35
   .topo .nome { display: none }
 }
 
-/* assinatura do prefácio */
+/* assinatura da introdução */
 .assinatura { display: grid; gap: 2px; justify-items: end; margin: 2em auto 0; font: italic 18px/1.5 var(--f-texto) }
 .assinatura .quando { font: 14px var(--f-ui); font-style: normal; color: var(--ink-2) }
 

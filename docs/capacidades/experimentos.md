@@ -13,7 +13,7 @@ mesmo quando contraria o que se esperava. O nome passa a dizer isso: **Experimen
   de construir; o que vamos construir, mostrado antes; a construção na IDE, com o chat e ao menos uma aposta; o
   resultado medido, gravado e conferido; e o que a medição mostrou de inesperado, com o custo. Mais o que vale para
   tudo: a nota do que é inventado.
-- (25/10/2026, Erick) Sem voz dos autores, em livro e experimento: não faz sentido para a proposta.
+- (25/10/2026, Erick) Sem áudio nem narração (remete a curso); a opinião dos autores fica, em texto, com `Pendente`.
 
 ## Peças
 

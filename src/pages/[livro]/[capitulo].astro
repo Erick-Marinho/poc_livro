@@ -11,6 +11,9 @@ export async function getStaticPaths() {
   /* o placar (livros/<livro>/placar.json): cada marco aponta uma saída gravada, e o número sai dela */
   type MarcoBruto = { capitulo: number; saida: string; rotulo: string; quem: string; revela_com?: string };
   const placares = import.meta.glob<{ marcos: MarcoBruto[]; proximos?: { capitulo: number; pergunta: string }[] }>("../../../livros/*/placar.json", { eager: true, import: "default" });
+  /* o ciclo de vida do livro (livros/<livro>/figuras/ciclo.json), se houver: a fase de cada capítulo, acesa na abertura */
+  type Fase = { id: string; nome: string; capitulos: number[]; transversal?: boolean };
+  const ciclos = import.meta.glob<{ fases: Fase[] }>("../../../livros/*/figuras/ciclo.json", { eager: true, import: "default" });
   const todasSaidas = import.meta.glob<Record<string, { comando: string; saida: [string, string][] }>>("../../../livros/*/saidas.json", { eager: true, import: "default" });
   const doLivroArq = <T,>(mapa: Record<string, T>, livro: string) => Object.entries(mapa).find(([p]) => p.includes(`/livros/${livro}/`))?.[1];
   const todos = await getCollection("capitulos");
@@ -36,7 +39,7 @@ export async function getStaticPaths() {
         return { numero: p.numero, titulo: p.titulo, href: e && endereco(e), atual: e === entrada };
       }),
     ];
-    /* placar: os marcos até este capítulo (no prefácio, nenhum), com o número lido da saída gravada */
+    /* placar: os marcos até este capítulo (na introdução, nenhum), com o número lido da saída gravada */
     const bruto = doLivroArq(placares, livro);
     let placar: Placar | undefined;
     if (bruto) {
@@ -53,15 +56,20 @@ export async function getStaticPaths() {
       const seguinte = bruto.proximos?.find((p) => p.capitulo === (entrada.data.numero ?? 0) + 1);
       placar = { marcos, proximo: seguinte && ultimo ? { capitulo: seguinte.capitulo, pergunta: seguinte.pergunta.replace("{nota}", ultimo.nota) } : undefined };
     }
+    const doCiclo = doLivroArq(ciclos, livro);
+    const fase = entrada.data.tipo === "capitulo" ? doCiclo?.fases.find((f) => f.capitulos.includes(entrada.data.numero!)) : undefined;
+    if (doCiclo && entrada.data.tipo === "capitulo" && !fase) throw new Error(`figuras/ciclo.json de ${livro}: o capítulo ${entrada.data.numero} não está em nenhuma fase`);
+    const intro = doLivro.find((e) => e.data.tipo === "introducao");
+    const ciclo = doCiclo && fase ? { fases: doCiclo.fases.map(({ id, nome, transversal }) => ({ id, nome, transversal })), aceso: fase.id, mapa: intro && `${endereco(intro)}#mapa-do-ciclo` } : undefined;
     return {
       params: { livro, capitulo: entrada.id.split("/").pop()! },
-      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens, placar },
+      props: { entrada, anterior: vizinho(doLivro[i - 1]), proximo: vizinho(doLivro[i + 1]), itens, placar, ciclo },
     };
   });
 }
-const { entrada, anterior, proximo, itens, placar } = Astro.props;
+const { entrada, anterior, proximo, itens, placar, ciclo } = Astro.props;
 const { Content, headings } = await render(entrada);
 ---
-<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo} itens={itens} placar={placar}>
+<Capitulo capitulo={entrada} secoes={headings} anterior={anterior} proximo={proximo} itens={itens} placar={placar} ciclo={ciclo}>
   <Content />
 </Capitulo>

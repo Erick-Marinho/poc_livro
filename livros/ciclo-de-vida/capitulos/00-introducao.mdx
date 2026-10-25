@@ -1,7 +1,7 @@
 ---
 livro: O ciclo de vida de um agente
-tipo: prefacio
-titulo: Prefácio
+tipo: introducao
+titulo: Introdução
 lide: Fazer um agente funcionar uma vez é fácil. Difícil é ele continuar funcionando quando vira produto, com cliente de verdade do outro lado. Este livro é sobre essa segunda parte.
 assinatura:
   autores: [Victor Fontela, Erick Marinho]
@@ -9,6 +9,12 @@ assinatura:
 ---
 import Nota from "../../../src/components/livro/Nota.astro";
 import FiguraAgente from "../../../src/components/livro/FiguraAgente.astro";
+import Aposta from "../../../src/components/livro/Aposta.astro";
+import PareEPense from "../../../src/components/livro/PareEPense.astro";
+import MapaDoCiclo from "../../../src/components/livro/MapaDoCiclo.astro";
+import ciclo from "../figuras/ciclo.json";
+import ondeSePega from "../figuras/onde-se-pega.json";
+import sumario from "../sumario.json";
 import roteiroAgente from "../figuras/agente.json";
 import referenciaAgente from "../projeto/referencia.jsonl?raw";
 import clientesAgente from "../projeto/dados/clientes.json";
@@ -18,6 +24,8 @@ import politicaAgente from "../projeto/dados/politica.md?raw";
 ## Por que este livro existe
 
 Quase todo material sobre agentes termina no mesmo lugar: o agente respondeu uma pergunta, a tela mostrou a resposta, fim. É um bom começo, mas é o ponto em que o trabalho de verdade começa. Depois da primeira resposta vêm as perguntas que ninguém tinha previsto, a conta que cresce sem aviso, o cliente que pede o pedido de outra pessoa, a versão nova do modelo que melhora uma coisa e estraga outra.
+
+<Aposta dados={ondeSePega} pergunta="Cada um desses problemas é pego numa fase da vida do agente. Aposte em qual." />
 
 Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro que acompanhasse um agente do começo ao fim: antes do código, durante, e depois que ele vai para o ar. Em português, e com código que roda de verdade. Como não achamos, resolvemos escrever.
 
@@ -33,16 +41,13 @@ Bibliotecas de inteligência artificial mudam a cada poucos meses. Livro técnic
 
 Um agente só, do primeiro ao último capítulo: o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa. Ele responde onde está o pedido, explica como trocar um produto, abre chamado quando algo chega com defeito, e sabe a hora de passar a conversa para uma pessoa.
 
-A cada capítulo, o mesmo agente passa por uma fase da vida dele:
+A cada capítulo, o mesmo agente passa por uma fase da vida dele. As fases são as mesmas que a IBM, a Microsoft, a LangChain e a Salesforce descrevem, com nomes diferentes; o mapa junta as quatro. Clique numa fase para ver o que ela pergunta, o que o agente da loja ganha ali e em que capítulo.
 
-1. **O problema e o contrato:** o que ele faz e o que não faz, escrito antes de existir código.
-2. **O primeiro agente:** o ciclo de pensar, agir e responder, em LangGraph.
-3. **As ferramentas:** consultar pedido e abrir chamado.
-4. **Avaliar:** uma nota que diz se ele está melhorando.
-5. **Observar:** o que aconteceu em cada conversa, e quanto custou.
-6. **Quando dá errado:** as falhas que aparecem com o uso, e como achar a causa.
-7. **Governar:** dado pessoal, aprovação humana e registro de quem decidiu.
-8. **Evoluir:** trocar de modelo ou de instrução sem medo de piorar.
+<MapaDoCiclo ciclo={ciclo} sumario={sumario} numero="1" legenda="O ciclo de vida de um agente, e o capítulo de cada fase." />
+
+<PareEPense pergunta="No mapa, Avaliar vem depois de Construir. Por que, então, o capítulo 1 escreve a régua antes de existir agente?">
+Porque avaliar começa no planejamento. A régua nasce com o contrato, antes do código, e a fase de avaliar só a amplia, com conversas inteiras e erros com peso. Medir só depois de construir é tarde: não haveria como saber se o primeiro agente melhorou alguma coisa.
+</PareEPense>
 
 <FiguraAgente roteiro={roteiroAgente} referencia={referenciaAgente} clientes={clientesAgente} pedidos={pedidosAgente} politica={politicaAgente} />
 
@@ -59,6 +64,10 @@ Você vai precisar de um terminal, de Git e de Python no básico. Não é precis
 Não é um catálogo de ferramentas. Usamos LangGraph para o fluxo do agente, o GPT-6 Luna, da OpenAI, para pensar, e o Langfuse para observar. São escolhas, não dogmas: as ideias de cada capítulo valem com outras ferramentas, e sempre que uma escolha tiver um custo, vamos dizer qual é.
 
 Também não é um livro de promessas. Agente erra. O que dá para fazer é saber quando ele erra, quanto, e o que fazer com isso. Se em algum capítulo parecer que está fácil demais, desconfie, e procure o "Quando dá errado" mais à frente.
+
+<PareEPense pergunta="No atendimento da Casa Bem-te-vi, qual erro é pior: passar para uma pessoa uma pergunta que o agente sabia responder, ou responder uma que devia passar?">
+Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe; o segundo pode mostrar o pedido de um cliente a outro, como no caso R12 da régua. Por isso, no capítulo 4, os erros passam a ter peso.
+</PareEPense>
 
 ## Como ler
 

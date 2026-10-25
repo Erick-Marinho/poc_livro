@@ -1,0 +1,83 @@
+---
+/**
+ * O mapa do ciclo de vida de um agente: o caminho de ida (planejar → … → quando dá errado), as voltas (o erro vira caso
+ * da régua; evoluir volta a construir) e governar, que vale em todas. Cada fase diz o que pergunta, o que o agente da
+ * loja ganha ali e em que capítulo. Os dados vêm de `figuras/ciclo.json`; os capítulos, do `sumario.json`.
+ * Clicar numa fase só abre o que ela diz: não é ação do leitor (docs/RITMO.md). No modo direto, as fases aparecem todas.
+ */
+type Fase = { id: string; nome: string; capitulos: number[]; pergunta: string; ganha: string; nas_fontes: string; transversal?: boolean };
+type Ciclo = { fases: Fase[]; fontes: { nome: string; titulo: string; url: string }[] };
+interface Props { ciclo: Ciclo; sumario: { capitulos: { numero: number; titulo: string }[] }; numero: string; legenda: string; aqui?: string }
+const { ciclo, sumario, numero, legenda, aqui = "planejar" } = Astro.props;
+const titulo = (n: number) => sumario.capitulos.find((c) => c.numero === n)?.titulo ?? (() => { throw new Error(`MapaDoCiclo: o capítulo ${n} não está no sumário`); })();
+const fase = (id: string) => ciclo.fases.find((f) => f.id === id) ?? (() => { throw new Error(`MapaDoCiclo: a fase ${id} não está no ciclo.json`); })();
+const ida = ["planejar", "construir", "avaliar", "por-no-ar", "observar", "errado"].map(fase);
+const evoluir = fase("evoluir"), governar = fase("governar");
+const caps = (f: Fase) => f.capitulos.map((n) => `cap. ${n}`).join(" e ");
+---
+<figure class="mc" id="mapa-do-ciclo" data-mapa-ciclo>
+  <div class="mc-quadro">
+    <ol class="mc-ida">
+      {ida.map((f) => (
+        <li><button type="button" class="mc-fase" data-fase={f.id} aria-pressed={f.id === aqui ? "true" : "false"}>
+          <b>{f.nome}</b><small>{caps(f)}</small></button></li>
+      ))}
+    </ol>
+    <div class="mc-voltas">
+      <p class="mc-volta"><span aria-hidden="true">↩</span> de <b>Quando dá errado</b> para <b>Avaliar</b>: a falha vira caso da régua</p>
+      <p class="mc-volta"><span aria-hidden="true">↻</span>
+        <button type="button" class="mc-fase mc-fase-linha" data-fase={evoluir.id} aria-pressed={evoluir.id === aqui ? "true" : "false"}><b>{evoluir.nome}</b><small>{caps(evoluir)}</small></button>
+        de Observar de volta a Construir, medido pela mesma régua</p>
+    </div>
+    <button type="button" class="mc-fase mc-governar" data-fase={governar.id} aria-pressed={governar.id === aqui ? "true" : "false"}>
+      <b>{governar.nome}</b><small>{caps(governar)} · vale em todas as fases</small></button>
+    <div class="mc-detalhes">
+      {ciclo.fases.map((f) => (
+        <div class="mc-detalhe" data-detalhe={f.id} hidden={f.id !== aqui}>
+          <p class="mc-d-nome">{f.nome} <span>· {f.capitulos.length > 1 ? "capítulos" : "capítulo"} {f.capitulos.map((n) => titulo(n) === f.nome ? `${n}` : `${n} (${titulo(n)})`).join(" e ")}</span></p>
+          <p class="mc-d-pergunta">{f.pergunta}</p>
+          <p class="mc-d-ganha"><b>O agente da loja ganha:</b> {f.ganha}</p>
+          <p class="mc-d-fontes">Nas referências: {f.nas_fontes}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+  <figcaption><b>Figura {numero}</b> · {legenda} Referências: {ciclo.fontes.map((r, i) => <>{i ? ", " : ""}<a href={r.url} target="_blank" rel="noopener">{r.nome}</a></>)}.</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-mapa-ciclo]").forEach((fig) => {
+    const botoes = [...fig.querySelectorAll<HTMLButtonElement>("[data-fase]")];
+    botoes.forEach((b) => b.addEventListener("click", () => {
+      botoes.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      fig.querySelectorAll<HTMLElement>("[data-detalhe]").forEach((d) => { d.hidden = d.dataset.detalhe !== b.dataset.fase; });
+    }));
+  });
+</script>
+
+<style is:global>
+  .mc { margin: 1.8em auto 2em }
+  .mc-quadro { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 16px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui) }
+  .mc-ida { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px }
+  .mc-ida li { position: relative; min-width: 0 }
+  .mc-ida li + li::before { content: "→"; position: absolute; left: -15px; top: 50%; transform: translateY(-50%); color: var(--ink-2); font-size: 14px }
+  .mc-fase { width: 100%; display: grid; gap: 2px; text-align: left; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 8px 10px; cursor: pointer; font: inherit; color: var(--ink) }
+  .mc-fase b { font-weight: 600; font-size: 14.5px; line-height: 1.25 } .mc-fase small { font: 12px var(--f-mono); color: var(--ink-2) }
+  .mc-fase:hover { border-color: var(--acento) }
+  .mc-fase[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .mc-voltas { display: grid; gap: 6px }
+  .mc-volta { margin: 0; font-size: 14px; line-height: 1.7; color: var(--ink-2) }
+  .mc-volta > span { color: var(--aviso); font-size: 16px; margin-right: 4px }
+  .mc-fase-linha { width: auto; display: inline-flex; gap: 6px; align-items: baseline; padding: 2px 10px; margin-right: 4px; vertical-align: baseline }
+  .mc-governar { background: var(--papel-2); grid-template-columns: auto 1fr; align-items: baseline; column-gap: 10px }
+  .mc-detalhes { border-top: 1px solid var(--linha); padding-top: 10px }
+  .mc-detalhe p { margin: 0 0 4px } .mc-d-nome { font-weight: 600 } .mc-d-nome span { font-weight: 400; color: var(--ink-2); font-size: 14px }
+  .mc-d-pergunta { font: italic 17px/1.45 var(--f-texto) } .mc-d-fontes { font-size: 13px; color: var(--ink-2) }
+  .mc figcaption { margin-top: 8px; font: 13.5px/1.5 var(--f-ui); color: var(--ink-2) }
+  @media (max-width: 760px) {
+    .mc-ida { grid-template-columns: 1fr; gap: 14px }
+    .mc-ida li + li::before { content: "↓"; left: 50%; top: -14px; transform: translateX(-50%) }
+  }
+  /* modo direto: todas as fases, uma embaixo da outra */
+  html[data-direto] .mc-detalhe { display: block !important; margin-bottom: 10px }
+</style>

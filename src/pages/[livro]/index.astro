@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Redirecionar from "../../components/Redirecionar.astro";
 
-/** /<livro>/ abre o livro pelo primeiro texto dele (o prefácio, se houver), em vez de dar em nada. */
+/** /<livro>/ abre o livro pelo primeiro texto dele (a introdução, se houver), em vez de dar em nada. */
 export async function getStaticPaths() {
   const textos = (await getCollection("capitulos")).sort((a, b) => (a.data.numero ?? 0) - (b.data.numero ?? 0));
   const livros = [...new Set(textos.map((t) => t.id.split("/")[0]))];

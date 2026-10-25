@@ -1,5 +1,5 @@
 /** O formato de um capítulo (docs/FORMATO.md): as partes na ordem, uma IDE só e dentro da mão na massa, o fecho completo.
- *  Lê o .mdx direto, sem montar a página. O prefácio não é capítulo e fica de fora. */
+ *  Lê o .mdx direto, sem montar a página. A introdução não é capítulo e fica de fora. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";

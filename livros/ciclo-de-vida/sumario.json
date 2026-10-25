@@ -4,9 +4,10 @@
     { "numero": 2, "titulo": "O primeiro agente" },
     { "numero": 3, "titulo": "As ferramentas" },
     { "numero": 4, "titulo": "Avaliar" },
-    { "numero": 5, "titulo": "Observar" },
-    { "numero": 6, "titulo": "Quando dá errado" },
-    { "numero": 7, "titulo": "Governar" },
-    { "numero": 8, "titulo": "Evoluir" }
+    { "numero": 5, "titulo": "Pôr no ar" },
+    { "numero": 6, "titulo": "Observar" },
+    { "numero": 7, "titulo": "Quando dá errado" },
+    { "numero": 8, "titulo": "Governar" },
+    { "numero": 9, "titulo": "Evoluir" }
   ]
 }
