@@ -31,7 +31,7 @@ test("a aposta usa os problemas do primeiro parágrafo, e cada resposta é uma f
 
 test("a página tem a aposta, o mapa com as oito fases e as quatro referências", () => {
   assert.equal([...html.matchAll(/class="apo-msg"/g)].length, 4);
-  assert.equal([...html.matchAll(/data-detalhe="/g)].length, ciclo.fases.length);
+  assert.equal([...html.matchAll(/data-cartao="/g)].length, ciclo.fases.length);
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
