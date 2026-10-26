@@ -1,6 +1,6 @@
 # Para o Erick — continuidade e conclusão dos exercícios
 
-25/10/2026. Etapa 3 implementada, **aguardando revisão**. A etapa 2 continua aberta, esperando o critério de
+25/10/2026. Etapa 3 implementada, **aguardando revisão**. Commit de produto: `872f71e`. A etapa 2 continua aberta, esperando o critério de
 `sinal.md` e os leitores; não houve leitura observada.
 
 (redação: GPT-6)
