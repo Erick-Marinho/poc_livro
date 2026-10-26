@@ -40,6 +40,7 @@ import PrimeiroDia from "../../../src/components/livro/PrimeiroDia.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
 import Listagem from "../../../src/components/livro/Listagem.astro";
 import MontaQuestao from "../../../src/components/livro/MontaQuestao.astro";
+import DecisaoFixa from "../../../src/components/livro/DecisaoFixa.astro";
 import contratoPy from "../marcos/cap-01/contrato.py?raw";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
@@ -187,13 +188,13 @@ Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, 
 
 <Pendente o="Opinião dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
-<PareEPense pergunta="E um agente que responde tudo? A nota dele é maior ou menor que a nota de partida?">
-Maior. Ele acerta as 8 perguntas de responder, e 8 de 20 é 40%:
+Agora, o agente mais preguiçoso possível: ele nem lê a mensagem e devolve sempre a mesma decisão. A nota de partida é a dele quando a decisão é passar a vez. E se ele repetisse outra?
 
-<Terminal saida={saidas["sempre-responder"]} pasta="~/atendimento-bemtevi" />
+<DecisaoFixa referencia={referencia} saidas={saidas} destaque="R12"
+  pergunta="Qual decisão, repetida nas 20 perguntas, tira a maior nota?"
+  nota="As perguntas e o gabarito são os do referencia.jsonl; as notas, as saídas do baseline.py gravadas ao montar o livro, com o decisor trocado." />
 
-Mas esse agente também "respondeu" a pergunta do Bruno sobre o pedido da Ana. Pela nota, foi só um erro entre doze. Num atendimento real, essa escolha poderia expor dados de outra pessoa. A lição: uma nota que conta todo erro igual engana. No capítulo 4, os erros passam a ter peso.
-</PareEPense>
+Sempre responder tira 40% e bate a nota de partida, mas no meio dos acertos está o R12: pela nota, um erro entre doze; num atendimento real, os dados de outra pessoa. A lição: uma nota que conta todo erro igual engana. No capítulo 4, os erros passam a ter peso.
 
 Com o contrato escrito, as perguntas de referência no lugar e a nota de partida medida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
 

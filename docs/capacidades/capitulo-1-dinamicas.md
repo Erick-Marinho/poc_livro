@@ -25,33 +25,37 @@ ser iguais às do capítulo 2 (26/10/2026).
 | 3 | 1.1 | Quem decide, num controle deslizante | arrasta de fluxo fixo a vários agentes e vê quem decide cada passo | agente é uma escala de quanto o modelo decide |
 | 4 | 1.2 | O dia seguinte, animado | toca ou rola: o agente apressado passa nos testes de uma tarde e erra as mensagens do dia seguinte | sem gabarito, não há como saber que errou |
 
-## Etapa atual: 1 — monte a sua primeira questão, no 1.5
+## Etapa atual: 2 — a decisão fixa, no 1.7
+
+A etapa 1 fechou com o ok do Erick (registro abaixo). A lição dela vale para as próximas: uma coisa por vez no mesmo
+espaço.
 
 ### O que muda
 
-- Uma dinâmica nova (`questao/`): uma mensagem do primeiro dia (com "outra mensagem" para trocar) e, embaixo, a linha
-  dela no `referencia.jsonl` com três buracos: decisão, motivo e de onde vem a resposta. Uma pergunta por vez; cada
-  resposta preenche o seu buraco, que acende na linha. O contrato confere o que entra: barra o motivo curto e o caso
-  que precisa dos pedidos sem pedido, com a mensagem da regra. No fim, aceita a linha e a compara com o gabarito da
-  loja: se a decisão é outra, diz que o contrato confere a forma, não a decisão.
-- As regras não são reescritas à mão: saem do `contrato.py` (o padrão do id e do pedido, o tamanho mínimo da pergunta
-  e do motivo, as decisões, as fontes e as duas regras do `model_validator`, com as mensagens dele). Se o contrato
-  mudar e a figura não souber ler, o build falha.
-- A dinâmica toma o lugar da listagem das duas linhas do `referencia.jsonl`; a listagem do `Enum` fica.
-- No modo direto, a questão do lençol (R10) aparece preenchida e aceita, sem pedir nada.
+- Uma dinâmica nova (`chute/`) no lugar do pare e pense "E um agente que responde tudo?": as 20 perguntas da prova
+  viram 20 quadradinhos, agrupados pela decisão do gabarito. O leitor escolhe a decisão que um agente que nem lê a
+  mensagem repete; os quadradinhos acendem (✓ onde o gabarito é aquela decisão, ✗ nos outros) e a nota aparece. Ele
+  pode tentar as outras três com um clique. A nota de uma decisão fixa é o tamanho da fatia dela.
+- No "responder", o maior placar (40%), o R12 ganha um balão: o Bruno pergunta do pedido da Ana; responder poderia
+  mostrar a compra dela a ele, e a nota conta isso como um erro igual aos outros onze.
+- O que é do projeto vem do projeto: os quadradinhos e os grupos, do `referencia.jsonl`; a nota de cada decisão, das
+  saídas gravadas do `baseline.py` com o decisor trocado (`r01-nota-de-partida`, `r01-nota-sempre-*`, as mesmas da
+  IDE do 1.6). Se a conta dos quadradinhos não bater com a saída gravada, o build falha.
+- A lição fica no texto, depois da figura: uma nota que conta todo erro igual engana; no capítulo 4, os erros
+  passam a ter peso.
+- No modo direto, a figura abre no "responder", com o balão do R12.
 
 ### Verificação
 
-- Teste das regras: lidas do `contrato.py`; cada caso do `referencia.jsonl` passa nelas; cada regra barra o que deve
-  (id sem dois dígitos, pedido sem e-mail, pedido fora do padrão, caso que precisa dos pedidos sem pedido, motivo
-  curto); a linha gerada tem as chaves na ordem do arquivo.
-- `npm run ritmo`, `npm test` e capturas no computador e no celular, com uma questão barrada e uma aceita.
+- Teste: os grupos e os totais saem do `referencia.jsonl` (8, 2, 5, 5); cada nota bate com a saída gravada; uma saída
+  que não bate não monta; o balão do R12 só aparece no "responder".
+- `npm run ritmo`, `npm test` e capturas no computador e no celular: antes de escolher, no "passar" e no "responder".
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `f838161` | `testes/questao.test.mjs` (6): regras lidas do `contrato.py`, as 20 questões passam e a linha gerada é a do arquivo, cada regra barra o que deve; `npm test` 149/149; ritmo do 1.5: 87 → MontaQuestao → 107 → Classificador; capturas a 1280 e 390 px com cliques e digitação de verdade: barrada (id "R1"), aceita mas diferente do gabarito (recusar), aceita e igual (abrir chamado); modo direto com o R10 preenchido e aceito | substituída pela 2ª versão |
-| 1 (2ª versão) | `3cd795b` | Uma pergunta por vez, com a linha com buracos (o Erick: "muita informação no espaço"). `npm test` 149/149; ritmo do 1.5: 85 → MontaQuestao → 107; capturas a 1280 e 390 px: decisão marcada com o buraco seguinte aceso, motivo "ok" barrado pelo contrato, aceita mas diferente do gabarito (recusar), refeita e igual (abrir chamado) | aguardando revisão |
+| 1 (2ª versão) | `3cd795b` | Uma pergunta por vez, com a linha com buracos (o Erick: "muita informação no espaço"). `npm test` 149/149; ritmo do 1.5: 85 → MontaQuestao → 107; capturas a 1280 e 390 px: decisão marcada com o buraco seguinte aceso, motivo "ok" barrado pelo contrato, aceita mas diferente do gabarito (recusar), refeita e igual (abrir chamado) | Erick, 26/10/2026 |
 
 (redação: Claude Opus 5.5)

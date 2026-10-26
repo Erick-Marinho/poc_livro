@@ -1,0 +1,55 @@
+---
+/**
+ * A decisão fixa, no 1.7 (docs/capacidades/capitulo-1-dinamicas.md, etapa 2): a ilha chute/DecisaoFixa.tsx. As
+ * perguntas e o gabarito saem do referencia.jsonl, e a nota de cada decisão, das saídas gravadas (chute/chute.ts); se a
+ * conta não bate, não monta. Sem JS, a nota gravada de cada decisão.
+ */
+import DecisaoFixa from "./chute/DecisaoFixa";
+import { montarChute, porcento } from "./chute/chute.ts";
+import { DECISOES } from "../../lib/referencia.ts";
+
+interface Props { referencia: string; saidas: Record<string, any>; pergunta: string; destaque: string; nota: string }
+const { referencia, saidas, pergunta, destaque, nota } = Astro.props;
+const chute = montarChute(referencia, saidas, Object.keys(DECISOES));
+const r = chute.perguntas.find((p) => p.id === destaque);
+if (!r || r.decisao === "responder") throw new Error(`DecisaoFixa: o destaque ${destaque} tem que ser um erro do "sempre responder"`);
+const nomes = Object.fromEntries(Object.entries(DECISOES).map(([k, v]) => [k, v.nome]));
+---
+<figure class="decisao-fixa" data-decisao-fixa>
+  <DecisaoFixa client:visible={{ rootMargin: "400px" }} {...chute} nomes={nomes} pergunta={pergunta} destaque={destaque} />
+  <noscript><ul>{chute.ordem.map((d) => <li>sempre {nomes[d]}: {porcento(chute.notas[d])}</li>)}</ul></noscript>
+  <figcaption>{nota}</figcaption>
+</figure>
+
+<style is:global>
+  .decisao-fixa { margin: 1.8em auto 2em }
+  .decisao-fixa figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .df { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 14px 16px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui) }
+  .df p { margin: 0 }
+  .df-rotulo { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .df-pergunta { font: 600 16.5px/1.4 var(--f-ui) }
+  .df-opcoes { display: flex; flex-wrap: wrap; gap: 8px }
+  .df-opcoes button { border: 1px solid var(--linha); background: var(--papel); border-radius: 999px; padding: 5px 14px; cursor: pointer; font: 500 14px var(--f-ui); color: var(--ink) }
+  .df-opcoes button:hover { border-color: var(--acento) }
+  .df-opcoes button[aria-checked="true"] { color: var(--papel); background: var(--ink); border-color: transparent }
+  .df-opcoes button span { opacity: .75 }
+  .df-prova { --df-q: 36px; display: grid; gap: 6px; padding: 4px 0 }
+  .df-grupo { display: grid; grid-template-columns: 9.5em 1fr; align-items: center; gap: 4px 10px }
+  @media (max-width: 520px) { .df-grupo { grid-template-columns: 1fr } }
+  .df-quadros { display: flex; gap: 4px }
+  .df-q { position: relative; flex: 0 0 var(--df-q); height: var(--df-q); border-radius: 7px; border: 1.5px solid var(--linha); background: var(--papel); display: grid; place-items: center;
+    font: 600 10.5px var(--f-mono); color: var(--ink-2); transition: background .35s, color .35s, border-color .35s, opacity .35s }
+  .df-q i { position: absolute; top: 1px; right: 4px; font: 700 10px var(--f-ui); font-style: normal }
+  .df-certo { background: var(--ok); border-color: var(--ok); color: var(--papel) }
+  .df-errado { opacity: .55; color: var(--aviso); border-style: dashed }
+  .df-marca { opacity: 1; border: 2.5px solid var(--aviso); background: var(--papel); color: var(--aviso); box-shadow: 0 0 0 3px rgba(180, 90, 30, .18) }
+  .df-nome { font: 13.5px var(--f-ui); color: var(--ink-2) } .df-nome b { color: var(--ink); font-weight: 600 }
+  .df-antes { font-size: 13.5px; color: var(--ink-2) }
+  .df-nota { display: grid; gap: 4px; border-top: 1px solid var(--linha); padding-top: 10px }
+  .df-nota b { font-size: 17px }
+  .df-tente { color: var(--acento) }
+  .df-gravado { font-size: 12.5px; color: var(--ink-2) } .df-gravado code { font-size: 12px } .df-gravado span { font-style: italic }
+  .df-balao { border: 2px solid var(--aviso); border-radius: 12px; background: var(--papel); padding: 10px 14px; display: grid; gap: 4px }
+  .df-balao q { font: italic 16px/1.45 var(--f-texto) }
+  @media (prefers-reduced-motion: reduce) { .df-q { transition: none } }
+</style>
