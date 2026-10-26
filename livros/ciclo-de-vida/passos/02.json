@@ -74,7 +74,7 @@
       "depois": [
         "`montar` ainda não devolve nada. Faltam os caminhos e o grafo."
       ],
-      "pedido": "O primeiro nó é o que decide. E deixa o modelo vir de fora, que eu quero testar sem pagar."
+      "pedido": "O primeiro nó é o que decide. E deixa o modelo vir de fora, que eu quero ensaiar sem pagar o modelo."
     },
     {
       "id": "caminhos",
@@ -100,7 +100,7 @@
     {
       "id": "testar-sem-pagar",
       "secao": "2.5b",
-      "titulo": "Testar sem pagar",
+      "titulo": "O ensaio com o modelo falso",
       "curta": "o modelo falso",
       "de": 7,
       "ate": 8,

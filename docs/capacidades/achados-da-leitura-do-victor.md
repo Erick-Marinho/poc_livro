@@ -28,6 +28,31 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | 2 | O 1.4 também está abstrato e nada intuitivo (Erick, 26/10/2026). | O contrato chega como continuação da cena da colega, com uma imagem que o iniciante já conhece, e sem conceitos que só servem em capítulos futuros. |
 | 3 | O 1.5 evolui sem mostrar um contrato, abstrato, com exemplos desconexos: "é um gabarito, mas como ele é em código?" (Erick, 26/10/2026). | O leitor vê o gabarito virar código real antes de escrevê-lo, e os exemplos são os do primeiro dia. |
 | 4 | A nota e a régua estão abstratas: "precisam de uma explicação óbvia e intuitiva" (Erick, 26/10/2026). | Os dois termos chegam com a imagem da prova: a régua é corrigir pelo gabarito e contar os acertos; a nota é a conta; a nota de partida é a de quem chuta. |
+| 5 | "O que é o testar sem pagar? Não está intuitivo pra quem vê pela primeira vez" (Erick, 26/10/2026). | Quem chega pela primeira vez entende por que um teste custaria dinheiro e o que é o modelo falso, com uma imagem do dia a dia. |
+
+## Etapa 5 — o ensaio sem pagar, no 2.3
+
+### O que travava
+
+- O título "Testar sem pagar" supunha que o leitor sabe que cada pergunta ao modelo é cobrada; o texto dizia "o
+  modelo de verdade é o pior ator para isso" e o "modelo falso" chegava sem imagem.
+
+### O que muda
+
+- O 2.3 vira "Ensaiar com um modelo de mentira". O texto diz, concreto, por que custaria: cada consulta ao GPT-6 Luna
+  é cobrada pela OpenAI, como um taxímetro, centavos por pergunta; um teste é executado toda vez que você muda uma
+  linha, e o modelo pode responder diferente, então um teste pode falhar sem você mexer em nada. E o modelo falso:
+  um ator que recebe o roteiro antes ("quando perguntarem, responda passar a vez") e o segue à risca, sem chamar
+  ninguém e sem custar nada.
+- Os dois primeiros balões da figura e o cartão do modelo de verdade dizem o mesmo; a lista do começo do capítulo
+  diz "ensaia o grafo com um modelo de mentira"; na IDE, a parte 2.5b e o passo 6 se chamam "O ensaio com o modelo
+  falso".
+
+### Verificação
+
+- `npm run ritmo`: 166 palavras até a figura do 2.3. `npm test`: 143 testes do livro (o de vocabulário pegou um
+  "roda", trocado por "é executado").
+- [Captura](../relatorios/capturas/achados-da-leitura-do-victor-etapa-5/) dos dois primeiros balões, no computador e no celular.
 
 ## Etapa 4 — a nota e a régua, pela prova
 
@@ -163,5 +188,6 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | 2 | `2972d5d`, `653bacc` | o 1.4 com o bilhete (prompt) e o gabarito (contrato) que a colega deixa; sem a aposta das camadas; 159 · 63 · 153 palavras entre as ações (sem aviso); `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/). | Erick, 26/10/2026 |
 | 3 | `998c72a` | o `Enum` e dois casos reais no 1.5; tabela com o primeiro dia; R13 no Classificador; 199 palavras até a ação; `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/). | Erick, 26/10/2026 |
 | 4 | `62ab7d7` | A nota e a régua pela imagem da prova, no 1.4, no 1.6, na IDE, no glossário e nas figuras do 2.4 e do 2.6; balões de baixo crescendo para cima; `npm test`: 143 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-4/). | aguardando revisão |
+| 5 | COMMIT | O 2.3 como ensaio com um modelo de mentira, com o custo dito concreto; balões, IDE e lista do capítulo no mesmo tom; `npm test`: 143 testes do livro e 5 da gravação; [captura](../relatorios/capturas/achados-da-leitura-do-victor-etapa-5/). | aguardando revisão |
 
 (redação: Claude Opus 5.5)

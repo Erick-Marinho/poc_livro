@@ -6,7 +6,7 @@ lide: O modelo entra, mas não manda sozinho. O código desenha os caminhos, o c
 neste:
   - monta o agente como um grafo da LangGraph, com estado, nós e setas;
   - faz o modelo responder no formato do contrato, e não em texto solto;
-  - testa o grafo sem pagar nada, com um modelo falso;
+  - ensaia o grafo com um modelo de mentira, que não chama a OpenAI nem custa nada;
   - corrige a prova do agente com o GPT-6 Luna pelo mesmo gabarito, e compara com a nota de partida.
 partida:
   texto: "Ponto de partida: o projeto como o capítulo 1 terminou."
@@ -66,11 +66,13 @@ O modelo responde preenchendo esse molde, e o grafo lê a caixa marcada para esc
 
 <Pendente o="Opinião dos autores: uma vez em que texto solto de um modelo quebrou o código que vinha depois" parte="dos autores" />
 
-## 2.3 Testar sem pagar
+## 2.3 Ensaiar com um modelo de mentira
 
-Antes de pôr o substituto diante de cliente de verdade, a loja faria um ensaio. Com o agente é igual: o grafo precisa de um ensaio antes de ir para o ar, e o modelo de verdade é o pior ator para isso.
+Cada vez que o agente consulta o GPT-6 Luna, a OpenAI cobra, como um taxímetro: centavos por pergunta. Só que um teste é executado toda vez que você muda uma linha, dezenas de vezes por dia. E o modelo pode responder diferente de uma vez para outra: um teste que passou agora pode falhar daqui a pouco sem você mexer em nada.
 
-<EnsaioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} testes={testeAgente} pytest={saidas["r02-pytest"]} numero="2.3" legenda="O ensaio do substituto: testar sem pagar, com o modelo falso. O grafo é o real; os dois ensaios são os do test_agente.py, e a saída é a do pytest, gravada." />
+Para conferir o desenho, cada balcão ligado e cada caminho fazendo o que deve, não precisa de um modelo inteligente. Precisa de um que diga exatamente o que você mandar. É o **modelo falso**: como um ator que recebe o roteiro antes ("quando perguntarem, responda passar a vez") e o segue à risca, sem chamar ninguém e sem custar nada.
+
+<EnsaioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} testes={testeAgente} pytest={saidas["r02-pytest"]} numero="2.3" legenda="O ensaio com o modelo de mentira: ele responde o que se combinou, sem chamar a OpenAI e sem custo. O grafo é o real; os dois ensaios são os do test_agente.py, e a saída é a do pytest, gravada." />
 
 O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso da LangChain não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes da LangChain recomenda.
 
@@ -90,7 +92,7 @@ O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com u
 
 O projeto do capítulo 1 continua aqui: o contrato, as perguntas e a régua. Em dez passos, ele ganha o agente, os testes do grafo e a medida com o modelo de verdade. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Um dos passos dá errado de verdade, e um deles chama o GPT-6 Luna: na sua máquina, esse custa centavos.
 
-<IdeCapitulo roteiro={roteiro02} estados={estados02} saidas={saidas} capitulo={passos02} glossario={glossario} anteriores={[estados01]} secoes={{ "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" }} numero="2.5" legenda="O capítulo 2 numa IDE só, do projeto do capítulo 1 à nota do agente. O código, os comandos e o erro são os do projeto real; a resposta do modelo foi gravada uma vez e é repetida pelo livro." />
+<IdeCapitulo roteiro={roteiro02} estados={estados02} saidas={saidas} capitulo={passos02} glossario={glossario} anteriores={[estados01]} secoes={{ "2.5a": "O agente", "2.5b": "O ensaio com o modelo falso", "2.5c": "A nota do agente" }} numero="2.5" legenda="O capítulo 2 numa IDE só, do projeto do capítulo 1 à nota do agente. O código, os comandos e o erro são os do projeto real; a resposta do modelo foi gravada uma vez e é repetida pelo livro." />
 
 ## 2.6 O que ficou de pé
 

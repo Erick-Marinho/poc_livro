@@ -93,7 +93,7 @@ export const EnsaioAnimado: React.FC<Props> = ({ ensaio: e, desenho }) => {
         display: "grid", alignContent: "center", gap: 3, font: `400 ${fonte}px/1.4 ${testes ? mono : ui}` }}>
         {!falso ? <>
           {titulo("o modelo de verdade", cor.aviso)}
-          <span>Cada chamada custa, leva tempo e pode responder diferente da última.</span>
+          <span>Cada pergunta é cobrada pela OpenAI, leva tempo e pode ter resposta diferente da última.</span>
         </> : testes ? <>
           <span style={{ color: "#8b93a1" }}>$ {e.comando}</span>
           {e.linhas.map((l) => <span key={l} style={{ color: /passed/.test(l) ? "#6fcf97" : undefined, fontWeight: /passed/.test(l) ? 700 : 400 }}>{l}</span>)}

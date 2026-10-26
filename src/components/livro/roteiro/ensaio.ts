@@ -1,6 +1,6 @@
 /**
- * O ensaio do substituto, no 2.3 (docs/capacidades/capitulo-2-em-cenas.md, etapa 3): testar sem pagar, com o modelo
- * falso. O que a animação mostra vem do projeto real: o grafo (por roteiro.ts), os testes do test_agente.py (o que se
+ * O ensaio do substituto, no 2.3 (docs/capacidades/capitulo-2-em-cenas.md, etapa 3): ensaiar com um modelo de mentira, o
+ * modelo falso, sem chamar a OpenAI. O que a animação mostra vem do projeto real: o grafo (por roteiro.ts), os testes do test_agente.py (o que se
  * combina com o modelo falso e a pergunta de cada um) e a saída gravada do pytest (saidas.json, r02-pytest). Puro de
  * propósito: o teste do livro chama isto direto, e a montagem falha se os testes mudarem e a figura não.
  */
@@ -60,8 +60,8 @@ export type Balao = { de: number; ate: number; alvo: Alvo; texto: string };
 export function baloes(e: Montado): Balao[] {
   const nome = (id: string) => e.balcoes.find((b) => b.id === id)!.rotulo;
   return [
-    { de: 0.4, ate: 3.4, alvo: "decidir", texto: "Com o modelo de verdade, cada ensaio custa, demora e pode responder diferente a cada vez. Assim não dá para conferir o desenho." },
-    { de: 3.4, ate: 6.6, alvo: "roteiro", texto: "Para o ensaio, um modelo falso: ele devolve, na ordem, as respostas que você combinou, sem chamar ninguém." },
+    { de: 0.4, ate: 3.4, alvo: "decidir", texto: "Com o modelo de verdade, cada pergunta é cobrada pela OpenAI, demora e pode ter resposta diferente a cada vez. Um teste assim custa, e pode falhar sem você ter mexido em nada." },
+    { de: 3.4, ate: 6.6, alvo: "roteiro", texto: "No lugar dele, um modelo de mentira, o modelo falso: como um ator com o roteiro na mão, ele devolve, na ordem, as respostas que você combinou. Não chama ninguém e não custa nada." },
     { de: 6.6, ate: 10.4, alvo: "balcao-a", texto: `Combina-se “escolha ${nome(e.fixo.decisao)}”. O caminho de ${nome(e.fixo.decisao)} não pede mais nada ao modelo: o falso só tinha a escolha, e o teste passa.` },
     { de: 10.4, ate: 14.2, alvo: "balcao-b", texto: `Combina-se “escolha ${nome(e.escrito.decisao)}, e escreva ‘${e.escrito.textos[0]}’”. Confere-se que a frase chegou.` },
     { de: 14.2, ate: SEGUNDOS + 1, alvo: "balcoes", texto: `Um teste por caminho, e mais os do contrato, sem gastar um centavo: ${e.passou}.` },
