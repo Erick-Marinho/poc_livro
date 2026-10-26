@@ -37,7 +37,7 @@ import passos01 from "../passos/01.json";
 import glossario from "../glossario.json";
 import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
-import Pilhas from "../../../src/components/livro/Pilhas.astro";
+import PrimeiroDia from "../../../src/components/livro/PrimeiroDia.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
@@ -94,15 +94,23 @@ Por isso este livro começa sem agente. Neste capítulo você vai escrever o que
 
 ## 1.3 As perguntas que chegam
 
-O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. A loja é inventada, e todos os clientes e pedidos também. Antes de pensar no agente, pense em você: é o seu primeiro dia no atendimento, e estas mensagens chegam.
+O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. Antes de pensar no agente, pense em você: é o seu primeiro dia no atendimento, e uma colega que atende ali há anos senta ao seu lado.
 
-<Pilhas referencia={referencia} casos={["R03", "R06", "R07", "R10", "R15", "R16"]} acoes={{ responder: "Respondo eu mesmo", abrir_chamado: "Abro um chamado", recusar: "Digo que não posso, e por quê", passar: "Chamo alguém da equipe" }} exemplo={{ id: "R03", texto: "você olha o pedido no sistema, confere que o e-mail é da Ana e diz quando chegou." }} pergunta="O que você faz com cada mensagem? A primeira já está feita.">
-Pedido, entrega e frigideira parecem três assuntos diferentes, mas com os três você faz a mesma coisa: responde, com o que está nos dados da loja ou na política de atendimento. O assunto muda; o que você faz, não.
+<PrimeiroDia referencia={referencia} casos={["R03", "R06", "R07", "R10", "R15", "R17"]} exemplo="R03"
+  acoes={{ responder: "Respondo", abrir_chamado: "Abro um chamado", recusar: "Digo que não posso", passar: "Chamo alguém da equipe" }}
+  porque={{
+    R03: "Olho o pedido no sistema: é da Ana, o e-mail confere, e ele foi entregue em 03/11.",
+    R06: "Está na política de entrega: a loja entrega em todo o Brasil.",
+    R07: "Está no catálogo: vai ao forno até 180 °C, sem o cabo de silicone.",
+    R10: "O lençol chegou com defeito, o pedido é do Diego, e ele ainda está nos 90 dias para reclamar.",
+    R15: "E explico: dado pessoal de cliente a loja não passa a ninguém, nem a parente.",
+    R17: "Todo reembolso passa pela aprovação de uma pessoa da equipe, e essa pessoa não sou eu.",
+  }}
+  pergunta="Chegam estas mensagens. Em cada uma, o que você faria? A colega diz em seguida o que ela faz. A primeira, ela já mostrou.">
+Repare no que a colega fez, e no que ela não fez. Ela não pensou no assunto de cada mensagem: pedido, entrega, frigideira, lençol. Pensou no que fazer. E para seis mensagens diferentes houve só quatro coisas a fazer: responder, abrir um chamado, dizer que não pode, chamar alguém.
 
-As outras três pedem, cada uma, outra coisa. O lençol que descosturou pede uma ação: abrir um chamado de troca. O CPF da prima você não pode dar, e diz por quê. E quem pede para falar com um atendente de verdade não é caso para o agente: é para uma pessoa da equipe.
-
-É isso que o contrato vai organizar: não o assunto de cada mensagem, mas o que fazer com ela.
-</Pilhas>
+Ela sabe isso de cor, depois de anos no atendimento. O agente não sabe nada disso. Escrever o que ela sabe, de um jeito que dê para conferir, é o que este livro chama de contrato.
+</PrimeiroDia>
 
 ## 1.4 O que é um contrato
 

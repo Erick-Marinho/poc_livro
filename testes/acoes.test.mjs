@@ -16,21 +16,25 @@ test("a aposta mostra três mensagens de verdade e diz que o agente é ilustraç
   assert.match(html, /Ilustração: o agente apressado não existe/);
 });
 
-test("as pilhas separam como o contrato, que vem do referencia.jsonl", () => {
-  const cartas = [...html.matchAll(/class="pil-carta" data-decisao="(\w+)"/g)].map((m) => m[1]);
-  assert.deepEqual(cartas, ["R03", "R06", "R07", "R10", "R15", "R16"].map((id) => caso(id).decisao));
-  assert.equal(new Set(cartas).size, 4, "as quatro decisões aparecem");
+test("o primeiro dia do 1.3: o que a colega faz é a decisão do contrato, e as quatro aparecem", () => {
+  const ids = [...html.matchAll(/<li data-caso="(R\d+)" data-decisao="(\w+)"[^>]*>\s*<p class="pd-msg">/g)];
+  assert.deepEqual(ids.map((m) => m[1]), ["R03", "R06", "R07", "R10", "R15", "R17"]);
+  for (const [, id, decisao] of ids) assert.equal(decisao, caso(id).decisao, id);
+  assert.equal(new Set(ids.map((m) => m[2])).size, 4, "as quatro decisões aparecem");
 });
 
-test("as pilhas do 1.3 são o que o atendente faz, sem letras: o exemplo já vem escolhido, travado", () => {
-  const pil = html.split("data-pilhas")[1];
-  const botoes = (carta) => [...carta.matchAll(/<button type="button" data-p="(\w+)"[^>]*>([^<]+)<\/button>/g)].map((m) => [m[1], m[2]]);
-  const cartas = pil.split('class="pil-carta"').slice(1);
-  for (const c of cartas) assert.deepEqual(botoes(c).map(([p]) => p), Object.keys(DECISOES), "uma escolha por decisão do contrato");
-  assert.ok(botoes(cartas[0]).every(([, t]) => t.length > 1), "as escolhas são frases, não letras");
-  assert.match(cartas[0], /data-p="responder" aria-pressed="true" disabled/);
-  assert.match(cartas[0], /class="pil-exemplo"/);
-  assert.equal([...pil.matchAll(/class="pil-exemplo"/g)].length, 1, "só a primeira carta é exemplo");
+test("o primeiro dia do 1.3 fala como quem atende: escolhas em frases, sem o nome do contrato, e a primeira já mostrada", () => {
+  const pd = html.split("data-primeiro-dia")[1];
+  const itens = pd.split("<li ").slice(1);
+  for (const li of itens) {
+    const botoes = [...li.matchAll(/<button type="button" data-v="(\w+)"[^>]*>([^<]+)<\/button>/g)];
+    assert.deepEqual(botoes.map((m) => m[1]), Object.keys(DECISOES), "uma escolha por decisão");
+    for (const [, , texto] of botoes) assert.ok(!Object.values(DECISOES).some(({ nome }) => texto === nome), `"${texto}" é o nome do contrato`);
+    assert.match(li, /<b>A colega:<\/b>/);
+  }
+  assert.match(itens[0], /class="[^"]*pd-exemplo/);
+  assert.doesNotMatch(itens[0], /pd-resposta" hidden/, "a resposta do exemplo já aparece");
+  assert.equal(itens.filter((li) => /pd-resposta" hidden/.test(li)).length, 5, "as outras esperam o leitor");
 });
 
 test("a troca tem uma variante que o contrato pega, e o veredito sai da comparação", () => {

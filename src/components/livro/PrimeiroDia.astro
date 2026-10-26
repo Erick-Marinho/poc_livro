@@ -1,0 +1,93 @@
+---
+/**
+ * Ação do leitor, para quem começa: o primeiro dia no atendimento, com uma colega que atende há anos ao lado. Para cada
+ * mensagem, o leitor diz o que faria, em palavras dele, e a colega diz na hora o que ela faz e por quê. O que ela faz é a
+ * decisão do contrato (referencia.jsonl); o porquê vem dos dados e da política da loja, escrito no capítulo. O texto de
+ * dentro (o slot) aparece quando todas estão feitas: é a ponte para o contrato (docs/capacidades/achados-da-leitura-do-victor.md).
+ * No modo direto, as respostas da colega e o fecho aparecem abertos, sem as escolhas.
+ */
+import { casos, DECISOES } from "../../lib/referencia.ts";
+
+interface Props {
+  referencia: string; casos: string[]; pergunta: string;
+  /* o que se faz com cada decisão, em palavras de quem atende, sem o nome do contrato */
+  acoes: Record<string, string>;
+  /* o porquê da colega, por caso */
+  porque: Record<string, string>;
+  /* o caso que a colega já mostrou, antes do leitor começar */
+  exemplo?: string;
+}
+const { referencia, casos: ids, pergunta, acoes, porque, exemplo } = Astro.props;
+const lista = casos(referencia, ids, "PrimeiroDia");
+Object.keys(DECISOES).forEach((d) => { if (!acoes[d]) throw new Error(`PrimeiroDia: falta a ação de "${d}"`); });
+lista.forEach((c) => { if (!porque[c.id]) throw new Error(`PrimeiroDia: falta o porquê da colega no ${c.id}`); });
+if (exemplo && !ids.includes(exemplo)) throw new Error(`PrimeiroDia: o exemplo ${exemplo} não está entre os casos`);
+---
+<div class="pd" data-primeiro-dia>
+  <p class="pd-rotulo">primeiro dia</p>
+  <p class="pd-pergunta">{pergunta}</p>
+  <ol>
+    {lista.map((c) => {
+      const ex = c.id === exemplo;
+      return (
+        <li data-caso={c.id} data-decisao={c.decisao} class:list={{ feito: ex, "pd-exemplo": ex }}>
+          <p class="pd-msg">“{c.pergunta}”</p>
+          <div class="pd-botoes">
+            {Object.keys(DECISOES).map((d) => (
+              <button type="button" data-v={d} disabled={ex} class:list={{ "e-dela": ex && d === c.decisao }}>{acoes[d]}</button>
+            ))}
+          </div>
+          <p class="pd-resposta" hidden={!ex}>
+            {!ex && <span class="pd-veredito"></span>}
+            <b>A colega:</b> “{acoes[c.decisao]}. {porque[c.id]}”
+          </p>
+        </li>
+      );
+    })}
+  </ol>
+  <div class="pd-fim" hidden><slot /></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-primeiro-dia]").forEach((fig) => {
+    const itens = [...fig.querySelectorAll<HTMLLIElement>("li[data-caso]")];
+    itens.forEach((li) => li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((b) => b.addEventListener("click", () => {
+      if (li.classList.contains("feito")) return;
+      const igual = b.dataset.v === li.dataset.decisao;
+      li.classList.add("feito", igual ? "igual" : "diferente");
+      li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((x) => {
+        x.disabled = true;
+        if (x.dataset.v === li.dataset.decisao) x.classList.add("e-dela");
+        if (x === b) x.classList.add("escolhido");
+      });
+      li.querySelector(".pd-veredito")!.textContent = igual ? "Você faria o mesmo." : "Ela faria diferente.";
+      li.querySelector<HTMLElement>(".pd-resposta")!.hidden = false;
+      if (itens.every((x) => x.classList.contains("feito"))) fig.querySelector<HTMLElement>(".pd-fim")!.hidden = false;
+    })));
+  });
+</script>
+
+<style is:global>
+  .pd { margin: 1.6em auto 1.8em; background: var(--papel-2); border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px }
+  .pd-rotulo { margin: 0 0 4px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .pd-pergunta { margin: 0 0 12px; font: 600 17px/1.4 var(--f-ui) }
+  .pd ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+  .pd li { background: var(--papel); border: 1px solid var(--linha); border-radius: 10px; padding: 12px 14px; font: 15px/1.5 var(--f-ui) }
+  .pd li.igual, .pd li.pd-exemplo { border-color: var(--ok) }
+  .pd li.diferente { border-color: var(--aviso) }
+  .pd-msg { margin: 0 0 8px; font: italic 17px/1.5 var(--f-texto) }
+  .pd-botoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .pd-botoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .pd-botoes button:not(:disabled):hover { border-color: var(--acento) }
+  .pd-botoes button:disabled { cursor: default; opacity: .55 }
+  .pd-botoes button.e-dela { opacity: 1; border-color: var(--ok); color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent) }
+  .pd-botoes button.escolhido:not(.e-dela) { opacity: 1; border-color: var(--aviso); color: var(--aviso) }
+  .pd-resposta { margin: 8px 0 0; font-size: 15px; color: var(--ink-2) }
+  .pd-resposta b, .pd-veredito { color: var(--ink); font-weight: 600 }
+  .pd-veredito:not(:empty)::after { content: " " }
+  .pd-fim { margin-top: 14px; font: 17px/1.7 var(--f-texto) } .pd-fim p { margin: 0 } .pd-fim p + p { margin-top: .8em }
+  .pd-fim[hidden] { display: none }
+  /* modo direto: as respostas da colega e o fecho abertos, sem as escolhas */
+  html[data-direto] .pd-botoes, html[data-direto] .pd-veredito { display: none }
+  html[data-direto] .pd-resposta[hidden], html[data-direto] .pd-fim[hidden] { display: block }
+</style>
