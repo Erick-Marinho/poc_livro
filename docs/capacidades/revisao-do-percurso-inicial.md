@@ -10,7 +10,8 @@ ajustes é ajudar o leitor a continuar e a tomar decisões sozinho, preservando 
 as aprovações registradas são somente as comunicadas pelo responsável. Revisado no mesmo dia, a pedido do
 Erick: a leitura observada vem logo depois da etapa 1, antes dos ajustes que dependem das hipóteses. Etapa 1 aprovada
 pelo Erick em 25/10/2026; a preparação da etapa 2 também tem seu ok. A leitura continua aberta, aguardando o
-critério e os leitores. No mesmo dia, Erick autorizou a etapa 3 pelo defeito conferido na continuidade dos casos.
+critério e os leitores. A etapa 3 também tem o ok do Erick em 25/10/2026; nesse dia ele autorizou a etapa 4 para
+os problemas conferidos de preparação, recuperação e percurso sem chave.
 
 ## O que preservar
 
@@ -23,14 +24,13 @@ critério e os leitores. No mesmo dia, Erick autorizou a etapa 3 pelo defeito co
 
 ## Etapas
 
-A etapa 1 está concluída. A preparação da etapa 2 tem o ok do Erick; a leitura continua pendente. A etapa atual,
-3, foi autorizada pelo Erick para corrigir a continuidade dos exercícios, um problema conferido no projeto. As
-etapas 4 a 7 continuam dependendo da evidência e da revisão da leitura. Cada etapa de produto terá
-um commit em português e evidência real no registro; o ok do responsável fecha a etapa. As pendências dos outros planos continuam nos próprios planos.
+As etapas 1 e 3 estão concluídas com o ok do Erick. A preparação da etapa 2 tem seu ok, mas a leitura espera o
+critério e os leitores. A etapa atual, 4, trata de problemas conferidos e foi autorizada pelo Erick. As etapas
+5 a 7 continuam dependendo da evidência e da revisão da leitura. Cada etapa de produto tem um commit em português
+e evidência no registro; só o ok do responsável fecha a etapa.
 
-A etapa 1 veio primeiro porque corrigia o livro afirmando o que não mediu. A leitura da etapa 2 orienta as
-hipóteses restantes; o defeito da etapa 3 já foi conferido e sua correção foi autorizada pelo Erick. Para as demais, a leitura observada diz quais delas valem o trabalho, e em que ordem. Uma etapa que a
-leitura não confirmar sai do plano ou fica registrada como descartada.
+A leitura observada continua necessária para as hipóteses restantes; os defeitos das etapas 3 e 4 puderam ser
+conferidos no projeto. Uma hipótese que a leitura não confirmar sai do plano ou fica registrada como descartada.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
 |---|---|---|
@@ -54,73 +54,82 @@ leitura não confirmar sai do plano ou fica registrada como descartada.
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 3 — continuidade e conclusão dos exercícios
+## Etapa atual: 4 — preparação, recuperação e percurso sem chave
 
 ### Pergunta que esta etapa responde
 
-Quem faz as cinco perguntas novas consegue conferir o exercício e chegar ao capítulo 2 com a mesma régua oficial
-do livro, sem perder os próprios casos?
+O leitor distingue começar numa pasta vazia de recuperar uma versão por tag, preserva seus arquivos e consegue
+concluir uma investigação do capítulo 2 sem chave nem chamada paga?
 
 ### Escopo
 
-Defeito conferido: o exercício do capítulo 1 acrescentava R21 a R25 a `referencia.jsonl`; o leitor passava a medir
-25 casos no capítulo 2, que compara 20, inclusive no exercício de remover a regra da instrução.
+Problemas conferidos: os pontos de volta pressupõem tags sem explicar o clone; o repositório do leitor só existe
+localmente em `.leitor/atendimento-bemtevi`; a introdução não apresenta o modo direto, promete testes de conclusão
+para todo exercício e deixa o exercício do capítulo 2 dependente de chave.
 
-**Decisão do Erick, 25/10/2026:** os casos do leitor vão para um arquivo à parte, `meus-casos.jsonl`; a referência
-oficial continua com as 20 perguntas. O `carregar_referencia` já recebe um caminho e será reaproveitado.
+**Decisões do Erick, 25/10/2026:**
 
-1. Aceitar em `baseline.py` caminhos opcionais para somar os casos de cada arquivo aos oficiais só
-   naquela medida. Sem argumento, conservar os 5 de 20 (25%); `medir.py` continua lendo só a referência oficial.
-2. Fazer os testes de coerência existentes incluírem `meus-casos.jsonl` se ele existir ao lado da referência,
-   inclusive ids, existência do pedido, titularidade e prazo. Não escrever a solução R21–R25 no projeto do livro.
-3. Alterar o exercício do capítulo 1: arquivo separado, previsão, testes verdes, comparação da nota com e sem
-   argumento e totais por decisão. Acrescentar uma única frase no 2.4 sobre a referência oficial e o arquivo pessoal.
-4. Atualizar somente as ações necessárias do roteiro 01, os textos relacionados dos passos e os estados/saídas
-   gravados; manter `marcos/cap-01` igual ao fim do roteiro e as tags do repositório do leitor válidas.
+- O repositório do leitor ainda não é público. Explicar clone e tags; o endereço fica em `Pendente`, com o texto
+  “Endereço do repositório do leitor: quando os autores publicarem”. Nada será publicado ou enviado a um remoto.
+- Está autorizada **uma gravação paga**, exclusivamente a variante de `medir.py` nas 20 perguntas oficiais com a
+  `INSTRUCAO` sem “Quando a política não diz, não prometa: passe a vez.”. Nenhuma outra chamada paga está autorizada.
+  Depois dessa execução, todas as verificações e montagens usam somente repetição das gravações.
 
-A etapa 2 continua aberta. A preparação aprovada está em `docs/leituras/`, incluindo a folha de campo; faltam o
-critério de `sinal.md` decidido pelo Erick e os leitores. Esta implementação não realiza a observação.
+1. Na introdução e na partida dos capítulos, distinguir pasta vazia e clone com tags. Explicar o alcance do checkout
+   sobre arquivos versionados, alterações locais e arquivos pessoais não rastreados; verificar numa cópia real.
+2. Mostrar onde ligar Modo direto, usando o painel existente. Corrigir a promessa dos exercícios: testes e totais
+   no 1, comparação e justificativa no 2. Não criar componente nem comando de preparação novo.
+3. Usar `variar` na medida do roteiro 02 para a variante sem a regra. O leitor prevê antes de revelar, compara a
+   nota e o R12, justifica os casos e restaura o código. Com chave, pode optar por executar no próprio projeto;
+   sem chave, realiza a mesma comparação com as duas gravações na IDE.
+4. Deixar explícito o que conclui a atividade; testes do grafo não se tornam prova de acerto da decisão. Conservar
+   projeto, referência, gravação original e pontos de volta. Ocultar os links de clone ainda não publicados nos
+   dados dos passos, mantendo o mecanismo existente pronto para receber o endereço quando o Erick decidir.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `projeto/baseline.py` e `projeto/test_referencia.py` | Medida opcional somada e mesmas regras aplicadas aos casos pessoais. |
-| `projeto/contrato.py`, `projeto/dados/` e `referencia.jsonl` | Leitor de caminho existente, dados fictícios e as 20 perguntas oficiais preservadas. |
-| `marcos/cap-01/{baseline.py,test_referencia.py}` | O projeto congelado que o roteiro 01 deve reproduzir. |
-| `capitulos/01-o-problema-e-o-contrato.mdx` e `02-o-primeiro-agente.mdx` | Exercício verificável e uma frase de continuidade. |
-| `roteiros/01.json`, `passos/01.json`, `roteiros/{01,02}.estados.json` e `saidas.json` | Mudanças mínimas no percurso, com execução e estados reais conferidos. |
-| `testes/casos-leitor.test.mjs` | Regressão de execução: nota com/sem casos, integridade da referência e teste de titularidade que falha. |
-| `.leitor/atendimento-bemtevi`, gerado por `npm run leitor` | Tags e cópia externa para produzir a evidência do exercício e da passagem ao capítulo 2. |
+| `capitulos/00-introducao.mdx` e partidas dos capítulos 1 e 2 | Dois pontos de partida, endereço pendente, modo direto e alcance real da conferência do exercício. |
+| `capitulos/02-o-primeiro-agente.mdx`, exercício | Investigação com previsão, comparação e justificativa, usando chave opcional. |
+| `passos/{01,02}.json` | Publicação do endereço continua pendente; explicação do exercício no passo da medida. |
+| `roteiros/02.json` e `02.estados.json` | Seletor `variar` existente, com remoção da regra e restauração ao final. |
+| `gravacoes/r02-medir-sem-regra.json` e `saidas.json` | Evidência da única medição autorizada; repetição nas conferências. |
+| `src/components/livro/PontoDeVolta.astro` e painel existente | Recuperação de arquivos versionados no clone e Modo direto sem componente novo. |
+| `scripts/saidas.py`, `scripts/gravacao/` e `.leitor/atendimento-bemtevi` | Construção, variação, gravação, restauração e tags reais. Fontes de conferência. |
+| `projeto/{agente.py,medir.py,referencia.jsonl}` e gravação original | O projeto e a referência permanecem iguais; só a cópia da variante perde a frase. |
 
-Os caminhos sem prefixo da tabela são relativos a `livros/ciclo-de-vida/`.
+Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
 
 ### Critérios de revisão
 
-- Sem arquivo pessoal, notas e testes permanecem os mesmos; o medir gravado continua 6 de 20 (30%).
-- Os mesmos testes conferem também os casos pessoais quando o arquivo existe; pedido de outra pessoa marcado
-  como responder falha com o id do caso e a mensagem de que o e-mail não é do dono.
-- O exercício permite conferir cinco casos pela nota de partida somada e pelos totais: 9 responder, 3 abrir
-  chamado, 7 recusar e 6 passar, enquanto os totais oficiais permanecem 8/2/5/5.
-- O arquivo pessoal sobrevive à troca para o capítulo 2, cuja medida ignora esses casos e usa os 20 oficiais.
-- Roteiro e IDE mantêm o percurso; nenhum componente da IDE nem as etapas 4 a 7 são alterados.
+- O leitor sabe que as tags pertencem ao clone, não à pasta vazia criada no capítulo 1, e que o endereço aguarda
+  publicação dos autores. Nenhum link anuncia que esse repositório já está acessível publicamente.
+- A explicação do checkout corresponde ao comportamento real com arquivos versionados e pessoais; conflitos
+  barram a troca e não são contornados com força ou limpeza de arquivos do leitor.
+- Modo direto é encontrável no painel e muda o que o texto promete.
+- O exercício sem chave exige uma previsão e uma conclusão sobre decisões observadas; não se limita a assistir.
+- A única gravação nova corresponde à retirada da frase nas 20 perguntas; a original permanece intacta.
+- O caminho com chave é opcional; o enunciado distingue testes do desenho de avaliação da decisão e diz como concluir.
 
 ### Evidência e verificação
 
-- Em cópia do repositório do leitor, fora do projeto do livro, criar cinco casos válidos no `cap-01/fim` e executar
-  testes, nota sem argumento e nota com argumento: 5 de 20 e 6 de 25. Depois mostrar uma falha de titularidade real.
-- Restaurar os casos válidos e, na mesma cópia com o arquivo pessoal presente, seguir até o projeto do capítulo 2
-  para executar `medir.py` usando exclusivamente `gravacoes/r02-medir.json`: 6 de 20.
-- Executar `npm run saidas`, `npm run leitor`, `npm run ritmo` (antes: 3/2/0 avisos) e `npm test`.
-- Conferir na página montada o exercício do 1, a frase do 2 e o passo do baseline na IDE.
-- Apresentar antes/depois, mudanças do roteiro e saídas reais no relatório, com marca de redação; registrar o hash
-  do commit de produto e deixar aguardando revisão. Só o ok do Erick fecha a etapa.
+- Gerar o leitor e, numa cópia local, clonar, usar as tags e conferir arquivo pessoal preservado, arquivo
+  versionado restaurado e conflitos que barram a troca. Não publicar nem usar um endereço público de clone.
+- Conferir a variante contra as mensagens gravadas e os 20 casos; registrar a execução paga, seu resultado e a
+  integridade das gravações anteriores. Repetir o roteiro com `npm run saidas` sem chave e sem novas chamadas.
+- Executar `npm run leitor`, `npm run ritmo` e `npm test`. Os testes relevantes conferem os dados gravados e o
+  comportamento do seletor, sem testar apenas uma frase editorial.
+- No navegador, conferir preparação, Pendente, ponto de volta, chave de Modo direto, previsão e comparação da
+  variante; voltar ao código do livro. Apresentar antes/depois e evidências no relatório com marca de redação.
+- Aguardar o ok do Erick para fechar a etapa. A etapa 2 segue aberta, sem observação inventada.
 
 ### Limite da etapa
 
-Só continuidade e conclusão dos exercícios. Sem comando novo de conferência, componentes da IDE, alteração da
-referência oficial, casos resolvidos no projeto, chamada paga, push, túnel ou `.env`. A etapa 7 de `imersao-ide.md`
-(`uv run conferir`) continua parada. Não alterar as etapas 4 a 7 deste plano nem realizar a leitura pendente da 2.
+Sem publicar repositório, site, túnel ou endereço; sem `.env`, credencial em arquivo, mudança no projeto oficial,
+componente de IDE novo ou alteração das etapas 5 a 7. A única permissão paga é a variante acima, em uma medição;
+nenhuma verificação chama novamente o serviço. A atividade com chave é uma alternativa futura do leitor, não
+permissão para novas execuções do agente desta tarefa.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -129,11 +138,11 @@ referência oficial, casos resolvidos no projeto, chamada paga, push, túnel ou 
   fica fora desta preparação. Ainda não há leitores de fora; anotações dos autores usam a mesma ficha com origem
   autor, sem substituir esses leitores. O critério anterior à leitura está em `docs/leituras/sinal.md` como PROPOSTA
   pendente de decisão. Registrar observações e dúvidas, sem concluir redução de abandono por testes ou cliques.
-- **Etapa 3 (detalhada acima):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
+- **Etapa 3 (aprovada):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
-- **Etapa 4:** aproveitar os mecanismos existentes. A preparação deve esclarecer a diferença entre criar um
-  projeto vazio e recuperar uma tag no clone do repositório do leitor. A alternativa gratuita precisa exercitar
-  uma decisão relevante; observar a gravação, sozinho, não cumpre a atividade.
+- **Etapa 4 (detalhada acima):** aproveitar clone, tags, PontoDeVolta, Modo direto e `variar`. A alternativa
+  gratuita pede previsão, comparação e justificativa; a publicação continua pendente e a única gravação paga
+  autorizada é a variante sem a regra de passar a vez.
 - **Etapa 5:** reduzir ou reposicionar explicações antes de acrescentar componentes. Rever associações de um
   problema a uma única fase quando mais de uma resposta é defensável.
 - **Etapas 6 e 7:** contar passagens mecânicas e decisões dentro da IDE. Os roteiros atuais têm 40 ações em 18
@@ -153,5 +162,6 @@ referência oficial, casos resolvidos no projeto, chamada paga, push, túnel ou 
 | 2 (preparação) | `4983c63` | Protocolo, ficha, caso novo, hipóteses e sinal PROPOSTA preparados para uso local; [relatório técnico](../relatorios/revisao-do-percurso-inicial-etapa-2-preparacao.md). Nenhuma sessão realizada; etapa 2 aberta, aguardando o critério do sinal.md e os leitores. | Erick, 25/10/2026 |
 | 3 | `872f71e` | [Relatório com antes/depois e saídas reais](../relatorios/revisao-do-percurso-inicial-etapa-3.md): na cópia do leitor, 7 testes verdes, 5/20 sem argumento e 6/25 com os casos; e-mail inválido falha em R21; arquivo pessoal preservado ao chegar ao 2 e medida gravada 6/20; saidas e leitor conferidos; ritmo 3/2/0; npm test: 113 testes do livro e 5 da gravação passaram; trechos e IDE montados conferidos. | Erick, 25/10/2026 |
 | 3 (correção) | `5cb28ef` | [Antes/depois só dos trechos corrigidos](../relatorios/revisao-do-percurso-inicial-etapa-3-correcao.md): previsão sem totais prontos, carga dos casos junto da referência, sys.argv e explicação do if na IDE; saidas e leitor conferidos; ritmo 3/2/0; npm test: 113 testes do livro e 5 da gravação passaram, casos-leitor.test.mjs intacto; soma de dois arquivos e página montada conferidas. | Erick, 25/10/2026 |
+| 4 | `Revisão do percurso inicial, etapa 4: recuperação e exercício sem chave` | [Relatório com antes/depois e evidência real](../relatorios/revisao-do-percurso-inicial-etapa-4.md): clone e tags locais conferidos com preservação e conflitos; uma gravação autorizada, 8/20 na variante contra 6/20 na original; saídas e leitor repetidos sem chamada; ritmo 3/2/0; npm test: 115 testes do livro e 5 da gravação; página montada conferida. | aguardando revisão |
 
 (redação: GPT-6; revisão do plano inicial: Claude Opus 5.5)

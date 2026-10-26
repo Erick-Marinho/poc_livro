@@ -672,7 +672,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
               {/* o veredito da aposta do comando da vez, logo depois da saída (antes das trocas que o leitor fizer) */}
               {k === quadro.k && apostaFeita !== null && a.aposta && veredito(a.aposta, apostaFeita)}
               {a.variar && trocasRodadas(a, k)}
-              {a.gravacao && <div className="ic-gravado">↻ resposta do {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o {obra} repete a gravação, não chama o modelo</div>}</div>)}
+              {a.gravacao && <div className="ic-gravado">↻ {a.variar ? "execução original com o" : "resposta do"} {a.gravacao.modelo} gravada em {a.gravacao.quando.split("-").reverse().join("/")} ({a.gravacao.chamadas} chamadas): o {obra} repete a gravação, não chama o modelo</div>}</div>)}
             {esperando && errados}
             {aDigitar && acao?.tipo === "rodar" && <div>
               <label className="ic-entrada">{prompt(acao.onde)}<span>{entrada}<span className="ide-cursor" /></span>

@@ -4,7 +4,6 @@
     "Erick Marinho",
     "Victor Fontela"
   ],
-  "repositorio": "https://github.com/Erick-Marinho/atendimento-bemtevi",
   "prefixo_tag": "cap-02",
   "abre_com": "contrato.py",
   "passos": [
@@ -174,7 +173,8 @@
         "A régua do capítulo 1 agora recebe a decisão do agente nas mesmas 20 perguntas. O agente percorre o grafo inteiro, mas a nota compara só a decisão com o contrato, sem avaliar o texto da resposta. Aqui, repetimos as respostas gravadas; na sua máquina, medir.py chama o modelo de verdade."
       ],
       "depois": [
-        "30% nesta execução gravada: 6 de 20, 19 decisões de passar a vez e uma de recusar. Os 14 erros foram passar quando o contrato pedia outra decisão, inclusive no R12. É um comportamento conservador nestes casos, sem garantia de segurança geral. O decisor fixo de 40% só devolvia responder, sem escrever resposta ou mostrar compras. A nota conta decisões, não a qualidade das respostas. As ferramentas do capítulo 3 dão acesso aos dados que faltam; veremos como mudam a nota e os erros."
+        "30% nesta execução gravada: 6 de 20, 19 decisões de passar a vez e uma de recusar. Os 14 erros foram passar quando o contrato pedia outra decisão, inclusive no R12. É um comportamento conservador nestes casos, sem garantia de segurança geral. O decisor fixo de 40% só devolvia responder, sem escrever resposta ou mostrar compras. A nota conta decisões, não a qualidade das respostas. As ferramentas do capítulo 3 dão acesso aos dados que faltam; veremos como mudam a nota e os erros.",
+        "O exercício tem uma variante gravada: no editor, troque `passe a vez` por `sem a regra`. Faça sua previsão antes de revelar a saída, compare as decisões e depois volte a `o do livro`. Sem chave, a página permite investigar essa mudança sem uma chamada paga."
       ],
       "pedido": "Mede o agente nas 20 perguntas, pela mesma régua da nota de partida."
     }

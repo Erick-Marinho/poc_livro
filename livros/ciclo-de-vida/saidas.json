@@ -112,11 +112,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 19ms",
+        "Resolved 6 packages in 34ms",
         ""
       ],
       [
-        "Installed 5 packages in 10ms",
+        "Installed 5 packages in 14ms",
         ""
       ],
       [
@@ -146,11 +146,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 19ms",
+        "Resolved 12 packages in 37ms",
         ""
       ],
       [
-        "Installed 5 packages in 12ms",
+        "Installed 5 packages in 21ms",
         ""
       ],
       [
@@ -410,7 +410,7 @@
         ""
       ],
       [
-        "4 passed in 0.13s",
+        "4 passed in 0.27s",
         "okv"
       ]
     ]
@@ -504,7 +504,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x706862224580>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x77b8965d0580>)",
         "err"
       ],
       [
@@ -528,7 +528,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.14s",
+        "2 failed, 5 passed in 0.29s",
         "err"
       ]
     ]
@@ -542,7 +542,7 @@
         ""
       ],
       [
-        "7 passed in 0.15s",
+        "7 passed in 0.28s",
         "okv"
       ]
     ]
@@ -666,11 +666,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 45 packages in 30ms",
+        "Resolved 45 packages in 55ms",
         ""
       ],
       [
-        "Installed 32 packages in 25ms",
+        "Installed 32 packages in 43ms",
         ""
       ],
       [
@@ -812,7 +812,7 @@
         "err"
       ],
       [
-        "1 failed in 0.43s",
+        "1 failed in 0.83s",
         "err"
       ]
     ]
@@ -826,7 +826,7 @@
         ""
       ],
       [
-        "1 passed in 0.37s",
+        "1 passed in 0.80s",
         "okv"
       ]
     ]
@@ -840,7 +840,7 @@
         ""
       ],
       [
-        "11 passed in 0.37s",
+        "11 passed in 0.82s",
         "okv"
       ]
     ]
@@ -850,11 +850,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 50 packages in 45ms",
+        "Resolved 50 packages in 56ms",
         ""
       ],
       [
-        "Installed 5 packages in 44ms",
+        "Installed 5 packages in 109ms",
         ""
       ],
       [
@@ -937,6 +937,80 @@
       ],
       [
         "  R09: o contrato pede abrir_chamado, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R10: o contrato pede abrir_chamado, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R11: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R12: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R13: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R14: o contrato pede recusar, o agente decidiu passar",
+        ""
+      ]
+    ]
+  },
+  "r02-medir-sem-regra": {
+    "comando": "uv run python medir.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "responder       1 de  8",
+        ""
+      ],
+      [
+        "abrir_chamado   1 de  2",
+        ""
+      ],
+      [
+        "recusar         1 de  5",
+        ""
+      ],
+      [
+        "passar          5 de  5",
+        ""
+      ],
+      [
+        "nota do agente: 8 de 20 (40%)",
+        ""
+      ],
+      [
+        "  R01: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R02: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R03: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R05: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R06: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R07: o contrato pede responder, o agente decidiu passar",
+        ""
+      ],
+      [
+        "  R08: o contrato pede responder, o agente decidiu passar",
         ""
       ],
       [

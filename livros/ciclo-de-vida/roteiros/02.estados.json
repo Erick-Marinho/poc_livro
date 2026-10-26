@@ -249,6 +249,15 @@
  },
  {
   "passo": 16,
-  "rodou": "r02-medir"
+  "rodou": "r02-medir",
+  "variantes": {
+   "r02-medir-sem-regra": {
+    "arquivo": "agente.py",
+    "conteudo": "\"\"\"O primeiro agente: um grafo que lê a mensagem, decide o que o contrato manda e escreve a resposta.\n\nAinda sem ferramentas: ele não consulta pedido nem abre chamado de verdade. Isso chega no capítulo 3.\n\"\"\"\nfrom typing import TypedDict\n\nfrom langchain_core.language_models import BaseChatModel\nfrom langgraph.graph import END, START, StateGraph\nfrom pydantic import BaseModel, Field\n\nfrom contrato import Decisao\n\nINSTRUCAO = \"\"\"Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n\"\"\"  # sem a regra\n\n\nclass Escolha(BaseModel):\n    \"\"\"A decisão do agente para uma mensagem, e o porquê.\"\"\"\n\n    decisao: Decisao\n    motivo: str = Field(description=\"por que esta decisão, em uma frase\")\n\n\nclass Conversa(TypedDict, total=False):\n    \"\"\"O que o grafo carrega de um nó para o outro.\"\"\"\n\n    pergunta: str\n    decisao: Decisao\n    motivo: str\n    resposta: str\n\n\ndef montar(modelo: BaseChatModel):\n    \"\"\"O grafo do agente: decidir, e depois um caminho para cada decisão do contrato.\"\"\"\n    escolher = modelo.with_structured_output(Escolha)\n\n    def decidir(c: Conversa) -> Conversa:\n        e = escolher.invoke([(\"system\", INSTRUCAO), (\"human\", c[\"pergunta\"])])\n        return {\"decisao\": e.decisao, \"motivo\": e.motivo}\n\n    def escrever(pedido: str):\n        def no(c: Conversa) -> Conversa:\n            m = modelo.invoke([(\"system\", f\"{INSTRUCAO}\\n\\n{pedido}\"), (\"human\", c[\"pergunta\"])])\n            return {\"resposta\": m.text}\n        return no\n\n    # onde o modelo não precisa escrever, ele não escreve: o texto é sempre o mesmo\n    def abrir_chamado(c: Conversa) -> Conversa:\n        return {\"resposta\": \"Sinto muito pelo problema. Ainda não abro chamado sozinho: \"\n                            \"vou passar para uma pessoa da equipe abrir o seu.\"}\n\n    def passar(c: Conversa) -> Conversa:\n        return {\"resposta\": \"Vou passar a sua mensagem para uma pessoa da equipe.\"}\n\n    caminhos = {\n        Decisao.RESPONDER: escrever(\"Responda ao cliente em poucas frases.\"),\n        Decisao.ABRIR_CHAMADO: abrir_chamado,\n        Decisao.RECUSAR: escrever(\"Diga ao cliente, com educação, que a loja não pode, e por quê.\"),\n        Decisao.PASSAR: passar,\n    }\n    grafo = StateGraph(Conversa)\n    grafo.add_node(\"decidir\", decidir)\n    for decisao, no in caminhos.items():\n        grafo.add_node(decisao.value, no)\n        grafo.add_edge(decisao.value, END)\n    grafo.add_edge(START, \"decidir\")\n    grafo.add_conditional_edges(\"decidir\", lambda c: c[\"decisao\"].value, [d.value for d in caminhos])\n    return grafo.compile()\n",
+    "alteradas": [
+     19
+    ]
+   }
+  }
  }
 ]

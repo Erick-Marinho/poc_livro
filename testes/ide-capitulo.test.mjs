@@ -130,7 +130,11 @@ test("o capítulo 1 abre numa pasta vazia; o 2, com o projeto do fim do 1", asyn
   assert.deepEqual(add.gerados.map((g) => [g.nome, g.novo]).sort(), [["pyproject.toml", false], ["uv.lock", false]]);
   assert.ok(cap02.acoes.find((a) => a.tipo === "editar" && a.arquivo === "agente.py").novo);
   /* o ponto de volta do primeiro passo é o início do capítulo */
-  assert.equal(cap02.passos[0].volta.tag, "cap-02/inicio");
+  assert.ok(cap02.passos.every((p) => !p.volta), "endereço ainda não publicado: a página não anuncia um clone público");
+  const comRepositorio = { ...entrada(), roteiro: roteiro02, estados: json("livros/ciclo-de-vida/roteiros/02.estados.json"),
+    capitulo: { ...passos02, repositorio: "https://exemplo.invalid/leitor.git" },
+    secoes: { "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" }, anteriores: [json("livros/ciclo-de-vida/roteiros/01.estados.json")] };
+  assert.equal((await montarIde(comRepositorio)).passos[0].volta.tag, "cap-02/inicio");
 });
 
 test("o comando que chamou o modelo diz quando e com qual foi gravado; os outros, não", () => {

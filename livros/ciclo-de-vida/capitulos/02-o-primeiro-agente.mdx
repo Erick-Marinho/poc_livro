@@ -9,7 +9,7 @@ neste:
   - testa o grafo sem pagar nada, com um modelo falso;
   - mede o agente com o GPT-6 Luna, pela mesma régua da nota de partida.
 partida:
-  texto: "Ponto de partida: o projeto como o capítulo 1 terminou."
+  texto: "Ponto de partida: o projeto como o capítulo 1 terminou. Para recuperá-lo por cap-02/inicio, use um clone do repositório do leitor; o endereço está pendente na introdução."
   tag: cap-02/inicio
 em_breve: Capítulo 3 · As ferramentas
 ---
@@ -141,11 +141,12 @@ Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e 
 
 <Exercicio titulo="Tire a regra de passar a vez">
 
-1. Na `INSTRUCAO` do `agente.py`, apague a frase "Quando a política não diz, não prometa: passe a vez." Deixe as três aspas do fim: elas fecham o texto.
-2. Antes de executar, escreva num papel: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
-3. Execute `uv run pytest -q` (os testes do grafo continuam passando? por quê?) e depois `uv run python medir.py`, com a sua chave no ambiente. É uma execução paga, de centavos.
-4. Compare a nota e a lista de erros com a do livro. Depois, volte a linha.
+1. A mudança é tirar da `INSTRUCAO`, no `agente.py`, a frase "Quando a política não diz, não prometa: passe a vez.", mantendo as três aspas do fim.
+2. Antes de ver o resultado, anote: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
+3. **Sem chave:** volte ao passo 10 da IDE, em 2.5. Depois da medida original, toque em `passe a vez` no editor e escolha **sem a regra**. Invista antes de revelar a saída; no modo direto, use a previsão que anotou. A página repete uma gravação real dessa variante, sem cobrar nem chamar o modelo.
+4. **Se preferir executar na sua máquina:** retire a frase, execute `uv run pytest -q` e depois `uv run python medir.py`, com sua chave no ambiente. Essa alternativa é paga e pode dar outra nota. Depois, restaure a frase.
+5. Compare as duas notas e a decisão do R12. Mostre um caso em que a decisão mudou, ou registre que nenhum mudou, e explique o que os testes do grafo verificam. Na página, volte à opção **o do livro** para restaurar a regra.
 
-Dica: os testes não olham a instrução, só o desenho. A régua olha só a decisão, não a resposta que o cliente leria.
+Você concluiu quando confrontou a previsão com as duas execuções, explicou os casos comparados e restaurou a regra. Testes verdes conferem o desenho; a régua conta decisões, não a qualidade da resposta ao cliente.
 
 </Exercicio>

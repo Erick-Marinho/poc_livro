@@ -1,0 +1,2634 @@
+{
+ "1c501edb40725db4": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Vocês entregam em todo o Brasil?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações disponíveis sobre as regiões atendidas pela entrega.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações disponíveis sobre as regiões atendidas pela entrega.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não há informações disponíveis sobre as regiões atendidas pela entrega."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 63,
+         "prompt_tokens": 257,
+         "total_tokens": 320,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 26,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4ue1KLozpQdPtwHwnsK5rI54ZxB",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-fe77-7551-a50a-b45afe5ae908-0",
+       "usage_metadata": {
+        "input_tokens": 257,
+        "output_tokens": 63,
+        "total_tokens": 320,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 26
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "2c9b3a99663c243f": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Comprei a mesma toalha duas vezes sem querer, cancelem uma.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"O cancelamento de um dos pedidos precisa ser verificado pela equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"O cancelamento de um dos pedidos precisa ser verificado pela equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "O cancelamento de um dos pedidos precisa ser verificado pela equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 66,
+         "prompt_tokens": 265,
+         "total_tokens": 331,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 27,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4vDi0hVFmV4ZQxGf0MZPQm1hh1K",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-8630-7430-a9ee-1d876e951038-0",
+       "usage_metadata": {
+        "input_tokens": 265,
+        "output_tokens": 66,
+        "total_tokens": 331,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 27
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "31be3ed1ae3847e8": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Qual o tamanho do organizador de gaveta?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho os dados de tamanho do organizador de gaveta disponíveis para informar.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho os dados de tamanho do organizador de gaveta disponíveis para informar.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não tenho os dados de tamanho do organizador de gaveta disponíveis para informar."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 73,
+         "prompt_tokens": 258,
+         "total_tokens": 331,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 32,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4ui1jzDJGYu42VbvrcijhdFJSEd",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-0e14-7f60-b874-e834c533b505-0",
+       "usage_metadata": {
+        "input_tokens": 258,
+        "output_tokens": 73,
+        "total_tokens": 331,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 32
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "35a4762c8bdb97df": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Quero saber do pedido BT-1001. Meu e-mail é bruno.lima@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A consulta ao status do pedido BT-1001 exige acesso aos dados do pedido, que não estão disponíveis aqui.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A consulta ao status do pedido BT-1001 exige acesso aos dados do pedido, que não estão disponíveis aqui.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A consulta ao status do pedido BT-1001 exige acesso aos dados do pedido, que não estão disponíveis aqui."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 67,
+         "prompt_tokens": 270,
+         "total_tokens": 337,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uuEhhGM2HPktdGzY0OMWRqYvTq",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-3b56-79f0-9e32-33e998f4ee44-0",
+       "usage_metadata": {
+        "input_tokens": 270,
+        "output_tokens": 67,
+        "total_tokens": 337,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 19
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "4a32c51c3290809e": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Quando chega o BT-1003? E-mail carla.mendes@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A previsão de entrega do pedido BT-1003 não consta nos dados disponíveis e precisa ser verificada pela equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A previsão de entrega do pedido BT-1003 não consta nos dados disponíveis e precisa ser verificada pela equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A previsão de entrega do pedido BT-1003 não consta nos dados disponíveis e precisa ser verificada pela equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 67,
+         "prompt_tokens": 266,
+         "total_tokens": 333,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uOQmHozSLfOHPWvsRCbwiR6J3o",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-c005-7c90-b2d2-f3b6a9c0ea90-0",
+       "usage_metadata": {
+        "input_tokens": 266,
+        "output_tokens": 67,
+        "total_tokens": 333,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 19
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "532b74b055fc7481": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Me dá 10% de desconto que eu fecho a compra agora.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A concessão de desconto precisa ser avaliada por uma pessoa da equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A concessão de desconto precisa ser avaliada por uma pessoa da equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A concessão de desconto precisa ser avaliada por uma pessoa da equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 109,
+         "prompt_tokens": 263,
+         "total_tokens": 372,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 69,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4urdnincPC3ia2uWtAFDq1Y6TZG",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-2fcd-7503-be17-7cefa81d4112-0",
+       "usage_metadata": {
+        "input_tokens": 263,
+        "output_tokens": 109,
+        "total_tokens": 372,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 69
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "57d49a3bd4961f6e": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "O lençol do BT-1005 descosturou na primeira lavagem. diego.rocha@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"O produto apresentou defeito, mas é preciso confirmar se a reclamação está dentro do prazo para abrir um chamado.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"O produto apresentou defeito, mas é preciso confirmar se a reclamação está dentro do prazo para abrir um chamado.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "O produto apresentou defeito, mas é preciso confirmar se a reclamação está dentro do prazo para abrir um chamado."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 175,
+         "prompt_tokens": 273,
+         "total_tokens": 448,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 127,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uoGRdUCNh87qYsh6I0fZhXuzm3",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-2445-72d0-929d-dcdfcefea5a3-0",
+       "usage_metadata": {
+        "input_tokens": 273,
+        "output_tokens": 175,
+        "total_tokens": 448,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 127
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "581576ae88c848f2": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "O pedido BT-1001 já foi entregue? Sou a Ana, ana.souza@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho acesso ao status de entrega do pedido BT-1001; a equipe pode verificar.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho acesso ao status de entrega do pedido BT-1001; a equipe pode verificar.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não tenho acesso ao status de entrega do pedido BT-1001; a equipe pode verificar."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 63,
+         "prompt_tokens": 270,
+         "total_tokens": 333,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uRZARV5Ow8eZBgA00YPUok70ou",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-c93d-7583-8af1-7c029ce71d66-0",
+       "usage_metadata": {
+        "input_tokens": 270,
+        "output_tokens": 63,
+        "total_tokens": 333,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 19
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "681833935e092be7": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Vocês parcelam no boleto em 12 vezes?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho informação sobre parcelamento no boleto; a equipe pode confirmar as formas de pagamento disponíveis.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho informação sobre parcelamento no boleto; a equipe pode confirmar as formas de pagamento disponíveis.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não tenho informação sobre parcelamento no boleto; a equipe pode confirmar as formas de pagamento disponíveis."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 80,
+         "prompt_tokens": 259,
+         "total_tokens": 339,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 36,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4vBaKXKmjZYsMMOtrHpofGIDSs8",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-7e96-78e0-8f5d-32a1fd06e835-0",
+       "usage_metadata": {
+        "input_tokens": 259,
+        "output_tokens": 80,
+        "total_tokens": 339,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 36
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "68eaa41b525d2853": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Qual a melhor marca de geladeira para comprar?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A loja não tem informações disponíveis sobre marcas de geladeira para recomendar; a equipe pode ajudar com uma indicação.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A loja não tem informações disponíveis sobre marcas de geladeira para recomendar; a equipe pode ajudar com uma indicação.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A loja não tem informações disponíveis sobre marcas de geladeira para recomendar; a equipe pode ajudar com uma indicação."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 125,
+         "prompt_tokens": 258,
+         "total_tokens": 383,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 78,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uzrqIh2x3haUJKNNAcL6o49QTf",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-4e87-70a1-8c7d-b797d242e51b-0",
+       "usage_metadata": {
+        "input_tokens": 258,
+        "output_tokens": 125,
+        "total_tokens": 383,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 78
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "8edb01a4a9022c84": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "A tampa da panela do pedido BT-1004 veio rachada. Meu e-mail é ana.souza@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"abrir_chamado\",\"motivo\":\"A tampa chegou rachada, indicando defeito no produto; o pedido e o e-mail foram informados para registrar o chamado.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"abrir_chamado\",\"motivo\":\"A tampa chegou rachada, indicando defeito no produto; o pedido e o e-mail foram informados para registrar o chamado.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "abrir_chamado",
+         "motivo": "A tampa chegou rachada, indicando defeito no produto; o pedido e o e-mail foram informados para registrar o chamado."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 189,
+         "prompt_tokens": 274,
+         "total_tokens": 463,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 135,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4ukxsv0CIsOdKEB3NCku28YUb5A",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-16be-7f10-a0f1-04422f403fcf-0",
+       "usage_metadata": {
+        "input_tokens": 274,
+        "output_tokens": 189,
+        "total_tokens": 463,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 135
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "9157250691108a1f": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "É a terceira vez que eu escrevo e ninguém resolve. Que absurdo!!!",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A cliente relata tentativas repetidas sem solução e precisa de atendimento da equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A cliente relata tentativas repetidas sem solução e precisa de atendimento da equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A cliente relata tentativas repetidas sem solução e precisa de atendimento da equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 58,
+         "prompt_tokens": 263,
+         "total_tokens": 321,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 17,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4v9CM0WZ2frbtIVlCKquVUSmX16",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-777c-7413-9764-de8d16bfb343-0",
+       "usage_metadata": {
+        "input_tokens": 263,
+        "output_tokens": 58,
+        "total_tokens": 321,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 17
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "95a7ad91d7943a23": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Cancelei o BT-1006 e quero o meu dinheiro de volta. bruno.lima@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações sobre a política ou o status do reembolso do pedido cancelado BT-1006, então a equipe precisa verificar.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações sobre a política ou o status do reembolso do pedido cancelado BT-1006, então a equipe precisa verificar.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não há informações sobre a política ou o status do reembolso do pedido cancelado BT-1006, então a equipe precisa verificar."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 91,
+         "prompt_tokens": 272,
+         "total_tokens": 363,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 39,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4v7rQrCE02Q6HQJ1SKkxVhUGM5I",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-6e10-7ff2-8e90-a3e6cc5da92b-0",
+       "usage_metadata": {
+        "input_tokens": 272,
+        "output_tokens": 91,
+        "total_tokens": 363,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 39
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "9b79241aac699ee2": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n\n\nResponda ao cliente em poucas frases.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Posso devolver uma panela que recebi há 3 dias? Não gostei da cor.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "**Responder:** Sim. Como a compra foi online e você recebeu a panela há 3 dias, pode solicitar a devolução por arrependimento dentro do prazo de 7 dias. Para iniciar, entre em contato com a gente com o número do pedido.",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "**Responder:** Sim. Como a compra foi online e você recebeu a panela há 3 dias, pode solicitar a devolução por arrependimento dentro do prazo de 7 dias. Para iniciar, entre em contato com a gente com o número do pedido.",
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 179,
+         "prompt_tokens": 128,
+         "total_tokens": 307,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 118,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uXaxx1ZdAOYRIGdAGW6HTMEmVu",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-e1e4-7d03-903e-8937f1d921d1-0",
+       "usage_metadata": {
+        "input_tokens": 128,
+        "output_tokens": 179,
+        "total_tokens": 307,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 118
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "b0e471981db45102": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Quero falar com um atendente de verdade.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"O cliente pediu para falar com uma pessoa da equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"O cliente pediu para falar com uma pessoa da equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "O cliente pediu para falar com uma pessoa da equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 45,
+         "prompt_tokens": 258,
+         "total_tokens": 303,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 9,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4v5DXjr8s0ar8cSXNS4Fjgwqgl7",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-6805-7fc2-bb0b-658792f3598a-0",
+       "usage_metadata": {
+        "input_tokens": 258,
+        "output_tokens": 45,
+        "total_tokens": 303,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 9
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "b7277e06065a6b4d": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Mudem o endereço de entrega do BT-1003, por favor. carla.mendes@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A alteração do endereço de entrega do pedido BT-1003 precisa ser verificada pela equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A alteração do endereço de entrega do pedido BT-1003 precisa ser verificada pela equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A alteração do endereço de entrega do pedido BT-1003 precisa ser verificada pela equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 85,
+         "prompt_tokens": 271,
+         "total_tokens": 356,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 41,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uwzNhkh1EIFLRQW9mHPlFPihYx",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-42e2-7061-818f-5c7333f33540-0",
+       "usage_metadata": {
+        "input_tokens": 271,
+        "output_tokens": 85,
+        "total_tokens": 356,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 41
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "b80885f4c4527a61": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Quanto tempo eu tenho para reclamar de um defeito?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho o prazo para reclamar de defeitos nas informações disponíveis e preciso confirmar com a equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não tenho o prazo para reclamar de defeitos nas informações disponíveis e preciso confirmar com a equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não tenho o prazo para reclamar de defeitos nas informações disponíveis e preciso confirmar com a equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 84,
+         "prompt_tokens": 259,
+         "total_tokens": 343,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 40,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4ucqKmnVLsYpJgU66ur7uJ3Je33",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-f6bb-7972-aab8-c91e75989b0e-0",
+       "usage_metadata": {
+        "input_tokens": 259,
+        "output_tokens": 84,
+        "total_tokens": 343,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 40
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "b856755884211086": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n\n\nDiga ao cliente, com educação, que a loja não pode, e por quê.",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Me passa o CPF da Ana Souza, ela é minha prima.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "**Decisão: recusar.** Desculpe, não posso compartilhar o CPF de outra pessoa, pois é um dado pessoal e privado.",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "**Decisão: recusar.** Desculpe, não posso compartilhar o CPF de outra pessoa, pois é um dado pessoal e privado.",
+       "additional_kwargs": {
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 87,
+         "prompt_tokens": 132,
+         "total_tokens": 219,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 49,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4v39XlMXcfFRN2I11IkcdKuzm6Y",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-5f4f-7963-aee8-81e2fed8a54e-0",
+       "usage_metadata": {
+        "input_tokens": 132,
+        "output_tokens": 87,
+        "total_tokens": 219,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 49
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "cbdf3f428f169301": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Me passa o CPF da Ana Souza, ela é minha prima.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"recusar\",\"motivo\":\"Não posso fornecer dados pessoais de outra pessoa, como o CPF.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"recusar\",\"motivo\":\"Não posso fornecer dados pessoais de outra pessoa, como o CPF.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "recusar",
+         "motivo": "Não posso fornecer dados pessoais de outra pessoa, como o CPF."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 57,
+         "prompt_tokens": 261,
+         "total_tokens": 318,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4v1ncDPPrZizEitibdBHJLmxUCF",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-591b-7123-8b9a-65e5339db5d3-0",
+       "usage_metadata": {
+        "input_tokens": 261,
+        "output_tokens": 57,
+        "total_tokens": 318,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 19
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "ccbd5c2aef9c4018": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Posso devolver uma panela que recebi há 3 dias? Não gostei da cor.",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"responder\",\"motivo\":\"Como a compra foi online e a panela chegou há 3 dias, você pode solicitar a devolução dentro do prazo legal de 7 dias após o recebimento.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"responder\",\"motivo\":\"Como a compra foi online e a panela chegou há 3 dias, você pode solicitar a devolução dentro do prazo legal de 7 dias após o recebimento.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "responder",
+         "motivo": "Como a compra foi online e a panela chegou há 3 dias, você pode solicitar a devolução dentro do prazo legal de 7 dias após o recebimento."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 231,
+         "prompt_tokens": 266,
+         "total_tokens": 497,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 173,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uTOhfojOIBydVXFPFvGdbiR2y7",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-d184-78d0-b54c-dff5fa561677-0",
+       "usage_metadata": {
+        "input_tokens": 266,
+        "output_tokens": 231,
+        "total_tokens": 497,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 173
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "d1371a8685d3f528": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "A frigideira antiaderente de 24 cm vai ao forno?",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações disponíveis sobre a resistência ao forno dessa frigideira, então a equipe precisa confirmar.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"Não há informações disponíveis sobre a resistência ao forno dessa frigideira, então a equipe precisa confirmar.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "Não há informações disponíveis sobre a resistência ao forno dessa frigideira, então a equipe precisa confirmar."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 76,
+         "prompt_tokens": 263,
+         "total_tokens": 339,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 31,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4ugTilEV1k5jRjEFPyPs889fHzE",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17614-06ed-7580-b076-070ef3ea28f0-0",
+       "usage_metadata": {
+        "input_tokens": 263,
+        "output_tokens": 76,
+        "total_tokens": 339,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 31
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ },
+ "d3333eb3a75d24d4": {
+  "quando": "2026-10-25",
+  "modelo": "{\"id\": [\"langchain\", \"chat_models\", \"openai\", \"ChatOpenAI\"], \"kwargs\": {\"max_tokens\": 4096, \"model_name\": \"gpt-6-luna\", \"openai_api_key\": {\"id\": [\"OPENAI_API_KEY\"], \"lc\": 1, \"type\": \"secret\"}, \"stream_usage\": true}, \"lc\": 1, \"name\": \"ChatOpenAI\", \"type\": \"constructor\"}---[('response_format', <class 'agente.Escolha'>), ('stop', None)]",
+  "mensagens": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "SystemMessage"
+    ],
+    "kwargs": {
+     "content": "Você é o atendimento da Casa Bem-te-vi, uma loja online de utilidades para a casa.\nPara cada mensagem de cliente, tome uma destas decisões:\n- responder: a resposta está nos dados da loja ou na política de atendimento;\n- abrir_chamado: um produto chegou com defeito, dentro do prazo;\n- recusar: a loja não permite o que o cliente pede;\n- passar: o caso é de uma pessoa da equipe.\n",
+     "type": "system"
+    }
+   },
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "messages",
+     "HumanMessage"
+    ],
+    "kwargs": {
+     "content": "Onde está o meu pedido BT-1002? Meu e-mail é bruno.lima@exemplo.test",
+     "type": "human"
+    }
+   }
+  ],
+  "resposta": [
+   {
+    "lc": 1,
+    "type": "constructor",
+    "id": [
+     "langchain",
+     "schema",
+     "output",
+     "ChatGeneration"
+    ],
+    "kwargs": {
+     "text": "{\"decisao\":\"passar\",\"motivo\":\"A consulta do status do pedido BT-1002 exige acesso aos dados do pedido por uma pessoa da equipe.\"}",
+     "generation_info": {
+      "finish_reason": "stop",
+      "logprobs": null
+     },
+     "type": "ChatGeneration",
+     "message": {
+      "lc": 1,
+      "type": "constructor",
+      "id": [
+       "langchain",
+       "schema",
+       "messages",
+       "AIMessage"
+      ],
+      "kwargs": {
+       "content": "{\"decisao\":\"passar\",\"motivo\":\"A consulta do status do pedido BT-1002 exige acesso aos dados do pedido por uma pessoa da equipe.\"}",
+       "additional_kwargs": {
+        "parsed": {
+         "decisao": "passar",
+         "motivo": "A consulta do status do pedido BT-1002 exige acesso aos dados do pedido por uma pessoa da equipe."
+        },
+        "refusal": null
+       },
+       "response_metadata": {
+        "token_usage": {
+         "completion_tokens": 66,
+         "prompt_tokens": 270,
+         "total_tokens": 336,
+         "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": 0,
+          "text_tokens": null
+         },
+         "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+         }
+        },
+        "model_provider": "openai",
+        "model_name": "gpt-6-luna",
+        "system_fingerprint": null,
+        "id": "chatcmpl-Ed4uM1IQnZPzQGvZU3NZdvYF1Heaz",
+        "service_tier": "default",
+        "finish_reason": "stop",
+        "logprobs": null
+       },
+       "type": "ai",
+       "id": "lc_run--01a17613-b2a9-7621-b860-f79646c22a28-0",
+       "usage_metadata": {
+        "input_tokens": 270,
+        "output_tokens": 66,
+        "total_tokens": 336,
+        "input_token_details": {
+         "audio": 0,
+         "cache_read": 0,
+         "cache_creation": 0
+        },
+        "output_token_details": {
+         "audio": 0,
+         "reasoning": 19
+        }
+       },
+       "tool_calls": [],
+       "invalid_tool_calls": []
+      }
+     }
+    }
+   }
+  ]
+ }
+}

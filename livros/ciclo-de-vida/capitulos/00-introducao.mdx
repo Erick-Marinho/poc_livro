@@ -8,6 +8,7 @@ assinatura:
   quando: outubro de 2026
 ---
 import Nota from "../../../src/components/livro/Nota.astro";
+import Pendente from "../../../src/components/livro/Pendente.astro";
 import FiguraAgente from "../../../src/components/livro/FiguraAgente.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
@@ -76,15 +77,21 @@ Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe
 
 ## Como ler
 
-Leia em ordem: cada capítulo parte do projeto como o anterior deixou. Tenha a sua IDE aberta ao lado e digite o código, em vez de só ler. É digitando que a gente percebe o que não entendeu.
+Leia em ordem, com a sua IDE aberta ao lado. Digite o código e compare as saídas: é fazendo que você percebe o que ainda não entendeu.
 
-<Nota titulo="leia com a IDE aberta">Este livro rende mais lido ao lado de uma IDE, com o projeto aberto e o terminal à mão. Não é gosto dos autores: a pesquisa sobre aprendizagem mostra que fazer, prever antes de executar e errar com correção ensinam mais do que só ler ou assistir. O lembrete no canto de cima da página fica lá por isso. <button type="button" class="link-ide" data-abrir-ide>Por que isso funciona</button></Nota>
+Há dois pontos de partida. **Do zero:** no capítulo 1, comece numa pasta vazia; a IDE cria o projeto. **Por uma tag:** clone o repositório do leitor, que contém as versões preparadas pelos autores. Quando o endereço for publicado, substitua `ENDERECO` em `git clone ENDERECO atendimento-bemtevi`, entre com `cd atendimento-bemtevi` e escolha a tag indicada. Hoje esse repositório só existe localmente; o endereço ainda está pendente.
 
-Pelo caminho você vai encontrar três tipos de parada:
+<Pendente o="Endereço do repositório do leitor: quando os autores publicarem" parte="dos autores" />
 
-- **Pare e pense:** uma pergunta antes da resposta. Tente responder antes de abrir.
-- **Ponto de volta:** se o seu código se perder do livro, um comando `git checkout` traz o projeto exatamente como ele está naquele ponto.
-- **Exercício:** uma tarefa parecida com o capítulo, mas não igual, com testes que dizem quando você terminou.
+<Nota titulo="leia com a IDE aberta">Prever antes de executar e errar com correção ensinam mais do que só acompanhar a página. <button type="button" class="link-ide" data-abrir-ide>Por que isso funciona</button></Nota>
+
+Já conhece o caminho? Ligue **Modo direto** na chave do painel de configurações, aberto pela engrenagem no canto: código, saídas e respostas ficam abertos, sem o passo a passo.
+
+Pelo caminho você encontra três tipos de parada:
+
+- **Pare e pense:** tente responder antes de abrir a resposta.
+- **Ponto de volta:** no clone, `git checkout` troca os arquivos versionados pela versão da tag. Arquivos pessoais não rastreados, como `meus-casos.jsonl`, permanecem; se a troca sobrescrever alterações locais ou um arquivo novo, o Git a barra. Salve seu trabalho antes de recuperar uma versão.
+- **Exercício:** uma tarefa parecida, mas não igual. No capítulo 1, você confere testes, notas e totais; no 2, compara decisões e justifica o que mudou. O enunciado diz como conferir a conclusão.
 
 ## Um livro em construção
 
