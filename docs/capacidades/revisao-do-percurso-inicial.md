@@ -24,10 +24,11 @@ e a única leitura acontece no fim, com o Victor, coautor, registrado como autor
 
 ## Etapas
 
-As etapas 1, 3 e 4 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A etapa
-atual, 5, reduz abstrações e ambiguidades antes da primeira entrega. As etapas 5 a 7 seguem sem esperar observação.
-Depois delas, Victor revisa e lê o percurso com o kit preparado; essa é a única leitura do plano. Cada etapa de
-produto tem um commit em português e evidência no registro; só o ok do responsável fecha a etapa.
+As etapas 1, 3, 4 e 5 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A etapa
+6 foi dividida: a 6a conta o percurso atual e oferece alternativas; a 6b implementa somente a alternativa que Erick
+escolher. As etapas 6 e 7 seguem sem esperar observação. Depois delas, Victor revisa e lê o percurso com o kit
+preparado; essa é a única leitura do plano. Cada etapa de produto tem um commit em português e evidência no
+registro; só o ok do responsável fecha a etapa.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
 |---|---|---|
@@ -36,7 +37,8 @@ produto tem um commit em português e evidência no registro; só o ok do respon
 | 3 | Continuidade e conclusão dos exercícios | Quem faz o exercício do capítulo 1 consegue começar o 2 com a referência correta; o critério de conclusão verifica o que a atividade pediu. |
 | 4 | Preparação, recuperação e percurso sem chave | O leitor sabe preparar o ambiente, usar os pontos de volta, encontrar o modo direto e concluir uma atividade sem chamada paga. |
 | 5 | Menos abstração antes da primeira entrega | A introdução e a parte conceitual do capítulo 1 apresentam os conceitos quando um caso da loja pede por eles; as perguntas evitam classificações ambíguas. |
-| 6 | Menos condução mecânica na IDE do capítulo 1 | Menos passagens para confirmar ou continuar, preservando as previsões, os erros e as decisões; entregas intermediárias deixam claro onde parar e retomar. |
+| 6a | Contar e propor menos condução mecânica | A contagem reproduzível separa passagem mecânica de decisão nos três modos e compara propostas sem mudar o produto. |
+| 6b | Implementar a proposta escolhida | A alternativa escolhida pelo Erick reduz confirmações ou as transforma em decisões, sem perder previsões, erros, dúvidas, variantes, modo direto e retomada. |
 | 7 | Aplicar ao capítulo 2 o que funcionou no 1 | A condução do capítulo 2 aproveita a revisão da etapa 6 e pede uma decisão que demonstre compreensão do grafo e dos testes. |
 | 8 | Revisão e leitura final | Depois das etapas 5 a 7, Victor, coautor, revisa e lê o percurso com o kit de `docs/leituras/`; a ficha marca a origem como autor. Esta é a única leitura do plano. |
 
@@ -50,91 +52,87 @@ produto tem um commit em português e evidência no registro; só o ok do respon
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 5 — menos abstração antes da primeira entrega
+## Etapa atual: 6 — menos condução mecânica na IDE do capítulo 1
+
+### Divisão
+
+- **6a — contar e propor (atual):** medir o percurso existente, localizar retomadas e comparar alternativas. Não
+  muda capítulo, IDE, roteiro nem passos.
+- **6b — implementar:** começa apenas depois da escolha do Erick. Seu escopo, critérios e evidência serão
+  detalhados a partir da proposta escolhida; nenhuma alternativa está aprovada por este documento.
 
 ### Pergunta que esta etapa responde
 
-Quem chega sem o vocabulário do livro encontra primeiro os casos da loja e, quando precisa classificar algo, tem uma
-resposta claramente melhor segundo as definições já apresentadas?
+Quantas vezes o leitor apenas confirma ou pede para seguir nos 18 passos do capítulo 1, quantas vezes decide ou
+investiga, e quais passagens podem sair ou ganhar uma pergunta sem a IDE agir sozinha?
 
 ### Escopo
 
-Somente a introdução e o capítulo 1, das seções 1.1 a 1.5. Corrigir conceitos usados antes do caso que lhes dá
-sentido, classificações com duas respostas defensáveis e o trecho de 1.4 que passa de 200 palavras antes da primeira
-ação. Não alterar a partir de 1.6, a IDE, outros componentes nem os desenhos da figura 1.1 e do mapa.
+Somente a etapa 6a: um script reproduzível de contagem e um relatório com o percurso atual, pontos de parada e duas
+a três alternativas para a etapa 6b. A contagem lê `roteiros/01.json`, `passos/01.json`, as saídas reais e a lógica
+do `IdeCapitulo.tsx`; não altera nenhuma dessas fontes de produto.
 
 **Decisões anteriores que esta etapa preserva:**
 
-- A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). Por decisão do Erick em 26/10/2026, cada
-  fase nas opções recebe uma glosa curta, derivada de `figuras/ciclo.json`, que explica sua função sem marcar a
-  resposta. A mesma fase usa a mesma glosa em todas as perguntas. Na revisão, Erick restaurou as glosas de `877fbdb`,
-  exceto Avaliar (“Mede quanto o agente atual acerta.”); Observar não cita custo nem gasto.
-- A figura 1.1 continua nas três histórias de atendentes, sem figura em texto, componente novo ou mudança visual
-  (`laco-do-agente.md`). Os casos vêm antes dos nomes da escala.
-- A política da loja abre 1.4; a palavra contrato, Meyer, a troca de prompt e a definição permanecem
-  (`capitulo-1-revisado.md`).
-- As quatro camadas — comportamento, formato, ferramenta e execução — permanecem (`contrato-em-camadas.md`).
-  As citações da Anthropic e de Nicole Koenigstein também ficam.
+- Toda passagem continua sendo uma fala do leitor no chat; a barra inferior conserva apenas setas, nome do passo e
+  perguntas (`conversa-com-a-ia.md`). Uma proposta que queira alterar isso precisa nomear a decisão e justificar.
+- A IDE não toca sozinha. No modo guiado atual, cada bloco de código entra quando o leitor passa; apostas impedem a
+  saída antes da resposta (`imersao-ide.md` e `ide-e-terminal.md`).
+- Cada passo acrescenta no máximo cerca de 15 linhas novas, fora dados copiados. Apostas antes da saída, erros reais,
+  “modificar antes de criar”, oito dúvidas abertas, pontos de volta e “Agora você tem” permanecem
+  (`passo-a-passo.md`).
+- “Na minha IDE” pausa para o leitor repetir a ação; “aqui no livro” pede que ele digite os comandos no terminal;
+  o modo direto mostra uma ação por quadro, sem apostas, perguntas de bloco nem digitação, mas conserva dúvidas e
+  variantes (`imersao-ide.md`).
 
-1. Nos dois pare e pense da introdução, substituir “régua” e “R12” pelo caso de um cliente pedindo o pedido de outra
-   pessoa, sem antecipar os nomes que só chegam no capítulo 1. Fazer o mesmo nas respostas da aposta quando o caso
-   resolve o jargão.
-2. Em `onde-se-pega.json`, distinguir “Quando dá errado” de “Evoluir” e “Avaliar” de “Evoluir” pelas perguntas e
-   ganhos de `ciclo.json`. Auditar também escala, camadas, Pilhas e Classificador contra o contrato e a política;
-   mudar apenas classificações realmente concorrentes.
-3. Mover o parágrafo da escala em 1.1 para depois da figura e imediatamente antes da aposta. Os nomes passam a
-   resumir os atendentes que o leitor viu, sem mudar a figura nem suas fontes.
-4. Enxugar o começo de 1.4 até sair do aviso de 200 palavras, preservando política, Meyer, troca de prompt,
-   definição e camadas.
-5. Enxugar os trechos ampliados nas etapas 1 e 4: até 319 palavras no primeiro aviso da introdução e cerca de 240 em
-   “Como ler”, preservando a distinção entre código reexecutado, modelo repetido da gravação e chamada real paga.
+1. Contar, passo a passo, pedidos, `FIZ`, `SEGUE` e o atalho `Avançar`, sem contar duas vezes a mesma transição.
+2. Contar apostas, perguntas de bloco, variantes, dúvidas abertas, comandos digitados e erros investigados. Separar
+   o caminho principal das escolhas opcionais e registrar o que some ou permanece no modo direto.
+3. Descrever o que a IDE guarda no navegador, o ponto de volta por tag e o fechamento “Agora você tem”; propor de
+   dois a quatro pontos naturais de parada.
+4. Comparar de duas a três propostas. Para cada uma, projetar a contagem pelo mesmo script, mostrar o chat antes e
+   depois nos passos 6 e 16, dizer o que o leitor faz a mais ou a menos, quais decisões anteriores ela toca e o custo
+   de implementação.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `capitulos/00-introducao.mdx` | Pare e pense concretos, sem depender do vocabulário do capítulo 1. |
-| `figuras/onde-se-pega.json` e `figuras/ciclo.json` | Classificações das fases e as definições que justificam cada distinção. |
-| `src/components/livro/Aposta.astro` e `testes/introducao.test.mjs` | Glosa opcional somente onde os dados a fornecem, sem mudar as outras apostas. |
-| `capitulos/01-o-problema-e-o-contrato.mdx`, 1.1–1.5 | Escala depois do caso, 1.4 mais curto e Classificador sem caso ambíguo. |
-| `figuras/escala.json` e `figuras/camadas.json` | Sistemas e camadas com uma opção claramente melhor. |
-| `projeto/referencia.jsonl`, `projeto/contrato.py` e `projeto/dados/politica.md` | Fonte das Pilhas, do Classificador e das decisões da loja. |
-| Os quatro planos citados acima | Decisões do Erick que limitam a revisão de texto e dados. |
-
-Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
+| `livros/ciclo-de-vida/roteiros/01.json` | As 40 ações, blocos, apostas, variantes e dúvidas. |
+| `livros/ciclo-de-vida/passos/01.json` | Os 18 agrupamentos, pedidos, entregas e tags de retomada. |
+| `livros/ciclo-de-vida/saidas.json` | Quais comandos do caminho principal e das variantes exibem erro real. |
+| `src/components/livro/ide/IdeCapitulo.tsx` | Regras de quadros, `FIZ`, `SEGUE`, `Avançar`, modos e memória local. |
+| `src/lib/ideCapitulo.ts` | Montagem dos passos, estados e tags de ponto de volta. |
+| `scripts/contar-passagens-ide-capitulo-1.mjs` | Contagem atual e projeções das propostas, sem mudar o produto. |
+| Os quatro planos citados acima | Decisões do Erick que limitam as alternativas. |
 
 ### Critérios de revisão
 
-- Os dois pare e pense da introdução fazem sentido sem “régua”, id ou nome de caso; o pedido de outra pessoa sustenta
-  a diferença entre definir antes, medir depois e dar peso aos erros.
-- As respostas da aposta das fases citam as duas fases que concorriam e as distinguem com `ciclo.json`; a opção
-  marcada continua pertencendo ao capítulo citado.
-- Cada fase usada nas opções tem uma glosa de até oito palavras e idêntica em todas as ocorrências; Avaliar não
-  repete “melhora”, Observar não cita custo nem gasto, e as apostas sem glosas conservam sua apresentação.
-- Escala, camadas, Pilhas e Classificador concordam com o contrato e a política. Caso com duas decisões defensáveis
-  sai da classificação de resposta única ou é tornado inequívoco sem mudar o contrato.
-- Em 1.1, o leitor vê os atendentes antes de receber os quatro nomes da escala; as citações permanecem.
-- O primeiro trecho de 1.4 fica em até 200 palavras no relógio, sem retirar nenhuma peça decidida.
-- O primeiro aviso da introdução fica em até 319 palavras e “Como ler”, em cerca de 240, sem perder a precisão sobre
-  execução, gravação e chamadas pagas.
-- O número de avisos não aumenta, e nenhuma mudança alcança 1.6, IDE, outros componentes, desenhos ou projeto.
+- O script falha se os passos deixarem de cobrir as ações ou se a lógica que sustenta a contagem mudar; a saída traz
+  os 18 passos e separa os três modos.
+- `Avançar` é contado como atalho da mesma passagem, não como uma segunda ação. Caminho principal e ofertas opcionais
+  aparecem separados; perguntas de bloco e apostas de variante não somem da conta.
+- O relatório explica a memória local, as tags e “Agora você tem”, e propõe entre dois e quatro pontos de parada.
+- Há de duas a três alternativas, cada uma com contagem projetada, passos 6 e 16 antes/depois, efeito para o leitor,
+  decisões anteriores tocadas e arquivos, testes e saídas que uma implementação exigiria.
+- Nenhuma alternativa é tratada como melhoria só por reduzir um número, nem como decisão já tomada pelo Erick.
+- Nenhum arquivo da IDE, roteiro, passos, capítulo ou saída muda na 6a.
 
 ### Evidência e verificação
 
-- Comparar `npm run ritmo` com 3 avisos na introdução, 2 no capítulo 1 e 0 no capítulo 2; 1.4 precisa sair do aviso.
-- Executar `npm test`, incluindo apostas, formato e vocabulário. Não regravar nem chamar modelo.
-- Conferir na página montada a aposta e os dois pare e pense da introdução, a ordem da figura e da escala em 1.1 e
-  o começo de 1.4. Conferir as glosas em largura de computador e de celular.
-- Numa cópia do repositório do leitor gerado, conferir que o ponto de volta preserva `meus-casos.jsonl` e para antes
-  de sobrescrever uma alteração do leitor.
-- Relatar antes/depois, justificativa das classificações e propostas não aplicadas por decisão anterior. Aguardar o
-  ok do Erick para fechar a etapa.
+- Executar `node scripts/contar-passagens-ide-capitulo-1.mjs`; guardar no relatório a tabela produzida e as regras da
+  contagem.
+- Conferir no Git se `IdeCapitulo.tsx`, `src/lib/ideCapitulo.ts`, `roteiros/` ou `passos/` mudaram desde `f499020` e
+  listar qualquer commit encontrado.
+- Conferir as projeções do script contra os exemplos dos passos 6 e 16 e registrar a proposta que depende de mudar
+  uma decisão anterior.
+- Aguardar a escolha do Erick. A evidência da 6b será definida somente com a alternativa escolhida.
 
 ### Limite da etapa
 
-Somente introdução e 1.1–1.5, com a menor extensão opcional em `Aposta.astro` para mostrar as glosas. Sem mudança
-em 1.6 ou depois, capítulo 2, IDE, outros componentes, desenhos, projeto, gravações ou etapas 6 a 8. Sem chamada
-paga, push, túnel ou opinião inventada dos autores. Os `Pendente` ficam.
+Somente plano, script de contagem e relatório. Não mudar IDE, biblioteca que a monta, roteiro, passos, capítulo,
+saídas, testes do produto nem projeto. Não detalhar nem começar a 6b; não chamar modelo, regravar, publicar, abrir
+túnel ou inventar opinião dos autores.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -144,10 +142,12 @@ paga, push, túnel ou opinião inventada dos autores. Os `Pendente` ficam.
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
 - **Etapa 4 (aprovada):** clone, tags, PontoDeVolta, Modo direto e `variar` sustentam a recuperação e o exercício
   sem chave. O endereço foi decidido; a publicação continua fora deste plano.
-- **Etapa 5 (detalhada acima):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas
-  respostas defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
-- **Etapas 6 e 7:** contar passagens mecânicas e decisões dentro da IDE. Os roteiros atuais têm 40 ações em 18
-  passos no capítulo 1 e 16 ações em 10 passos no capítulo 2; quantidade menor, sozinha, não comprova melhoria.
+- **Etapa 5 (aprovada):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas respostas
+  defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
+- **Etapa 6a (detalhada acima):** contar e propor sem mudar o produto. A 6b só será detalhada quando Erick escolher
+  uma alternativa. Quantidade menor, sozinha, não comprova melhoria.
+- **Etapa 7:** aplicar ao capítulo 2 o que for escolhido e conferido no capítulo 1; o roteiro atual tem 16 ações em
+  10 passos.
 - **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha
   marca `autor`; não há leitura anterior para comparar nem leitores de fora previstos neste plano.
 
