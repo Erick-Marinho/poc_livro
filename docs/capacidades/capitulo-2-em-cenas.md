@@ -40,7 +40,27 @@ intuitivo", e a repetição cansa (26/10/2026).
 | 3 | 2.3 | O ensaio com um cliente de mentira, que segue um roteiro. | o modelo falso | o que o ensaio prova, e o que não prova |
 | 4 | 2.4 | A prova: as 20 questões e o placar. | a régua | o palpite da nota |
 
-## Etapa atual: 2 — o formulário do substituto, no 2.2
+## Etapa atual: 3 — o ensaio do substituto, no 2.3
+
+### O que muda
+
+- Uma animação nova no mesmo grafo (`roteiro/EnsaioAnimado.tsx`, sobre a `RolaCena`): com o modelo de verdade, cada
+  ensaio custa, demora e varia; no lugar dele, o modelo falso, que devolve o que se combinou. Dois ensaios lidos do
+  `test_agente.py`: "escolha passar a vez" ("Quero falar com alguém.": o caminho não pede mais nada ao modelo, frase
+  fixa) e "escolha responder, e escreva ‘Seu pedido sai amanhã.’" ("Cadê o BT-1002?": a frase chega). No fim, um ✓
+  em cada caminho e a saída gravada do pytest (`11 passed`).
+- A animação não diz o que esses testes provam: isso fica para o pare e pense que já existia, o único da seção.
+- O texto do 2.3 fica com a cena (o ensaio antes de ir para o ar), a figura, o aviso do tropeço que vem na IDE e o
+  pare e pense.
+
+### Verificação
+
+- Teste da montagem (`ensaio-do-agente.test.mjs`): os ensaios saem do `test_agente.py`; a saída é a do pytest gravado,
+  e uma saída com falha não monta; os balões emendam e nenhum entrega o que o pare e pense pergunta; na página, o 2.3
+  tem a figura e um pare e pense só.
+- `npm run ritmo`, `npm test` e capturas ao longo da rolagem, no computador e no celular.
+
+## Etapa 2 — o formulário do substituto, no 2.2
 
 ### O que muda
 
@@ -91,5 +111,6 @@ intuitivo", e a repetição cansa (26/10/2026).
 | 1 (refeita) | `35c3286` | A rolagem como agulha e os balões, sem pergunta; `npm test`: 129 testes do livro e 5 da gravação, 30 + 16 saídas conferidas; a animação da introdução conferida depois dos consertos na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) ao longo do trilho (8 % a 100 %), no computador e em 390 px, rolando com a roda do mouse. | Erick, 26/10/2026 |
 | 1 (play e rolar) | `fa1f610` | O play no ritmo de leitura e a chave "rolar com a página", lembrada e também nas configurações; conferido no navegador: começa sem trilho (602 px), toca, pausa, liga (trilho de 8 telas, rolagem no quadro em que estava), desliga (figura no topo, mesmo quadro); `npm test`: 129 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) `a-` a `e-`. | Erick, 26/10/2026 |
 | 2 | `6b68056` | O formulário no 2.2, com a resposta gravada do modelo; peças comuns em `pecas.tsx`; `npm test`: 133 testes do livro (5 novos no formulário; o das pilhas do 2.2 saiu) e 5 da gravação, 30 + 16 saídas conferidas; 2.2 com 42 e 191 palavras entre as ações; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-2/) ao longo da rolagem, no computador e em 390 px. | Erick, 26/10/2026 |
+| 3 | COMMIT | O ensaio no 2.3, com os testes reais e o pytest gravado; `npm test`: 137 testes do livro (4 novos) e 5 da gravação, 30 + 16 saídas conferidas; 2.3 com 48 palavras até o pare e pense; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-3/) ao longo da rolagem, no computador e em 390 px. | aguardando revisão |
 
 (redação: Claude Opus 5.5)

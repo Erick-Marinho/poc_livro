@@ -32,6 +32,8 @@ import RoteiroDoAgente from "../../../src/components/livro/RoteiroDoAgente.astro
 import Listagem from "../../../src/components/livro/Listagem.astro";
 import FormularioDoAgente from "../../../src/components/livro/FormularioDoAgente.astro";
 import agentePy from "../projeto/agente.py?raw";
+import EnsaioDoAgente from "../../../src/components/livro/EnsaioDoAgente.astro";
+import testeAgente from "../projeto/test_agente.py?raw";
 import nosDoGrafo from "../figuras/grafo-02.json";
 import gravacaoMedir from "../gravacoes/r02-medir.json";
 import referencia from "../projeto/referencia.jsonl?raw";
@@ -66,11 +68,11 @@ O modelo responde preenchendo esse molde, e o grafo lê a caixa marcada para esc
 
 ## 2.3 Testar sem pagar
 
-Todo teste que chama um modelo de verdade custa dinheiro, demora, e pode dar um resultado diferente a cada execução. Um teste assim não serve para a pergunta mais básica: o grafo tem o desenho certo?
+Antes de pôr o substituto diante de cliente de verdade, a loja faria um ensaio. Com o agente é igual: o grafo precisa de um ensaio antes de ir para o ar, e o modelo de verdade é o pior ator para isso.
 
-Para essa pergunta, a LangChain tem um **modelo falso**: ele devolve, na ordem, as respostas que você combinou, sem chamar ninguém. Com ele, os testes conferem o desenho e os caminhos. Combina-se "escolha passar a vez" e confere-se que o caminho de passar não pediu nada ao modelo. Combina-se "escolha responder, e escreva tal frase" e confere-se que a frase chegou.
+<EnsaioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} testes={testeAgente} pytest={saidas["r02-pytest"]} numero="2.3" legenda="O ensaio do substituto: testar sem pagar, com o modelo falso. O grafo é o real; os dois ensaios são os do test_agente.py, e a saída é a do pytest, gravada." />
 
-O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes da LangChain recomenda.
+O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso da LangChain não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes da LangChain recomenda.
 
 <PareEPense pergunta="Se o modelo falso responde o que a gente combinou, o que esses testes provam?">
 Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada decisão, que cada caminho faz o que deve, que o caminho de passar a vez não gasta uma chamada. Se o modelo decide bem, eles não dizem: para isso existe a régua. Os dois juntos dizem onde está o problema quando a nota cai: no desenho (os testes quebram) ou na decisão do modelo (os testes passam e a nota cai).
