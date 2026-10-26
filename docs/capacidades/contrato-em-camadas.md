@@ -12,6 +12,10 @@ as 20 respostas vieram no formato e 6 estavam certas.
 
 ## Decisões
 
+- (26/10/2026, Erick) A etapa 1 sai do 1.4: o Erick achou a seção "abstrata e nada intuitiva", e a aposta e o quadro
+  das camadas eram o trecho mais abstrato. No 1.4 fica uma frase que diz que as outras conferências chegam nos
+  capítulos 2, 3 e 5. O `figuras/camadas.json` e o teste dele ficam, para quando esses capítulos existirem
+  (`achados-da-leitura-do-victor.md`, etapa 2).
 - (0) Do livro, só as ideias (porta de validação, política fixada e carimbada, laço de dentro e de fora, checkpoint),
   com citação; sem Instructor, OmegaConf nem descoberta de ferramentas em tempo de execução.
 - (0) Para quando chegarmos lá: entrada e saída tipadas das ferramentas, e o MCP como quadro opcional (cap. 3); a

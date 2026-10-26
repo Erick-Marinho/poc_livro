@@ -25,8 +25,38 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | Etapa | Achado | Resultado esperado para revisão |
 |---|---|---|
 | 1 | O 1.3 está complexo e abstrato para quem começa (Victor, 26/10/2026, relatado pelo Erick). | O leitor separa as mensagens com um critério que entende, e a explicação mostra a ideia da seção: o que importa é o que se faz com a mensagem, não o assunto dela. |
+| 2 | O 1.4 também está abstrato e nada intuitivo (Erick, 26/10/2026). | O contrato chega como continuação da cena da colega, com uma imagem que o iniciante já conhece, e sem conceitos que só servem em capítulos futuros. |
 
-## Etapa atual: 1 — o 1.3 para quem começa
+## Etapa 2 — o 1.4 como gabarito
+
+### O que travava
+
+- O 1.4 abria com a política e passava logo ao direito, ao Bertrand Meyer e a "rotina que declara o que exige e o que
+  garante", sem caso que pedisse esses conceitos.
+- "Fixa decisões, não frases" e "o contrato não é o prompt" vinham em termos técnicos, sem imagem.
+- A aposta e o quadro das quatro camadas (comportamento, formato, ferramenta, execução) pediam ao leitor que
+  classificasse falhas de capítulos que ele ainda não leu.
+
+### O que muda
+
+- O 1.4 continua a cena do 1.3: a colega vai sair de férias, e o agente fica no lugar dela. Como saber se ele aprendeu?
+  Como a escola sabe se o aluno aprendeu: com uma prova que já tem gabarito. O contrato é esse gabarito, e as
+  respostas saem da política e dos dados da loja.
+- O gabarito cobra o que se faz, não a frase: a troca de prompt (o `Troca`, que fica) mostra isso com o desconto.
+- Prompt e contrato: o prompt é como você explica o trabalho a um novato; o gabarito é como você confere se ele
+  aprendeu. Um pare e pense novo: trocar o prompt muda o gabarito? (Não.)
+- O Meyer fica numa frase, depois da imagem; a definição fica, com as três partes ligadas à colega.
+- A aposta e o quadro das camadas saem do 1.4 (decisão registrada em `contrato-em-camadas.md`). Fica uma frase: as
+  outras conferências chegam nos capítulos 2, 3 e 5.
+
+### Verificação
+
+- `npm run ritmo`: o 1.4 tem 159 palavras até a troca, 63 até o pare e pense novo e 153 até o 1.5, sem aviso.
+- `npm test`: 124 testes do livro e 5 da gravação, 30 + 16 saídas conferidas. O teste das camadas confere os dados e
+  que a aposta saiu do 1.4.
+- [Capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/) do 1.4 no computador e em 360 px.
+
+## Etapa 1 — o 1.3 para quem começa
 
 ### O que travava
 

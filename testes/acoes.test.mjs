@@ -95,7 +95,7 @@ test("todo pare e pense tem a lâmpada no rótulo e o olho no \"Ver a resposta\"
   }
 });
 
-test("capítulo 1: a aposta das camadas usa o R12 como aconteceu na gravação do capítulo 2, e cada camada aponta um capítulo do sumário", () => {
+test("a aposta das camadas, guardada fora do 1.4 até os capítulos 3 e 5: usa o R12 como aconteceu na gravação do capítulo 2, e cada camada aponta um capítulo do sumário", () => {
   const camadas = JSON.parse(ler("livros/ciclo-de-vida/figuras/camadas.json"));
   const saidas = JSON.parse(ler("livros/ciclo-de-vida/saidas.json"));
   const linhas = saidas["r02-medir"].saida.map(([l]) => l);
@@ -106,7 +106,7 @@ test("capítulo 1: a aposta das camadas usa o R12 como aconteceu na gravação d
   const sumario = JSON.parse(ler("livros/ciclo-de-vida/sumario.json")).capitulos.map((c) => c.numero);
   for (const m of camadas.mensagens) for (const [, n] of m.porque.matchAll(/capítulo (\d)/g)) assert.ok(sumario.includes(+n), `capítulo ${n} fora do sumário`);
   assert.deepEqual(camadas.mensagens.map((m) => m.opcoes[m.fez]).toSorted(), ["comportamento", "execução", "ferramenta", "formato"]);
-  for (const m of camadas.mensagens) assert.ok(html.includes(m.texto.replace(/"/g, "&quot;")) || html.includes(m.texto), m.texto);
+  assert.ok(!html.includes("Que camada do contrato pega cada uma?"), "a aposta das camadas saiu do 1.4 (achados-da-leitura-do-victor.md, etapa 2)");
 });
 
 test("capítulo 2: o molde garantiu a forma das 20 e não a decisão; os números são os da gravação", () => {
