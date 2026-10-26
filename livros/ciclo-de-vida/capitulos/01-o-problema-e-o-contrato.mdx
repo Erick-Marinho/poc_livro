@@ -38,6 +38,8 @@ import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import PrimeiroDia from "../../../src/components/livro/PrimeiroDia.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
+import Listagem from "../../../src/components/livro/Listagem.astro";
+import contratoPy from "../marcos/cap-01/contrato.py?raw";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
 import trocaDePrompt from "../figuras/troca-de-prompt.json";
@@ -138,23 +140,31 @@ Este gabarito confere o que o agente decide. Outras conferências chegam depois,
 ## 1.5 As quatro decisões
 
 <PareEPense pergunta="Na seção 1.3, você escolheu entre quatro coisas para fazer com cada mensagem. Que nome curto você daria a cada uma, para caber num contrato?">
-O contrato chama as quatro de responder, abrir chamado, recusar e passar a vez. A tabela abaixo diz quando vale cada uma.
+O contrato chama as quatro de responder, abrir chamado, recusar e passar a vez.
 </PareEPense>
 
 <Pendente o="Opinião dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
-As saídas são as quatro coisas que você escolheu na seção 1.3. Para toda pergunta, o agente toma uma de quatro decisões:
+Como esse gabarito fica em código? Em duas partes, que você escreve na 1.6. A primeira, as quatro coisas da colega, vira um `Enum` em Python: uma lista fechada, de onde o agente escolhe uma, sem inventar uma quinta, como "encaminhar".
 
-| Decisão | Quando | Exemplo |
+<Listagem codigo={contratoPy} nome="contrato.py" linhas="12-18" info="um trecho do arquivo que você escreve na 1.6" notas={{ 12: "as quatro saídas do contrato, e só elas", 15: "o que a colega fazia com a frigideira" }} />
+
+A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Estas duas são do seu primeiro dia; no arquivo, cada uma ocupa uma linha:
+
+<Listagem codigo={["R15", "R10"].map((id) => JSON.stringify(JSON.parse(referencia.split("\n").find((l) => l.includes(`"id": "${id}"`))), null, 2)).join("\n")} nome="referencia.jsonl" info="2 das 20 linhas, abertas para ler" notas={{ 4: "a resposta certa: o que fazer com a mensagem", 5: "o porquê, como a colega dizia", 19: "pedido e e-mail vêm juntos: é o que deixa conferir se o pedido é de quem pergunta" }} />
+
+Os porquês, tirados da política e dos dados da loja, viram estas regras:
+
+| Decisão | Quando | No seu primeiro dia |
 |---|---|---|
-| **responder** | a resposta está nos dados ou na política | "onde está o meu pedido?" |
-| **abrir chamado** | um produto chegou com defeito, dentro do prazo | "a tampa veio rachada" |
-| **recusar** | a loja não permite, e o agente diz por quê | "me dá um desconto" |
-| **passar a vez** | o caso é de uma pessoa da equipe | "quero falar com um atendente" |
+| **responder** | a resposta está nos dados ou na política | "a frigideira vai ao forno?" |
+| **abrir chamado** | um produto chegou com defeito, dentro do prazo | "o lençol descosturou" |
+| **recusar** | a loja não permite, e o agente diz por quê | "me passa o CPF da Ana" |
+| **passar a vez** | o caso é de uma pessoa da equipe | "quero o meu dinheiro de volta" |
 
-Parece simples até você tentar aplicar. Tente: para cada pergunta abaixo, escolha o que o agente deveria fazer, e veja o que o contrato diz.
+Parece simples até você tentar aplicar. Agora, mensagens que a colega não mostrou: escolha o que o agente deveria fazer, e veja o que o contrato diz.
 
-<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R16", "R17", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
+<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R13", "R16", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
 
 Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
 

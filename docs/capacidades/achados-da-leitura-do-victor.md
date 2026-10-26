@@ -26,6 +26,30 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 |---|---|---|
 | 1 | O 1.3 está complexo e abstrato para quem começa (Victor, 26/10/2026, relatado pelo Erick). | O leitor separa as mensagens com um critério que entende, e a explicação mostra a ideia da seção: o que importa é o que se faz com a mensagem, não o assunto dela. |
 | 2 | O 1.4 também está abstrato e nada intuitivo (Erick, 26/10/2026). | O contrato chega como continuação da cena da colega, com uma imagem que o iniciante já conhece, e sem conceitos que só servem em capítulos futuros. |
+| 3 | O 1.5 evolui sem mostrar um contrato, abstrato, com exemplos desconexos: "é um gabarito, mas como ele é em código?" (Erick, 26/10/2026). | O leitor vê o gabarito virar código real antes de escrevê-lo, e os exemplos são os do primeiro dia. |
+
+## Etapa 3 — o gabarito em código, no 1.5
+
+### O que travava
+
+- O 1.5 dava os nomes das quatro decisões e uma tabela, sem mostrar como o contrato fica em código.
+- Os exemplos da tabela ("a tampa veio rachada", "quero falar com um atendente") não eram os do primeiro dia.
+- O Classificador repetia o reembolso do Bruno, que agora está no 1.3.
+
+### O que muda
+
+- Depois dos nomes, o gabarito em código, lido do projeto real (`marcos/cap-01/`): a lista fechada `Decisao` do
+  `contrato.py` (as quatro coisas da colega) e dois casos do `referencia.jsonl` do primeiro dia (o CPF e o lençol),
+  abertos para ler, com notas na decisão, no motivo e no par pedido e e-mail. O texto diz que no arquivo cada caso
+  ocupa uma linha, e que o leitor escreve os dois arquivos na 1.6.
+- A tabela das regras usa as mensagens do primeiro dia.
+- O Classificador troca o R17 (já no 1.3) pelo R13, o endereço de um pedido já enviado, que a política não muda.
+
+### Verificação
+
+- `npm run ritmo`: 199 palavras do pare e pense ao Classificador (sem aviso).
+- `npm test`: 124 testes do livro e 5 da gravação.
+- [Capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/) do 1.5.
 
 ## Etapa 2 — o 1.4 como gabarito
 
