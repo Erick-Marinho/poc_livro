@@ -34,9 +34,10 @@ test("os caminhos são os da gravação, e somam a nota do agente", () => {
   assert.match(cpf.escrita, /CPF/);   // recusar escreve com o modelo, e a escrita também foi gravada
 });
 
-test("a página traz as duas figuras: o desenho na 2.1 e os caminhos na 2.6", () => {
+test("a página traz o roteiro animado na 2.1 e os caminhos na 2.6", () => {
   const html = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
-  assert.deepEqual([...html.matchAll(/data-grafo data-modo="(\w+)"/g)].map((m) => m[1]), ["desenho", "caminhos"]);
+  assert.ok(html.indexOf("data-roteiro") >= 0 && html.indexOf("data-roteiro") < html.indexOf("data-grafo"), "o roteiro vem antes dos caminhos");
+  assert.deepEqual([...html.matchAll(/data-grafo data-modo="(\w+)"/g)].map((m) => m[1]), ["caminhos"]);
   assert.equal([...html.matchAll(/class="ga-(certo|errado)"/g)].length, 20);
   assert.match(html, /gravados em 24\/10\/2026/);
 });

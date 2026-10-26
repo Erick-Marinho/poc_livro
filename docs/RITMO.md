@@ -35,7 +35,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 | Conta | Não conta |
 |---|---|
-| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
+| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `RoteiroDoAgente`, `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 

@@ -29,28 +29,23 @@ import estados01 from "../roteiros/01.estados.json";
 import passos02 from "../passos/02.json";
 import glossario from "../glossario.json";
 import GrafoAgente from "../../../src/components/livro/GrafoAgente.astro";
+import RoteiroDoAgente from "../../../src/components/livro/RoteiroDoAgente.astro";
 import nosDoGrafo from "../figuras/grafo-02.json";
 import gravacaoMedir from "../gravacoes/r02-medir.json";
 import referencia from "../projeto/referencia.jsonl?raw";
 
 ## 2.1 Um agente desenhado
 
-No capítulo 1, o agente era uma promessa: um modelo que decide os próprios passos. Agora ele vai existir. A pergunta é por onde começar, e a resposta deste livro é: pelo desenho, e não pelo modelo.
+No capítulo 1, a colega saiu de férias e deixou o gabarito. Agora o substituto vai começar a trabalhar, e a primeira coisa que ele precisa é de um roteiro: ler a mensagem, decidir o que fazer com ela e ir ao balcão certo. Este livro começa o agente por esse roteiro, desenhado, e não pelo modelo.
 
-O agente deste capítulo faz duas coisas. Primeiro, lê a mensagem e decide o que o contrato manda: responder, abrir chamado, recusar ou passar a vez. Depois, segue o caminho daquela decisão. Dá para escrever isso como uma função cheia de `if`, mas vamos escrever como um **grafo**: cada passo é um **nó**, as **setas** dizem qual nó vem depois, e um **estado** passa de nó em nó levando o que já se sabe.
+<RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} numero="2.1" legenda="O roteiro do substituto, que vira o grafo do agente. Os nós e as setas são os do grafo real, montado pelo código do projeto; as mensagens vão ao balcão que o contrato pede. O que o modelo decide de verdade você mede no 2.4." />
 
-<PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
-Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
-</PareEPense>
+Esse desenho é o agente deste capítulo. Na escala do capítulo 1, onde ele fica? No roteador. Decide uma vez, qual caminho seguir, e toda seta termina no fim: não tem ferramenta nem laço. As ferramentas, e com elas o laço, chegam no capítulo 3, como nós novos nesse mesmo desenho.
 
 <Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e executar esse desenho.</Nota>
 
-Clique nos nós do agente que você vai construir. O desenho não foi feito à mão: as setas são as do grafo real.
-
-<GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="desenho" numero="2.1" legenda="O grafo do agente deste capítulo. As setas saíram do grafo real, montado pelo código do projeto; o que cada nó faz aparece embaixo, ao clicar." />
-
-<PareEPense pergunta="Na escala do capítulo 1 (fluxo fixo, roteador, agente, vários agentes), onde fica o agente deste desenho?">
-No roteador. Ele decide uma coisa só, qual caminho seguir, e não tem ferramenta nem laço: toda seta termina no fim. As ferramentas, e com elas o laço, chegam no capítulo 3 e entram nesse mesmo desenho como nós novos. Aí ele passa a ser agente.
+<PareEPense pergunta="Se são só quatro balcões, por que um grafo, e não uma função com quatro if?">
+Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
 </PareEPense>
 
 ## 2.2 O modelo decide, o contrato dá a forma

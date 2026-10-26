@@ -1,0 +1,43 @@
+---
+/**
+ * A figura do 2.1 (docs/capacidades/capitulo-2-em-cenas.md, etapa 1): o roteiro do substituto, que vira o grafo do
+ * agente (roteiro/FiguraRoteiro.tsx). Os nós e as setas são os do grafo real; as mensagens e os balcões, os do contrato.
+ * A montagem confere tudo no build (roteiro/roteiro.ts). Sem JS, só um aviso.
+ */
+import FiguraRoteiro from "./roteiro/FiguraRoteiro";
+import { montarRoteiro, type Entrada } from "./roteiro/roteiro.ts";
+
+interface Props extends Entrada { numero: string; legenda: string }
+const { arestas, nos, referencia, mensagens, numero, legenda } = Astro.props;
+montarRoteiro({ arestas, nos, referencia, mensagens });
+---
+<figure class="roteiro" data-roteiro>
+  <FiguraRoteiro client:visible={{ rootMargin: "400px" }} arestas={arestas} nos={nos} referencia={referencia} mensagens={mensagens} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+  <noscript><p class="rt-semjs">Esta figura é animada e precisa de JavaScript.</p></noscript>
+</figure>
+
+<style is:global>
+  .roteiro { margin: 1.8em auto 2em; max-width: 720px }
+  .roteiro figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .roteiro figcaption b { color: var(--ink); font-weight: 600 }
+  .rt-semjs { margin: 0; padding: 12px 14px; border: 1px dashed var(--linha); border-radius: 12px; font: 14px var(--f-ui); color: var(--ink-2) }
+  /* a rolagem avança as cenas: o trilho é alto, e a figura fica presa na tela enquanto o leitor rola por ele */
+  .rt-trilho { position: relative }
+  .rt { position: sticky; top: 58px; border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 12px 14px; display: grid; gap: 8px }
+  /* o vídeo cabe na altura da tela, com a pergunta e o botão embaixo */
+  .rt-video { margin-inline: auto }
+  .rt-legenda { margin-top: 6px; font: 15px/1.45 var(--f-ui); color: var(--ink) }
+  .rt-legenda p { margin: 0 0 4px }
+  @media (max-width: 640px) { .rt { top: 50px; padding: 10px } }
+  .rt-pergunta { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--acento); border-radius: 10px; background: var(--papel) }
+  .rt-pergunta p { margin: 0 0 8px; font: 15.5px/1.5 var(--f-ui) }
+  .rt-pergunta q { font-style: italic }
+  .rt-rotulo { display: block; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento); margin-bottom: 2px }
+  .rt-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .rt-opcoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .rt-opcoes button:not(:disabled):hover { border-color: var(--acento) }
+  .rt-opcoes button:disabled { cursor: default; opacity: .55 }
+  .rt-opcoes button[aria-pressed="true"] { opacity: 1; color: var(--papel); background: var(--ink); border-color: transparent }
+  .rt-opcoes .rt-pular { background: none; border-style: dashed }
+</style>
