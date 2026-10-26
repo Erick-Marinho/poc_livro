@@ -62,8 +62,8 @@ que achados de autor o Erick precisa registrar antes de decidir o próximo ajust
 
 Uma leitura observada do percurso inicial — introdução, capítulo 1, exercício, caso novo e capítulo 2 quando Victor
 continuar — em uma ou mais visitas previstas pelo protocolo. Erick conduz; Victor lê em voz alta no aparelho que
-usaria e faz o que o livro pede. A observação usa o kit existente em `docs/leituras/` e fica apenas na máquina ou na
-rede local.
+usaria e faz o que o livro pede. A observação usa o kit existente em `docs/leituras/`. Se Victor não estiver na rede
+local do Erick, a forma de acesso depende de uma decisão nova do Erick antes da leitura.
 
 **Decisões de Erick em 26/10/2026:**
 
@@ -71,13 +71,21 @@ rede local.
 - Victor é coautor. A ficha usa origem **autor**, e seus achados não confirmam nem descartam a experiência de quem
   não escreveu o livro.
 - Esta é a única leitura do plano. Não há leitores de fora nesta etapa.
-- Tudo permanece local: sem hospedagem, túnel ou endereço público. Tablet ou celular, se usados, acessam somente a
-  rede Wi-Fi local conforme o protocolo.
 - O kit de `docs/leituras/` continua como está. O estado da proposta de `sinal.md` é registrado pelo Erick antes da
   leitura; se continuar pendente, ou por não haver leitores de fora, o resultado conjunto permanece **sem sinal**.
 
 ### Preparação pendente do Erick
 
+**Fato conferido pelo planejador em 26/10/2026:** o repositório do leitor está público no endereço definido e tem
+31 tags. O commit público mais recente é de 16/10/2026; as árvores públicas de `cap-01/fim` e `cap-02/fim` diferem
+das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ainda não carregam os casos do leitor.
+
+- **Decisão aberta:** atualizar o repositório público com as tags regeneradas. O push é ação do Erick; esta
+  preparação apenas conferiu as referências e as árvores, sem mudar o remoto.
+- **Decisão aberta:** como Victor acessará o livro se não estiver na rede local do Erick. “Só local” foi a decisão de
+  25/10/2026; a possibilidade de Victor estar fora dessa rede é uma pergunta nova.
+- **Decisão aberta:** preencher antes ou depois da leitura os cinco `Pendente` de voz dos autores — capítulo 1,
+  linhas 93, 138 e 169; capítulo 2, linhas 75 e 127.
 - **Pendente:** data, aparelho, sistema, navegador e preferência “Reduzir movimento” que Victor usará.
 - **Pendente:** commit exato do livro que será lido e comando local usado para abrir a introdução.
 - **Pendente:** marcar em `sinal.md` se a proposta foi adotada, alterada ou continua pendente. Nenhum limiar para
@@ -132,7 +140,10 @@ rede local.
 
 ### Evidência e verificação
 
-- **Nesta preparação:** diff somente deste plano; nenhuma ficha preenchida, sessão simulada ou mudança no livro.
+- **Nesta complementação da preparação:** Pendente da introdução, estado deste plano e
+  [lista de prontidão](../relatorios/revisao-do-percurso-inicial-etapa-8-preparacao.md); nenhuma ficha preenchida ou
+  sessão simulada. A lista registra as verificações locais e a comparação somente de leitura com o repositório
+  público.
 - **Para fechar a etapa depois da leitura:** ficha de autor e folhas de campo das visitas, com commit e contexto;
   tentativa do caso novo ou “não aplicado”; paradas e retomadas que ocorrerem; eventos ligados às hipóteses; estado
   do sinal e encaminhamento registrados pelo Erick.
@@ -141,9 +152,10 @@ rede local.
 
 ### Limite da etapa
 
-Nesta parte, somente detalhar a etapa 8 neste plano. Não realizar a leitura, preencher ficha ou folha de campo,
-decidir o sinal pelo Erick, alterar o kit, mudar o livro, chamar modelo, publicar ou abrir túnel. A etapa continua
-aberta até Erick conduzir a leitura, registrar a evidência real e revisar o encaminhamento.
+Nesta parte, somente completar a preparação da etapa 8 neste plano, no Pendente da introdução e no relatório. Não
+realizar a leitura, preencher ficha ou folha de campo, decidir pelo Erick, alterar o kit ou outro trecho do livro,
+chamar modelo, publicar, fazer push ou abrir túnel. A etapa continua aberta até as decisões pendentes, a leitura e
+a revisão do encaminhamento pelo Erick.
 
 ## Estado das etapas e da leitura
 
@@ -152,15 +164,17 @@ aberta até Erick conduzir a leitura, registrar a evidência real e revisar o en
 - **Etapa 3 (aprovada):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
 - **Etapa 4 (aprovada):** clone, tags, PontoDeVolta, Modo direto e `variar` sustentam a recuperação e o exercício
-  sem chave. O endereço foi decidido; a publicação continua fora deste plano.
+  sem chave. O repositório está público no endereço decidido, mas as tags finais estão desatualizadas; atualizá-las
+  com o repositório gerado é ação pendente do Erick na preparação da etapa 8.
 - **Etapa 5 (aprovada):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas respostas
   defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
 - **Etapa 6b (aprovada):** A e C foram implementadas juntas; B foi descartada. Quadro por ação, cinco perguntas e
   quatro paradas têm o ok do Erick.
 - **Etapa 7 (aprovada):** o capítulo 2 recebeu quadro por ação, quatro perguntas interpretativas e três paradas; o
   texto das perguntas tem o ok do Erick.
-- **Etapa 8 (detalhada acima):** está pronta para Erick conduzir. Victor revisa e lê com o kit já preparado; a ficha
-  marca `autor`, e não há leitura anterior para comparar nem leitores de fora previstos neste plano.
+- **Etapa 8 (detalhada acima):** a preparação aguarda as decisões do Erick. Depois delas, Victor revisa e lê com o
+  kit já preparado; a ficha marca `autor`, e não há leitura anterior para comparar nem leitores de fora previstos
+  neste plano.
 
 ## Registro
 
