@@ -78,8 +78,10 @@ da IDE.
 - Nos dois modos guiados, todos os blocos de uma ação entram juntos, com notas, termos e perguntas; saem as falas
   “E o próximo?”. Isso revoga, somente nesse ponto, o bloco a bloco decidido em `passo-a-passo.md` e
   `imersao-ide.md`: cada ação ainda termina numa fala do leitor, e a IDE não avança sozinha.
-- Nos passos 6, 8, 12, 16 e 17, a confirmação depois do comando vira uma pergunta curta sustentada pela saída
-  gravada. A resposta do leitor é a passagem; no modo direto, a pergunta não aparece.
+- Nos passos 6, 8, 12, 16 e 17, a confirmação depois do comando vira uma pergunta curta que interpreta a saída
+  gravada: pergunta o que ela prova, ainda não prova ou por que aconteceu. A resposta do leitor é a passagem; no
+  modo direto, a pergunta não aparece. Na revisão de 26/10/2026, Erick recusou perguntas que apenas pediam para ler
+  o texto já visível.
 - Depois dos passos 4, 10, 16 e 18, a IA avisa que aquele é um bom lugar para parar, nomeia a entrega e dá a tag de
   volta, sem interromper quem prefere seguir.
 - Permanecem as apostas, o “modificar antes de criar”, as dúvidas, as perguntas de bloco, o teto de cerca de 15
@@ -87,8 +89,8 @@ da IDE.
 
 1. Montar um quadro por ação nos modos guiados, preservando dentro dele todos os blocos e o bloqueio separado das
    duas perguntas do passo 6.
-2. Ligar cada uma das cinco perguntas novas à resposta certa presente na saída gravada do comando e usar a resposta
-   do leitor como passagem para o quadro seguinte.
+2. Ligar cada uma das cinco perguntas a uma evidência presente na saída gravada, sem escrever a conclusão correta
+   na própria saída ou na nota, e usar a resposta do leitor como passagem para o quadro seguinte.
 3. Acrescentar os quatro avisos de parada ao fecho dos passos, sem criar uma nova passagem.
 4. Atualizar a contagem reproduzível para a estrutura implementada e conservar os dados do antes para comparação.
 
@@ -98,7 +100,7 @@ da IDE.
 |---|---|
 | `livros/ciclo-de-vida/roteiros/01.json` | As cinco perguntas de saída, suas opções, resposta e explicação. |
 | `livros/ciclo-de-vida/passos/01.json` | Entrega e tag dos quatro avisos de parada. |
-| `livros/ciclo-de-vida/saidas.json` | Fonte da resposta certa de cada pergunta; não muda. |
+| `livros/ciclo-de-vida/saidas.json` | Evidência que cada pergunta pede para interpretar; não muda. |
 | `src/components/livro/ide/IdeCapitulo.tsx` | Quadro por ação, bloqueios, passagem por resposta e aviso de parada. |
 | `src/lib/ideCapitulo.ts` | Tipos, validação e montagem dos quadros e das perguntas pendentes. |
 | `scripts/contar-passagens-ide-capitulo-1.mjs` | Comparação passo a passo do antes com a implementação. |
@@ -109,8 +111,9 @@ da IDE.
 
 - Há 40 quadros de ação nos modos guiados, um por ação; nenhuma fala “E o próximo?” permanece. As duas perguntas de
   bloco do passo 6 continuam exigindo respostas separadas antes da passagem.
-- As cinco perguntas novas bloqueiam somente o guiado; a opção certa aparece na saída real do comando, e responder
-  já leva ao quadro seguinte. O modo direto não mostra essas perguntas.
+- As cinco perguntas bloqueiam somente o guiado; cada uma aponta uma evidência da saída, mas a opção certa não está
+  escrita literalmente nela nem na nota. As alternativas exigem decidir o que a prova sustenta, e responder já
+  leva ao quadro seguinte. O modo direto não mostra essas perguntas.
 - Nenhum quadro acrescenta mais que cerca de 15 linhas novas; apostas, variantes, dúvidas e erros permanecem.
 - Os passos 4, 10, 16 e 18 encerram com aviso curto, entrega e a tag decidida, sem impedir a continuação.
 - A contagem passa de 79 para cerca de 53 passagens mecânicas nos modos guiados e de 28 para 33 decisões principais;
@@ -122,7 +125,7 @@ da IDE.
 - Executar o script de contagem e guardar no relatório a tabela, com antes e depois por passo.
 - Rodar `npm run saidas:conferir`, `npm run leitor` e `npm test`; as saídas gravadas e as tags devem permanecer.
 - Testar quadro por ação, perguntas de bloco, perguntas de saída nos dois percursos guiados e sua ausência no modo
-  direto, vínculo da resposta com a saída e os quatro avisos de parada.
+  direto, presença da evidência e ausência literal da resposta na saída e na nota, além dos quatro avisos de parada.
 - Conferir na página os passos 6, 10 e 16 nos três modos, no computador e numa largura de celular, com captura.
 
 ### Limite da etapa

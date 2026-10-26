@@ -50,6 +50,14 @@ exigir(JSON.stringify(passos.filter((p) => p.parada).map((p, i) => [passos.index
 
 const erroEm = (saida) => saida.saiu_com !== 0 || saida.saida.some(([, canal]) => canal === "err");
 const soma = (linhas, campo) => linhas.reduce((total, linha) => total + linha[campo], 0);
+const minusculas = (texto) => texto.trim().toLocaleLowerCase("pt-BR");
+const interpretaSaida = (acao) => {
+  const q = acao.pergunta_saida, correta = minusculas(q.opcoes[q.certa]);
+  const linhas = saidas[acao.id].saida.map(([linha]) => linha);
+  return linhas.some((linha) => linha.includes(q.evidencia))
+    && !linhas.some((linha) => minusculas(linha).includes(correta))
+    && !minusculas(acao.nota).includes(correta);
+};
 
 const linhas = passos.map((passo, indice) => {
   const acoes = roteiro.slice(passo.de - 1, passo.ate);
@@ -58,6 +66,7 @@ const linhas = passos.map((passo, indice) => {
   const variantes = acoes.flatMap((acao) => acao.variar?.opcoes ?? []);
   const perguntasDeBloco = acoes.flatMap((acao) => acao.blocos ?? []).filter((bloco) => bloco.pergunta).length;
   const perguntasDeSaida = comandos.filter((acao) => acao.pergunta_saida).length;
+  const perguntasInterpretativas = comandos.filter((acao) => acao.pergunta_saida && interpretaSaida(acao)).length;
   const principal = {
     apostas: comandos.filter((acao) => acao.aposta).length,
     perguntasDeBloco,
@@ -82,6 +91,7 @@ const linhas = passos.map((passo, indice) => {
     extras,
     pedido: 1,
     perguntasDeSaida,
+    perguntasInterpretativas,
     antes: 1 + acoes.length + extras,
     fiz: acoes.length - perguntasDeSaida,
     segueLivro: acoes.length - perguntasDeSaida,
@@ -109,10 +119,12 @@ const totais = {
   decisoesDiretas: soma(linhas, "decisoesDiretas"),
   opcionaisDiretas: soma(linhas, "opcionaisDiretas"),
   perguntasDeSaida: soma(linhas, "perguntasDeSaida"),
+  perguntasInterpretativas: soma(linhas, "perguntasInterpretativas"),
 };
 
 exigir(totais.acoes === roteiro.length, "a soma das ações por passo diverge do roteiro");
 exigir(JSON.stringify(linhas.filter((l) => l.perguntasDeSaida).map((l) => l.n)) === JSON.stringify([6, 8, 12, 16, 17]), "as perguntas da saída não estão nos cinco passos escolhidos");
+exigir(totais.perguntasInterpretativas === 5, `esperava 5 perguntas que exigem interpretar a saída; encontrei ${totais.perguntasInterpretativas}`);
 exigir(totais.guiado === 53 && totais.principal === 33, `esperava 53 passagens mecânicas e 33 decisões; encontrei ${totais.guiado} e ${totais.principal}`);
 
 console.log("# Contagem da IDE do capítulo 1\n");
@@ -131,6 +143,7 @@ const categoriasOpcionais = Object.fromEntries(Object.keys(linhas[0].detalhes.op
 
 console.log("\n## Decisões e investigações\n");
 console.log(`Caminho principal: ${totais.principal} (${Object.entries(categoriasPrincipais).map(([k, v]) => `${k}: ${v}`).join(", ")}).`);
+console.log(`Perguntas de saída interpretativas: ${totais.perguntasInterpretativas} de ${totais.perguntasDeSaida}; a evidência aparece na saída do comando, a resposta não aparece na saída nem na nota.`);
 console.log(`Se explorar tudo que é opcional: +${totais.opcionais} (${Object.entries(categoriasOpcionais).map(([k, v]) => `${k}: ${v}`).join(", ")}), total ${totais.principal + totais.opcionais}.`);
 console.log(`Avançar pode acionar ${totais.guiado - 1} das ${totais.guiado} passagens guiadas (o primeiro pedido só sai pelo chat) e as ${totais.direto} do modo direto.`);
 

@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { montarIde, perguntaSustentada, perguntasPendentes, quadrosDaIde } from "../src/lib/ideCapitulo.ts";
+import { montarIde, perguntaSustentada, perguntasPendentes, quadrosDaIde, respostaEntregue } from "../src/lib/ideCapitulo.ts";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const json = (p) => JSON.parse(ler(p));
@@ -104,20 +104,25 @@ test("a pergunta do pedido: o roteiro mostra o caso apressado passando antes da 
   assert.notEqual(saidas["r01-caso-sem-pedido-barrado"].saiu_com, 0);
 });
 
-test("cinco confirmações viram perguntas sustentadas pela saída e bloqueiam somente o guiado", async () => {
+test("cinco confirmações viram perguntas que interpretam a saída e bloqueiam somente o guiado", async () => {
   const saidas = json("livros/ciclo-de-vida/saidas.json");
   const ids = ["r01-caso-id-torto", "r01-tres-casos", "r01-seis-pedidos", "r01-testes-passam", "r01-sempre-passar"];
   const comPergunta = acoes.filter((a) => a.tipo === "rodar" && a.perguntaSaida);
   assert.deepEqual(comPergunta.map((a) => a.id), ids);
   for (const a of comPergunta) {
     assert.equal(perguntaSustentada(saidas[a.id].saida, a.perguntaSaida), true, a.id);
+    assert.equal(respostaEntregue(saidas[a.id].saida, a.nota, a.perguntaSaida), false, `${a.id}: a prova não entrega a conclusão`);
+    assert.ok(a.perguntaSaida.porque.includes(a.perguntaSaida.evidencia), `${a.id}: o porquê cita a saída`);
     assert.deepEqual(perguntasPendentes(a, false), ["saida"], a.id);
     assert.deepEqual(perguntasPendentes(a, false, [], true), [], `${a.id}: responder libera`);
     assert.deepEqual(perguntasPendentes(a, true), [], `${a.id}: direto omite`);
   }
-  const falsa = entrada();
-  falsa.roteiro.passos[11].pergunta_saida.opcoes[0] = "uma resposta que não está na saída";
-  await assert.rejects(montarIde(falsa), /resposta certa.*não aparece na saída gravada/);
+  const semProva = entrada(); semProva.roteiro.passos[11].pergunta_saida.evidencia = "uma prova que não saiu";
+  await assert.rejects(montarIde(semProva), /evidência.*não aparece na saída gravada/);
+  const entregueNaSaida = entrada(); entregueNaSaida.roteiro.passos[16].pergunta_saida.opcoes[0] = "3 perguntas de referência";
+  await assert.rejects(montarIde(entregueNaSaida), /resposta certa.*já está escrita na saída ou na nota/);
+  const entregueNaNota = entrada(); entregueNaNota.roteiro.passos[28].pergunta_saida.opcoes[0] = entregueNaNota.roteiro.passos[28].nota;
+  await assert.rejects(montarIde(entregueNaNota), /resposta certa.*já está escrita na saída ou na nota/);
 });
 
 test("o livro não monta com um bloco que não está no arquivo, nem com palavra fora do glossário", async () => {

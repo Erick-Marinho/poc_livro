@@ -12,7 +12,7 @@ import type { Trecho } from "./codigo.ts";
 export type Aposta = { pergunta: string; opcoes: string[]; certa: number };
 export type VersaoIde = { nome: string; html: string | null };
 export type TermoIde = { chave: string; rotulo: string; texto: string; marca?: string };
-export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; porque: string };
+export type PerguntaIde = { texto: string; opcoes: string[]; certa: number; evidencia?: string; porque: string };
 /** um bloco lógico do código que entrou: as linhas (no arquivo daquele momento), o que ele faz, e as palavras dele */
 export type BlocoIde = { a: number; z: number; titulo: string; texto: string; termos: TermoIde[]; pergunta?: PerguntaIde };
 /** o que um modelo de verdade respondeu num comando, gravado uma vez e repetido no livro (scripts/gravacao) */
@@ -89,10 +89,18 @@ export function perguntasPendentes(a: AcaoIde, direto: boolean, blocosRespondido
   return pendentes;
 }
 
-/** A opção marcada precisa aparecer na saída gravada do próprio comando. */
+/** A pergunta aponta uma evidência literal da saída gravada do próprio comando. */
 export function perguntaSustentada(saida: [string, string][], pergunta: PerguntaIde): boolean {
-  const correta = pergunta.opcoes[pergunta.certa];
-  return !!correta && saida.some(([linha]) => linha.trim() === correta || linha.includes(correta));
+  const evidencia = pergunta.evidencia;
+  return !!evidencia && saida.some(([linha]) => linha.includes(evidencia));
+}
+
+/** Interpretar a prova exige uma conclusão que a saída e a nota ainda não entregaram literalmente. */
+export function respostaEntregue(saida: [string, string][], nota: string, pergunta: PerguntaIde): boolean {
+  const correta = pergunta.opcoes[pergunta.certa]?.trim().toLocaleLowerCase("pt-BR");
+  if (!correta) return false;
+  return nota.toLocaleLowerCase("pt-BR").includes(correta)
+    || saida.some(([linha]) => linha.toLocaleLowerCase("pt-BR").includes(correta));
 }
 
 /** O resumo de um arquivo de gravação (livros/<livro>/gravacoes/<id>.json): o dia, o modelo e quantas chamadas. */
@@ -244,8 +252,9 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
       }
       if (p.pergunta_saida) {
         const q = p.pergunta_saida;
-        if (!(Number.isInteger(q.certa) && q.opcoes[q.certa]) || !q.texto.trim() || !q.porque.trim()) falhar(`${e.rodou}: pergunta sobre a saída incompleta`);
-        if (!perguntaSustentada(s.saida, q)) falhar(`${e.rodou}: a resposta certa da pergunta sobre a saída não aparece na saída gravada`);
+        if (!(Number.isInteger(q.certa) && q.opcoes[q.certa]) || !q.texto.trim() || !q.evidencia?.trim() || !q.porque.trim()) falhar(`${e.rodou}: pergunta sobre a saída incompleta`);
+        if (!perguntaSustentada(s.saida, q)) falhar(`${e.rodou}: a evidência da pergunta não aparece na saída gravada`);
+        if (respostaEntregue(s.saida, p.nota, q)) falhar(`${e.rodou}: a resposta certa da pergunta já está escrita na saída ou na nota`);
       }
       acoes.push({ tipo: "rodar", nota: p.nota, id: e.rodou, comando: s.comando, onde: cwdLeitor(p.onde), saida: dobrarErro(s.saida),
         erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), problemas: problemasDe(s.saida, pasta), aposta: p.aposta, perguntaSaida: p.pergunta_saida,

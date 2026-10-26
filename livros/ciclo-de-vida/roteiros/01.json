@@ -267,14 +267,15 @@
       "espera": 1,
       "nota": "O id R7 não segue o padrão, e o pydantic diz qual campo e qual regra.",
       "pergunta_saida": {
-        "texto": "Qual campo a saída aponta como inválido?",
+        "texto": "Por que o caso com id R7 não entrou?",
         "opcoes": [
-          "id",
-          "pergunta",
-          "decisao"
+          "Porque o id exige R seguido de dois dígitos, e R7 tem só um.",
+          "Porque o pydantic não aceita letras em um id.",
+          "Porque a decisão responder não serve para perguntas de pedido."
         ],
         "certa": 0,
-        "porque": "A saída separa uma linha para id e logo abaixo mostra o padrão que ele não cumpriu."
+        "evidencia": "String should match pattern '^R\\d{2}$'",
+        "porque": "A saída diz `String should match pattern '^R\\d{2}$'`. No `Caso`, `Field(pattern=r\"^R\\d{2}$\")` exige R e dois dígitos; R7 tem só um."
       },
       "duvidas": [
         {
@@ -369,14 +370,15 @@
       "espera": 0,
       "nota": "Carrega.",
       "pergunta_saida": {
-        "texto": "Quantas perguntas entraram nesta primeira referência?",
+        "texto": "O que as três perguntas carregadas provam — e o que ainda não provam?",
         "opcoes": [
-          "3 perguntas de referência",
-          "4 perguntas de referência",
-          "20 perguntas de referência"
+          "Provam que os casos têm formato válido; ainda não que as decisões estão certas.",
+          "Provam que as três decisões estão certas, porque o contrato carregou os casos.",
+          "Provam só que o arquivo tem três linhas; o formato ainda não foi conferido."
         ],
         "certa": 0,
-        "porque": "A saída conta 3 perguntas de referência."
+        "evidencia": "3 perguntas de referência",
+        "porque": "A saída mostra `3 perguntas de referência` porque `carregar_referencia()` devolveu três `Caso`; em `contrato.py`, cada linha passa por `Caso.model_validate_json`. Isso confere o formato, não compara a decisão com a política e os dados."
       }
     },
     {
@@ -570,14 +572,15 @@
       "espera": 0,
       "nota": "A loja inventada tem seis pedidos, e agora o código enxerga todos.",
       "pergunta_saida": {
-        "texto": "Quantos pedidos o código encontrou nos dados da loja?",
+        "texto": "Para que os testes vão precisar enxergar esses pedidos?",
         "opcoes": [
-          "3 pedidos na loja",
-          "6 pedidos na loja",
-          "20 pedidos na loja"
+          "Para conferir cada caso com os dados, inclusive se o e-mail é do dono.",
+          "Para completar automaticamente os campos ausentes de cada caso.",
+          "Para escolher a decisão esperada no lugar de quem escreveu a referência."
         ],
-        "certa": 1,
-        "porque": "A saída conta 6 pedidos na loja."
+        "certa": 0,
+        "evidencia": "6 pedidos na loja",
+        "porque": "A saída confirma `6 pedidos na loja`. Em `test_referencia.py`, `PEDIDOS`, `EMAIL` e `dono()` permitem ao teste `test_so_responde_sobre_pedido_quando_o_email_bate` comparar cada caso com o dono real do pedido."
       }
     },
     {
@@ -760,14 +763,15 @@
       "espera": 0,
       "nota": "Os sete passam.",
       "pergunta_saida": {
-        "texto": "O que a última linha confirma depois da correção?",
+        "texto": "Depois de corrigir o R12, o que os sete testes verdes sustentam?",
         "opcoes": [
-          "7 passed",
-          "1 passed",
-          "20 passed"
+          "Que as vinte referências passam pelas regras que as conferem contra a loja.",
+          "Só que o R12 mudou de responder para recusar.",
+          "Que o decisor do próximo passo acertará as vinte perguntas."
         ],
         "certa": 0,
-        "porque": "A última linha registra 7 passed: os sete testes passaram."
+        "evidencia": "7 passed in 0.28s",
+        "porque": "A saída termina em `7 passed in 0.28s`. Em `test_referencia.py`, os sete testes usam `CASOS = carregar_referencia()` e conferem formato e coerência com os dados da loja; não executam o decisor do passo seguinte."
       }
     },
     {
@@ -802,14 +806,15 @@
       "espera": 0,
       "nota": "Ele nem lê a pergunta.",
       "pergunta_saida": {
-        "texto": "Que decisão o decisor devolveu para esta pergunta?",
+        "texto": "Se esse \"agente\" nem lê a pergunta, por que ele ainda vai acertar algumas da referência?",
         "opcoes": [
-          "passar",
-          "responder",
-          "recusar"
+          "Porque algumas perguntas têm passar como decisão esperada.",
+          "Porque a régua dá como certa toda decisão que evita responder.",
+          "Porque o primeiro caso da referência também pede para passar a vez."
         ],
         "certa": 0,
-        "porque": "A única linha da saída é passar."
+        "evidencia": "passar",
+        "porque": "A saída é `passar`, exatamente o que `sempre_passar()` devolve. Em `avaliar()`, só conta quando isso é igual a `c.decisao`; R16 a R20 esperam passar, e as outras perguntas não."
       }
     },
     {
