@@ -24,10 +24,10 @@ e a única leitura acontece no fim, com o Victor, coautor, registrado como autor
 
 ## Etapas
 
-As etapas 1, 3, 4, 5 e 6 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A
-etapa 6 foi dividida: a 6a contou e propôs; a 6b implementou A e C, aprovadas em 26/10/2026. A etapa 7 segue sem
-esperar observação. Depois dela, Victor revisa e lê o percurso com o kit
-preparado; essa é a única leitura do plano. Cada etapa de produto tem um commit em português e evidência no
+As etapas 1, 3, 4, 5, 6 e 7 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A
+etapa 6 foi dividida: a 6a contou e propôs; a 6b implementou A e C, aprovadas em 26/10/2026. A etapa 7 foi executada
+sem esperar observação e aprovada na mesma data. Depois dela, Victor revisa e lê o percurso com o kit preparado;
+essa é a única leitura do plano. Cada etapa de produto tem um commit em português e evidência no
 registro; só o ok do responsável fecha a etapa.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
@@ -75,6 +75,7 @@ da IDE, o projeto, as saídas, as duas apostas e a variante “sem a regra” n�
 - As perguntas distinguem o desenho exercitado com o modelo falso da capacidade de o modelo decidir, e a decisão
   medida pela régua da qualidade do texto. A pergunta sobre o que o molde garante continua reservada à seção 2.6,
   por decisão de `contrato-em-camadas.md`.
+- Erick aprovou em 26/10/2026 o texto das quatro perguntas de saída, com suas opções, respostas e explicações.
 - As paradas dizem que é um bom lugar para parar, nomeiam o que ficou pronto e dão a tag de volta, sem interromper
   quem prefere seguir.
 
@@ -125,7 +126,7 @@ da IDE, o projeto, as saídas, as duas apostas e a variante “sem a regra” n�
 
 Somente os dados da IDE do capítulo 2, o contador, os testes, este plano, o relatório e as capturas. Não mudar o
 texto do capítulo fora da IDE, projeto, saídas ou componentes; não chamar modelo, publicar, abrir túnel nem inventar
-opinião dos autores. A redação das quatro perguntas aguarda aprovação do Erick.
+opinião dos autores. A redação das quatro perguntas foi aprovada pelo Erick em 26/10/2026.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -166,6 +167,6 @@ opinião dos autores. A redação das quatro perguntas aguarda aprovação do Er
 | 6b | `91b4659` | [A e C implementadas, com perguntas, paradas e 18 capturas](../relatorios/revisao-do-percurso-inicial-etapa-6b.md): passagens mecânicas guiadas 79 → 53 e decisões principais 28 → 33; modo direto em 58 e 4; saídas e leitor conferidos; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
 | 6b (correção) | `100525d` | [As cinco perguntas passaram de leitura literal a interpretação da prova](../relatorios/revisao-do-percurso-inicial-etapa-6b-correcao.md): 5 de 5 com evidência na saída e conclusão ausente da saída e da nota; contagem mantida em 79 → 53 passagens e 28 → 33 decisões; 30 saídas conferidas; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação; quadro dos cinco blocos capturado no computador e a 360 px. | Erick, 26/10/2026 |
 | 6b (ajuste final) | `7ab3a62` | Respostas certas nas posições fixas 1, 0, 2, 1 e 0, sem repetição consecutiva; teste impede posições todas iguais, repetição seguida e sorteio; 30 saídas conferidas; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
-| 7 | `ed1226f` | [Quadro por ação conferido e quatro perguntas interpretativas, três paradas e 12 capturas](../relatorios/revisao-do-percurso-inicial-etapa-7.md): capítulo 1 mantido em 79 → 53 passagens e 28 → 33 decisões; capítulo 2 em 26 → 22 e 11 → 15; saídas e leitor conferidos; npm test com 30 + 16 saídas, 123 testes do livro e 5 da gravação. | aguardando revisão |
+| 7 | `ed1226f` | [Quadro por ação conferido e quatro perguntas interpretativas, três paradas e 12 capturas](../relatorios/revisao-do-percurso-inicial-etapa-7.md): capítulo 1 mantido em 79 → 53 passagens e 28 → 33 decisões; capítulo 2 em 26 → 22 e 11 → 15; saídas e leitor conferidos; npm test com 30 + 16 saídas, 123 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
 
 (redação: GPT-6; revisão do plano inicial: Claude Opus 5.5)
