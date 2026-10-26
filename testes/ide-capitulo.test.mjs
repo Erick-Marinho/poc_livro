@@ -170,9 +170,9 @@ test("o texto do capítulo 2 diz a nota que a gravação deu", () => {
 test("modificar antes de criar: as variantes trazem a saída gravada de cada troca, e a linha certa do arquivo", () => {
   const nota = acoes.find((a) => a.tipo === "rodar" && a.id === "r01-nota-de-partida").variar;
   assert.equal(nota.arquivo, "baseline.py");
-  assert.equal(nota.linha, 12);
+  assert.equal(nota.linha, 14);
   assert.deepEqual(nota.opcoes.map((o) => o.saida.at(-1).l), ["nota de partida: 8 de 20 (40%)", "nota de partida: 5 de 20 (25%)", "nota de partida: 2 de 20 (10%)"]);
-  assert.ok(nota.opcoes.every((o) => o.alteradas.length === 1 && o.alteradas[0] === 12));
+  assert.ok(nota.opcoes.every((o) => o.alteradas.length === 1 && o.alteradas[0] === 14));
   const talvez = acoes.find((a) => a.tipo === "rodar" && a.id === "r01-decisao-talvez").variar;
   assert.equal(talvez.arquivo, undefined);
   assert.deepEqual(talvez.opcoes.map((o) => [o.comando.includes(o.rotulo), o.saida.at(-1).l]),
@@ -181,7 +181,7 @@ test("modificar antes de criar: as variantes trazem a saída gravada de cada tro
 
 test("a aba de problemas sai da saída gravada: arquivo e linha quando a saída diz, só a mensagem quando não diz", () => {
   const de = (id) => acoes.find((a) => a.tipo === "rodar" && a.id === id).problemas;
-  assert.deepEqual(de("r01-testes-pegam-o-r12").map((p) => `${p.arquivo}:${p.linha}`), ["test_referencia.py:33", "test_referencia.py:38"]);
+  assert.deepEqual(de("r01-testes-pegam-o-r12").map((p) => `${p.arquivo}:${p.linha}`), ["test_referencia.py:36", "test_referencia.py:41"]);
   assert.match(de("r01-testes-pegam-o-r12")[0].mensagem, /R12: o e-mail não é do dono do pedido/);
   assert.deepEqual(de("r01-caso-sem-pedido-barrado").map((p) => [p.arquivo, p.linha]), [["contrato.py", 56]]);   // o .venv é biblioteca, fica de fora
   assert.deepEqual(de("r01-decisao-talvez"), [{ mensagem: "ValueError: 'talvez' is not a valid Decisao" }]);

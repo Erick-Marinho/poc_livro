@@ -3,7 +3,9 @@
 Ele nunca erra feio (não inventa prazo, não mostra pedido alheio), mas também não ajuda ninguém.
 Todo agente que vier depois tem que bater esta nota.
 """
+import sys
 from collections import Counter
+from pathlib import Path
 
 from contrato import Caso, Decisao, carregar_referencia
 
@@ -22,15 +24,9 @@ def avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:
 
 
 if __name__ == "__main__":
-    import argparse
-    from pathlib import Path
-
-    argumentos = argparse.ArgumentParser(description="A nota de partida contra os casos do contrato.")
-    argumentos.add_argument("casos", nargs="?", type=Path, help="arquivo de casos para somar à referência oficial")
-    opcoes = argumentos.parse_args()
     casos = carregar_referencia()
-    if opcoes.casos:
-        casos += carregar_referencia(opcoes.casos)
+    for caminho in sys.argv[1:]:
+        casos += carregar_referencia(Path(caminho))
     placar = avaliar(sempre_passar, casos)
     for d, (certos, total) in placar.items():
         print(f"{d:<14} {certos:>2} de {total:>2}")

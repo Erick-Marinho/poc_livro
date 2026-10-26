@@ -555,7 +555,7 @@
       "arquivo": "test_referencia.py",
       "partes": [
         {
-          "linhas": "1-16"
+          "linhas": "1-19"
         }
       ],
       "nota": "Antes de qualquer teste, o que todos vão usar: os casos, os pedidos, os e-mails dos clientes e o \"hoje\" da loja.",
@@ -570,16 +570,16 @@
           ]
         },
         {
-          "linhas": "8-11",
+          "linhas": "8-14",
           "titulo": "lido uma vez só",
-          "texto": "Tudo o que os testes consultam é lido aqui, uma vez, quando o pytest abre o arquivo: as vinte perguntas, os pedidos por número, o e-mail de cada cliente e o \"hoje\" da loja.",
+          "texto": "Os casos, os pedidos por número, o e-mail de cada cliente e o \"hoje\" da loja são lidos uma vez, quando o pytest abre o arquivo. Logo depois dos casos oficiais, entram os de meus-casos.jsonl, se o arquivo existir; todos passam pelas mesmas regras.",
           "termos": [
             "{chave: valor for …}",
             "date.fromisoformat"
           ]
         },
         {
-          "linhas": "14-15",
+          "linhas": "17-18",
           "titulo": "quem é o dono do pedido",
           "texto": "Uma função pequena que os testes vão repetir: do número do pedido ao e-mail de quem comprou."
         }
@@ -591,16 +591,16 @@
       "no_fim": true,
       "partes": [
         {
-          "linhas": "17-27"
+          "linhas": "20-30"
         },
         {
-          "linhas": "47-58"
+          "linhas": "50-56"
         }
       ],
       "nota": "Quatro testes do formato: ids em ordem, as quatro decisões presentes, pedido que existe, e linha errada dizendo qual linha.",
       "blocos": [
         {
-          "linhas": "18-19",
+          "linhas": "21-22",
           "titulo": "ids em ordem",
           "texto": "Os ids têm que ser R01, R02, R03… sem pular nem repetir.",
           "termos": [
@@ -609,7 +609,7 @@
           ]
         },
         {
-          "linhas": "22-23",
+          "linhas": "25-26",
           "titulo": "as quatro decisões aparecem",
           "texto": "O conjunto das decisões dos casos tem que ser igual ao conjunto das quatro do contrato: nenhuma pode ficar de fora.",
           "termos": [
@@ -617,7 +617,7 @@
           ]
         },
         {
-          "linhas": "26-27",
+          "linhas": "29-30",
           "titulo": "pedido que existe",
           "texto": "Todo pedido citado num caso tem que existir na loja.",
           "termos": [
@@ -625,18 +625,13 @@
           ]
         },
         {
-          "linhas": "49-53",
+          "linhas": "52-56",
           "titulo": "a linha errada diz qual linha",
           "texto": "O teste escreve um arquivo com uma linha torta numa pasta temporária e confere que o erro diz \"linha 1\".",
           "termos": [
             "tmp_path",
             "pytest.raises"
           ]
-        },
-        {
-          "linhas": "56-58",
-          "titulo": "os casos do leitor também passam pela régua",
-          "texto": "Se meus-casos.jsonl existir ao lado da referência, suas perguntas entram em CASOS. As mesmas regras conferem os vinte casos oficiais e os do leitor, inclusive o e-mail do dono do pedido."
         }
       ]
     },
@@ -662,18 +657,18 @@
       "depois": "    assert all(c.pedido in PEDIDOS for c in CASOS if c.pedido)\n",
       "partes": [
         {
-          "linhas": "28-46"
+          "linhas": "31-49"
         }
       ],
       "nota": "Três testes da política: só se fala de pedido com o dono, o caso do capítulo 6 existe, e chamado só dentro dos 90 dias.",
       "blocos": [
         {
-          "linhas": "30-33",
+          "linhas": "33-36",
           "titulo": "só fala de pedido com o dono",
           "texto": "Se o caso responde ou abre chamado sobre um pedido, o e-mail de quem pergunta tem que ser o do dono. A mensagem diz qual caso falhou."
         },
         {
-          "linhas": "36-38",
+          "linhas": "39-41",
           "titulo": "o caso do capítulo 6 existe",
           "texto": "Tem que existir um caso de pedido de outra pessoa, marcado como recusar. É ele que o capítulo 6 vai usar para quebrar o agente.",
           "termos": [
@@ -681,7 +676,7 @@
           ]
         },
         {
-          "linhas": "41-46",
+          "linhas": "44-49",
           "titulo": "chamado só dentro dos 90 dias",
           "texto": "Todo chamado tem que ser de pedido entregue, e a no máximo 90 dias do \"hoje\" da loja.",
           "termos": [
@@ -740,7 +735,7 @@
       "arquivo": "baseline.py",
       "partes": [
         {
-          "linhas": "1-13"
+          "linhas": "1-15"
         }
       ],
       "nota": "O \"agente\" mais simples que existe: qualquer pergunta, a mesma decisão.",
@@ -754,7 +749,7 @@
           ]
         },
         {
-          "linhas": "11-12",
+          "linhas": "13-14",
           "titulo": "o decisor mais simples",
           "texto": "Uma função que recebe a pergunta e devolve sempre a mesma decisão. Nem lê a pergunta."
         }
@@ -773,13 +768,13 @@
       "no_fim": true,
       "partes": [
         {
-          "linhas": "14-38"
+          "linhas": "16-34"
         }
       ],
       "nota": "A régua: para cada decisão do contrato, quantos casos o decisor acertou, e a nota no fim.",
       "blocos": [
         {
-          "linhas": "15-21",
+          "linhas": "17-23",
           "titulo": "a régua",
           "texto": "Para cada decisão esperada, conta os casos e compara a decisão devolvida com a do contrato. Serve para este decisor e para os próximos agentes; não avalia o texto da resposta nem mede exposição de dados.",
           "termos": [
@@ -788,15 +783,15 @@
           ]
         },
         {
-          "linhas": "24-33",
-          "titulo": "os casos adicionais são opcionais",
-          "texto": "Sem argumento, o comando lê só referencia.jsonl. Com um caminho, como meus-casos.jsonl, carregar_referencia lê esse arquivo também e soma seus casos aos oficiais. O arquivo oficial não muda.",
+          "linhas": "26-29",
+          "titulo": "executar direto e somar os arquivos",
+          "texto": "O if __name__ == \"__main__\" só executa este trecho quando o arquivo é chamado direto, com uv run python baseline.py; importar avaliar não executa a medida. sys.argv[1:] contém os caminhos depois do nome do arquivo: cada arquivo passado soma seus casos à referência. Sem caminhos, fica só a referência oficial.",
           "termos": [
             "if __name__ == \"__main__\""
           ]
         },
         {
-          "linhas": "34-38",
+          "linhas": "30-34",
           "titulo": "executar o arquivo",
           "texto": "A mesma régua mede sempre_passar e imprime acertos e totais por decisão, além da nota. O argumento muda o conjunto medido, não a regra de acerto.",
           "termos": [

@@ -112,11 +112,11 @@
         ""
       ],
       [
-        "Resolved 6 packages in 30ms",
+        "Resolved 6 packages in 19ms",
         ""
       ],
       [
-        "Installed 5 packages in 16ms",
+        "Installed 5 packages in 10ms",
         ""
       ],
       [
@@ -146,11 +146,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 12 packages in 28ms",
+        "Resolved 12 packages in 19ms",
         ""
       ],
       [
-        "Installed 5 packages in 38ms",
+        "Installed 5 packages in 12ms",
         ""
       ],
       [
@@ -410,7 +410,7 @@
         ""
       ],
       [
-        "4 passed in 0.14s",
+        "4 passed in 0.13s",
         "okv"
       ]
     ]
@@ -476,7 +476,7 @@
         ""
       ],
       [
-        "test_referencia.py:33: AssertionError",
+        "test_referencia.py:36: AssertionError",
         ""
       ],
       [
@@ -504,7 +504,7 @@
         "err"
       ],
       [
-        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x70238c6dc580>)",
+        "E        +  where False = any(<generator object test_existe_um_caso_de_pedido_de_outra_pessoa.<locals>.<genexpr> at 0x706862224580>)",
         "err"
       ],
       [
@@ -512,7 +512,7 @@
         ""
       ],
       [
-        "test_referencia.py:38: AssertionError",
+        "test_referencia.py:41: AssertionError",
         ""
       ],
       [
@@ -528,7 +528,7 @@
         "err"
       ],
       [
-        "2 failed, 5 passed in 0.18s",
+        "2 failed, 5 passed in 0.14s",
         "err"
       ]
     ]
@@ -542,7 +542,7 @@
         ""
       ],
       [
-        "7 passed in 0.14s",
+        "7 passed in 0.15s",
         "okv"
       ]
     ]
@@ -666,11 +666,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 45 packages in 39ms",
+        "Resolved 45 packages in 30ms",
         ""
       ],
       [
-        "Installed 32 packages in 50ms",
+        "Installed 32 packages in 25ms",
         ""
       ],
       [
@@ -812,7 +812,7 @@
         "err"
       ],
       [
-        "1 failed in 0.39s",
+        "1 failed in 0.43s",
         "err"
       ]
     ]
@@ -826,7 +826,7 @@
         ""
       ],
       [
-        "1 passed in 0.34s",
+        "1 passed in 0.37s",
         "okv"
       ]
     ]
@@ -840,7 +840,7 @@
         ""
       ],
       [
-        "11 passed in 0.36s",
+        "11 passed in 0.37s",
         "okv"
       ]
     ]
@@ -850,11 +850,11 @@
     "saiu_com": 0,
     "saida": [
       [
-        "Resolved 50 packages in 39ms",
+        "Resolved 50 packages in 45ms",
         ""
       ],
       [
-        "Installed 5 packages in 339ms",
+        "Installed 5 packages in 44ms",
         ""
       ],
       [

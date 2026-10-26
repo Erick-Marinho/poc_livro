@@ -69,7 +69,7 @@ Defeito conferido: o exercício do capítulo 1 acrescentava R21 a R25 a `referen
 **Decisão do Erick, 25/10/2026:** os casos do leitor vão para um arquivo à parte, `meus-casos.jsonl`; a referência
 oficial continua com as 20 perguntas. O `carregar_referencia` já recebe um caminho e será reaproveitado.
 
-1. Acrescentar a `baseline.py` um argumento opcional de caminho para somar os casos do leitor aos oficiais só
+1. Aceitar em `baseline.py` caminhos opcionais para somar os casos de cada arquivo aos oficiais só
    naquela medida. Sem argumento, conservar os 5 de 20 (25%); `medir.py` continua lendo só a referência oficial.
 2. Fazer os testes de coerência existentes incluírem `meus-casos.jsonl` se ele existir ao lado da referência,
    inclusive ids, existência do pedido, titularidade e prazo. Não escrever a solução R21–R25 no projeto do livro.

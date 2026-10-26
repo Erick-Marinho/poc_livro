@@ -194,7 +194,7 @@ Com o contrato escrito, as perguntas de referência no lugar e a nota de partida
 1. Crie `meus-casos.jsonl`, ao lado de `referencia.jsonl`, com 5 perguntas de R21 a R25: uma de cada decisão e mais uma de pedido de outra pessoa, usando um par de pedido e cliente diferente do Bruno e da Ana. Deixe as 20 perguntas oficiais em `referencia.jsonl`.
 2. Antes de executar, escreva num papel qual vai ser a nota de partida com os seus casos somados aos 20.
 3. Execute `uv run pytest -q`: os mesmos testes conferem também `meus-casos.jsonl`, quando ele existe. Corrija até ficarem verdes.
-4. Compare `uv run python baseline.py` com `uv run python baseline.py meus-casos.jsonl`. Sem o arquivo como argumento, a nota deve continuar 5 de 20 (25%); com ele, confira a previsão e a contagem por decisão: os totais passam de 8/2/5/5 para 9/3/7/6, na ordem responder, abrir chamado, recusar e passar.
+4. Compare `uv run python baseline.py` com `uv run python baseline.py meus-casos.jsonl`. Os totais de cada decisão subiram o que você acrescentou? A nota bateu com a previsão?
 
 Dica: a nota de partida só acerta as perguntas de passar a vez. A nota e os totais, junto dos testes verdes, conferem o que a atividade pediu; a régua oficial fica para o capítulo seguinte.
 
