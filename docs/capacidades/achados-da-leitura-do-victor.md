@@ -188,6 +188,6 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | 2 | `2972d5d`, `653bacc` | o 1.4 com o bilhete (prompt) e o gabarito (contrato) que a colega deixa; sem a aposta das camadas; 159 · 63 · 153 palavras entre as ações (sem aviso); `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/). | Erick, 26/10/2026 |
 | 3 | `998c72a` | o `Enum` e dois casos reais no 1.5; tabela com o primeiro dia; R13 no Classificador; 199 palavras até a ação; `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/). | Erick, 26/10/2026 |
 | 4 | `62ab7d7` | A nota e a régua pela imagem da prova, no 1.4, no 1.6, na IDE, no glossário e nas figuras do 2.4 e do 2.6; balões de baixo crescendo para cima; `npm test`: 143 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-4/). | aguardando revisão |
-| 5 | COMMIT | O 2.3 como ensaio com um modelo de mentira, com o custo dito concreto; balões, IDE e lista do capítulo no mesmo tom; `npm test`: 143 testes do livro e 5 da gravação; [captura](../relatorios/capturas/achados-da-leitura-do-victor-etapa-5/). | aguardando revisão |
+| 5 | `01474c5` | O 2.3 como ensaio com um modelo de mentira, com o custo dito concreto; balões, IDE e lista do capítulo no mesmo tom; `npm test`: 143 testes do livro e 5 da gravação; [captura](../relatorios/capturas/achados-da-leitura-do-victor-etapa-5/). | aguardando revisão |
 
 (redação: Claude Opus 5.5)
