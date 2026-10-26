@@ -43,7 +43,7 @@ export default function RolaCena<P extends Record<string, unknown>>({ component,
     };
     /* a agulha vai até onde a rolagem pede, um pouco por quadro */
     const andar = () => {
-      agora += (alvo - agora) * 0.18;
+      agora += (alvo - agora) * 0.12;
       if (Math.abs(alvo - agora) < 0.5) agora = alvo;
       ref.current?.seekTo(Math.round(agora));
       laco = agora === alvo ? 0 : requestAnimationFrame(andar);

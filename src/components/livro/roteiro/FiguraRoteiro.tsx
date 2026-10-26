@@ -20,6 +20,6 @@ export default function FiguraRoteiro(entrada: Entrada) {
   const M = MEDIDAS[desenho];
   const props = useMemo(() => ({ roteiro: r, desenho }), [r, desenho]);
   return <RolaCena chave={desenho} component={RoteiroAnimado} inputProps={props} duracao={DURACAO} fps={FPS} largura={M.w} altura={M.h}
-    telas={4} reserva={desenho === "estreito" ? 100 : 110}
+    telas={8} reserva={desenho === "estreito" ? 100 : 110}
     descricao={<ol>{baloes(r).map((b) => <li key={b.de}>{b.texto}</li>)}</ol>} />;
 }

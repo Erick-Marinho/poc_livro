@@ -18,6 +18,7 @@ intuitivo", e a repetição cansa (26/10/2026).
 - (26/10/2026, Erick) A primeira versão (cenas que tocavam sozinhas depois de um avanço, e uma pergunta do balcão)
   não ficou boa com a rolagem. Refeita: sem pergunta e sem botão, a rolagem da página é a agulha da animação, para a
   frente e para trás, com um pouco de inércia; as explicações são balões, um por vez, apontando para o que acontece.
+- (26/10/2026, Erick) "Ficou muito rápido ao rolar": o trilho do 2.1 passa de 4 para 8 telas, e a inércia fica mais macia.
 - (1) Uma base nova, `palco/RolaCena.tsx`: a figura presa na tela por um trilho de rolagem, a agulha seguindo a
   rolagem pelo `seekTo` (que o navegador deixa sem clique), o aviso "role" até a primeira rolagem, o quadro final no
   modo direto e o texto dos balões para leitor de tela. As próximas figuras do capítulo usam a mesma base.
