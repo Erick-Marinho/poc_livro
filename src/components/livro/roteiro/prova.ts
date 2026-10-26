@@ -58,9 +58,10 @@ export function baloesDoResultado(p: Prova, motivo: string, seguro: string): Bal
   const m = p.questoes.find((q) => q.id === motivo)!, s = p.questoes.find((q) => q.id === seguro)!;
   if (outras.length !== 1 || outras[0].id !== "R15") throw new Error("resultado do 2.6: o balão do padrão conta uma decisão só fora de passar a vez, a do CPF da prima (R15)");
   const nome = (d: string) => DECISOES[d]?.nome ?? d;
+  const a = (n: number) => `${n === 1 ? "um acerto" : `${n} acertos`}`;
   return [
     { de: 0.4, ate: 6.6, alvo: "grade", texto: `A prova voltou corrigida: o agente respondeu as ${p.total} perguntas, uma por uma.` },
-    { de: 6.6, ate: 9.8, alvo: "placar", texto: `${p.acertos} de ${p.total}, ${p.porcento}%: ${p.porcento - p.partida.porcento} pontos acima da nota de partida. Bateu os ${p.partida.porcento}%, raspando.` },
+    { de: 6.6, ate: 9.8, alvo: "placar", texto: `${p.acertos} de ${p.total}, ${p.porcento}%: ${a(p.acertos - p.partida.acertos)} a mais que quem chuta. Passou da nota de partida, raspando.` },
     { de: 9.8, ate: 13.6, alvo: `card:${outras[0].id}`, texto: `Repare no padrão: ele passou a vez em ${passou} das ${p.total}. A única que ele quis ${nome(outras[0].decidiu!)} foi ${outras[0].id}, a do CPF da prima: a única que não precisa de nenhum dado da loja.` },
     { de: 13.6, ate: 17.6, alvo: `card:${m.id}`, texto: `O porquê está nos motivos dele. No ${m.id}: “${m.motivo}” Sem os dados da loja, a política nunca diz nada, e a instrução manda passar a vez.` },
     { de: 17.6, ate: SEGUNDOS_RESULTADO + 1, alvo: `card:${s.id}`, texto: `E o ${s.id}, o Bruno pedindo o pedido da Ana: devia ${nome(s.gabarito)}, e ele passou a vez. Errou, mas para o lado seguro: uma pessoa da equipe resolveria.` },
@@ -77,9 +78,9 @@ export type Balao = { de: number; ate: number; alvo: Alvo; texto: string };
 /** os balões, um por vez; são também o texto da figura para quem não a vê */
 export function baloes(p: Prova): Balao[] {
   return [
-    { de: 0.4, ate: 3.4, alvo: "grade", texto: `A régua é a mesma do capítulo 1: as ${p.total} perguntas, cada uma com a decisão do gabarito.` },
-    { de: 3.4, ate: 10.2, alvo: "placar", texto: `O decisor do capítulo 1 passava tudo para a equipe. A régua compara cada decisão com o gabarito e conta: ${p.acertos} de ${p.total}, ${p.porcento}%. É a nota de partida.` },
-    { de: 10.2, ate: 14.4, alvo: "decisor", texto: "Agora só o decisor muda: o grafo deste capítulo, com o GPT-6 Luna. Mesma régua, mesmas perguntas, mesmo gabarito." },
-    { de: 14.4, ate: SEGUNDOS + 1, alvo: "placar", texto: `Sem acesso aos pedidos, ao catálogo e à política, quanto ele tira? Ele bate os ${p.porcento}%? Guarde o seu palpite: a IDE vai pedir que você invista nele antes de executar.` },
+    { de: 0.4, ate: 3.4, alvo: "grade", texto: `A prova é a mesma do capítulo 1: as ${p.total} perguntas, cada uma com a resposta do gabarito.` },
+    { de: 3.4, ate: 10.2, alvo: "placar", texto: `Primeiro, a prova de quem chuta: o “agente” do capítulo 1, que passa toda mensagem para a equipe. Corrigida pelo gabarito, ela acerta só as ${p.acertos} em que a resposta certa era mesmo passar a vez: ${p.acertos} de ${p.total}, ${p.porcento}%. É a nota de partida.` },
+    { de: 10.2, ate: 14.4, alvo: "decisor", texto: "Agora quem faz a prova é o agente deste capítulo, o grafo com o GPT-6 Luna. Mesma prova, mesmo gabarito, mesma correção." },
+    { de: 14.4, ate: SEGUNDOS + 1, alvo: "placar", texto: `Sem acesso aos pedidos, ao catálogo e à política, quantas ele acerta? Passa da nota de quem chuta, os ${p.porcento}%? Guarde o seu palpite: a IDE vai pedir que você invista nele antes de executar.` },
   ];
 }

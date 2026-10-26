@@ -125,7 +125,7 @@ Se o bilhete já explica tudo, para que o gabarito? Porque bilhete bom não gara
 
 <Troca referencia={referencia} dados={trocaDePrompt} pergunta="Troque o bilhete, ou o modelo. O que muda, e o que fica?" ilustracao="Ilustração: as três respostas foram escritas para mostrar o padrão. A mensagem e a decisão do contrato são as do arquivo de referência." />
 
-Três tentativas, três frases diferentes, e o gabarito não liga para a frase: liga para o que foi feito. As duas primeiras recusaram o desconto, como manda o gabarito. A terceira prometeu, e quem pega é o gabarito, não o bilhete. Você vai reescrever o bilhete, e trocar de modelo, muitas vezes ao longo do livro. O gabarito fica, e é por ficar que ele serve de régua.
+Três tentativas, três frases diferentes, e o gabarito não liga para a frase: liga para o que foi feito. As duas primeiras recusaram o desconto, como manda o gabarito. A terceira prometeu, e quem pega é o gabarito, não o bilhete. Você vai reescrever o bilhete, e trocar de modelo, muitas vezes ao longo do livro. O gabarito fica, e é por ficar que ele serve de medida: a mesma prova, corrigida pelo mesmo gabarito, diz se a versão nova do agente foi melhor ou pior que a anterior.
 
 <PareEPense pergunta="Amanhã você reescreve o prompt, o bilhete, num tom mais seco. O que muda no contrato, o gabarito?">
 Nada. O gabarito diz o que fazer com cada mensagem; o bilhete só muda o jeito de o modelo escrever. Se o bilhete novo fizer o agente prometer desconto, é o gabarito que avisa.
@@ -166,13 +166,13 @@ Parece simples até você tentar aplicar. Agora, mensagens que a colega não mos
 
 <Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R13", "R16", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
 
-Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
+Duas perguntas pegam todo mundo. A do pedido BT-1001 parece responder, mas o e-mail é do Bruno e o pedido é da Ana: responder seria mostrar a compra de uma pessoa a outra. A do boleto em 12 vezes parece recusar, mas a política não fala de pagamento, e quando a política não diz, o agente não promete: passa a vez.
 
-<Nota titulo="passar a vez não é falhar">Um agente que sabe a hora de chamar uma pessoa vale mais que um que tenta responder tudo. Passar a vez é uma decisão do contrato, com regra própria, e não um erro do agente. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
+<Nota titulo="passar a vez não é falhar">Saber a hora de chamar uma pessoa vale mais que tentar responder tudo. Passar a vez é uma decisão do contrato, com regra própria. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
 
 ## 1.6 Mão na massa
 
-Hora de abrir o terminal. O projeto deste capítulo nasce aqui, numa pasta vazia, e chega à nota de partida em dezoito passos: primeiro o projeto e as duas bibliotecas, depois o contrato, as perguntas de referência e a régua. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Cada passo começa dizendo o que vai existir no fim dele; os comandos são executados de verdade, e alguns dão errado de propósito.
+O projeto nasce numa pasta vazia e termina com a primeira prova corrigida. Corrigir é o que um professor faz: compara cada resposta com o gabarito e conta os acertos. O livro chama esse jeito de corrigir de **régua**, e a conta de acertos de **nota**. A primeira prova é de quem chuta: um "agente" que passa toda mensagem para a equipe, sem ler, como o aluno que marca C em todas as questões. A nota dele é a **nota de partida**, e todo agente do livro tem que passar dela. Siga pela IDE, um passo por vez.
 
 <IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.6a": "O projeto", "1.6b": "O contrato", "1.6c": "As perguntas", "1.6d": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 

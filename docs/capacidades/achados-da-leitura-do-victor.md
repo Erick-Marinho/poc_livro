@@ -27,6 +27,37 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | 1 | O 1.3 está complexo e abstrato para quem começa (Victor, 26/10/2026, relatado pelo Erick). | O leitor separa as mensagens com um critério que entende, e a explicação mostra a ideia da seção: o que importa é o que se faz com a mensagem, não o assunto dela. |
 | 2 | O 1.4 também está abstrato e nada intuitivo (Erick, 26/10/2026). | O contrato chega como continuação da cena da colega, com uma imagem que o iniciante já conhece, e sem conceitos que só servem em capítulos futuros. |
 | 3 | O 1.5 evolui sem mostrar um contrato, abstrato, com exemplos desconexos: "é um gabarito, mas como ele é em código?" (Erick, 26/10/2026). | O leitor vê o gabarito virar código real antes de escrevê-lo, e os exemplos são os do primeiro dia. |
+| 4 | A nota e a régua estão abstratas: "precisam de uma explicação óbvia e intuitiva" (Erick, 26/10/2026). | Os dois termos chegam com a imagem da prova: a régua é corrigir pelo gabarito e contar os acertos; a nota é a conta; a nota de partida é a de quem chuta. |
+
+## Etapa 4 — a nota e a régua, pela prova
+
+### O que travava
+
+- "Nota de partida" aparecia no 1.6 ("chega à nota de partida em dezoito passos") antes de dizer o que é; "régua"
+  entrava no 1.4 como metáfora solta ("serve de régua"); e as figuras do 2.4 e do 2.6 falavam em "decisor",
+  "placar da régua" e "pontos acima da nota de partida".
+
+### O que muda
+
+- A imagem é a da prova, que o 1.4 já montou com o gabarito. Corrigir é o que um professor faz: compara cada
+  resposta com o gabarito e conta os acertos; esse jeito de corrigir é a **régua**, e a conta é a **nota**. A primeira
+  prova é de quem chuta: o "agente" que passa toda mensagem para a equipe, como o aluno que marca C em todas; a nota
+  dele é a **nota de partida**, e todo agente tem que passar dela.
+- 1.4: o gabarito "serve de medida: a mesma prova, corrigida pelo mesmo gabarito, diz se a versão nova foi melhor ou
+  pior". 1.6: a abertura explica régua, nota e nota de partida antes da IDE, e o fim do 1.5 encolhe para o trecho
+  ficar abaixo de 200 palavras. Na IDE, os passos 17 e 18 dizem o mesmo ("o agente que chuta", "a correção da
+  prova"), e a nota de 25% vem explicada: as 5 em que a resposta certa era mesmo passar a vez. O `termos.json` define
+  a régua do mesmo jeito.
+- 2.4 vira "A prova do agente"; a figura diz "quem faz a prova" e "quem chuta: passa a vez em todas", "a nota: os
+  acertos, das 20" e "a linha: a nota de quem chuta"; os balões explicam a nota de partida pelas 5 acertadas. No
+  2.6: "um acerto a mais que quem chuta. Passou da nota de partida, raspando". O molde: "só a correção pelo gabarito
+  pega a decisão".
+- Os balões ao lado que apontam algo na parte de baixo do vídeo crescem para cima, para não passar da borda.
+
+### Verificação
+
+- `npm run ritmo`: 1.5 até a IDE com 197 palavras; 2.4 e 2.6 sem aviso. `npm test`: 143 testes do livro.
+- [Capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-4/) do 2.4 e do 2.6, no computador e no celular.
 
 ## Etapa 3 — o gabarito em código, no 1.5
 
@@ -131,5 +162,6 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 | 1 | `d3b50a3`, `1437a2f`, `ecea077` | o primeiro dia com a colega, no lugar das pilhas; 189 palavras antes da ação (sem aviso); `npm test`: 30 + 16 saídas conferidas, 124 testes do livro e 5 da gravação passaram; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-1/) antes e depois de responder, no computador e em 360 px. | Erick, 26/10/2026 |
 | 2 | `2972d5d`, `653bacc` | o 1.4 com o bilhete (prompt) e o gabarito (contrato) que a colega deixa; sem a aposta das camadas; 159 · 63 · 153 palavras entre as ações (sem aviso); `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/). | Erick, 26/10/2026 |
 | 3 | `998c72a` | o `Enum` e dois casos reais no 1.5; tabela com o primeiro dia; R13 no Classificador; 199 palavras até a ação; `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/). | Erick, 26/10/2026 |
+| 4 | COMMIT | A nota e a régua pela imagem da prova, no 1.4, no 1.6, na IDE, no glossário e nas figuras do 2.4 e do 2.6; balões de baixo crescendo para cima; `npm test`: 143 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-4/). | aguardando revisão |
 
 (redação: Claude Opus 5.5)

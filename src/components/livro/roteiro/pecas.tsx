@@ -73,10 +73,13 @@ export const Mensagem = ({ M, p, opacidade }: { M: Medidas; p: Ponto; opacidade:
 
 /** o balão: ao lado, na altura do que aponta (largo), ou embaixo, com a ponta para cima (estreito) */
 export const Balao = ({ M, alvo, opacidade, children }: { M: Medidas; alvo: Ponto; opacidade: number; children: React.ReactNode }) => {
-  const topo = M.balao.lado ? Math.min(Math.max(alvo.y, 80), M.h - 80) : M.balao.y;
-  const ponta = M.balao.lado ? { left: -9, top: "50%", marginTop: -8 } : { left: Math.min(Math.max(alvo.x - M.balao.x - 40, 18), M.balao.w - 34), top: -9 };
+  /* ao lado: centrado na altura do que aponta; se o alvo está embaixo, o balão cresce para cima, para não passar do vídeo */
+  const embaixo = M.balao.lado && alvo.y > M.h * 0.55;
+  const lugar = !M.balao.lado ? { top: M.balao.y } : embaixo ? { bottom: Math.max(M.h - alvo.y - 34, 10) } : { top: Math.min(Math.max(alvo.y, 80), M.h - 80), transform: "translateY(-50%)" };
+  const ponta = !M.balao.lado ? { left: Math.min(Math.max(alvo.x - M.balao.x - 40, 18), M.balao.w - 34), top: -9 }
+    : embaixo ? { left: -9, bottom: Math.max(M.h - alvo.y - 34, 10) === 10 ? alvo.y - (M.h - 10) + 26 : 26 } : { left: -9, top: "50%", marginTop: -8 };
   return (
-    <div style={{ position: "absolute", left: M.balao.x, top: topo, width: M.balao.w, transform: M.balao.lado ? "translateY(-50%)" : undefined,
+    <div style={{ position: "absolute", left: M.balao.x, ...lugar, width: M.balao.w,
       opacity: opacidade, boxSizing: "border-box", padding: "12px 16px", borderRadius: 14, background: cor.papel, border: `2px solid ${cor.acento}`,
       boxShadow: "0 6px 18px rgba(0,0,0,.08)", font: `${M.balao.fonte}px/1.42 ${ui}`, color: cor.texto }}>
       <span style={{ position: "absolute", ...ponta, width: 16, height: 16, background: cor.papel, borderLeft: `2px solid ${cor.acento}`, borderTop: `2px solid ${cor.acento}`,

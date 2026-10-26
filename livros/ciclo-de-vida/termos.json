@@ -1,4 +1,4 @@
 {
   "sobre": "Os termos explicáveis do livro (Termos.astro; docs/capacidades/ajustes-da-introducao.md): o que o leitor ainda não conhece quando o termo aparece. A definição é curta; o capítulo é onde o termo nasce. O teste confere os dois.",
-  "régua": { "definicao": "As perguntas de referência, cada uma com a resposta certa, que dão a nota do agente.", "capitulo": 1 }
+  "régua": { "definicao": "O jeito de corrigir a prova do agente: comparar cada decisão com o gabarito das perguntas de referência e contar os acertos, a nota.", "capitulo": 1 }
 }

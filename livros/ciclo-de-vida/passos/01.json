@@ -279,7 +279,7 @@
       "curta": "sempre passar",
       "de": 37,
       "ate": 38,
-      "objetivo": "um \"agente\" que nem lê a pergunta.",
+      "objetivo": "o \"agente\" que chuta: passa toda mensagem para a equipe, sem ler, como o aluno que marca C em todas.",
       "temos": "`sempre_passar`, que responde passar a tudo.",
       "antes": [
         "Ainda não existe agente, mas já dá para medir um. O mais simples possível: um \"agente\" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém."
@@ -293,17 +293,17 @@
       "curta": "a régua: 25%",
       "de": 39,
       "ate": 40,
-      "objetivo": "uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota.",
-      "temos": "a nota de partida: o número que todo agente do livro tem que bater.",
+      "objetivo": "a correção da prova: comparar cada decisão com o gabarito e contar os acertos. É a régua, e a conta é a nota.",
+      "temos": "a nota de partida: a nota de quem chuta, o número que todo agente do livro tem que passar.",
       "depois": [
-        "Vinte e cinco por cento. Esta é a nota de partida do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.",
+        "Vinte e cinco por cento: 5 de 20, as cinco perguntas em que a resposta certa era mesmo passar a vez. É a nota de partida, a nota de quem chuta. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.",
         "No exercício, seus casos vão para `meus-casos.jsonl`. Os testes o leem quando existe; `uv run python baseline.py meus-casos.jsonl` soma esses casos aos vinte oficiais. O comando aceita mais de um arquivo; sem caminhos, mede só a referência do livro."
       ],
       "parada": {
         "entrega": "a régua e a nota de partida",
         "tag": "cap-01/fim"
       },
-      "pedido": "E como a gente mede esse agente contra as vinte perguntas?"
+      "pedido": "E como a gente corrige a prova desse \"agente\"?"
     }
   ]
 }

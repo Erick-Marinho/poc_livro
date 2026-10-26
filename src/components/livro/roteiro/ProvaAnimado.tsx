@@ -52,9 +52,9 @@ export const ProvaAnimado: React.FC<Props> = ({ prova: p, desenho, modo = "prova
       {/* o decisor: o do capítulo 1, depois o grafo */}
       <div style={{ position: "absolute", left: L.decisor.x, top: L.decisor.y, width: L.decisor.w, height: L.decisor.h, boxSizing: "border-box", borderRadius: 14,
         border: `2.5px solid ${aponta("decisor") ? cor.acento : cor.linha}`, background: cor.papel, display: "grid", alignContent: "center", padding: "0 16px" }}>
-        <span style={{ font: `700 ${L.fonte - 4}px ${mono}`, letterSpacing: ".06em", textTransform: "uppercase", color: cor.fraco }}>o decisor</span>
+        <span style={{ font: `700 ${L.fonte - 4}px ${mono}`, letterSpacing: ".06em", textTransform: "uppercase", color: cor.fraco }}>quem faz a prova</span>
         <div style={{ display: "grid" }}>
-          <span style={{ gridArea: "1 / 1", opacity: 1 - grafo, font: `600 ${L.fonte + 2}px ${ui}`, color: cor.texto }}>o do capítulo 1: sempre passa a vez</span>
+          <span style={{ gridArea: "1 / 1", opacity: 1 - grafo, font: `600 ${L.fonte + 2}px ${ui}`, color: cor.texto }}>quem chuta: passa a vez em todas</span>
           <span style={{ gridArea: "1 / 1", opacity: grafo, font: `600 ${L.fonte + 2}px ${ui}`, color: cor.acento }}>o grafo deste capítulo, com o GPT-6 Luna</span>
         </div>
       </div>
@@ -89,7 +89,7 @@ export const ProvaAnimado: React.FC<Props> = ({ prova: p, desenho, modo = "prova
       {/* o placar: a nota de partida, depois a pergunta */}
       <div style={{ position: "absolute", left: L.placar.x, top: L.placar.y, width: L.placar.w, minHeight: L.placar.h, boxSizing: "border-box", borderRadius: 14, padding: "10px 16px",
         border: `2px solid ${aponta("placar") ? cor.acento : cor.linha}`, background: cor.papel, display: "grid", gap: 8, alignContent: "center" }}>
-        <span style={{ font: `700 ${L.fonte - 4}px ${mono}`, letterSpacing: ".06em", textTransform: "uppercase", color: cor.fraco }}>o placar da régua</span>
+        <span style={{ font: `700 ${L.fonte - 4}px ${mono}`, letterSpacing: ".06em", textTransform: "uppercase", color: cor.fraco }}>a nota: os acertos, das {p.total}</span>
         <div style={{ font: `700 ${L.fonte + 9}px ${ui}`, color: pergunta ? cor.acento : cor.texto }}>
           {naPartida ? `${acertos} de ${p.total}${respondidas.length === p.total ? ` (${p.porcento}%)` : ""}` : pergunta ? `? de ${p.total}` : `… de ${p.total}`}
         </div>
@@ -101,7 +101,7 @@ export const ProvaAnimado: React.FC<Props> = ({ prova: p, desenho, modo = "prova
           <span style={{ position: "absolute", left: `${(p.partida.acertos / p.total) * 100}%`, top: -6, bottom: -6, width: 2, background: cor.texto, opacity: naPartida && respondidas.length < p.total ? 0 : 1 }} />
         </div>
         <span style={{ font: `${L.fonte - 2}px ${ui}`, color: cor.fraco, opacity: naPartida && respondidas.length < p.total ? 0 : 1 }}>
-          a marca: a nota de partida, {p.partida.acertos} de {p.total} ({p.partida.porcento}%){pergunta ? ": é ela que o agente tem de bater" : ""}
+          a linha: a nota de quem chuta, {p.partida.acertos} de {p.total} ({p.partida.porcento}%){pergunta ? ": o agente tem de passar dela" : ""}
         </span>
       </div>
 

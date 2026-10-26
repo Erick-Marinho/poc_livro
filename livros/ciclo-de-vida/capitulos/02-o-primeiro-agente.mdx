@@ -7,7 +7,7 @@ neste:
   - monta o agente como um grafo da LangGraph, com estado, nós e setas;
   - faz o modelo responder no formato do contrato, e não em texto solto;
   - testa o grafo sem pagar nada, com um modelo falso;
-  - mede o agente com o GPT-6 Luna, pela mesma régua da nota de partida.
+  - corrige a prova do agente com o GPT-6 Luna pelo mesmo gabarito, e compara com a nota de partida.
 partida:
   texto: "Ponto de partida: o projeto como o capítulo 1 terminou."
   tag: cap-02/inicio
@@ -78,11 +78,11 @@ O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estrut
 Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada decisão, que cada caminho faz o que deve, que o caminho de passar a vez não gasta uma chamada. Se o modelo decide bem, eles não dizem: para isso existe a régua. Os dois juntos dizem onde está o problema quando a nota cai: no desenho (os testes quebram) ou na decisão do modelo (os testes passam e a nota cai).
 </PareEPense>
 
-## 2.4 Medir com a mesma régua
+## 2.4 A prova do agente
 
 Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%? É a prova do substituto, e o gabarito é o mesmo da colega. Os casos do seu exercício ficam no `meus-casos.jsonl`, fora dela.
 
-<ProvaDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} numero="2.4" legenda="A prova do substituto: como a régua mede. As perguntas e o gabarito são os do referencia.jsonl, e a nota de partida é a do baseline.py, gravada. A nota do agente fica para depois do seu palpite." />
+<ProvaDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} numero="2.4" legenda="A prova do substituto: como ela é corrigida. As perguntas e o gabarito são os do referencia.jsonl, e a nota de partida é a do baseline.py, gravada. A nota do agente fica para depois do seu palpite." />
 
 O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com um modelo, isso pede um cuidado a mais, porque ele não responde sempre igual e cada chamada custa. Então a resposta do modelo é gravada uma vez, e o livro repete a gravação, sem chamar o modelo de novo. O terminal da IDE diz de quando é a gravação e de qual modelo. Na sua máquina, o comando chama o modelo de verdade, com a sua chave, e a sua nota pode sair um pouco diferente.
 
@@ -98,7 +98,7 @@ No 2.4, a prova parou em "? de 20", e você investiu um palpite na IDE. Agora el
 
 <ResultadoDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} medir={saidas["r02-medir"]} gravacao={gravacaoMedir} motivo="R07" seguro="R12" numero="2.6" legenda="A prova corrigida: o que o GPT-6 Luna decidiu em cada pergunta, na gravação deste capítulo, e a nota da régua. A saída completa do medir.py está no terminal da IDE, no passo 10." />
 
-O pydantic não recusou nenhuma das 20 respostas: todas vieram no molde da Escolha, e 14 estavam erradas. O molde garante a forma; só a régua pega a decisão.
+O pydantic não recusou nenhuma das 20 respostas: todas vieram no molde da Escolha, e 14 estavam erradas. O molde garante a forma; só a correção pelo gabarito pega a decisão.
 
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
 Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no R12, onde a próxima coisa, num atendimento, seria mostrar a compra da Ana ao Bruno. Ele só devolve a decisão: não escreve resposta nem mostra compras. Este agente errou passando a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
