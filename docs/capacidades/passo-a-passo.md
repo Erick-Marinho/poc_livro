@@ -16,6 +16,11 @@ o caminho aparece na página.
 - (5a) Alguns blocos terminam numa **pergunta curta** (prever antes de seguir), e a resposta é conferida no projeto
   real: a do id contra o padrão do `contrato.py`, a do pedido contra as saídas gravadas do roteiro.
 - (5a) No modo direto, todos os blocos aparecem abertos, sem apagar o código e sem perguntas.
+- (revisão de 26/10/2026, etapa 6b de `revisao-do-percurso-inicial.md`) Fica revogada somente a passagem
+  **bloco a bloco** da decisão 5a: no modo guiado, todos os blocos de uma mesma ação aparecem juntos em um quadro,
+  com notas, termos e perguntas. O motivo é retirar as falas “E o próximo?” que apenas fatiavam uma ação. As
+  perguntas continuam segurando a saída, cada ação ainda termina numa fala do leitor e a IDE não avança sozinha. Os
+  blocos continuam no roteiro e no código; o modo direto não muda.
 - (5b) Cada passo mostra no máximo cerca de 12 linhas novas; se o roteiro pede mais, o passo se divide.
 - (5b1) Comando com erro que passa pela biblioteca padrão do Python (o caminho e as linhas mudam de máquina para
   máquina) mostra só a última linha do erro, com `2>&1 | tail -1`; o comando aparece inteiro, então o leitor vê o truque.

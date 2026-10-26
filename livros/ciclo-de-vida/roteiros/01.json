@@ -266,6 +266,16 @@
       "comando": "uv run python -c \"from contrato import Caso; print(Caso(id='R7', pergunta='Onde está o meu pedido?', decisao='responder', motivo='o status está nos dados'))\"",
       "espera": 1,
       "nota": "O id R7 não segue o padrão, e o pydantic diz qual campo e qual regra.",
+      "pergunta_saida": {
+        "texto": "Qual campo a saída aponta como inválido?",
+        "opcoes": [
+          "id",
+          "pergunta",
+          "decisao"
+        ],
+        "certa": 0,
+        "porque": "A saída separa uma linha para id e logo abaixo mostra o padrão que ele não cumpriu."
+      },
       "duvidas": [
         {
           "pergunta": "Por onde eu leio um erro desses?",
@@ -357,7 +367,17 @@
       "id": "r01-tres-casos",
       "comando": "uv run python -c \"from contrato import carregar_referencia; print(len(carregar_referencia()), 'perguntas de referência')\"",
       "espera": 0,
-      "nota": "Carrega."
+      "nota": "Carrega.",
+      "pergunta_saida": {
+        "texto": "Quantas perguntas entraram nesta primeira referência?",
+        "opcoes": [
+          "3 perguntas de referência",
+          "4 perguntas de referência",
+          "20 perguntas de referência"
+        ],
+        "certa": 0,
+        "porque": "A saída conta 3 perguntas de referência."
+      }
     },
     {
       "acao": "inserir",
@@ -548,7 +568,17 @@
       "id": "r01-seis-pedidos",
       "comando": "uv run python -c \"from contrato import carregar; print(len(carregar('pedidos')), 'pedidos na loja')\"",
       "espera": 0,
-      "nota": "A loja inventada tem seis pedidos, e agora o código enxerga todos."
+      "nota": "A loja inventada tem seis pedidos, e agora o código enxerga todos.",
+      "pergunta_saida": {
+        "texto": "Quantos pedidos o código encontrou nos dados da loja?",
+        "opcoes": [
+          "3 pedidos na loja",
+          "6 pedidos na loja",
+          "20 pedidos na loja"
+        ],
+        "certa": 1,
+        "porque": "A saída conta 6 pedidos na loja."
+      }
     },
     {
       "acao": "escrever",
@@ -728,7 +758,17 @@
       "id": "r01-testes-passam",
       "comando": "uv run pytest -q",
       "espera": 0,
-      "nota": "Os sete passam."
+      "nota": "Os sete passam.",
+      "pergunta_saida": {
+        "texto": "O que a última linha confirma depois da correção?",
+        "opcoes": [
+          "7 passed",
+          "1 passed",
+          "20 passed"
+        ],
+        "certa": 0,
+        "porque": "A última linha registra 7 passed: os sete testes passaram."
+      }
     },
     {
       "acao": "escrever",
@@ -760,7 +800,17 @@
       "id": "r01-sempre-passar",
       "comando": "uv run python -c \"from baseline import sempre_passar; print(sempre_passar('Onde está o meu pedido BT-1002?'))\"",
       "espera": 0,
-      "nota": "Ele nem lê a pergunta."
+      "nota": "Ele nem lê a pergunta.",
+      "pergunta_saida": {
+        "texto": "Que decisão o decisor devolveu para esta pergunta?",
+        "opcoes": [
+          "passar",
+          "responder",
+          "recusar"
+        ],
+        "certa": 0,
+        "porque": "A única linha da saída é passar."
+      }
     },
     {
       "acao": "inserir",

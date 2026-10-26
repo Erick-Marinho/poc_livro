@@ -88,6 +88,10 @@
         "A política é o texto que decide o que o agente pode e não pode fazer. Os prazos de devolução não são invenção: os 7 dias de arrependimento e os 90 dias para reclamar de defeito em produto durável vêm do Código de Defesa do Consumidor. O resto é regra da loja.",
         "E repare no `loja.json`: a loja tem uma data de hoje fixa. Se o agente calcula prazos com a data real do computador, a resposta certa de hoje vira errada daqui a um mês, e os testes começam a falhar sozinhos. Com o \"hoje\" fixo, um pedido entregue em 20 de outubro está sempre a 21 dias de distância, em qualquer dia em que você executar o livro."
       ],
+      "parada": {
+        "entrega": "o projeto, as dependências e os dados da loja",
+        "tag": "cap-01/passo-04"
+      },
       "pedido": "Traz os dados da loja inventada para dentro do projeto."
     },
     {
@@ -171,6 +175,10 @@
       "depois": [
         "As duas regras são o contrato protegendo a si mesmo. Um caso que fala de pedido precisa dizer qual pedido, e pedido sem e-mail não serve, porque sem o e-mail não dá para saber se quem pergunta é o dono."
       ],
+      "parada": {
+        "entrega": "o contrato que barra casos mal escritos",
+        "tag": "cap-01/passo-10"
+      },
       "pedido": "Isso não podia ter entrado. Faz o contrato barrar."
     },
     {
@@ -258,6 +266,10 @@
         "Quem pegou o R12 foi o teste, porque cada teste é uma regra da política escrita de um jeito que a máquina confere: só se fala de pedido com quem é dono, o caso do capítulo 6 tem que existir, chamado só dentro dos 90 dias.",
         "Um teste que nunca falha não protege nada. Repita na sua IDE com outro caso: troque o e-mail da primeira pergunta para o da Ana e execute `uv run pytest -q`. O teste `test_so_responde_sobre_pedido_quando_o_email_bate` falha e diz qual caso está errado. Depois desfaça a troca."
       ],
+      "parada": {
+        "entrega": "as vinte perguntas conferidas contra os dados da loja",
+        "tag": "cap-01/passo-16"
+      },
       "pedido": "O R12 está errado. Corrige."
     },
     {
@@ -287,6 +299,10 @@
         "Vinte e cinco por cento. Esta é a nota de partida do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la.",
         "No exercício, seus casos vão para `meus-casos.jsonl`. Os testes o leem quando existe; `uv run python baseline.py meus-casos.jsonl` soma esses casos aos vinte oficiais. O comando aceita mais de um arquivo; sem caminhos, mede só a referência do livro."
       ],
+      "parada": {
+        "entrega": "a régua e a nota de partida",
+        "tag": "cap-01/fim"
+      },
       "pedido": "E como a gente mede esse agente contra as vinte perguntas?"
     }
   ]

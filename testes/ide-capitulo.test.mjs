@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { montarIde } from "../src/lib/ideCapitulo.ts";
+import { montarIde, perguntaSustentada, perguntasPendentes, quadrosDaIde } from "../src/lib/ideCapitulo.ts";
 
 const ler = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const json = (p) => JSON.parse(ler(p));
@@ -66,6 +66,29 @@ test("o código entra por blocos lógicos, e cada bloco cai nas linhas certas do
   for (const a of comBlocos) for (const b of a.blocos) for (const t of b.termos) assert.ok(t.texto.length > 10, `${b.titulo}: ${t.chave}`);
 });
 
+test("no guiado, cada ação ocupa um quadro e leva todos os blocos; as duas perguntas continuam segurando a saída", () => {
+  const quadros = quadrosDaIde(passos);
+  assert.equal(quadros.filter((q) => q.tipo === "abre").length, 18);
+  assert.equal(quadros.filter((q) => q.tipo === "acao").length, 40);
+  assert.equal(quadros.filter((q) => q.tipo === "fecha").length, 18);
+  const caso = acoes[10];
+  assert.equal(caso.tipo, "editar");
+  assert.equal(caso.blocos.length, 5);
+  assert.deepEqual(perguntasPendentes(caso, false), ["bloco:1", "bloco:4"]);
+  assert.deepEqual(perguntasPendentes(caso, false, [1]), ["bloco:4"]);
+  assert.deepEqual(perguntasPendentes(caso, false, [1, 4]), []);
+  assert.deepEqual(perguntasPendentes(caso, true), [], "o modo direto continua sem perguntas de bloco");
+  const componente = ler("src/components/livro/ide/IdeCapitulo.tsx");
+  assert.doesNotMatch(componente, /E o próximo\?/);
+  assert.match(componente, /a\.blocos\.flatMap\(\(b, bi\)/);
+});
+
+test("um quadro guiado continua dentro do limite de cerca de 15 linhas novas", () => {
+  const codigo = acoes.filter((a) => a.tipo === "editar" && !/\.(jsonl?|md|toml)$/.test(a.arquivo));
+  assert.ok(codigo.every((a) => a.alteradas.length <= 16), codigo.map((a) => `${a.arquivo}: ${a.alteradas.length}`).join(", "));
+  assert.equal(Math.max(...codigo.map((a) => a.alteradas.length)), 16);
+});
+
 test("a pergunta do id: só a resposta certa segue o padrão do contrato real", () => {
   const contrato = ler("livros/ciclo-de-vida/marcos/cap-01/contrato.py");
   const padrao = new RegExp(contrato.match(/id: str = Field\(pattern=r"([^"]+)"\)/)[1]);
@@ -79,6 +102,22 @@ test("a pergunta do pedido: o roteiro mostra o caso apressado passando antes da 
   assert.equal(q.opcoes[q.certa], "deixam passar");
   assert.equal(saidas["r01-caso-sem-pedido-passa"].saiu_com, 0);
   assert.notEqual(saidas["r01-caso-sem-pedido-barrado"].saiu_com, 0);
+});
+
+test("cinco confirmações viram perguntas sustentadas pela saída e bloqueiam somente o guiado", async () => {
+  const saidas = json("livros/ciclo-de-vida/saidas.json");
+  const ids = ["r01-caso-id-torto", "r01-tres-casos", "r01-seis-pedidos", "r01-testes-passam", "r01-sempre-passar"];
+  const comPergunta = acoes.filter((a) => a.tipo === "rodar" && a.perguntaSaida);
+  assert.deepEqual(comPergunta.map((a) => a.id), ids);
+  for (const a of comPergunta) {
+    assert.equal(perguntaSustentada(saidas[a.id].saida, a.perguntaSaida), true, a.id);
+    assert.deepEqual(perguntasPendentes(a, false), ["saida"], a.id);
+    assert.deepEqual(perguntasPendentes(a, false, [], true), [], `${a.id}: responder libera`);
+    assert.deepEqual(perguntasPendentes(a, true), [], `${a.id}: direto omite`);
+  }
+  const falsa = entrada();
+  falsa.roteiro.passos[11].pergunta_saida.opcoes[0] = "uma resposta que não está na saída";
+  await assert.rejects(montarIde(falsa), /resposta certa.*não aparece na saída gravada/);
 });
 
 test("o livro não monta com um bloco que não está no arquivo, nem com palavra fora do glossário", async () => {
@@ -95,6 +134,16 @@ test("o ponto de volta só aparece com o repositório do leitor, e aponta a tag 
   assert.equal(ps[0].volta, undefined);   // o passo 1 começa da pasta vazia: não há para onde voltar
   assert.equal(ps[4].volta.repositorio, "https://github.com/Erick-Marinho/atendimento-bemtevi");
   assert.equal(ps[4].volta.tag, "cap-01/passo-04");
+});
+
+test("quatro fechos oferecem uma parada sem bloquear, com a entrega e a tag daquele ponto", async () => {
+  assert.deepEqual(passos.filter((p) => p.parada).map((p) => [p.n, p.parada.tag]), [
+    [4, "cap-01/passo-04"], [10, "cap-01/passo-10"], [16, "cap-01/passo-16"], [18, "cap-01/fim"],
+  ]);
+  assert.ok(passos.filter((p) => p.parada).every((p) => p.parada.entrega.length > 20));
+  assert.match(ler("src/components/livro/ide/IdeCapitulo.tsx"), /Bom lugar para parar.*Ficou pronto/s);
+  const torta = entrada(); torta.capitulo.passos[3].parada.tag = "cap-01/passo-03";
+  await assert.rejects(montarIde(torta), /parada precisa apontar cap-01\/passo-04/);
 });
 
 test("todo passo abre com a mensagem do autor ao chat, e o rascunho fica marcado até o autor revisar", async () => {

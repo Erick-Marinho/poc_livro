@@ -56,83 +56,80 @@ e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
 ### Divisão
 
-- **6a — contar e propor (atual):** medir o percurso existente, localizar retomadas e comparar alternativas. Não
-  muda capítulo, IDE, roteiro nem passos.
-- **6b — implementar:** começa apenas depois da escolha do Erick. Seu escopo, critérios e evidência serão
-  detalhados a partir da proposta escolhida; nenhuma alternativa está aprovada por este documento.
+- **6a — contar e propor (concluída):** mediu o percurso, localizou retomadas e comparou três alternativas sem
+  mudar o produto.
+- **6b — implementar (atual):** junta as propostas A e C, escolhidas por Erick em 26/10/2026. A proposta B fica
+  descartada.
 
 ### Pergunta que esta etapa responde
 
-Quantas vezes o leitor apenas confirma ou pede para seguir nos 18 passos do capítulo 1, quantas vezes decide ou
-investiga, e quais passagens podem sair ou ganhar uma pergunta sem a IDE agir sozinha?
+Como juntar os blocos de uma ação e transformar cinco confirmações em leitura da saída real, sem a IDE agir
+sozinha nem retirar as decisões do percurso?
 
 ### Escopo
 
-Somente a etapa 6a: um script reproduzível de contagem e um relatório com o percurso atual, pontos de parada e duas
-a três alternativas para a etapa 6b. A contagem lê `roteiros/01.json`, `passos/01.json`, as saídas reais e a lógica
-do `IdeCapitulo.tsx`; não altera nenhuma dessas fontes de produto.
+Somente a etapa 6b no capítulo 1: um quadro por ação nos dois modos guiados, cinco perguntas sobre saídas gravadas e
+quatro avisos de parada. Não muda o modo direto, as saídas, o projeto, o capítulo 2 nem o texto do capítulo 1 fora
+da IDE.
 
-**Decisões anteriores que esta etapa preserva:**
+**Decisões de Erick em 26/10/2026:**
 
-- Toda passagem continua sendo uma fala do leitor no chat; a barra inferior conserva apenas setas, nome do passo e
-  perguntas (`conversa-com-a-ia.md`). Uma proposta que queira alterar isso precisa nomear a decisão e justificar.
-- A IDE não toca sozinha. No modo guiado atual, cada bloco de código entra quando o leitor passa; apostas impedem a
-  saída antes da resposta (`imersao-ide.md` e `ide-e-terminal.md`).
-- Cada passo acrescenta no máximo cerca de 15 linhas novas, fora dados copiados. Apostas antes da saída, erros reais,
-  “modificar antes de criar”, oito dúvidas abertas, pontos de volta e “Agora você tem” permanecem
-  (`passo-a-passo.md`).
-- “Na minha IDE” pausa para o leitor repetir a ação; “aqui no livro” pede que ele digite os comandos no terminal;
-  o modo direto mostra uma ação por quadro, sem apostas, perguntas de bloco nem digitação, mas conserva dúvidas e
-  variantes (`imersao-ide.md`).
+- As propostas A e C são implementadas juntas; a B não segue.
+- Nos dois modos guiados, todos os blocos de uma ação entram juntos, com notas, termos e perguntas; saem as falas
+  “E o próximo?”. Isso revoga, somente nesse ponto, o bloco a bloco decidido em `passo-a-passo.md` e
+  `imersao-ide.md`: cada ação ainda termina numa fala do leitor, e a IDE não avança sozinha.
+- Nos passos 6, 8, 12, 16 e 17, a confirmação depois do comando vira uma pergunta curta sustentada pela saída
+  gravada. A resposta do leitor é a passagem; no modo direto, a pergunta não aparece.
+- Depois dos passos 4, 10, 16 e 18, a IA avisa que aquele é um bom lugar para parar, nomeia a entrega e dá a tag de
+  volta, sem interromper quem prefere seguir.
+- Permanecem as apostas, o “modificar antes de criar”, as dúvidas, as perguntas de bloco, o teto de cerca de 15
+  linhas novas por passo e as diferenças entre “na minha IDE”, “aqui no livro” e modo direto.
 
-1. Contar, passo a passo, pedidos, `FIZ`, `SEGUE` e o atalho `Avançar`, sem contar duas vezes a mesma transição.
-2. Contar apostas, perguntas de bloco, variantes, dúvidas abertas, comandos digitados e erros investigados. Separar
-   o caminho principal das escolhas opcionais e registrar o que some ou permanece no modo direto.
-3. Descrever o que a IDE guarda no navegador, o ponto de volta por tag e o fechamento “Agora você tem”; propor de
-   dois a quatro pontos naturais de parada.
-4. Comparar de duas a três propostas. Para cada uma, projetar a contagem pelo mesmo script, mostrar o chat antes e
-   depois nos passos 6 e 16, dizer o que o leitor faz a mais ou a menos, quais decisões anteriores ela toca e o custo
-   de implementação.
+1. Montar um quadro por ação nos modos guiados, preservando dentro dele todos os blocos e o bloqueio separado das
+   duas perguntas do passo 6.
+2. Ligar cada uma das cinco perguntas novas à resposta certa presente na saída gravada do comando e usar a resposta
+   do leitor como passagem para o quadro seguinte.
+3. Acrescentar os quatro avisos de parada ao fecho dos passos, sem criar uma nova passagem.
+4. Atualizar a contagem reproduzível para a estrutura implementada e conservar os dados do antes para comparação.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `livros/ciclo-de-vida/roteiros/01.json` | As 40 ações, blocos, apostas, variantes e dúvidas. |
-| `livros/ciclo-de-vida/passos/01.json` | Os 18 agrupamentos, pedidos, entregas e tags de retomada. |
-| `livros/ciclo-de-vida/saidas.json` | Quais comandos do caminho principal e das variantes exibem erro real. |
-| `src/components/livro/ide/IdeCapitulo.tsx` | Regras de quadros, `FIZ`, `SEGUE`, `Avançar`, modos e memória local. |
-| `src/lib/ideCapitulo.ts` | Montagem dos passos, estados e tags de ponto de volta. |
-| `scripts/contar-passagens-ide-capitulo-1.mjs` | Contagem atual e projeções das propostas, sem mudar o produto. |
-| Os quatro planos citados acima | Decisões do Erick que limitam as alternativas. |
+| `livros/ciclo-de-vida/roteiros/01.json` | As cinco perguntas de saída, suas opções, resposta e explicação. |
+| `livros/ciclo-de-vida/passos/01.json` | Entrega e tag dos quatro avisos de parada. |
+| `livros/ciclo-de-vida/saidas.json` | Fonte da resposta certa de cada pergunta; não muda. |
+| `src/components/livro/ide/IdeCapitulo.tsx` | Quadro por ação, bloqueios, passagem por resposta e aviso de parada. |
+| `src/lib/ideCapitulo.ts` | Tipos, validação e montagem dos quadros e das perguntas pendentes. |
+| `scripts/contar-passagens-ide-capitulo-1.mjs` | Comparação passo a passo do antes com a implementação. |
+| `testes/ide-capitulo.test.mjs` | Estrutura, limite de linhas, bloqueios, ligação às saídas e paradas. |
+| `passo-a-passo.md` e `imersao-ide.md` | Registro da revogação pontual da passagem bloco a bloco. |
 
 ### Critérios de revisão
 
-- O script falha se os passos deixarem de cobrir as ações ou se a lógica que sustenta a contagem mudar; a saída traz
-  os 18 passos e separa os três modos.
-- `Avançar` é contado como atalho da mesma passagem, não como uma segunda ação. Caminho principal e ofertas opcionais
-  aparecem separados; perguntas de bloco e apostas de variante não somem da conta.
-- O relatório explica a memória local, as tags e “Agora você tem”, e propõe entre dois e quatro pontos de parada.
-- Há de duas a três alternativas, cada uma com contagem projetada, passos 6 e 16 antes/depois, efeito para o leitor,
-  decisões anteriores tocadas e arquivos, testes e saídas que uma implementação exigiria.
-- Nenhuma alternativa é tratada como melhoria só por reduzir um número, nem como decisão já tomada pelo Erick.
-- Nenhum arquivo da IDE, roteiro, passos, capítulo ou saída muda na 6a.
+- Há 40 quadros de ação nos modos guiados, um por ação; nenhuma fala “E o próximo?” permanece. As duas perguntas de
+  bloco do passo 6 continuam exigindo respostas separadas antes da passagem.
+- As cinco perguntas novas bloqueiam somente o guiado; a opção certa aparece na saída real do comando, e responder
+  já leva ao quadro seguinte. O modo direto não mostra essas perguntas.
+- Nenhum quadro acrescenta mais que cerca de 15 linhas novas; apostas, variantes, dúvidas e erros permanecem.
+- Os passos 4, 10, 16 e 18 encerram com aviso curto, entrega e a tag decidida, sem impedir a continuação.
+- A contagem passa de 79 para cerca de 53 passagens mecânicas nos modos guiados e de 28 para 33 decisões principais;
+  o modo direto permanece com 58 passagens mecânicas e 4 decisões principais.
+- Saídas e tags do repositório do leitor não mudam; nenhuma peça do capítulo 2 ou do texto fora da IDE é alterada.
 
 ### Evidência e verificação
 
-- Executar `node scripts/contar-passagens-ide-capitulo-1.mjs`; guardar no relatório a tabela produzida e as regras da
-  contagem.
-- Conferir no Git se `IdeCapitulo.tsx`, `src/lib/ideCapitulo.ts`, `roteiros/` ou `passos/` mudaram desde `f499020` e
-  listar qualquer commit encontrado.
-- Conferir as projeções do script contra os exemplos dos passos 6 e 16 e registrar a proposta que depende de mudar
-  uma decisão anterior.
-- Aguardar a escolha do Erick. A evidência da 6b será definida somente com a alternativa escolhida.
+- Executar o script de contagem e guardar no relatório a tabela, com antes e depois por passo.
+- Rodar `npm run saidas:conferir`, `npm run leitor` e `npm test`; as saídas gravadas e as tags devem permanecer.
+- Testar quadro por ação, perguntas de bloco, perguntas de saída nos dois percursos guiados e sua ausência no modo
+  direto, vínculo da resposta com a saída e os quatro avisos de parada.
+- Conferir na página os passos 6, 10 e 16 nos três modos, no computador e numa largura de celular, com captura.
 
 ### Limite da etapa
 
-Somente plano, script de contagem e relatório. Não mudar IDE, biblioteca que a monta, roteiro, passos, capítulo,
-saídas, testes do produto nem projeto. Não detalhar nem começar a 6b; não chamar modelo, regravar, publicar, abrir
-túnel ou inventar opinião dos autores.
+Somente a implementação escolhida no capítulo 1, os testes, o contador, os dois registros de decisão, este plano e
+o relatório. Não mudar capítulo 2, texto do capítulo fora da IDE, projeto nem saídas; não chamar modelo, publicar,
+abrir túnel ou inventar opinião dos autores.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -144,8 +141,8 @@ túnel ou inventar opinião dos autores.
   sem chave. O endereço foi decidido; a publicação continua fora deste plano.
 - **Etapa 5 (aprovada):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas respostas
   defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
-- **Etapa 6a (detalhada acima):** contar e propor sem mudar o produto. A 6b só será detalhada quando Erick escolher
-  uma alternativa. Quantidade menor, sozinha, não comprova melhoria.
+- **Etapa 6b (detalhada acima):** implementar A e C juntas; B foi descartada. A etapa fecha somente após a revisão
+  do Erick sobre o percurso implementado.
 - **Etapa 7:** aplicar ao capítulo 2 o que for escolhido e conferido no capítulo 1; o roteiro atual tem 16 ações em
   10 passos.
 - **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha

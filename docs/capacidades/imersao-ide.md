@@ -11,6 +11,10 @@ entrando. Os 38 "seguir" passivos são o alvo (docs/PRINCIPIOS.md: assistir não
 - (etapa 2) A abertura de um passo emenda sozinha na primeira ação: o chat corre do pedido do autor à primeira coisa
   feita, e o leitor só para onde há algo a fazer (aposta, pergunta, "sua vez", fecho do passo). Os blocos de código
   continuam um por clique: avançar código sozinho seria "código se montando sozinho".
+- (revisão de 26/10/2026, etapa 6b de `revisao-do-percurso-inicial.md`) A última frase da etapa 2 fica revogada
+  somente quanto a passar **entre blocos da mesma ação**. Eles agora aparecem juntos no quadro da ação, para tirar
+  continuações sem decisão. A IDE continua sem tocar sozinha: o leitor responde às perguntas dos blocos e encerra
+  cada ação com a própria fala. O modo direto já tinha um quadro por ação e permanece igual.
 - (etapa 3) O livro lembra o passo em que o leitor parou (no navegador) e oferece continuar dali; a trilha mantém os
   passos feitos entre visitas.
 - (etapa 4) Modo foco: a IDE ocupa a tela inteira (sem sumário, cabeçalho e pílula); Esc volta ao livro.

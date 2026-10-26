@@ -30,19 +30,19 @@ export type AcaoIde = { nota: string; duvidas?: DuvidaIde[]; suavez?: string } &
   | { tipo: "editar"; arquivo: string; versao: number; alteradas: number[]; novo: boolean; blocos: BlocoIde[] }
   | { tipo: "copiar"; arquivos: { nome: string; versao: number }[] }
   | { tipo: "apagar"; arquivo: string }
-  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; problemas: ProblemaIde[]; aposta?: Aposta; gravacao?: GravacaoIde; variar?: VariarIde;
+  | { tipo: "rodar"; id: string; comando: string; onde: string; saida: Trecho[]; erro: boolean; problemas: ProblemaIde[]; aposta?: Aposta; perguntaSaida?: PerguntaIde; gravacao?: GravacaoIde; variar?: VariarIde;
       gerados: { nome: string; versao: number; alteradas: number[]; novo: boolean }[]; apagados: string[] });
 export type PassoCap = { n: number; id: string; secao: string; nomeSecao: string; titulo: string; curta: string; de: number; ate: number;
   objetivo: string; temos: string; engano?: string; antes: string[]; depois: string[]; sinal: "ok" | "erro" | "engano" | "nada";
   /** a mensagem do autor ao chat que abre o passo; `rascunho` enquanto o autor não revisou */
-  pedido: string; rascunho: boolean;
+  pedido: string; rascunho: boolean; parada?: { entrega: string; tag: string };
   /** o ponto de volta: a tag do fim do passo anterior, no repositório do leitor (só quando ele existe) */
   volta?: { repositorio: string; tag: string } };
 
 type DefBloco = { linhas: string; titulo: string; texto: string; termos?: string[]; pergunta?: PerguntaIde };
 type DefVariar = { arquivo?: string; trecho: string; original: string; convite: string;
   opcoes: { id: string; rotulo: string; por: string; nota: string; aposta?: Aposta }[] };
-type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; onde?: string; blocos?: DefBloco[]; variar?: DefVariar;
+type PassoRoteiro = { acao: string; arquivo?: string; id?: string; nota: string; aposta?: Aposta; pergunta_saida?: PerguntaIde; onde?: string; blocos?: DefBloco[]; variar?: DefVariar;
   duvidas?: DuvidaIde[];
   /** o que o leitor faz na máquina dele, quando o texto genérico não serve (instalar um programa, criar o cofre) */
   suavez?: string };
@@ -51,7 +51,7 @@ type Estado = { passo: number; arquivo?: string; conteudo?: string; arquivos?: R
   variantes?: Record<string, { arquivo?: string; conteudo?: string; alteradas?: number[] }> };
 type Saida = { comando: string; saiu_com: number; saida: [string, string][] };
 type DefPasso = { id: string; secao: string; titulo: string; curta: string; de: number; ate: number; objetivo: string; temos: string;
-  engano?: string; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean };
+  engano?: string; antes?: string[]; depois?: string[]; pedido?: string; pedido_revisado?: boolean; parada?: { entrega: string; tag: string } };
 export type Entrada = {
   roteiro: { passos: PassoRoteiro[] };
   estados: Estado[];
@@ -69,6 +69,31 @@ export type Entrada = {
   /** o que os comandos gravaram do modelo, por id do comando (resumirGravacao) */
   gravacoes?: Record<string, GravacaoIde>;
 };
+
+export type QuadroIde = { tipo: "abre"; p: number } | { tipo: "acao"; p: number; k: number } | { tipo: "fecha"; p: number };
+
+/** Um quadro por ação, em qualquer modo. Os blocos continuam dentro da ação, não viram passagens separadas. */
+export function quadrosDaIde(passos: Pick<PassoCap, "de" | "ate">[]): QuadroIde[] {
+  return passos.flatMap((p, i) => [
+    { tipo: "abre", p: i } as QuadroIde,
+    ...Array.from({ length: p.ate - p.de + 1 }, (_, j): QuadroIde => ({ tipo: "acao", p: i, k: p.de - 1 + j })),
+    { tipo: "fecha", p: i } as QuadroIde,
+  ]);
+}
+
+/** Perguntas que ainda seguram a saída da ação; o modo direto não segura nenhuma. */
+export function perguntasPendentes(a: AcaoIde, direto: boolean, blocosRespondidos: number[] = [], respondeuSaida = false): string[] {
+  if (direto) return [];
+  const pendentes = a.tipo === "editar" ? a.blocos.map((b, i) => b.pergunta && !blocosRespondidos.includes(i) ? `bloco:${i}` : null).filter(Boolean) as string[] : [];
+  if (a.tipo === "rodar" && a.perguntaSaida && !respondeuSaida) pendentes.push("saida");
+  return pendentes;
+}
+
+/** A opção marcada precisa aparecer na saída gravada do próprio comando. */
+export function perguntaSustentada(saida: [string, string][], pergunta: PerguntaIde): boolean {
+  const correta = pergunta.opcoes[pergunta.certa];
+  return !!correta && saida.some(([linha]) => linha.trim() === correta || linha.includes(correta));
+}
 
 /** O resumo de um arquivo de gravação (livros/<livro>/gravacoes/<id>.json): o dia, o modelo e quantas chamadas. */
 export function resumirGravacao(itens: Record<string, { quando: string; modelo: string }>): GravacaoIde {
@@ -217,8 +242,14 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
         const linha = v.arquivo ? texto.slice(0, texto.indexOf(v.trecho)).split("\n").length : undefined;
         variar = { arquivo: v.arquivo, linha, trecho: v.trecho, original: v.original, convite: v.convite, por: v.opcoes[0].por, opcoes };
       }
+      if (p.pergunta_saida) {
+        const q = p.pergunta_saida;
+        if (!(Number.isInteger(q.certa) && q.opcoes[q.certa]) || !q.texto.trim() || !q.porque.trim()) falhar(`${e.rodou}: pergunta sobre a saída incompleta`);
+        if (!perguntaSustentada(s.saida, q)) falhar(`${e.rodou}: a resposta certa da pergunta sobre a saída não aparece na saída gravada`);
+      }
       acoes.push({ tipo: "rodar", nota: p.nota, id: e.rodou, comando: s.comando, onde: cwdLeitor(p.onde), saida: dobrarErro(s.saida),
-        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), problemas: problemasDe(s.saida, pasta), aposta: p.aposta, gravacao: gravacoes[e.rodou], variar, gerados, apagados: e.apagados ?? [] });
+        erro: s.saiu_com !== 0 || s.saida.some(([, c]) => c === "err"), problemas: problemasDe(s.saida, pasta), aposta: p.aposta, perguntaSaida: p.pergunta_saida,
+        gravacao: gravacoes[e.rodou], variar, gerados, apagados: e.apagados ?? [] });
     } else if (e.arquivos) {
       const arquivos = [];
       for (const [nome, texto] of Object.entries(e.arquivos)) { arquivos.push({ nome, versao: await versao(nome, texto) }); atual[nome] = texto; }
@@ -250,9 +281,12 @@ export async function montarIde({ roteiro, estados, saidas, capitulo, secoes, gl
     const runs = acoes.slice(p.de - 1, p.ate).filter((a) => a.tipo === "rodar");
     const ultimo = runs.at(-1);
     const sinal = !ultimo ? "nada" : p.engano ? "engano" : ultimo.tipo === "rodar" && ultimo.erro ? "erro" : "ok";
+    const tagDaParada = i === capitulo.passos.length - 1 ? `${capitulo.prefixo_tag ?? "cap-01"}/fim`
+      : `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i + 1).padStart(2, "0")}`;
+    if (p.parada && (!p.parada.entrega.trim() || p.parada.tag !== tagDaParada)) falhar(`passo ${p.id}: a parada precisa apontar ${tagDaParada} e nomear a entrega`);
     return { n: i + 1, id: p.id, secao: p.secao, nomeSecao: secoes[p.secao], titulo: p.titulo, curta: p.curta, de: p.de, ate: p.ate,
       objetivo: p.objetivo, temos: p.temos, engano: p.engano, antes: p.antes ?? [], depois: p.depois ?? [], sinal,
-    pedido: p.pedido ?? falhar(`o passo ${p.id} não tem o pedido do autor ao chat`), rascunho: !p.pedido_revisado,
+    pedido: p.pedido ?? falhar(`o passo ${p.id} não tem o pedido do autor ao chat`), rascunho: !p.pedido_revisado, parada: p.parada,
     /* voltar ao começo de um passo: o fim do anterior; no primeiro passo, o início do capítulo (que só existe do 2 em diante) */
     volta: !capitulo.repositorio ? undefined
       : i > 0 ? { repositorio: capitulo.repositorio, tag: `${capitulo.prefixo_tag ?? "cap-01"}/passo-${String(i).padStart(2, "0")}` }
