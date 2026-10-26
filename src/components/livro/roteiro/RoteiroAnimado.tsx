@@ -8,41 +8,16 @@
  * celular, com os balões embaixo.
  */
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
-import { cor, kf, mono, suave, ui } from "../palco/video";
+import { cor, kf, mono, ui } from "../palco/video";
+import { Balao, Caixa, type Desenho, entre, lugares, MEDIDAS, Mensagem, ondeEsta, opacidadeDoBalao, Pilula, Pontas, type Ponto, seta as setaDe } from "./pecas";
 import { type Alvo, baloes, curta, type Roteiro, rotulo, T } from "./roteiro.ts";
 
-export type Desenho = "largo" | "estreito";
 export type Props = { roteiro: Roteiro; desenho: Desenho };
-type Ponto = { x: number; y: number };
-
-export const MEDIDAS = {
-  largo: { w: 780, h: 640, msg: { x: 20, y: 14, w: 450, fonte: 20 }, cartao: { x: 245, y: 80 }, inicio: { x: 245, y: 120 },
-    decide: { x: 95, y: 156, w: 300, h: 76, fonte: 25, sub: 17 }, balcao: { y: 300, w: 108, h: 88, passo: 116, x0: 13, fonte: 18, sub: 13 },
-    fim: { x: 245, y: 438 }, ficha: { x: 20, y: 478, w: 450, h: 124, fonte: 17, titulo: 13 }, pilula: { w: 110, h: 34, fonte: 17 },
-    token: { w: 104, h: 30, fonte: 14 }, nomeSetas: 14, balao: { lado: true, x: 500, w: 264, y: 0, fonte: 18 } },
-  estreito: { w: 420, h: 772, msg: { x: 14, y: 12, w: 392, fonte: 19 }, cartao: { x: 210, y: 78 }, inicio: { x: 210, y: 118 },
-    decide: { x: 70, y: 152, w: 280, h: 74, fonte: 25, sub: 17 }, balcao: { y: 296, w: 96, h: 92, passo: 100, x0: 12, fonte: 17, sub: 13 },
-    fim: { x: 210, y: 438 }, ficha: { x: 14, y: 474, w: 392, h: 124, fonte: 17, titulo: 13 }, pilula: { w: 100, h: 32, fonte: 17 },
-    token: { w: 96, h: 30, fonte: 14 }, nomeSetas: 15, balao: { lado: false, x: 14, w: 392, y: 618, fonte: 17 } },
-} satisfies Record<Desenho, unknown>;
-
-// onde a mensagem está: parada num ponto, ou entre dois, pelos tempos [segundo, ponto]
-const ondeEsta = (t: number, rota: [number, Ponto][]): Ponto => {
-  const i = rota.findIndex(([em]) => t < em);
-  if (i === 0) return rota[0][1];
-  if (i < 0) return rota[rota.length - 1][1];
-  const [ea, pa] = rota[i - 1], [eb, pb] = rota[i];
-  const q = kf(t, [[ea, 0], [eb, 1]], suave);
-  return { x: pa.x + (pb.x - pa.x) * q, y: pa.y + (pb.y - pa.y) * q };
-};
-const entre = (t: number, a: number, b: number) => t >= a && t < b;
 
 export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
   const M = MEDIDAS[desenho];
   const D = M.decide, B = M.balcao, F = M.ficha;
-  const bx = (i: number) => B.x0 + i * B.passo;
-  const meioDecide: Ponto = { x: D.x + D.w / 2, y: D.y + D.h / 2 };
-  const meioBalcao = (i: number): Ponto => ({ x: bx(i) + B.w / 2, y: B.y + B.h / 2 });
+  const { bx, meioDecide, meioBalcao } = lugares(M);
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
@@ -76,20 +51,14 @@ export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
   const lista = baloes(r);
   const balao = lista.find((x) => entre(t, x.de, x.ate)) ?? null;
   const ultimo = balao === lista[lista.length - 1];
-  const opaBalao = balao ? kf(t, ultimo ? [[balao.de, 0], [balao.de + 0.3, 1]] : [[balao.de, 0], [balao.de + 0.3, 1], [balao.ate - 0.3, 1], [balao.ate, 0]]) : 0;
+  const opaBalao = balao ? opacidadeDoBalao(t, balao.de, balao.ate, ultimo) : 0;
   const aponta = (al: Alvo) => balao?.alvo === al && opaBalao > 0.5;
   const alvoPonto = (al: Alvo): Ponto => al === "decidir" ? { x: D.x + D.w, y: meioDecide.y } : al === "balcao-a" ? { x: bx(ia) + B.w, y: meioBalcao(ia).y }
     : al === "balcao-b" ? { x: bx(ib) + B.w, y: meioBalcao(ib).y } : al === "ficha" ? { x: F.x + F.w, y: F.y + F.h / 2 } : { x: meioDecide.x + 60, y: (D.y + D.h + B.y) / 2 };
 
-  const seta = (x1: number, y1: number, x2: number, y2: number, acesa: boolean, apagada: boolean, chave: string) => {
-    const my = (y1 + y2) / 2;
-    return <path key={chave} d={`M${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2 - 8}`} fill="none"
-      stroke={acesa ? cor.acento : cor.linha} strokeWidth={acesa ? 3.5 : 2.5} opacity={apagada ? 0.35 : 1} markerEnd={`url(#ponta-${desenho}-${acesa ? "acesa" : "normal"})`} />;
-  };
-  const caixa = (x: number, y: number, w: number, h: number, borda: string, opacidade: number, filhos: React.ReactNode) => (
-    <div style={{ position: "absolute", left: x, top: y, width: w, height: h, border: `2.5px solid ${borda}`, borderRadius: 14, background: cor.papel,
-      opacity: opacidade, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", boxSizing: "border-box", padding: "4px 6px" }}>{filhos}</div>
-  );
+  const seta = (x1: number, y1: number, x2: number, y2: number, acesa: boolean, apagada: boolean, chave: string) => setaDe(desenho, x1, y1, x2, y2, acesa, apagada, chave);
+  const caixa = (x: number, y: number, w: number, h: number, borda: string, opacidade: number, filhos: React.ReactNode) =>
+    <Caixa x={x} y={y} w={w} h={h} borda={borda} opacidade={opacidade}>{filhos}</Caixa>;
   // um rótulo que troca, no fim, pelo nome do código
   const troca = (antes: string, depois: string, tam: number, peso = 700, cor_ = cor.texto) => (
     <div style={{ display: "grid", width: "100%" }}>
@@ -107,13 +76,7 @@ export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
 
       {/* as setas: do início ao substituto, dele a cada balcão, de cada balcão ao fim */}
       <svg width={M.w} height={M.h} style={{ position: "absolute", inset: 0 }}>
-        <defs>
-          {(["normal", "acesa"] as const).map((n) => (
-            <marker key={n} id={`ponta-${desenho}-${n}`} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-              <path d="M0 0 L10 5 L0 10 z" fill={n === "acesa" ? cor.acento : cor.linha} />
-            </marker>
-          ))}
-        </defs>
+        <Pontas desenho={desenho} />
         {seta(M.inicio.x, M.inicio.y + M.pilula.h / 2, meioDecide.x, D.y, false, false, "inicio")}
         {r.balcoes.map((_, i) => seta(meioDecide.x, D.y + D.h, meioBalcao(i).x, B.y, i === ativo || aponta("setas"), ativo >= 0 && i !== ativo, `ida-${i}`))}
         {r.balcoes.map((_, i) => seta(meioBalcao(i).x, B.y + B.h, M.fim.x, M.fim.y - M.pilula.h / 2, i === ativo && chegou, ativo >= 0 && i !== ativo, `fim-${i}`))}
@@ -125,10 +88,8 @@ export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
       </svg>
 
       {/* o início e o fim */}
-      {[{ p: M.inicio, texto: "início" }, { p: M.fim, texto: "fim" }].map(({ p, texto }) => (
-        <div key={texto} style={{ position: "absolute", left: p.x - M.pilula.w / 2, top: p.y - M.pilula.h / 2, width: M.pilula.w, height: M.pilula.h, borderRadius: M.pilula.h / 2,
-          border: `2px solid ${cor.linha}`, background: cor.papel, display: "flex", alignItems: "center", justifyContent: "center", font: `600 ${M.pilula.fonte}px ${ui}`, color: cor.fraco }}>{texto}</div>
-      ))}
+      <Pilula M={M} p={M.inicio} texto="início" />
+      <Pilula M={M} p={M.fim} texto="fim" />
 
       {/* o substituto, que vira o nó que decide */}
       {caixa(D.x, D.y, D.w, D.h, decidindo || aponta("decidir") ? cor.acento : cor.linha, 1, <>
@@ -152,8 +113,7 @@ export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
       </div>
 
       {/* a mensagem andando */}
-      <div style={{ position: "absolute", left: token.x - M.token.w / 2, top: token.y - M.token.h / 2, width: M.token.w, height: M.token.h, borderRadius: M.token.h / 2,
-        background: cor.acento, opacity: tokenOpa, display: "flex", alignItems: "center", justifyContent: "center", font: `700 ${M.token.fonte}px ${ui}`, color: cor.papel }}>mensagem</div>
+      <Mensagem M={M} p={token} opacidade={tokenOpa} />
 
       {/* a ficha, que vira o estado */}
       <div style={{ position: "absolute", left: F.x, top: F.y, width: F.w, height: F.h, boxSizing: "border-box", padding: "8px 16px",
@@ -169,20 +129,7 @@ export const RoteiroAnimado: React.FC<Props> = ({ roteiro: r, desenho }) => {
       </div>
 
       {/* o balão de agora: ao lado, na altura do que aponta (largo), ou embaixo, com a ponta para cima (estreito) */}
-      {balao ? (() => {
-        const alvo = alvoPonto(balao.alvo);
-        const topo = M.balao.lado ? Math.min(Math.max(alvo.y, 80), M.h - 80) : M.balao.y;
-        const ponta = M.balao.lado ? { left: -9, top: "50%", marginTop: -8 } : { left: Math.min(Math.max(alvo.x - M.balao.x - 40, 18), M.balao.w - 34), top: -9 };
-        return (
-          <div style={{ position: "absolute", left: M.balao.x, top: topo, width: M.balao.w, transform: M.balao.lado ? "translateY(-50%)" : undefined,
-            opacity: opaBalao, boxSizing: "border-box", padding: "12px 16px", borderRadius: 14, background: cor.papel, border: `2px solid ${cor.acento}`,
-            boxShadow: "0 6px 18px rgba(0,0,0,.08)", font: `${M.balao.fonte}px/1.42 ${ui}`, color: cor.texto }}>
-            <span style={{ position: "absolute", ...ponta, width: 16, height: 16, background: cor.papel, borderLeft: `2px solid ${cor.acento}`, borderTop: `2px solid ${cor.acento}`,
-              transform: M.balao.lado ? "rotate(-45deg)" : "rotate(45deg)" }} />
-            {balao.texto}
-          </div>
-        );
-      })() : null}
+      {balao ? <Balao M={M} alvo={alvoPonto(balao.alvo)} opacidade={opaBalao}>{balao.texto}</Balao> : null}
     </AbsoluteFill>
   );
 };

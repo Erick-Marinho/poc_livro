@@ -6,7 +6,8 @@
 import { useEffect, useMemo, useState } from "react";
 import RolaCena from "../palco/RolaCena";
 import { baloes, DURACAO, type Entrada, FPS, montarRoteiro } from "./roteiro.ts";
-import { type Desenho, MEDIDAS, RoteiroAnimado } from "./RoteiroAnimado";
+import { type Desenho, MEDIDAS } from "./pecas";
+import { RoteiroAnimado } from "./RoteiroAnimado";
 
 export default function FiguraRoteiro(entrada: Entrada) {
   const r = useMemo(() => montarRoteiro(entrada), [entrada]);

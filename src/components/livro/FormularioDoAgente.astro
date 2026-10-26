@@ -1,0 +1,19 @@
+---
+/**
+ * A figura do 2.2 (docs/capacidades/capitulo-2-em-cenas.md, etapa 2): o formulário do substituto, a saída estruturada
+ * (roteiro/FiguraFormulario.tsx). O grafo é o real; o molde é a Escolha do agente.py; a decisão, o motivo e a resposta
+ * são os que o modelo deu na gravação do capítulo. A montagem confere tudo no build (roteiro/formulario.ts). Sem JS,
+ * só um aviso.
+ */
+import FiguraFormulario from "./roteiro/FiguraFormulario";
+import { montarFormulario, type Entrada } from "./roteiro/formulario.ts";
+
+interface Props extends Entrada { numero: string; legenda: string }
+const { arestas, nos, referencia, gravacao, agente, mensagem, numero, legenda } = Astro.props;
+montarFormulario({ arestas, nos, referencia, gravacao, agente, mensagem });
+---
+<figure class="roteiro" data-formulario>
+  <FiguraFormulario client:visible={{ rootMargin: "400px" }} arestas={arestas} nos={nos} referencia={referencia} gravacao={gravacao} agente={agente} mensagem={mensagem} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+  <noscript><p class="rt-semjs">Esta figura é animada e precisa de JavaScript.</p></noscript>
+</figure>

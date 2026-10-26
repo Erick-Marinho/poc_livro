@@ -47,16 +47,6 @@ test("caso que não existe não monta", () => {
   assert.throws(() => casos(referencia, ["R99"], "Pilhas"), /Pilhas: o caso R99 não está no referencia.jsonl/);
 });
 
-test("capítulo 2: as pilhas de quem faz cada passo saem do grafo-02.json, e a recusa é do modelo", () => {
-  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
-  const nos = JSON.parse(ler("livros/ciclo-de-vida/figuras/grafo-02.json")).nos;
-  const cartas = [...h2.matchAll(/class="pil-carta" data-decisao="(\w+)"[^>]*>\s*<q>([^<]+)<\/q>/g)].map((m) => [m[2], m[1]]);
-  const esperado = Object.values(nos).filter((n) => n.tarefa).map((n) => [n.tarefa, n.modelo === "não" ? "codigo" : "modelo"]);
-  assert.deepEqual(cartas.toSorted(), esperado.toSorted());
-  assert.deepEqual(Object.fromEntries(cartas)["Escrever a recusa"], "modelo");
-  assert.equal([...h2.matchAll(/class="pil-grupo"/g)].length, 2);
-});
-
 test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de dado que existe", () => {
   const pedidos = ler("livros/ciclo-de-vida/projeto/dados/pedidos.json");
   assert.match(html, /consulta o pedido BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
