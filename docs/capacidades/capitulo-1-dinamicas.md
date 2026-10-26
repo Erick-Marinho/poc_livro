@@ -11,6 +11,8 @@ ser iguais às do capítulo 2 (26/10/2026).
   no aprendizado; o Erick deixou a ordem com o planejador ("siga como quiser").
 - (26/10/2026, Erick) Ficam como estão: a figura 1.1 (nove voltas, com ok), o primeiro dia do 1.3, o bilhete e o
   gabarito do 1.4 e a IDE do 1.6 (da outra sessão).
+- (26/10/2026, Erick) Na primeira versão da etapa 1, "muita informação no espaço, fica difícil acompanhar"; ficou o que
+  ele gostou: ir marcando e ver o arquivo se construindo. Daí: uma pergunta por vez, e a linha com buracos.
 - (1) Uma etapa por vez: faz, mostra no túnel, ajusta, e só então a próxima. O que a dinâmica mostra do projeto vem do
   projeto real (o `contrato.py`, o `referencia.jsonl`, as saídas gravadas); o que for ilustração diz que é.
 
@@ -27,10 +29,11 @@ ser iguais às do capítulo 2 (26/10/2026).
 
 ### O que muda
 
-- Uma dinâmica nova (`questao/`): o leitor escolhe uma das mensagens do primeiro dia; a pergunta, o pedido e o e-mail
-  vêm dela; ele preenche o id, marca a decisão, escreve o motivo e marca de que dados a resposta precisa. Ao lado, a
-  linha do `referencia.jsonl` se escreve enquanto ele preenche, e o contrato confere: o que ele barra aparece com a
-  mensagem da regra; quando aceita, a linha está pronta, e a figura compara a decisão com o gabarito da loja.
+- Uma dinâmica nova (`questao/`): uma mensagem do primeiro dia (com "outra mensagem" para trocar) e, embaixo, a linha
+  dela no `referencia.jsonl` com três buracos: decisão, motivo e de onde vem a resposta. Uma pergunta por vez; cada
+  resposta preenche o seu buraco, que acende na linha. O contrato confere o que entra: barra o motivo curto e o caso
+  que precisa dos pedidos sem pedido, com a mensagem da regra. No fim, aceita a linha e a compara com o gabarito da
+  loja: se a decisão é outra, diz que o contrato confere a forma, não a decisão.
 - As regras não são reescritas à mão: saem do `contrato.py` (o padrão do id e do pedido, o tamanho mínimo da pergunta
   e do motivo, as decisões, as fontes e as duas regras do `model_validator`, com as mensagens dele). Se o contrato
   mudar e a figura não souber ler, o build falha.

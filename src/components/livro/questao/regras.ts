@@ -56,12 +56,17 @@ export function conferir(q: Questao, r: Regras): { campo: string; texto: string 
   return erros;
 }
 
-/** A linha do referencia.jsonl, com as chaves na ordem do arquivo; pedido e e-mail só entram quando existem. */
-export function linha(q: Questao): string {
+/** Os campos da linha do referencia.jsonl, na ordem do arquivo, já escritos; pedido e e-mail só entram quando existem. */
+export function partes(q: Questao): [string, string][] {
   const pedido = q.pedido?.trim() || null, email = q.email?.trim() || null;
   const o: Record<string, unknown> = { id: q.id, pergunta: q.pergunta, decisao: q.decisao, motivo: q.motivo.trim(), precisa: q.precisa };
   if (pedido || email) Object.assign(o, { pedido, email });
   /* como o json.dumps do Python escreve: ", " entre os itens e ": " depois da chave */
   const valor = (v: unknown): string => (Array.isArray(v) ? `[${v.map(valor).join(", ")}]` : JSON.stringify(v));
-  return `{${Object.entries(o).map(([k, v]) => `${JSON.stringify(k)}: ${valor(v)}`).join(", ")}}`;
+  return Object.entries(o).map(([k, v]) => [k, valor(v)]);
+}
+
+/** A linha do referencia.jsonl, como no arquivo. */
+export function linha(q: Questao): string {
+  return `{${partes(q).map(([k, v]) => `${JSON.stringify(k)}: ${v}`).join(", ")}}`;
 }

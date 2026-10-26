@@ -150,10 +150,10 @@ Como esse gabarito fica em código? Em duas partes, que você escreve na 1.6. A 
 
 <Listagem codigo={contratoPy} nome="contrato.py" linhas="12-18" info="um trecho do arquivo que você escreve na 1.6" notas={{ 12: "as quatro saídas do contrato, e só elas", 15: "o que a colega fazia com a frigideira" }} />
 
-A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Escreva uma você, com uma mensagem do seu primeiro dia: a linha se monta enquanto você preenche, e o contrato confere cada campo.
+A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Escreva uma você, com uma mensagem do seu primeiro dia: cada resposta preenche um buraco da linha, e o contrato confere.
 
 <MontaQuestao contrato={contratoPy} referencia={referencia} casos={["R10", "R15", "R03", "R07", "R06", "R17"]}
-  pergunta="Escolha uma mensagem e escreva a questão dela para a prova, como a colega faria."
+  pergunta="Escreva a questão desta mensagem para a prova, como a colega faria."
   nota="As regras são as do contrato.py que você escreve na 1.6; as mensagens e o gabarito, os do referencia.jsonl." />
 
 Os porquês, tirados da política e dos dados da loja, viram estas regras:
