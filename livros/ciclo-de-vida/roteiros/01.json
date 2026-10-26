@@ -743,7 +743,7 @@
         {
           "linhas": "1-5",
           "titulo": "o que é a nota de partida",
-          "texto": "A nota de partida usa uma função que sempre devolve passar. Ela não escreve resposta nem consulta dados: o que será medido é a decisão.",
+          "texto": "A nota de partida usa uma função que sempre devolve passar. Ela nunca erra feio: não inventa prazo nem mostra pedido alheio, mas também não ajuda ninguém.",
           "termos": [
             "docstring"
           ]

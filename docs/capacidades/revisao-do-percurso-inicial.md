@@ -145,5 +145,6 @@ dependendo do ok dos autores, conforme o `AGENTS.md`; esta etapa usa as gravaç�
 | — | — | Plano proposto em 25/10/2026; implementação ainda não iniciada. | — |
 | — | — | Plano revisado em 25/10/2026: leitura observada como etapa 2, voz dos autores e defeitos de aparelho em paralelo, linhas no escopo da etapa 1. | — |
 | 1 | `aa3784f` | Precisão sobre execução e resultados; [relatório com antes/depois e fontes](../relatorios/revisao-do-percurso-inicial-etapa-1.md); ritmo 3/2/0 avisos, como antes; npm test: 29 + 16 saídas conferidas, 112 testes do livro e 5 da gravação passaram; texto e IDE conferidos no navegador. | aguardando revisão |
+| 1 (correção) | este commit | Revisão de redação solicitada pelo Erick em 25/10/2026, sem ok: [antes/depois e fontes somente dos trechos corrigidos](../relatorios/revisao-do-percurso-inicial-etapa-1-correcao.md); ritmo 3/2/0 avisos; npm test: 29 + 16 saídas conferidas, 112 testes do livro e 5 da gravação passaram; HTML e dados da IDE montados conferidos. | aguardando revisão |
 
 (redação: GPT-6; revisão: Claude Opus 5.5)

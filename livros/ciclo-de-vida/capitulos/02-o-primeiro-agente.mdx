@@ -121,12 +121,12 @@ Veja o caminho de cada pergunta no mesmo desenho da figura 2.1. Comece pelo R12,
 <GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="caminhos" gravacao={gravacaoMedir} referencia={referencia} numero="2.3" legenda="O caminho de cada pergunta de referência no grafo do agente. O número em cada caminho é quantas perguntas foram por ele." />
 
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
-Pela nota, sim. Mas o decisor de 40% só devolve a decisão responder: não escreve resposta nem mostra compras. No R12, escolheu responder quando devia recusar, o que num atendimento poderia expor dados. Nesta execução, os 14 erros do agente foram passar a vez. É um comportamento conservador nestes casos, sem garantia de segurança geral: a régua mede decisões, não a qualidade das respostas. No capítulo 4, os erros passam a ter peso.
+Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no R12, onde a próxima coisa, num atendimento, seria mostrar a compra da Ana ao Bruno. Ele só devolve a decisão: não escreve resposta nem mostra compras. Este agente errou passando a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
 </PareEPense>
 
 <Pendente o="Opinião dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
 
-Nestes 20 casos, o agente quase sempre passou a vez. Os pedidos, o catálogo e a política estão em `dados/`, sem acesso pelo agente. As ferramentas do capítulo 3 dão esse acesso. A nota sobe? Que erros aparecem?
+Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e o agente não tem como olhar. As ferramentas do capítulo 3 dão esse acesso. A nota sobe sem que ele troque o erro seguro pelo perigoso?
 
 <PontoDeVolta tag="cap-02/fim" />
 
@@ -136,7 +136,7 @@ Nestes 20 casos, o agente quase sempre passou a vez. Os pedidos, o catálogo e a
 - Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm frase fixa.
 - Os testes do grafo usam um modelo falso: provam o desenho e os caminhos, sem custo; a régua mede a decisão.
 - A resposta do modelo é gravada uma vez e repetida pelo livro; na sua máquina, ela pode sair diferente.
-- Nesta execução com o GPT-6 Luna, sem dados da loja, o agente acertou 6 de 20 (30%) e passou a vez em 19 casos. A nota mede decisões, não garante segurança. As ferramentas dão acesso à informação.
+- Nesta execução com o GPT-6 Luna, o agente acertou 6 de 20 (30%) e errou para o lado seguro nestes casos, mas a régua só mede a decisão; falta informação, e ela vem com as ferramentas.
 </Resumo>
 
 <Exercicio titulo="Tire a regra de passar a vez">
