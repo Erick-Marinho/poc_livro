@@ -91,6 +91,10 @@
       "depois": [
         "O agente está pronto, e ainda não falou com modelo nenhum. O próximo passo é provar que o grafo tem o desenho certo."
       ],
+      "parada": {
+        "entrega": "o agente em grafo, com um caminho para cada decisão do contrato",
+        "tag": "cap-02/passo-05"
+      },
       "pedido": "Agora um caminho para cada decisão, e liga tudo num grafo."
     },
     {
@@ -142,6 +146,10 @@
       "depois": [
         "Tudo verde, e nenhuma chamada paga até aqui."
       ],
+      "parada": {
+        "entrega": "os testes do contrato e dos quatro caminhos do grafo, sem chamada paga",
+        "tag": "cap-02/passo-08"
+      },
       "pedido": "Agora um teste para cada caminho, e executa tudo junto com os testes do capítulo 1."
     },
     {
@@ -177,6 +185,10 @@
         "30% nesta execução gravada: 6 de 20, 19 decisões de passar a vez e uma de recusar. Os 14 erros foram passar quando o contrato pedia outra decisão, inclusive no R12. É um comportamento conservador nestes casos, sem garantia de segurança geral. O decisor fixo de 40% só devolvia responder, sem escrever resposta ou mostrar compras. A nota conta decisões, não a qualidade das respostas. As ferramentas do capítulo 3 dão acesso aos dados que faltam; veremos como mudam a nota e os erros.",
         "O exercício tem uma variante gravada: no editor, troque `passe a vez` por `sem a regra`. Faça sua previsão antes de revelar a saída, compare as decisões e depois volte a `o do livro`. Sem chave, a página permite investigar essa mudança sem uma chamada paga."
       ],
+      "parada": {
+        "entrega": "o primeiro agente medido pela régua das vinte perguntas",
+        "tag": "cap-02/fim"
+      },
       "pedido": "Mede o agente nas 20 perguntas, pela mesma régua da nota de partida."
     }
   ]

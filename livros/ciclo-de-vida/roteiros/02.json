@@ -246,6 +246,17 @@
         ],
         "certa": 1
       },
+      "pergunta_saida": {
+        "texto": "Por que esta falha ainda não diz que o desenho do grafo está errado?",
+        "opcoes": [
+          "Porque um teste que falha não pode avaliar código de grafo.",
+          "Porque o falso parou na saída estruturada, antes de o teste inspecionar os nós.",
+          "Porque a LangGraph ignora erros produzidos por modelos falsos."
+        ],
+        "certa": 1,
+        "evidencia": "with_structured_output is not implemented for this model",
+        "porque": "A saída diz `with_structured_output is not implemented for this model`. Em `montar()`, `modelo.with_structured_output(Escolha)` vem antes da montagem do `StateGraph`; o teste não chegou a inspecionar os nós."
+      },
       "nota": "O modelo falso não sabe receber ferramentas, e a saída estruturada usa esse caminho por baixo. O grep mostra só a linha do erro e o resumo."
     },
     {
@@ -298,6 +309,17 @@
       "id": "r02-pytest-um",
       "comando": "uv run pytest -q test_agente.py",
       "espera": 0,
+      "pergunta_saida": {
+        "texto": "O que este único teste verde sustenta — e o que ainda fica aberto?",
+        "opcoes": [
+          "Sustenta que os nós esperados existem; ainda não percorre os quatro caminhos.",
+          "Sustenta que o modelo de verdade escolherá a decisão certa.",
+          "Sustenta que cada caminho produz a resposta esperada."
+        ],
+        "certa": 0,
+        "evidencia": "1 passed in",
+        "porque": "A saída traz `1 passed in`. Nesse momento, `test_agente.py` tem apenas `test_o_grafo_tem_um_caminho_para_cada_decisao()`, que compara o conjunto de nós; os testes que invocam os caminhos ainda não entraram."
+      },
       "nota": "O teste do desenho do grafo passa."
     },
     {
@@ -334,6 +356,17 @@
       "id": "r02-pytest",
       "comando": "uv run pytest -q",
       "espera": 0,
+      "pergunta_saida": {
+        "texto": "Por que os onze testes verdes ainda não provam que o modelo decide bem?",
+        "opcoes": [
+          "Porque testes sem internet não exercitam nenhuma parte do grafo.",
+          "Porque a régua precisaria ter mais de vinte referências para medir decisões.",
+          "Porque o falso devolve decisões combinadas; os testes conferem os caminhos, não escolhem por ele."
+        ],
+        "certa": 2,
+        "evidencia": "11 passed in",
+        "porque": "A saída termina em `11 passed in`. Em `test_agente.py`, cada chamada a `falso(decisao, *textos)` recebe a `Decisao` que devolverá; os testes exercitam o caminho escolhido, mas não testam uma escolha feita pelo modelo."
+      },
       "nota": "Os testes do capítulo 1 e os do grafo, todos de uma vez."
     },
     {
@@ -405,7 +438,18 @@
         ],
         "certa": 1
       },
-      "nota": "Nesta execução gravada com o GPT-6 Luna: 6 de 20 (30%), 19 decisões de passar e uma de recusar. Os 14 erros foram passar a vez, inclusive no R12. Isso descreve estes casos, sem garantir segurança geral; a nota mede decisões, não a qualidade das respostas. Aqui repetimos a gravação; na sua máquina, o comando chama o modelo de verdade.",
+      "pergunta_saida": {
+        "texto": "Qual conclusão fica fora desta régua, mesmo com a lista de 14 erros?",
+        "opcoes": [
+          "Se seis decisões coincidiram com a referência.",
+          "Se os textos entregues ao cliente têm boa qualidade.",
+          "Se o R12 recebeu uma decisão diferente do contrato."
+        ],
+        "certa": 1,
+        "evidencia": "R12: o contrato pede recusar, o agente decidiu passar",
+        "porque": "A saída traz `R12: o contrato pede recusar, o agente decidiu passar`. Em `medir.py`, o decisor guarda somente `agente.invoke(...)[\"decisao\"]`, e `avaliar()` compara essa decisão com a referência; o texto de `resposta` não entra no placar."
+      },
+      "nota": "Nesta execução gravada com o GPT-6 Luna: 6 de 20 (30%), 19 decisões de passar e uma de recusar. Os 14 erros foram passar a vez, inclusive no R12. Isso descreve estes casos, sem garantir segurança geral. Aqui repetimos a gravação; na sua máquina, o comando chama o modelo de verdade.",
       "variar": {
         "arquivo": "agente.py",
         "trecho": "Quando a política não diz, não prometa: passe a vez.\"\"\"",

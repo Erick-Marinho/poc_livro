@@ -172,10 +172,11 @@ test("o rodapé sabe o Python do projeto: o que o uv achou ao criar o .venv", as
 /* ===== o capítulo 2: a IDE abre onde o capítulo 1 terminou ===== */
 const roteiro02 = json("livros/ciclo-de-vida/roteiros/02.json");
 const passos02 = json("livros/ciclo-de-vida/passos/02.json");
-const cap02 = await montarIde({ ...entrada(), roteiro: roteiro02, estados: json("livros/ciclo-de-vida/roteiros/02.estados.json"),
+const entrada02 = () => ({ ...entrada(), roteiro: json("livros/ciclo-de-vida/roteiros/02.json"), estados: json("livros/ciclo-de-vida/roteiros/02.estados.json"),
   capitulo: passos02, secoes: { "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" },
   anteriores: [json("livros/ciclo-de-vida/roteiros/01.estados.json")],
   gravacoes: { "r02-medir": { quando: "2026-10-24", modelo: "gpt-6-luna", chamadas: 21 } } });
+const cap02 = await montarIde(entrada02());
 
 test("o capítulo 1 abre numa pasta vazia; o 2, com o projeto do fim do 1", async () => {
   assert.equal((await montarIde(entrada())).iniciais.length, 0);
@@ -210,6 +211,50 @@ test("o capítulo 2: 10 passos sem buraco, um erro de verdade no caminho, e a ID
   const falso = cap02.acoes.find((a) => a.id === "r02-pytest-falso");
   assert.match(falso.saida.map((t) => t.l).join("\n"), /NotImplementedError: with_structured_output is not implemented/);
   assert.ok(cap02.acoes.filter((a) => a.tipo === "editar").some((a) => a.blocos.length), "os blocos do agente entraram");
+});
+
+test("o capítulo 2 também usa um quadro por ação, com todos os blocos juntos", () => {
+  const quadros = quadrosDaIde(cap02.passos);
+  assert.equal(quadros.filter((q) => q.tipo === "abre").length, 10);
+  assert.equal(quadros.filter((q) => q.tipo === "acao").length, 16);
+  assert.equal(quadros.filter((q) => q.tipo === "fecha").length, 10);
+  const grafo = cap02.acoes[5];
+  assert.equal(grafo.tipo, "editar");
+  assert.equal(grafo.blocos.length, 4);
+  assert.deepEqual(perguntasPendentes(grafo, false), ["bloco:1"]);
+  assert.deepEqual(perguntasPendentes(grafo, false, [1]), []);
+});
+
+test("quatro saídas do capítulo 2 viram perguntas interpretativas somente no guiado", () => {
+  const saidas = json("livros/ciclo-de-vida/saidas.json");
+  const comPergunta = cap02.acoes.filter((a) => a.tipo === "rodar" && a.perguntaSaida);
+  assert.deepEqual(comPergunta.map((a) => a.id), ["r02-pytest-falso", "r02-pytest-um", "r02-pytest", "r02-medir"]);
+  const posicoesCertas = comPergunta.map((a) => a.perguntaSaida.certa);
+  assert.deepEqual(posicoesCertas, [1, 0, 2, 1], "as posições são fixas nos dados");
+  assert.ok(new Set(posicoesCertas).size > 1, "as certas não ficam todas na mesma posição");
+  assert.ok(posicoesCertas.slice(1).every((certa, i) => certa !== posicoesCertas[i]), "perguntas seguidas não repetem a posição certa");
+  for (const a of comPergunta) {
+    assert.equal(perguntaSustentada(saidas[a.id].saida, a.perguntaSaida), true, a.id);
+    assert.equal(respostaEntregue(saidas[a.id].saida, a.nota, a.perguntaSaida), false, `${a.id}: saída e nota não entregam a conclusão`);
+    assert.ok(a.perguntaSaida.porque.includes(a.perguntaSaida.evidencia), `${a.id}: o porquê cita a saída`);
+    assert.deepEqual(perguntasPendentes(a, false), ["saida"], a.id);
+    assert.deepEqual(perguntasPendentes(a, false, [], true), [], `${a.id}: responder libera`);
+    assert.deepEqual(perguntasPendentes(a, true), [], `${a.id}: o modo direto omite`);
+  }
+  assert.ok(comPergunta.every((a) => !/molde.*garant|garant.*molde/i.test([a.perguntaSaida.texto, ...a.perguntaSaida.opcoes].join(" "))),
+    "a pergunta sobre o que o molde garante continua reservada à seção 2.6");
+  assert.deepEqual(cap02.acoes.filter((a) => a.tipo === "rodar" && a.aposta).map((a) => a.id), ["r02-pytest-falso", "r02-medir"]);
+  assert.deepEqual(cap02.acoes.find((a) => a.tipo === "rodar" && a.id === "r02-medir").variar.opcoes.map((o) => o.id), ["r02-medir-sem-regra"]);
+});
+
+test("três fechos do capítulo 2 oferecem parada com entrega e tag, sem quadro novo", async () => {
+  assert.deepEqual(cap02.passos.filter((p) => p.parada).map((p) => [p.n, p.parada.tag]), [
+    [5, "cap-02/passo-05"], [8, "cap-02/passo-08"], [10, "cap-02/fim"],
+  ]);
+  assert.ok(cap02.passos.filter((p) => p.parada).every((p) => p.parada.entrega.length > 20));
+  assert.equal(quadrosDaIde(cap02.passos).length, 36, "a parada não cria passagem");
+  const torta = entrada02(); torta.capitulo = structuredClone(torta.capitulo); torta.capitulo.passos[4].parada.tag = "cap-02/passo-04";
+  await assert.rejects(montarIde(torta), /parada precisa apontar cap-02\/passo-05/);
 });
 
 test("o texto do capítulo 2 diz a nota que a gravação deu", () => {

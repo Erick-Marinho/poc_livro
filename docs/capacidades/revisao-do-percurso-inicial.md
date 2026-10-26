@@ -52,91 +52,80 @@ registro; só o ok do responsável fecha a etapa.
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 6 — menos condução mecânica na IDE do capítulo 1
-
-### Divisão
-
-- **6a — contar e propor (concluída):** mediu o percurso, localizou retomadas e comparou três alternativas sem
-  mudar o produto.
-- **6b — implementar (concluída):** junta as propostas A e C, escolhidas por Erick em 26/10/2026. A proposta B fica
-  descartada.
+## Etapa atual: 7 — aplicar ao capítulo 2 o que funcionou no 1
 
 ### Pergunta que esta etapa responde
 
-Como juntar os blocos de uma ação e transformar cinco confirmações em leitura da saída real, sem a IDE agir
-sozinha nem retirar as decisões do percurso?
+Como levar ao capítulo 2 a passagem por ação, a interpretação das saídas e os pontos naturais de parada sem
+transformar a IDE em explicação passiva nem antecipar a pergunta da seção 2.6?
 
 ### Escopo
 
-Somente a etapa 6b no capítulo 1: um quadro por ação nos dois modos guiados, cinco perguntas sobre saídas gravadas e
-quatro avisos de parada. Não muda o modo direto, as saídas, o projeto, o capítulo 2 nem o texto do capítulo 1 fora
-da IDE.
+Somente a IDE do capítulo 2: conferir a montagem já compartilhada, acrescentar de três a cinco perguntas sobre
+saídas gravadas, marcar de duas a três paradas, generalizar a contagem e testar o percurso. O texto do capítulo fora
+da IDE, o projeto, as saídas, as duas apostas e a variante “sem a regra” não mudam.
 
 **Decisões de Erick em 26/10/2026:**
 
-- As propostas A e C são implementadas juntas; a B não segue.
-- Nos dois modos guiados, todos os blocos de uma ação entram juntos, com notas, termos e perguntas; saem as falas
-  “E o próximo?”. Isso revoga, somente nesse ponto, o bloco a bloco decidido em `passo-a-passo.md` e
-  `imersao-ide.md`: cada ação ainda termina numa fala do leitor, e a IDE não avança sozinha.
-- Nos passos 6, 8, 12, 16 e 17, a confirmação depois do comando vira uma pergunta curta que interpreta a saída
-  gravada: pergunta o que ela prova, ainda não prova ou por que aconteceu. A resposta do leitor é a passagem; no
-  modo direto, a pergunta não aparece. Na revisão de 26/10/2026, Erick recusou perguntas que apenas pediam para ler
-  o texto já visível.
-- Erick aprovou em 26/10/2026 o texto das cinco perguntas, suas opções, respostas e explicações. As respostas certas
-  ficam em posições fixas e variadas, sem repetir a posição em perguntas seguidas.
-- Depois dos passos 4, 10, 16 e 18, a IA avisa que aquele é um bom lugar para parar, nomeia a entrega e dá a tag de
-  volta, sem interromper quem prefere seguir.
-- Permanecem as apostas, o “modificar antes de criar”, as dúvidas, as perguntas de bloco, o teto de cerca de 15
-  linhas novas por passo e as diferenças entre “na minha IDE”, “aqui no livro” e modo direto.
+- Vale no capítulo 2 o quadro por ação dos dois modos guiados, sem “E o próximo?” entre blocos. Cada ação continua
+  terminando numa fala do leitor; a IDE não avança sozinha. O modo direto permanece um quadro por ação.
+- As perguntas depois de comandos pedem para interpretar a prova: a resposta certa não aparece na saída nem na
+  nota; as erradas são plausíveis; o porquê cita a saída e o código; as posições certas variam sem repetição seguida.
+  No modo direto, essas perguntas não aparecem.
+- As perguntas distinguem o desenho exercitado com o modelo falso da capacidade de o modelo decidir, e a decisão
+  medida pela régua da qualidade do texto. A pergunta sobre o que o molde garante continua reservada à seção 2.6,
+  por decisão de `contrato-em-camadas.md`.
+- As paradas dizem que é um bom lugar para parar, nomeiam o que ficou pronto e dão a tag de volta, sem interromper
+  quem prefere seguir.
 
-1. Montar um quadro por ação nos modos guiados, preservando dentro dele todos os blocos e o bloqueio separado das
-   duas perguntas do passo 6.
-2. Ligar cada uma das cinco perguntas a uma evidência presente na saída gravada, sem escrever a conclusão correta
-   na própria saída ou na nota, e usar a resposta do leitor como passagem para o quadro seguinte.
-3. Acrescentar os quatro avisos de parada ao fecho dos passos, sem criar uma nova passagem.
-4. Atualizar a contagem reproduzível para a estrutura implementada e conservar os dados do antes para comparação.
+1. Confirmar que a montagem genérica já reúne os blocos de cada uma das 16 ações do capítulo 2 no mesmo quadro.
+2. Acrescentar perguntas interpretativas às saídas dos passos 6, 7, 8 e 10, preservando as apostas e a variante.
+3. Marcar paradas depois do grafo pronto (passo 5), dos testes sem pagar (passo 8) e da nota do agente (passo 10).
+4. Fazer o contador receber `01` ou `02`, conservar a medida aprovada do capítulo 1 e registrar o antes e o depois
+   do capítulo 2 por passo.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `livros/ciclo-de-vida/roteiros/01.json` | As cinco perguntas de saída, suas opções, resposta e explicação. |
-| `livros/ciclo-de-vida/passos/01.json` | Entrega e tag dos quatro avisos de parada. |
-| `livros/ciclo-de-vida/saidas.json` | Evidência que cada pergunta pede para interpretar; não muda. |
-| `src/components/livro/ide/IdeCapitulo.tsx` | Quadro por ação, bloqueios, passagem por resposta e aviso de parada. |
-| `src/lib/ideCapitulo.ts` | Tipos, validação e montagem dos quadros e das perguntas pendentes. |
-| `scripts/contar-passagens-ide-capitulo-1.mjs` | Comparação passo a passo do antes com a implementação. |
-| `testes/ide-capitulo.test.mjs` | Estrutura, limite de linhas, bloqueios, ligação às saídas e paradas. |
-| `passo-a-passo.md` e `imersao-ide.md` | Registro da revogação pontual da passagem bloco a bloco. |
+| `livros/ciclo-de-vida/roteiros/02.json` | As quatro perguntas, opções, respostas, evidências e explicações. |
+| `livros/ciclo-de-vida/passos/02.json` | Entrega e tag das três paradas naturais. |
+| `livros/ciclo-de-vida/saidas.json` | Prova gravada citada pelas perguntas; não muda. |
+| `livros/ciclo-de-vida/projeto/agente.py`, `test_agente.py` e `medir.py` | Código real que delimita o alcance de cada prova. |
+| `scripts/contar-passagens-ide-capitulo-1.mjs` | Contagem reproduzível dos capítulos 1 e 2. |
+| `testes/ide-capitulo.test.mjs` | Quadro por ação, bloqueios, ligação das perguntas à prova, posições e paradas. |
+| `docs/relatorios/revisao-do-percurso-inicial-etapa-7.md` | Contagem, redação para aprovação, fontes, paradas e capturas. |
 
 ### Critérios de revisão
 
-- Há 40 quadros de ação nos modos guiados, um por ação; nenhuma fala “E o próximo?” permanece. As duas perguntas de
-  bloco do passo 6 continuam exigindo respostas separadas antes da passagem.
-- As cinco perguntas bloqueiam somente o guiado; cada uma aponta uma evidência da saída, mas a opção certa não está
-  escrita literalmente nela nem na nota. As alternativas exigem decidir o que a prova sustenta, e responder já
-  leva ao quadro seguinte. O modo direto não mostra essas perguntas.
-- As posições certas não são todas iguais nem se repetem em duas perguntas seguidas; a ordem mora nos dados, sem
-  sorteio na página.
-- Nenhum quadro acrescenta mais que cerca de 15 linhas novas; apostas, variantes, dúvidas e erros permanecem.
-- Os passos 4, 10, 16 e 18 encerram com aviso curto, entrega e a tag decidida, sem impedir a continuação.
-- A contagem passa de 79 para cerca de 53 passagens mecânicas nos modos guiados e de 28 para 33 decisões principais;
-  o modo direto permanece com 58 passagens mecânicas e 4 decisões principais.
-- Saídas e tags do repositório do leitor não mudam; nenhuma peça do capítulo 2 ou do texto fora da IDE é alterada.
+- O capítulo 2 tem 16 quadros de ação nos três modos; nos guiados, os blocos de uma ação aparecem juntos e as duas
+  perguntas de bloco continuam segurando a passagem. Não há “E o próximo?”.
+- Quatro perguntas bloqueiam somente os modos guiados. A evidência e o código sustentam a resposta, mas a saída e a
+  nota não a escrevem; as posições certas são 1, 0, 2 e 1, sem repetição seguida.
+- As perguntas não repetem a leitura visível da tela, não afirmam inteligência a partir do modelo falso, não usam a
+  régua para julgar o texto e não entregam a pergunta do molde reservada à seção 2.6.
+- As duas apostas e a variante `r02-medir-sem-regra` ficam iguais. As saídas gravadas e as tags do repositório do
+  leitor não mudam.
+- Os passos 5, 8 e 10 encerram com entrega e as tags `cap-02/passo-05`, `cap-02/passo-08` e `cap-02/fim`, sem criar
+  passagem nova.
+- A contagem do capítulo 1 permanece 79 → 53 passagens mecânicas e 28 → 33 decisões principais. No capítulo 2, o
+  quadro por ação já trazia 38 → 26; nesta etapa, as perguntas levam 26 → 22 passagens mecânicas e 11 → 15 decisões.
+  O modo direto permanece com 26 passagens.
 
 ### Evidência e verificação
 
-- Executar o script de contagem e guardar no relatório a tabela, com antes e depois por passo.
-- Rodar `npm run saidas:conferir`, `npm run leitor` e `npm test`; as saídas gravadas e as tags devem permanecer.
-- Testar quadro por ação, perguntas de bloco, perguntas de saída nos dois percursos guiados e sua ausência no modo
-  direto, presença da evidência e ausência literal da resposta na saída e na nota, além dos quatro avisos de parada.
-- Conferir na página os passos 6, 10 e 16 nos três modos, no computador e numa largura de celular, com captura.
+- Executar o contador com `01` e `02` e guardar no relatório o antes e o depois de cada passo do capítulo 2.
+- Rodar `npm run saidas:conferir`, `npm run leitor` e `npm test`; nenhuma saída nem tag pode mudar.
+- Testar as quatro perguntas: evidência na saída e no porquê, conclusão ausente da saída e da nota, posições variadas,
+  bloqueio no guiado e ausência no direto; testar também as três paradas e o quadro por ação do capítulo 2.
+- Conferir na página o passo 5, que tem uma ação com quatro blocos, e o passo 8, com pergunta nova, nos três modos,
+  no computador e numa largura de celular, com captura.
 
 ### Limite da etapa
 
-Somente a implementação escolhida no capítulo 1, os testes, o contador, os dois registros de decisão, este plano e
-o relatório. Não mudar capítulo 2, texto do capítulo fora da IDE, projeto nem saídas; não chamar modelo, publicar,
-abrir túnel ou inventar opinião dos autores.
+Somente os dados da IDE do capítulo 2, o contador, os testes, este plano, o relatório e as capturas. Não mudar o
+texto do capítulo fora da IDE, projeto, saídas ou componentes; não chamar modelo, publicar, abrir túnel nem inventar
+opinião dos autores. A redação das quatro perguntas aguarda aprovação do Erick.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -148,10 +137,10 @@ abrir túnel ou inventar opinião dos autores.
   sem chave. O endereço foi decidido; a publicação continua fora deste plano.
 - **Etapa 5 (aprovada):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas respostas
   defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
-- **Etapa 6b (detalhada acima):** implementar A e C juntas; B foi descartada. A etapa fecha somente após a revisão
-  do Erick sobre o percurso implementado.
-- **Etapa 7:** aplicar ao capítulo 2 o que for escolhido e conferido no capítulo 1; o roteiro atual tem 16 ações em
-  10 passos.
+- **Etapa 6b (aprovada):** A e C foram implementadas juntas; B foi descartada. Quadro por ação, cinco perguntas e
+  quatro paradas têm o ok do Erick.
+- **Etapa 7 (detalhada acima):** aplicar ao capítulo 2 o quadro por ação, perguntas interpretativas e paradas; o
+  roteiro tem 16 ações em 10 passos.
 - **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha
   marca `autor`; não há leitura anterior para comparar nem leitores de fora previstos neste plano.
 
