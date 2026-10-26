@@ -128,8 +128,8 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `d3b50a3`, `1437a2f`, `ecea077` | o primeiro dia com a colega, no lugar das pilhas; 189 palavras antes da ação (sem aviso); `npm test`: 30 + 16 saídas conferidas, 124 testes do livro e 5 da gravação passaram; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-1/) antes e depois de responder, no computador e em 360 px. | aguardando revisão |
-| 2 | `2972d5d`, `653bacc` | o 1.4 com o bilhete (prompt) e o gabarito (contrato) que a colega deixa; sem a aposta das camadas; 159 · 63 · 153 palavras entre as ações (sem aviso); `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/). | aguardando revisão |
-| 3 | `998c72a` | o `Enum` e dois casos reais no 1.5; tabela com o primeiro dia; R13 no Classificador; 199 palavras até a ação; `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/). | aguardando revisão |
+| 1 | `d3b50a3`, `1437a2f`, `ecea077` | o primeiro dia com a colega, no lugar das pilhas; 189 palavras antes da ação (sem aviso); `npm test`: 30 + 16 saídas conferidas, 124 testes do livro e 5 da gravação passaram; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-1/) antes e depois de responder, no computador e em 360 px. | Erick, 26/10/2026 |
+| 2 | `2972d5d`, `653bacc` | o 1.4 com o bilhete (prompt) e o gabarito (contrato) que a colega deixa; sem a aposta das camadas; 159 · 63 · 153 palavras entre as ações (sem aviso); `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-2/). | Erick, 26/10/2026 |
+| 3 | `998c72a` | o `Enum` e dois casos reais no 1.5; tabela com o primeiro dia; R13 no Classificador; 199 palavras até a ação; `npm test`: 124 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-3/). | Erick, 26/10/2026 |
 
 (redação: Claude Opus 5.5)
