@@ -1,0 +1,59 @@
+---
+/**
+ * Monte a sua primeira questão da prova, no 1.5 (docs/capacidades/capitulo-1-dinamicas.md, etapa 1): a ilha
+ * questao/MontaQuestao.tsx. As regras saem do contrato.py e as mensagens, com o gabarito, do referencia.jsonl
+ * (questao/regras.ts); o build confere que cada mensagem passa nas regras como está no arquivo. Sem JS, a linha do
+ * arquivo de cada mensagem. A primeira mensagem é a que o modo direto mostra preenchida.
+ */
+import MontaQuestao from "./questao/MontaQuestao";
+import { conferir, lerRegras, linha } from "./questao/regras.ts";
+import { casos as escolher, DECISOES } from "../../lib/referencia.ts";
+
+interface Props { contrato: string; referencia: string; casos: string[]; pergunta: string; nota: string }
+const { contrato, referencia, casos, pergunta, nota } = Astro.props;
+const regras = lerRegras(contrato);
+const todos = referencia.split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l));
+escolher(referencia, casos, "MontaQuestao");
+const mensagens = casos.map((id) => todos.find((c) => c.id === id));
+for (const m of mensagens) if (conferir(m, regras).length) throw new Error(`MontaQuestao: ${m.id} não passa nas regras do contrato.py`);
+const nomes = Object.fromEntries(Object.entries(DECISOES).map(([k, v]) => [k, v.nome]));
+---
+<figure class="monta-questao" data-monta-questao>
+  <MontaQuestao client:visible={{ rootMargin: "400px" }} regras={regras} mensagens={mensagens} nomes={nomes} pergunta={pergunta} />
+  <noscript><pre class="mq-linha">{mensagens.map((m) => linha(m)).join("\n")}</pre></noscript>
+  <figcaption>{nota}</figcaption>
+</figure>
+
+<style is:global>
+  .monta-questao { margin: 1.8em auto 2em }
+  .monta-questao figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .mq { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 14px 16px; display: grid; gap: 10px; font: 15px/1.5 var(--f-ui) }
+  .mq-rotulo { margin: 0; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .mq-pergunta { margin: 0; font: 600 16.5px/1.4 var(--f-ui) }
+  .mq-mensagens { display: flex; flex-wrap: wrap; gap: 6px }
+  .mq-mensagens button { border: 1px solid var(--linha); background: var(--papel); border-radius: 10px; padding: 5px 10px; cursor: pointer; font: italic 14px/1.35 var(--f-texto); text-align: left }
+  .mq-mensagens button[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .mq-corpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start }
+  @media (max-width: 760px) { .mq-corpo { grid-template-columns: 1fr } }
+  .mq-campos { display: grid; gap: 8px }
+  .mq-campo { display: grid; gap: 3px }
+  .mq-campo > span { font: 600 12px var(--f-mono); color: var(--ink-2) }
+  .mq-campo q { font: italic 15px/1.4 var(--f-texto) }
+  .mq-campo input:not([type]) { border: 1px solid var(--linha); border-radius: 8px; background: var(--papel); padding: 6px 9px; font: 14px var(--f-mono); color: var(--ink); min-width: 0 }
+  .mq-campo input[aria-invalid="true"] { border-color: var(--aviso) }
+  .mq-dupla { display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px }
+  .mq-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .mq-opcoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 3px 11px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .mq-opcoes button[aria-checked="true"] { color: var(--papel); background: var(--ink); border-color: transparent }
+  .mq-marca { display: inline-flex; align-items: center; gap: 5px; font-size: 14px }
+  .mq-saida { display: grid; gap: 8px; position: sticky; top: 70px }
+  .mq-sub { margin: 0; font: 600 12px var(--f-mono); color: var(--ink-2) }
+  .mq-linha { margin: 0; padding: 10px 12px; border-radius: 10px; background: #1e2127; color: #e6e1d6; font: 12.5px/1.5 var(--f-mono); white-space: pre-wrap; word-break: break-word }
+  .mq-linha code { background: none; color: inherit; padding: 0; border: 0; font: inherit }
+  .mq-ok, .mq-barra { border-radius: 10px; padding: 8px 12px; background: var(--papel) }
+  .mq-ok { border: 1px solid var(--ok) } .mq-ok b { color: var(--ok) }
+  .mq-barra { border: 1px solid var(--aviso) } .mq-barra b { color: var(--aviso) }
+  .mq-ok p, .mq-barra p { margin: 0 0 4px } .mq-barra ul { margin: 0; padding-left: 18px }
+  .mq-igual { color: var(--ok) } .mq-diferente { color: var(--ink-2) }
+  .mq button:disabled, .mq input:disabled { cursor: default }
+</style>

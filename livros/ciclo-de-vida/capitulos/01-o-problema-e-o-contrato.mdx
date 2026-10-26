@@ -39,6 +39,7 @@ import Aposta from "../../../src/components/livro/Aposta.astro";
 import PrimeiroDia from "../../../src/components/livro/PrimeiroDia.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
 import Listagem from "../../../src/components/livro/Listagem.astro";
+import MontaQuestao from "../../../src/components/livro/MontaQuestao.astro";
 import contratoPy from "../marcos/cap-01/contrato.py?raw";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
@@ -149,9 +150,11 @@ Como esse gabarito fica em código? Em duas partes, que você escreve na 1.6. A 
 
 <Listagem codigo={contratoPy} nome="contrato.py" linhas="12-18" info="um trecho do arquivo que você escreve na 1.6" notas={{ 12: "as quatro saídas do contrato, e só elas", 15: "o que a colega fazia com a frigideira" }} />
 
-A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Estas duas são do seu primeiro dia; no arquivo, cada uma ocupa uma linha:
+A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Escreva uma você, com uma mensagem do seu primeiro dia: a linha se monta enquanto você preenche, e o contrato confere cada campo.
 
-<Listagem codigo={["R15", "R10"].map((id) => JSON.stringify(JSON.parse(referencia.split("\n").find((l) => l.includes(`"id": "${id}"`))), null, 2)).join("\n")} nome="referencia.jsonl" info="2 das 20 linhas, abertas para ler" notas={{ 4: "a resposta certa: o que fazer com a mensagem", 5: "o porquê, como a colega dizia", 19: "pedido e e-mail vêm juntos: é o que deixa conferir se o pedido é de quem pergunta" }} />
+<MontaQuestao contrato={contratoPy} referencia={referencia} casos={["R10", "R15", "R03", "R07", "R06", "R17"]}
+  pergunta="Escolha uma mensagem e escreva a questão dela para a prova, como a colega faria."
+  nota="As regras são as do contrato.py que você escreve na 1.6; as mensagens e o gabarito, os do referencia.jsonl." />
 
 Os porquês, tirados da política e dos dados da loja, viram estas regras:
 
