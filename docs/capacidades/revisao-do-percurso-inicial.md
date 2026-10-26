@@ -62,8 +62,8 @@ que achados de autor o Erick precisa registrar antes de decidir o próximo ajust
 
 Uma leitura observada do percurso inicial — introdução, capítulo 1, exercício, caso novo e capítulo 2 quando Victor
 continuar — em uma ou mais visitas previstas pelo protocolo. Erick conduz; Victor lê em voz alta no aparelho que
-usaria e faz o que o livro pede. A observação usa o kit existente em `docs/leituras/`. Se Victor não estiver na rede
-local do Erick, a forma de acesso depende de uma decisão nova do Erick antes da leitura.
+usaria e faz o que o livro pede. A observação usa o kit existente em `docs/leituras/`; somente nesta leitura, Victor
+acessa o livro pelo túnel iniciado na máquina do Erick.
 
 **Decisões de Erick em 26/10/2026:**
 
@@ -71,19 +71,17 @@ local do Erick, a forma de acesso depende de uma decisão nova do Erick antes da
 - Victor é coautor. A ficha usa origem **autor**, e seus achados não confirmam nem descartam a experiência de quem
   não escreveu o livro.
 - Esta é a única leitura do plano. Não há leitores de fora nesta etapa.
-- O kit de `docs/leituras/` continua como está. O estado da proposta de `sinal.md` é registrado pelo Erick antes da
-  leitura; se continuar pendente, ou por não haver leitores de fora, o resultado conjunto permanece **sem sinal**.
+- O repositório público do leitor foi atualizado pelo planejador, com autorização do Erick: push forçado de `main`
+  e das 31 tags. As 32 referências públicas conferem com as geradas por `npm run leitor`.
+- Somente para esta leitura, Victor acessa o livro por `npm run tunel`. A decisão muda o “só local” de 25/10/2026;
+  a máquina fica ligada, o livro permanece congelado no commit da ficha e nenhum agente trabalha nele durante a
+  sessão.
+- O restante do kit de `docs/leituras/` continua como está; somente o protocolo recebe o caminho excepcional pelo
+  túnel. O estado da proposta de `sinal.md` é registrado pelo Erick antes da leitura; se continuar pendente, ou por
+  não haver leitores de fora, o resultado conjunto permanece **sem sinal**.
 
 ### Preparação pendente do Erick
 
-**Fato conferido pelo planejador em 26/10/2026:** o repositório do leitor está público no endereço definido e tem
-31 tags. O commit público mais recente é de 16/10/2026; as árvores públicas de `cap-01/fim` e `cap-02/fim` diferem
-das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ainda não carregam os casos do leitor.
-
-- **Decisão aberta:** atualizar o repositório público com as tags regeneradas. O push é ação do Erick; esta
-  preparação apenas conferiu as referências e as árvores, sem mudar o remoto.
-- **Decisão aberta:** como Victor acessará o livro se não estiver na rede local do Erick. “Só local” foi a decisão de
-  25/10/2026; a possibilidade de Victor estar fora dessa rede é uma pergunta nova.
 - **Decisão aberta:** preencher antes ou depois da leitura os cinco `Pendente` de voz dos autores — capítulo 1,
   linhas 93, 138 e 169; capítulo 2, linhas 75 e 127.
 - **Pendente:** data, aparelho, sistema, navegador e preferência “Reduzir movimento” que Victor usará.
@@ -94,8 +92,8 @@ das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ai
 1. Antes da visita, copiar `ficha.md` para uma ficha identificada sem nome, com origem **autor**, observador Erick,
    commit, ambiente e estado do sinal. Separar uma `folha-de-campo.md` por visita e deixar somente o cartão do leitor
    de `caso-novo.md` disponível para Victor.
-2. Abrir a introdução na máquina ou na rede local pelo comando do protocolo. Victor escolhe aparelho, modo e onde
-   fará o projeto; Erick não escolhe por ele e não antecipa hipóteses.
+2. Anotar o commit, congelar o trabalho no livro e abrir a introdução para Victor por `npm run tunel`, seguindo o
+   protocolo. Victor escolhe aparelho, modo e onde fará o projeto; Erick não escolhe por ele nem antecipa hipóteses.
 3. Conduzir visitas de até 60 minutos. Victor lê em voz alta e age; Erick anota horário, seção ou passo e o que ele
    fez ou disse. Em silêncio ou trava, usar somente as perguntas neutras e os tempos definidos no protocolo.
 4. No fim do capítulo 1, registrar o que Victor considera concluído e se pede o 2 espontaneamente, antes de Erick
@@ -112,7 +110,7 @@ das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ai
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `docs/leituras/protocolo.md` | Preparação local, fala inicial, duração, intervenção mínima, retomada e encerramento. |
+| `docs/leituras/protocolo.md` | Preparação, acesso excepcional pelo túnel, fala inicial, duração, intervenção mínima, retomada e encerramento. |
 | `docs/leituras/folha-de-campo.md` | Registro curto, durante cada visita, de horário, lugar e ação ou fala. |
 | `docs/leituras/ficha.md` | Contexto técnico, percurso seção a seção, ajuda, parada, caso novo e síntese da sessão. |
 | `docs/leituras/caso-novo.md` | Cartão aplicado depois do capítulo 1 e resposta que só Erick consulta após a tentativa. |
@@ -144,6 +142,9 @@ das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ai
   [lista de prontidão](../relatorios/revisao-do-percurso-inicial-etapa-8-preparacao.md); nenhuma ficha preenchida ou
   sessão simulada. A lista registra as verificações locais e a comparação somente de leitura com o repositório
   público.
+- **Decisões de 26/10/2026:** consulta somente de leitura confirmou 32 referências públicas iguais às 32 locais;
+  o Pendente da introdução saiu, e o protocolo ganhou o acesso de Victor pelo túnel. O túnel não foi aberto nesta
+  preparação.
 - **Para fechar a etapa depois da leitura:** ficha de autor e folhas de campo das visitas, com commit e contexto;
   tentativa do caso novo ou “não aplicado”; paradas e retomadas que ocorrerem; eventos ligados às hipóteses; estado
   do sinal e encaminhamento registrados pelo Erick.
@@ -152,29 +153,29 @@ das geradas por `npm run leitor` em `baseline.py` e `test_referencia.py`, que ai
 
 ### Limite da etapa
 
-Nesta parte, somente completar a preparação da etapa 8 neste plano, no Pendente da introdução e no relatório. Não
-realizar a leitura, preencher ficha ou folha de campo, decidir pelo Erick, alterar o kit ou outro trecho do livro,
-chamar modelo, publicar, fazer push ou abrir túnel. A etapa continua aberta até as decisões pendentes, a leitura e
-a revisão do encaminhamento pelo Erick.
+Nesta parte, somente registrar as duas decisões no plano, retirar o Pendente resolvido da introdução e acrescentar
+o caminho do túnel ao protocolo. Não realizar a leitura, preencher ficha ou folha de campo, decidir pelo Erick,
+alterar outra parte do kit ou do livro, chamar modelo, fazer push ou abrir túnel. A etapa continua aberta até as
+pendências restantes, a leitura e a revisão do encaminhamento pelo Erick.
 
 ## Estado das etapas e da leitura
 
-- **Etapa 2 (preparação aprovada):** o kit em `docs/leituras/` continua como está. Não haverá sessão entre as
-  etapas; a leitura real foi transferida para o fim do plano e não bloqueia as etapas 5 a 7.
+- **Etapa 2 (preparação aprovada):** o kit em `docs/leituras/` foi preservado, com o caminho excepcional do túnel
+  acrescentado ao protocolo na etapa 8. Não houve sessão entre as etapas; a leitura real foi transferida para o fim
+  do plano e não bloqueou as etapas 5 a 7.
 - **Etapa 3 (aprovada):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
 - **Etapa 4 (aprovada):** clone, tags, PontoDeVolta, Modo direto e `variar` sustentam a recuperação e o exercício
-  sem chave. O repositório está público no endereço decidido, mas as tags finais estão desatualizadas; atualizá-las
-  com o repositório gerado é ação pendente do Erick na preparação da etapa 8.
+  sem chave. Em 26/10/2026, o planejador atualizou `main` e as 31 tags públicas com autorização do Erick; as 32
+  referências conferem com as geradas por `npm run leitor`.
 - **Etapa 5 (aprovada):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas respostas
   defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
 - **Etapa 6b (aprovada):** A e C foram implementadas juntas; B foi descartada. Quadro por ação, cinco perguntas e
   quatro paradas têm o ok do Erick.
 - **Etapa 7 (aprovada):** o capítulo 2 recebeu quadro por ação, quatro perguntas interpretativas e três paradas; o
   texto das perguntas tem o ok do Erick.
-- **Etapa 8 (detalhada acima):** a preparação aguarda as decisões do Erick. Depois delas, Victor revisa e lê com o
-  kit já preparado; a ficha marca `autor`, e não há leitura anterior para comparar nem leitores de fora previstos
-  neste plano.
+- **Etapa 8 (detalhada acima):** repositório público e acesso de Victor estão resolvidos. A preparação ainda aguarda
+  as pendências listadas; depois delas, Victor revisa e lê pelo túnel, com origem `autor` na ficha.
 
 ## Registro
 
@@ -201,4 +202,4 @@ a revisão do encaminhamento pelo Erick.
 | 7 | `ed1226f` | [Quadro por ação conferido e quatro perguntas interpretativas, três paradas e 12 capturas](../relatorios/revisao-do-percurso-inicial-etapa-7.md): capítulo 1 mantido em 79 → 53 passagens e 28 → 33 decisões; capítulo 2 em 26 → 22 e 11 → 15; saídas e leitor conferidos; npm test com 30 + 16 saídas, 123 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
 | 8 (preparação) | `3e31279` | [Lista de prontidão com evidência real](../relatorios/revisao-do-percurso-inicial-etapa-8-preparacao.md): 31 tags públicas e locais; árvores finais diferentes em `baseline.py` e `test_referencia.py`; introdução local em HTTP 200; saídas e leitor conferidos; npm test com 30 + 16 saídas, 123 testes do livro e 5 da gravação. | aguardando as decisões do Erick |
 
-(redação: GPT-6; revisão do plano inicial: Claude Opus 5.5)
+(redação: GPT-6; complementos da preparação: GPT-5; revisão do plano inicial: Claude Opus 5.5)

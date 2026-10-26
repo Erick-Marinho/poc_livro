@@ -5,8 +5,9 @@ Quem conduz e observa é o Erick. Este documento não registra sessão realizada
 
 ## Antes da primeira sessão
 
-As decisões do Erick em 25/10/2026 são: tudo fica na máquina e na rede local, sem hospedagem, túnel ou endereço
-público; ainda não há leitores de fora. Quando houver anotações do Erick, usar a mesma [ficha](ficha.md), com origem
+A decisão do Erick em 25/10/2026 era manter as leituras na máquina e na rede local, sem hospedagem, túnel ou endereço
+público. Em 26/10/2026, ele abriu uma exceção somente para a leitura do Victor: o acesso será pelo túnel descrito
+abaixo. Ainda não há leitores de fora. Quando houver anotações do Erick, usar a mesma [ficha](ficha.md), com origem
 **autor**. A leitura em voz alta com o Victor, prevista em [PRINCIPIOS](../PRINCIPIOS.md), também entra como autor,
 pois ele escreve o livro. Essas fichas ajudam a localizar problemas, mas não substituem quem não escreveu o livro.
 
@@ -76,6 +77,28 @@ porta anunciada e a permissão de acesso local do sistema; se continuar sem aces
 técnico, sem contar como desistência do leitor. Nenhuma mudança de firewall ou rede faz parte deste protocolo.
 Ao terminar, Ctrl+C encerra os serviços iniciados pelo `npm run dev`; na alternativa, encerra o Astro.
 
+## Abrir pelo túnel na leitura do Victor
+
+Para a exceção decidida pelo Erick em 26/10/2026, anotar primeiro na ficha o commit completo que será lido e, na
+raiz deste repositório, executar:
+
+```bash
+npm run tunel
+```
+
+Esperar o comando mostrar `o túnel: https://…` e abrir esse endereço com a rota
+`/ciclo-de-vida/00-introducao/`. Na primeira visita, o ngrok mostra sua página de aviso antes do livro; Victor a
+confirma uma vez, e Erick registra esse tempo como preparação, não como dificuldade no percurso.
+
+Do início ao fim da sessão, a máquina do Erick fica ligada e o `npm run tunel` continua executando. O livro fica
+congelado no commit anotado: ninguém edita seus arquivos, troca o commit ou mantém agente trabalhando neste
+repositório durante a leitura. Como o script observa mudanças e republica builds válidos, essa pausa mantém a página
+servida no commit anotado.
+
+O endereço do ngrok é temporário. Se o túnel cair, o endereço anterior deixa de servir; pausar o tempo da leitura,
+reiniciar o comando, enviar o novo endereço a Victor e registrar a interrupção técnica na ficha. Ao terminar a
+sessão, Ctrl+C encerra o que o script iniciou.
+
 ## Condução e duração
 
 Uma visita dura **até 60 minutos**: cerca de 5 para preparar, até 45 para ler e agir, e 10 para o caso novo, quando
@@ -121,4 +144,4 @@ o resultado for “sem sinal”. Um defeito de aparelho vai para correção sepa
 etapas de revisão de texto ou IDE. A análise e qualquer decisão de seguir pertencem ao Erick. Não implementar as
 etapas 3 a 7 a partir destas fichas sem a revisão prevista no plano.
 
-(redação: GPT-6)
+(redação: GPT-6; caminho do túnel: GPT-5)
