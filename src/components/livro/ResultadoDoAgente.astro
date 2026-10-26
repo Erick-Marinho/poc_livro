@@ -1,0 +1,18 @@
+---
+/**
+ * A figura do 2.6 (docs/capacidades/capitulo-2-em-cenas.md): a prova corrigida, na mesma grade do 2.4
+ * (roteiro/FiguraResultado.tsx). O gabarito é o do referencia.jsonl; o que o agente decidiu e por quê, o da gravação
+ * do capítulo; a nota, a do medir.py gravado. A montagem confere tudo no build (roteiro/prova.ts). Sem JS, só um aviso.
+ */
+import FiguraResultado from "./roteiro/FiguraResultado";
+import { baloesDoResultado, montarResultado, type Entrada } from "./roteiro/prova.ts";
+
+interface Props extends Entrada { medir: { saida: [string, string][] }; gravacao: Record<string, unknown>; motivo: string; seguro: string; numero: string; legenda: string }
+const { referencia, baseline, medir, gravacao, motivo, seguro, numero, legenda } = Astro.props;
+baloesDoResultado(montarResultado({ referencia, baseline, medir, gravacao }), motivo, seguro);
+---
+<figure class="roteiro" data-resultado>
+  <FiguraResultado client:visible={{ rootMargin: "400px" }} referencia={referencia} baseline={baseline} medir={medir} gravacao={gravacao} motivo={motivo} seguro={seguro} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+  <noscript><p class="rt-semjs">Esta figura é animada e precisa de JavaScript.</p></noscript>
+</figure>

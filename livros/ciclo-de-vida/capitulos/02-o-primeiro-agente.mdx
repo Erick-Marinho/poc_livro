@@ -16,7 +16,6 @@ em_breve: Capítulo 3 · As ferramentas
 import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
-import Terminal from "../../../src/components/livro/Terminal.astro";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
@@ -27,13 +26,13 @@ import estados02 from "../roteiros/02.estados.json";
 import estados01 from "../roteiros/01.estados.json";
 import passos02 from "../passos/02.json";
 import glossario from "../glossario.json";
-import GrafoAgente from "../../../src/components/livro/GrafoAgente.astro";
 import RoteiroDoAgente from "../../../src/components/livro/RoteiroDoAgente.astro";
 import Listagem from "../../../src/components/livro/Listagem.astro";
 import FormularioDoAgente from "../../../src/components/livro/FormularioDoAgente.astro";
 import agentePy from "../projeto/agente.py?raw";
 import EnsaioDoAgente from "../../../src/components/livro/EnsaioDoAgente.astro";
 import ProvaDoAgente from "../../../src/components/livro/ProvaDoAgente.astro";
+import ResultadoDoAgente from "../../../src/components/livro/ResultadoDoAgente.astro";
 import testeAgente from "../projeto/test_agente.py?raw";
 import nosDoGrafo from "../figuras/grafo-02.json";
 import gravacaoMedir from "../gravacoes/r02-medir.json";
@@ -91,25 +90,15 @@ O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com u
 
 O projeto do capítulo 1 continua aqui: o contrato, as perguntas e a régua. Em dez passos, ele ganha o agente, os testes do grafo e a medida com o modelo de verdade. Siga pela IDE, um passo por vez, e faça o mesmo na sua. Um dos passos dá errado de verdade, e um deles chama o GPT-6 Luna: na sua máquina, esse custa centavos.
 
-<IdeCapitulo roteiro={roteiro02} estados={estados02} saidas={saidas} capitulo={passos02} glossario={glossario} anteriores={[estados01]} secoes={{ "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" }} numero="2.2" legenda="O capítulo 2 numa IDE só, do projeto do capítulo 1 à nota do agente. O código, os comandos e o erro são os do projeto real; a resposta do modelo foi gravada uma vez e é repetida pelo livro." />
+<IdeCapitulo roteiro={roteiro02} estados={estados02} saidas={saidas} capitulo={passos02} glossario={glossario} anteriores={[estados01]} secoes={{ "2.5a": "O agente", "2.5b": "Testar sem pagar", "2.5c": "A nota do agente" }} numero="2.5" legenda="O capítulo 2 numa IDE só, do projeto do capítulo 1 à nota do agente. O código, os comandos e o erro são os do projeto real; a resposta do modelo foi gravada uma vez e é repetida pelo livro." />
 
 ## 2.6 O que ficou de pé
 
-A nota do agente:
+No 2.4, a prova parou em "? de 20", e você investiu um palpite na IDE. Agora ela volta corrigida.
 
-<Terminal saida={saidas["r02-medir"]} pasta="~/atendimento-bemtevi" />
+<ResultadoDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} medir={saidas["r02-medir"]} gravacao={gravacaoMedir} motivo="R07" seguro="R12" numero="2.6" legenda="A prova corrigida: o que o GPT-6 Luna decidiu em cada pergunta, na gravação deste capítulo, e a nota da régua. A saída completa do medir.py está no terminal da IDE, no passo 10." />
 
-Trinta por cento: 6 de 20, cinco pontos acima da nota de partida. O agente passou a vez em 19 das 20 perguntas. A única que ele recusou foi a do CPF da prima, justamente a que não precisa de nenhum dado da loja.
-
-<PareEPense pergunta="O pydantic não recusou nenhuma das 20 respostas: todas vieram no molde da Escolha. Então o que o molde garantiu, e o que ele não garantiu?">
-Garantiu a forma: as 20 trouxeram uma das quatro decisões e um motivo, e o código seguiu o caminho certo de cada uma. Não garantiu a decisão: 14 estavam erradas, como a do R12, que devia recusar e passou a vez. É a diferença entre as camadas de formato e de comportamento da seção 1.4. Só a régua de casos pega a segunda.
-</PareEPense>
-
-O motivo que ele deu em cada caso explica o resto: "Não tenho acesso ao status de entrega do pedido BT-1001", "A política da loja não informa o prazo para reclamar de um defeito". Ele seguiu ao pé da letra a última linha da instrução, quando a política não diz, não prometa: passe a vez. Sem dados, a política nunca diz nada.
-
-Veja o caminho de cada pergunta no mesmo desenho da figura 2.1. Comece pelo R12, o do Bruno perguntando do pedido da Ana:
-
-<GrafoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} modo="caminhos" gravacao={gravacaoMedir} referencia={referencia} numero="2.3" legenda="O caminho de cada pergunta de referência no grafo do agente. O número em cada caminho é quantas perguntas foram por ele." />
+O pydantic não recusou nenhuma das 20 respostas: todas vieram no molde da Escolha, e 14 estavam erradas. O molde garante a forma; só a régua pega a decisão.
 
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
 Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no R12, onde a próxima coisa, num atendimento, seria mostrar a compra da Ana ao Bruno. Ele só devolve a decisão: não escreve resposta nem mostra compras. Este agente errou passando a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
