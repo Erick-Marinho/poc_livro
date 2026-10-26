@@ -22,13 +22,15 @@ test("as pilhas separam como o contrato, que vem do referencia.jsonl", () => {
   assert.equal(new Set(cartas).size, 4, "as quatro decisões aparecem");
 });
 
-test("as pilhas do 1.3 dão o critério: o exemplo já vem na pilha A, travado, e a pergunta separa pelo que se faz", () => {
+test("as pilhas do 1.3 são o que o atendente faz, sem letras: o exemplo já vem escolhido, travado", () => {
   const pil = html.split("data-pilhas")[1];
-  const primeira = pil.split('class="pil-carta"')[1];
-  assert.match(primeira, /data-p="A" aria-pressed="true" disabled/);
-  assert.match(primeira, /class="pil-exemplo"/);
+  const botoes = (carta) => [...carta.matchAll(/<button type="button" data-p="(\w+)"[^>]*>([^<]+)<\/button>/g)].map((m) => [m[1], m[2]]);
+  const cartas = pil.split('class="pil-carta"').slice(1);
+  for (const c of cartas) assert.deepEqual(botoes(c).map(([p]) => p), Object.keys(DECISOES), "uma escolha por decisão do contrato");
+  assert.ok(botoes(cartas[0]).every(([, t]) => t.length > 1), "as escolhas são frases, não letras");
+  assert.match(cartas[0], /data-p="responder" aria-pressed="true" disabled/);
+  assert.match(cartas[0], /class="pil-exemplo"/);
   assert.equal([...pil.matchAll(/class="pil-exemplo"/g)].length, 1, "só a primeira carta é exemplo");
-  assert.match(pil, /pelo que você faria com cada uma, e não pelo assunto/);
 });
 
 test("a troca tem uma variante que o contrato pega, e o veredito sai da comparação", () => {
@@ -54,7 +56,7 @@ test("capítulo 2: as pilhas de quem faz cada passo saem do grafo-02.json, e a r
 test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de dado que existe", () => {
   const pedidos = ler("livros/ciclo-de-vida/projeto/dados/pedidos.json");
   assert.match(html, /consulta o pedido BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
-  const resposta = html.match(/separou as mensagens em pilhas sem nome[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
+  const resposta = html.match(/escolheu entre quatro coisas para fazer com cada mensagem[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
   for (const { nome } of Object.values(DECISOES)) assert.ok(resposta.includes(nome), `a resposta não nomeia "${nome}"`);
 });
 

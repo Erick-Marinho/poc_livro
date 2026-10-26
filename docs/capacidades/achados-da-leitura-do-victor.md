@@ -8,8 +8,11 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 
 - (26/10/2026, Erick) O planejador passa a implementar as etapas direto, sem o Codex, com as mesmas regras: um commit
   de produto por etapa, evidência real e o ok do Erick para fechar.
-- (1) As pilhas do 1.3 continuam sem nome, porque o 1.5 pergunta "que nome você daria a cada uma?". O critério entra
-  pela pergunta (separar pelo que se faz, não pelo assunto) e por um exemplo já separado, e não pelos nomes.
+- (1) As pilhas do 1.3 continuam sem os nomes do contrato, que chegam no 1.5. O critério entra pela pergunta (o que você
+  faz com a mensagem, não o assunto) e por um exemplo já feito.
+- (26/10/2026, Erick) As letras A, B, C e D confundiam: "o que são o A B C D?". No lugar delas, o que o atendente
+  faria, em palavras dele: "Respondo eu mesmo", "Abro um chamado", "Digo que não posso, e por quê", "Chamo alguém da
+  equipe". O 1.5 passa a perguntar que nome curto o leitor daria a cada uma, para caber num contrato.
 
 ## Etapas
 
@@ -30,9 +33,11 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 
 - O 1.3 põe o leitor no lugar do atendente no primeiro dia.
 - A pergunta dá o critério: separar pelo que você faria com cada mensagem, e não pelo assunto.
-- O `Pilhas.astro` aceita um `exemplo`: a mensagem do pedido BT-1001 já vem na pilha A, travada, com o que o
-  atendente faz ("olha o pedido no sistema, confere que o e-mail é da Ana e diz quando chegou"). No modo direto, o
-  exemplo some com as letras.
+- O `Pilhas.astro` aceita `acoes` (as letras viram o que o leitor faria; a conferência é com a decisão de cada
+  mensagem, e a leitura diz onde ele fez outra coisa) e `exemplo` (a mensagem do pedido BT-1001 já vem com
+  "Respondo eu mesmo", travada, e o que o atendente faz). No modo direto, as escolhas e o exemplo somem. Os outros
+  usos do componente (capítulo 2 e experimento) continuam com as letras.
+- O 1.5 deixa de falar em "pilhas sem nome": "você escolheu entre quatro coisas para fazer com cada mensagem".
 - A explicação vira o "ah!": pedido, entrega e frigideira parecem assuntos diferentes, mas com os três se faz a mesma
   coisa. Depois, as outras três pilhas em linguagem simples. São quatro, como a tarefa pede.
 
@@ -44,8 +49,8 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 ### Verificação
 
 - `npm run ritmo`: o trecho antes das pilhas foi de 183 para 192 palavras, abaixo do aviso de 200.
-- `npm test`, com um teste novo em `testes/acoes.test.mjs`: o exemplo vem na pilha A, travado, só na primeira carta,
-  e a pergunta separa pelo que se faz.
+- `npm test`, com um teste novo em `testes/acoes.test.mjs`: as escolhas são frases, uma por decisão, e o exemplo vem
+  escolhido e travado só na primeira carta.
 - O 1.3 na página montada, no computador e no celular, antes e depois de separar.
 
 ## Registro
