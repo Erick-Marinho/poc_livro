@@ -8,8 +8,8 @@
 import { casos } from "../../lib/referencia.ts";
 
 type Mensagem = { caso?: string; texto?: string; opcoes: string[]; fez: number; porque: string };
-/** `resultado`: como o que aconteceu é apresentado; `fechos`: a frase do fim, com {n} acertos de {total} */
-type Dados = { mensagens: Mensagem[]; resultado?: string; fechos?: { nenhum: string; alguns: string } };
+/** `resultado`: como o que aconteceu é apresentado; `glosas`: explicações opcionais das opções; `fechos`: a frase do fim */
+type Dados = { mensagens: Mensagem[]; resultado?: string; glosas?: Record<string, string>; fechos?: { nenhum: string; alguns: string } };
 interface Props { referencia?: string; dados: Dados; pergunta: string; ilustracao?: string }
 const { referencia = "", dados, pergunta, ilustracao } = Astro.props;
 const textos = dados.mensagens.map((m) => m.texto ?? casos(referencia, [m.caso ?? "(sem caso nem texto)"], "Aposta")[0].pergunta);
@@ -24,7 +24,12 @@ const fechos = dados.fechos ?? { nenhum: "Você investiu em outra coisa em todas
   {dados.mensagens.map((m, i) => (
     <div class="apo-msg" data-fez={m.fez}>
       <q>{textos[i]}</q>
-      <div class="apo-opcoes">{m.opcoes.map((o, j) => <button type="button" data-j={j} aria-pressed="false">{o}</button>)}</div>
+      <div class="apo-opcoes">{m.opcoes.map((o, j) => (
+        <button class:list={{ "apo-com-glosa": Boolean(dados.glosas?.[o]) }} type="button" data-j={j} aria-pressed="false">
+          {o}
+          {dados.glosas?.[o] && <small class="apo-glosa" data-fase={o}>{dados.glosas[o]}</small>}
+        </button>
+      ))}</div>
       <p class="apo-fez" hidden><b>{resultado}: {m.opcoes[m.fez]}.</b> {m.porque}</p>
     </div>
   ))}
@@ -60,6 +65,8 @@ const fechos = dados.fechos ?? { nenhum: "Você investiu em outra coisa em todas
   .apo-msg q { display: block; font: italic 16px/1.45 var(--f-texto); margin-bottom: 8px }
   .apo-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
   .apo-opcoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .apo-opcoes button.apo-com-glosa { flex: 1 1 150px; align-items: flex-start; display: flex; flex-direction: column; border-radius: 10px; text-align: left }
+  .apo-glosa { color: var(--ink-2); font: 400 11.5px/1.35 var(--f-ui) }
   .apo-opcoes button:not(:disabled):hover { border-color: var(--acento) }
   .apo-opcoes button:disabled { cursor: default; opacity: .6 }
   .apo-opcoes button[aria-pressed="true"] { opacity: 1; border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }

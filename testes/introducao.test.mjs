@@ -35,6 +35,28 @@ test("a página tem a aposta, o mapa com as oito fases e as quatro referências"
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
+test("a aposta antes do mapa explica as fases sem mudar as outras apostas", async () => {
+  const { parse } = await import("node-html-parser");
+  const opcoes = [...new Set(aposta.mensagens.flatMap((m) => m.opcoes))].toSorted();
+  assert.deepEqual(Object.keys(aposta.glosas).toSorted(), opcoes);
+  for (const [fase, glosa] of Object.entries(aposta.glosas)) {
+    assert.ok(ciclo.fases.some((f) => f.nome === fase), `${fase} não vem do ciclo.json`);
+    assert.ok(glosa.trim().split(/\s+/).length <= 8, `${fase}: glosa com mais de oito palavras`);
+  }
+
+  const pagina = parse(html);
+  const glosas = pagina.querySelectorAll(".apo-glosa");
+  assert.equal(glosas.length, aposta.mensagens.flatMap((m) => m.opcoes).length);
+  for (const [fase, glosa] of Object.entries(aposta.glosas)) {
+    const repetidas = glosas.filter((g) => g.getAttribute("data-fase") === fase);
+    assert.equal(repetidas.length, aposta.mensagens.flatMap((m) => m.opcoes).filter((o) => o === fase).length);
+    assert.ok(repetidas.every((g) => g.text.trim() === glosa), `${fase}: a glosa mudou entre perguntas`);
+  }
+
+  const capitulo1 = parse(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html"));
+  assert.equal(capitulo1.querySelectorAll(".apo-glosa").length, 0, "as outras apostas ganharam glosa");
+});
+
 
 test("na abertura de cada capítulo, a fase acesa é a do ciclo.json, e o link leva ao mapa da introdução", () => {
   assert.match(html, /id="mapa-do-ciclo"/);

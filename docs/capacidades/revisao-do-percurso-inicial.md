@@ -61,12 +61,13 @@ resposta claramente melhor segundo as definições já apresentadas?
 
 Somente a introdução e o capítulo 1, das seções 1.1 a 1.5. Corrigir conceitos usados antes do caso que lhes dá
 sentido, classificações com duas respostas defensáveis e o trecho de 1.4 que passa de 200 palavras antes da primeira
-ação. Não alterar a partir de 1.6, a IDE, componentes nem os desenhos da figura 1.1 e do mapa.
+ação. Não alterar a partir de 1.6, a IDE, outros componentes nem os desenhos da figura 1.1 e do mapa.
 
 **Decisões anteriores que esta etapa preserva:**
 
-- A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). A ordem não muda nesta etapa; uma solução
-  para o leitor ainda não conhecer as fases vai apenas como proposta ao Erick.
+- A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). Por decisão do Erick em 26/10/2026, cada
+  fase nas opções recebe uma glosa curta, derivada de `figuras/ciclo.json`, que explica sua função sem marcar a
+  resposta. A mesma fase usa a mesma glosa em todas as perguntas.
 - A figura 1.1 continua nas três histórias de atendentes, sem figura em texto, componente novo ou mudança visual
   (`laco-do-agente.md`). Os casos vêm antes dos nomes da escala.
 - A política da loja abre 1.4; a palavra contrato, Meyer, a troca de prompt e a definição permanecem
@@ -74,9 +75,9 @@ ação. Não alterar a partir de 1.6, a IDE, componentes nem os desenhos da figu
 - As quatro camadas — comportamento, formato, ferramenta e execução — permanecem (`contrato-em-camadas.md`).
   As citações da Anthropic e de Nicole Koenigstein também ficam.
 
-1. Nos dois pare e pense da introdução, substituir “régua” e “R12” pelo caso concreto do Bruno pedindo o pedido da
-   Ana e por palavras disponíveis naquele ponto. Fazer o mesmo nas respostas da aposta quando o caso resolve o
-   jargão sem antecipar o capítulo 1.
+1. Nos dois pare e pense da introdução, substituir “régua” e “R12” pelo caso de um cliente pedindo o pedido de outra
+   pessoa, sem antecipar os nomes que só chegam no capítulo 1. Fazer o mesmo nas respostas da aposta quando o caso
+   resolve o jargão.
 2. Em `onde-se-pega.json`, distinguir “Quando dá errado” de “Evoluir” e “Avaliar” de “Evoluir” pelas perguntas e
    ganhos de `ciclo.json`. Auditar também escala, camadas, Pilhas e Classificador contra o contrato e a política;
    mudar apenas classificações realmente concorrentes.
@@ -84,6 +85,8 @@ ação. Não alterar a partir de 1.6, a IDE, componentes nem os desenhos da figu
    resumir os atendentes que o leitor viu, sem mudar a figura nem suas fontes.
 4. Enxugar o começo de 1.4 até sair do aviso de 200 palavras, preservando política, Meyer, troca de prompt,
    definição e camadas.
+5. Enxugar os trechos ampliados nas etapas 1 e 4: até 319 palavras no primeiro aviso da introdução e até 210 em
+   “Como ler”, preservando a distinção entre código reexecutado, modelo repetido da gravação e chamada real paga.
 
 ### Peças e fontes
 
@@ -91,6 +94,7 @@ ação. Não alterar a partir de 1.6, a IDE, componentes nem os desenhos da figu
 |---|---|
 | `capitulos/00-introducao.mdx` | Pare e pense concretos, sem depender do vocabulário do capítulo 1. |
 | `figuras/onde-se-pega.json` e `figuras/ciclo.json` | Classificações das fases e as definições que justificam cada distinção. |
+| `src/components/livro/Aposta.astro` e `testes/introducao.test.mjs` | Glosa opcional somente onde os dados a fornecem, sem mudar as outras apostas. |
 | `capitulos/01-o-problema-e-o-contrato.mdx`, 1.1–1.5 | Escala depois do caso, 1.4 mais curto e Classificador sem caso ambíguo. |
 | `figuras/escala.json` e `figuras/camadas.json` | Sistemas e camadas com uma opção claramente melhor. |
 | `projeto/referencia.jsonl`, `projeto/contrato.py` e `projeto/dados/politica.md` | Fonte das Pilhas, do Classificador e das decisões da loja. |
@@ -104,25 +108,30 @@ Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
   diferença entre definir antes, medir depois e dar peso aos erros.
 - As respostas da aposta das fases citam as duas fases que concorriam e as distinguem com `ciclo.json`; a opção
   marcada continua pertencendo ao capítulo citado.
+- Cada fase usada nas opções tem uma glosa de até oito palavras, idêntica em todas as ocorrências; as apostas sem
+  glosas conservam sua apresentação.
 - Escala, camadas, Pilhas e Classificador concordam com o contrato e a política. Caso com duas decisões defensáveis
   sai da classificação de resposta única ou é tornado inequívoco sem mudar o contrato.
 - Em 1.1, o leitor vê os atendentes antes de receber os quatro nomes da escala; as citações permanecem.
 - O primeiro trecho de 1.4 fica em até 200 palavras no relógio, sem retirar nenhuma peça decidida.
-- O número de avisos não aumenta, e nenhuma mudança alcança 1.6, IDE, componentes, desenhos ou projeto.
+- O primeiro aviso da introdução fica em até 319 palavras e “Como ler”, em até 210, sem perder a precisão sobre
+  execução, gravação e chamadas pagas.
+- O número de avisos não aumenta, e nenhuma mudança alcança 1.6, IDE, outros componentes, desenhos ou projeto.
 
 ### Evidência e verificação
 
 - Comparar `npm run ritmo` com 3 avisos na introdução, 2 no capítulo 1 e 0 no capítulo 2; 1.4 precisa sair do aviso.
 - Executar `npm test`, incluindo apostas, formato e vocabulário. Não regravar nem chamar modelo.
 - Conferir na página montada a aposta e os dois pare e pense da introdução, a ordem da figura e da escala em 1.1 e
-  o começo de 1.4.
+  o começo de 1.4. Conferir as glosas em largura de computador e de celular.
 - Relatar antes/depois, justificativa das classificações e propostas não aplicadas por decisão anterior. Aguardar o
   ok do Erick para fechar a etapa.
 
 ### Limite da etapa
 
-Somente introdução e 1.1–1.5. Sem mudança em 1.6 ou depois, capítulo 2, IDE, componentes, desenhos, projeto,
-gravações ou etapas 6 a 8. Sem chamada paga, push, túnel ou opinião inventada dos autores. Os `Pendente` ficam.
+Somente introdução e 1.1–1.5, com a menor extensão opcional em `Aposta.astro` para mostrar as glosas. Sem mudança
+em 1.6 ou depois, capítulo 2, IDE, outros componentes, desenhos, projeto, gravações ou etapas 6 a 8. Sem chamada
+paga, push, túnel ou opinião inventada dos autores. Os `Pendente` ficam.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -132,8 +141,8 @@ gravações ou etapas 6 a 8. Sem chamada paga, push, túnel ou opinião inventad
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
 - **Etapa 4 (aprovada):** clone, tags, PontoDeVolta, Modo direto e `variar` sustentam a recuperação e o exercício
   sem chave. O endereço foi decidido; a publicação continua fora deste plano.
-- **Etapa 5 (detalhada acima):** casos antes dos nomes, classificações sem duas respostas defensáveis e 1.4 abaixo
-  do aviso, sem mudar figuras nem componentes.
+- **Etapa 5 (detalhada acima):** casos antes dos nomes, glosas das fases antes do mapa, classificações sem duas
+  respostas defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
 - **Etapas 6 e 7:** contar passagens mecânicas e decisões dentro da IDE. Os roteiros atuais têm 40 ações em 18
   passos no capítulo 1 e 16 ações em 10 passos no capítulo 2; quantidade menor, sozinha, não comprova melhoria.
 - **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha

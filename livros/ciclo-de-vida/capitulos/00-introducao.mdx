@@ -33,15 +33,15 @@ Quase todo material sobre agentes termina no mesmo lugar: o agente respondeu uma
 
 <Aposta dados={ondeSePega} pergunta="Cada um desses problemas é capturado numa fase da vida do agente. Invista em qual." />
 
-Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro que acompanhasse um agente do começo ao fim: antes do código, durante, e depois que ele vai para o ar. Em português, e com código que é executado de verdade. Como não achamos, resolvemos escrever.
+Trabalhamos com isso e sentíamos falta de um livro em português que acompanhasse um agente antes, durante e depois de ir para o ar, com código real. Como não achamos, resolvemos escrever.
 
 ## Um livro que executa
 
-Este não é um livro para só ler. Na página, você avança a construção do código, faz previsões e explora saídas gravadas do projeto real; o terminal mostra essas saídas quando você executa o comando do passo. Nas figuras, você decide, avança e compara caminhos. Na sua máquina, você escreve o código e executa os comandos no próprio terminal.
+Na página, você avança o código, prevê, compara caminhos e explora no terminal as saídas do projeto. Na sua máquina, escreve o código e executa os comandos.
 
-Por trás disso há uma regra: o livro não pode mentir. O código mostrado vem dos arquivos do projeto; as saídas foram gravadas executando esse código. A conferência executa os comandos e compara as saídas com as gravadas, descontando variações como tempo e caminho da máquina. As respostas do modelo são repetidas das gravações, sem novas chamadas ao serviço. Se uma chamada não estiver gravada ou uma saída divergir, a conferência falha.
+Por trás disso há uma regra: o livro não pode mentir. Código e saídas vêm do projeto real. A conferência executa os comandos de novo e compara o resultado com o gravado, ignorando variações como tempo e caminho. As respostas do modelo são repetidas da gravação, sem chamar o serviço; se faltar gravação ou algo divergir, a conferência falha.
 
-Bibliotecas de inteligência artificial mudam. Livro técnico costuma envelhecer em silêncio. Este foi feito para avisar quando envelhece. O aviso vale para o código e as bibliotecas, não para o modelo, cujas respostas são repetidas da gravação. Na sua máquina, os comandos que chamam o modelo fazem chamadas reais, pagas, e podem produzir respostas diferentes.
+Bibliotecas de inteligência artificial mudam. Livro técnico costuma envelhecer em silêncio. Este foi feito para avisar quando envelhece: o aviso vale para o código e as bibliotecas. Na sua máquina, os comandos que chamam o modelo fazem chamadas reais, pagas, e podem responder diferente da gravação.
 
 ## O que você vai construir
 
@@ -51,7 +51,7 @@ A cada capítulo, o mesmo agente passa por uma fase da vida dele. As fases são 
 
 <MapaDoCiclo ciclo={ciclo} sumario={sumario} cenas={cicloAnimado} aposta={ondeSePega} numero="1" legenda="O ciclo de vida de um agente, e o capítulo de cada fase." />
 
-<PareEPense pergunta="No mapa, Avaliar vem depois de Construir. Por que, então, o capítulo 1 já decide o que fazer quando o Bruno pede o pedido da Ana, antes de existir agente?">
+<PareEPense pergunta="No mapa, Avaliar vem depois de Construir. Por que, então, o capítulo 1 já decide o que fazer quando um cliente pede o pedido de outra pessoa, antes de existir agente?">
 Porque avaliar começa no planejamento. Antes do código, o capítulo guarda perguntas da loja e a decisão esperada para cada uma; mais tarde, a fase de avaliar amplia essa base com conversas inteiras e erros com peso. Medir só depois de construir seria tarde: não daria para saber se o primeiro agente melhorou alguma coisa.
 </PareEPense>
 
@@ -72,26 +72,26 @@ Não é um catálogo de ferramentas. Usamos LangGraph para o fluxo do agente, o 
 Também não é um livro de promessas. Agente erra. O que dá para fazer é saber quando ele erra, quanto, e o que fazer com isso. Se em algum capítulo parecer que está fácil demais, desconfie, e procure o "Quando dá errado" mais à frente.
 
 <PareEPense pergunta="No atendimento da Casa Bem-te-vi, qual erro é pior: passar para uma pessoa uma pergunta que o agente sabia responder, ou responder uma que devia passar?">
-Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe; o segundo pode tentar responder ao Bruno sobre o pedido da Ana e expor dados de outra pessoa. Por isso, no capítulo 4, os erros passam a ter peso.
+Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe; o segundo pode tentar responder a um cliente sobre o pedido de outra pessoa e expor dados dela. Por isso, no capítulo 4, os erros passam a ter peso.
 </PareEPense>
 
 ## Como ler
 
-Leia em ordem, com a sua IDE aberta ao lado. Digite o código e compare as saídas: é fazendo que você percebe o que ainda não entendeu.
+Leia em ordem. Escreva o código e compare as saídas: fazer revela o que ainda não entendeu.
 
-Há dois pontos de partida. **Do zero:** no capítulo 1, comece numa pasta vazia; a IDE cria o projeto. **Por uma tag:** clone as versões preparadas pelos autores com `git clone https://github.com/Erick-Marinho/atendimento-bemtevi`, entre com `cd atendimento-bemtevi` e use `git checkout` com a tag indicada pelo ponto de volta — por exemplo, `git checkout cap-02/inicio` para o começo do capítulo 2.
+Comece numa pasta vazia no capítulo 1 ou **por uma tag**: `git clone https://github.com/Erick-Marinho/atendimento-bemtevi`, `cd atendimento-bemtevi` e `git checkout cap-02/inicio` — ou a tag indicada.
 
 <Pendente o="Publicar o repositório do leitor no endereço acima antes de o livro ir para leitores" parte="dos autores" />
 
-<Nota titulo="leia com a IDE aberta">Este livro rende mais lido ao lado de uma IDE, com o projeto aberto e o terminal à mão. Não é gosto dos autores: a pesquisa sobre aprendizagem mostra que fazer, prever antes de executar e errar com correção ensinam mais do que só ler ou assistir. O lembrete no canto de cima da página fica lá por isso. <button type="button" class="link-ide" data-abrir-ide>Por que isso funciona</button></Nota>
+<Nota titulo="leia com a IDE aberta">Leia com a IDE e o terminal abertos. Não é gosto dos autores: a pesquisa mostra que fazer, prever antes de executar e errar com correção ensinam mais que ler ou assistir. O lembrete no canto fica por isso. <button type="button" class="link-ide" data-abrir-ide>Por que isso funciona</button></Nota>
 
-Já conhece o caminho? Ligue **Modo direto** na chave do painel de configurações, aberto pela engrenagem no canto: código, saídas e respostas ficam abertos, sem o passo a passo.
+Ative **Modo direto** na engrenagem: código, saídas e respostas ficam abertos, sem o passo a passo.
 
-Pelo caminho você encontra três tipos de parada:
+Pelo caminho:
 
 - **Pare e pense:** tente responder antes de abrir a resposta.
-- **Ponto de volta:** no clone, `git checkout` troca os arquivos versionados pela versão da tag. Arquivos pessoais não rastreados, como `meus-casos.jsonl`, permanecem; se a troca sobrescrever alterações locais ou um arquivo novo, o Git a barra. Salve seu trabalho antes de recuperar uma versão.
-- **Exercício:** uma tarefa parecida, mas não igual. No capítulo 1, você confere testes, notas e totais; no 2, compara decisões e justifica o que mudou. O enunciado diz como conferir a conclusão.
+- **Ponto de volta:** no clone, `git checkout` recupera os arquivos versionados da tag, preserva os pessoais não rastreados e para diante de conflitos.
+- **Exercício:** no capítulo 1, confira testes, notas e totais; no 2, compare decisões e justifique a mudança. O enunciado traz o critério de conclusão.
 
 ## Um livro em construção
 
