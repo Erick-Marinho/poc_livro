@@ -26,9 +26,9 @@ e a única leitura acontece no fim, com o Victor, coautor, registrado como autor
 
 As etapas 1, 3, 4, 5, 6 e 7 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A
 etapa 6 foi dividida: a 6a contou e propôs; a 6b implementou A e C, aprovadas em 26/10/2026. A etapa 7 foi executada
-sem esperar observação e aprovada na mesma data. Depois dela, Victor revisa e lê o percurso com o kit preparado;
-essa é a única leitura do plano. Cada etapa de produto tem um commit em português e evidência no
-registro; só o ok do responsável fecha a etapa.
+sem esperar observação e aprovada na mesma data. A etapa 8 fica aberta para a revisão e a única leitura deste plano,
+com Victor. Cada etapa de produto tem um commit em português e evidência no registro; só o ok do responsável fecha
+a etapa.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
 |---|---|---|
@@ -49,86 +49,103 @@ registro; só o ok do responsável fecha a etapa.
 - **Defeitos de aparelho.** O que a leitura apontar como quebrado é corrigido como defeito, à parte, assim que
   reproduzido. Não espera a etapa da vez.
 
-**Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
-e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
+**Quem executa.** Erick conduz e observa a etapa 8. Victor, coautor, lê e age; sua ficha tem origem **autor**.
 
-## Etapa atual: 7 — aplicar ao capítulo 2 o que funcionou no 1
+## Etapa atual: 8 — revisão e leitura final
 
 ### Pergunta que esta etapa responde
 
-Como levar ao capítulo 2 a passagem por ação, a interpretação das saídas e os pontos naturais de parada sem
-transformar a IDE em explicação passiva nem antecipar a pergunta da seção 2.6?
+Na versão aprovada depois das etapas 1 a 7, onde Victor cansa, pula, se perde ou diz “ah!”, como para e retoma, e
+que achados de autor o Erick precisa registrar antes de decidir o próximo ajuste?
 
 ### Escopo
 
-Somente a IDE do capítulo 2: conferir a montagem já compartilhada, acrescentar de três a cinco perguntas sobre
-saídas gravadas, marcar de duas a três paradas, generalizar a contagem e testar o percurso. O texto do capítulo fora
-da IDE, o projeto, as saídas, as duas apostas e a variante “sem a regra” não mudam.
+Uma leitura observada do percurso inicial — introdução, capítulo 1, exercício, caso novo e capítulo 2 quando Victor
+continuar — em uma ou mais visitas previstas pelo protocolo. Erick conduz; Victor lê em voz alta no aparelho que
+usaria e faz o que o livro pede. A observação usa o kit existente em `docs/leituras/` e fica apenas na máquina ou na
+rede local.
 
 **Decisões de Erick em 26/10/2026:**
 
-- Vale no capítulo 2 o quadro por ação dos dois modos guiados, sem “E o próximo?” entre blocos. Cada ação continua
-  terminando numa fala do leitor; a IDE não avança sozinha. O modo direto permanece um quadro por ação.
-- As perguntas depois de comandos pedem para interpretar a prova: a resposta certa não aparece na saída nem na
-  nota; as erradas são plausíveis; o porquê cita a saída e o código; as posições certas variam sem repetição seguida.
-  No modo direto, essas perguntas não aparecem.
-- As perguntas distinguem o desenho exercitado com o modelo falso da capacidade de o modelo decidir, e a decisão
-  medida pela régua da qualidade do texto. A pergunta sobre o que o molde garante continua reservada à seção 2.6,
-  por decisão de `contrato-em-camadas.md`.
-- Erick aprovou em 26/10/2026 o texto das quatro perguntas de saída, com suas opções, respostas e explicações.
-- As paradas dizem que é um bom lugar para parar, nomeiam o que ficou pronto e dão a tag de volta, sem interromper
-  quem prefere seguir.
+- Erick conduz a sessão; o agente não observa o leitor nem preenche a ficha por inferência.
+- Victor é coautor. A ficha usa origem **autor**, e seus achados não confirmam nem descartam a experiência de quem
+  não escreveu o livro.
+- Esta é a única leitura do plano. Não há leitores de fora nesta etapa.
+- Tudo permanece local: sem hospedagem, túnel ou endereço público. Tablet ou celular, se usados, acessam somente a
+  rede Wi-Fi local conforme o protocolo.
+- O kit de `docs/leituras/` continua como está. O estado da proposta de `sinal.md` é registrado pelo Erick antes da
+  leitura; se continuar pendente, ou por não haver leitores de fora, o resultado conjunto permanece **sem sinal**.
 
-1. Confirmar que a montagem genérica já reúne os blocos de cada uma das 16 ações do capítulo 2 no mesmo quadro.
-2. Acrescentar perguntas interpretativas às saídas dos passos 6, 7, 8 e 10, preservando as apostas e a variante.
-3. Marcar paradas depois do grafo pronto (passo 5), dos testes sem pagar (passo 8) e da nota do agente (passo 10).
-4. Fazer o contador receber `01` ou `02`, conservar a medida aprovada do capítulo 1 e registrar o antes e o depois
-   do capítulo 2 por passo.
+### Preparação pendente do Erick
+
+- **Pendente:** data, aparelho, sistema, navegador e preferência “Reduzir movimento” que Victor usará.
+- **Pendente:** commit exato do livro que será lido e comando local usado para abrir a introdução.
+- **Pendente:** marcar em `sinal.md` se a proposta foi adotada, alterada ou continua pendente. Nenhum limiar para
+  leitores de fora será aplicado à ficha de Victor.
+
+1. Antes da visita, copiar `ficha.md` para uma ficha identificada sem nome, com origem **autor**, observador Erick,
+   commit, ambiente e estado do sinal. Separar uma `folha-de-campo.md` por visita e deixar somente o cartão do leitor
+   de `caso-novo.md` disponível para Victor.
+2. Abrir a introdução na máquina ou na rede local pelo comando do protocolo. Victor escolhe aparelho, modo e onde
+   fará o projeto; Erick não escolhe por ele e não antecipa hipóteses.
+3. Conduzir visitas de até 60 minutos. Victor lê em voz alta e age; Erick anota horário, seção ou passo e o que ele
+   fez ou disse. Em silêncio ou trava, usar somente as perguntas neutras e os tempos definidos no protocolo.
+4. No fim do capítulo 1, registrar o que Victor considera concluído e se pede o 2 espontaneamente, antes de Erick
+   mencionar o capítulo seguinte. Depois, aplicar o caso novo sem mostrar a resposta esperada; só então deixar
+   Victor começar o 2, se quiser. Se o caso não couber, marcar “não aplicado” e levar à retomada.
+5. Em cada parada, registrar ponto, intenção seguinte e motivo. Na visita seguinte, manter versão e aparelho quando
+   possível e deixar Victor encontrar sozinho o recurso de retomada.
+6. Ao encerrar, perguntar “Onde você parou?” e “O que faria a seguir?”. Passar a folha de campo a limpo na mesma
+   ficha, separando observação de interpretação, ajuda dada e falha técnica.
+7. Depois das visitas, Erick relaciona os eventos a H3–H7b em `hipoteses.md`, sempre como achado de autor, e decide
+   o encaminhamento. Defeito de aparelho reproduzível segue separado; ajuste de livro só nasce numa etapa posterior.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `livros/ciclo-de-vida/roteiros/02.json` | As quatro perguntas, opções, respostas, evidências e explicações. |
-| `livros/ciclo-de-vida/passos/02.json` | Entrega e tag das três paradas naturais. |
-| `livros/ciclo-de-vida/saidas.json` | Prova gravada citada pelas perguntas; não muda. |
-| `livros/ciclo-de-vida/projeto/agente.py`, `test_agente.py` e `medir.py` | Código real que delimita o alcance de cada prova. |
-| `scripts/contar-passagens-ide-capitulo-1.mjs` | Contagem reproduzível dos capítulos 1 e 2. |
-| `testes/ide-capitulo.test.mjs` | Quadro por ação, bloqueios, ligação das perguntas à prova, posições e paradas. |
-| `docs/relatorios/revisao-do-percurso-inicial-etapa-7.md` | Contagem, redação para aprovação, fontes, paradas e capturas. |
+| `docs/leituras/protocolo.md` | Preparação local, fala inicial, duração, intervenção mínima, retomada e encerramento. |
+| `docs/leituras/folha-de-campo.md` | Registro curto, durante cada visita, de horário, lugar e ação ou fala. |
+| `docs/leituras/ficha.md` | Contexto técnico, percurso seção a seção, ajuda, parada, caso novo e síntese da sessão. |
+| `docs/leituras/caso-novo.md` | Cartão aplicado depois do capítulo 1 e resposta que só Erick consulta após a tentativa. |
+| `docs/leituras/hipoteses.md` | Ligação entre eventos observados e H3–H7b, sem promover ficha de autor a leitor externo. |
+| `docs/leituras/sinal.md` | Proposta cujo estado Erick registra antes da leitura; não é decisão do agente. |
+| `docs/PRINCIPIOS.md` e `docs/RITMO.md` | Leitura em voz alta com Victor e distinção entre agir e apenas avançar. |
 
 ### Critérios de revisão
 
-- O capítulo 2 tem 16 quadros de ação nos três modos; nos guiados, os blocos de uma ação aparecem juntos e as duas
-  perguntas de bloco continuam segurando a passagem. Não há “E o próximo?”.
-- Quatro perguntas bloqueiam somente os modos guiados. A evidência e o código sustentam a resposta, mas a saída e a
-  nota não a escrevem; as posições certas são 1, 0, 2 e 1, sem repetição seguida.
-- As perguntas não repetem a leitura visível da tela, não afirmam inteligência a partir do modelo falso, não usam a
-  régua para julgar o texto e não entregam a pergunta do molde reservada à seção 2.6.
-- As duas apostas e a variante `r02-medir-sem-regra` ficam iguais. As saídas gravadas e as tags do repositório do
-  leitor não mudam.
-- Os passos 5, 8 e 10 encerram com entrega e as tags `cap-02/passo-05`, `cap-02/passo-08` e `cap-02/fim`, sem criar
-  passagem nova.
-- A contagem do capítulo 1 permanece 79 → 53 passagens mecânicas e 28 → 33 decisões principais. No capítulo 2, o
-  quadro por ação já trazia 38 → 26; nesta etapa, as perguntas levam 26 → 22 passagens mecânicas e 11 → 15 decisões.
-  O modo direto permanece com 26 passagens.
+- A ficha identifica Victor como **autor**, Erick como observador, o commit lido, aparelho, sistema, navegador,
+  movimento reduzido, modo, lugar do projeto, comando, duração e eventual ajuda.
+- A folha de campo registra apenas o que Victor fez ou disse, com horário e lugar; a ficha posterior separa esses
+  eventos da interpretação do Erick.
+- Erick não explica conceito, aponta controle, dá comando nem corrige resposta durante a tentativa. Se qualquer
+  ajuda ocorrer, ela fica registrada e o trecho não conta como feito sem ajuda.
+- Paradas, retomadas, cansaço, pulos, perdas de orientação e “ah!” têm seção ou passo e ação ou frase observável;
+  silêncio e clique isolado não viram compreensão inferida.
+- O caso novo só vem após a tentativa do capítulo 1; decisão, motivo e fonte são recolhidos antes da correção. “Não
+  aplicado” não conta como erro.
+- A vontade de continuar no capítulo 2 distingue pedido espontâneo, resposta à pergunta neutra e ausência de sinal.
+- H3–H7b citam ficha, visita, seção e passo. Como a única ficha é de autor, a síntese não confirma nem descarta o
+  percurso de quem não escreveu o livro.
+- Falha técnica tem tempo separado e não vira desistência. Defeito de aparelho só gera encaminhamento após ser
+  reproduzido; nenhuma correção é feita dentro desta etapa.
 
 ### Evidência e verificação
 
-- Executar o contador com `01` e `02` e guardar no relatório o antes e o depois de cada passo do capítulo 2.
-- Rodar `npm run saidas:conferir`, `npm run leitor` e `npm test`; nenhuma saída nem tag pode mudar.
-- Testar as quatro perguntas: evidência na saída e no porquê, conclusão ausente da saída e da nota, posições variadas,
-  bloqueio no guiado e ausência no direto; testar também as três paradas e o quadro por ação do capítulo 2.
-- Conferir na página o passo 5, que tem uma ação com quatro blocos, e o passo 8, com pergunta nova, nos três modos,
-  no computador e numa largura de celular, com captura.
+- **Nesta preparação:** diff somente deste plano; nenhuma ficha preenchida, sessão simulada ou mudança no livro.
+- **Para fechar a etapa depois da leitura:** ficha de autor e folhas de campo das visitas, com commit e contexto;
+  tentativa do caso novo ou “não aplicado”; paradas e retomadas que ocorrerem; eventos ligados às hipóteses; estado
+  do sinal e encaminhamento registrados pelo Erick.
+- A evidência é observação escrita, não áudio, telemetria ou conclusão inventada. Se Victor não alcançar um trecho,
+  registrar “não alcançado”; se a situação não permitir avaliar uma hipótese, registrar “sem sinal”.
 
 ### Limite da etapa
 
-Somente os dados da IDE do capítulo 2, o contador, os testes, este plano, o relatório e as capturas. Não mudar o
-texto do capítulo fora da IDE, projeto, saídas ou componentes; não chamar modelo, publicar, abrir túnel nem inventar
-opinião dos autores. A redação das quatro perguntas foi aprovada pelo Erick em 26/10/2026.
+Nesta parte, somente detalhar a etapa 8 neste plano. Não realizar a leitura, preencher ficha ou folha de campo,
+decidir o sinal pelo Erick, alterar o kit, mudar o livro, chamar modelo, publicar ou abrir túnel. A etapa continua
+aberta até Erick conduzir a leitura, registrar a evidência real e revisar o encaminhamento.
 
-## Questões para detalhar nas próximas etapas
+## Estado das etapas e da leitura
 
 - **Etapa 2 (preparação aprovada):** o kit em `docs/leituras/` continua como está. Não haverá sessão entre as
   etapas; a leitura real foi transferida para o fim do plano e não bloqueia as etapas 5 a 7.
@@ -140,10 +157,10 @@ opinião dos autores. A redação das quatro perguntas foi aprovada pelo Erick e
   defensáveis e trechos longos abaixo das metas, sem mudar os desenhos.
 - **Etapa 6b (aprovada):** A e C foram implementadas juntas; B foi descartada. Quadro por ação, cinco perguntas e
   quatro paradas têm o ok do Erick.
-- **Etapa 7 (detalhada acima):** aplicar ao capítulo 2 o quadro por ação, perguntas interpretativas e paradas; o
-  roteiro tem 16 ações em 10 passos.
-- **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha
-  marca `autor`; não há leitura anterior para comparar nem leitores de fora previstos neste plano.
+- **Etapa 7 (aprovada):** o capítulo 2 recebeu quadro por ação, quatro perguntas interpretativas e três paradas; o
+  texto das perguntas tem o ok do Erick.
+- **Etapa 8 (detalhada acima):** está pronta para Erick conduzir. Victor revisa e lê com o kit já preparado; a ficha
+  marca `autor`, e não há leitura anterior para comparar nem leitores de fora previstos neste plano.
 
 ## Registro
 
