@@ -594,7 +594,7 @@
           "linhas": "17-27"
         },
         {
-          "linhas": "47-53"
+          "linhas": "47-58"
         }
       ],
       "nota": "Quatro testes do formato: ids em ordem, as quatro decisões presentes, pedido que existe, e linha errada dizendo qual linha.",
@@ -632,6 +632,11 @@
             "tmp_path",
             "pytest.raises"
           ]
+        },
+        {
+          "linhas": "56-58",
+          "titulo": "os casos do leitor também passam pela régua",
+          "texto": "Se meus-casos.jsonl existir ao lado da referência, suas perguntas entram em CASOS. As mesmas regras conferem os vinte casos oficiais e os do leitor, inclusive o e-mail do dono do pedido."
         }
       ]
     },
@@ -768,7 +773,7 @@
       "no_fim": true,
       "partes": [
         {
-          "linhas": "14-30"
+          "linhas": "14-38"
         }
       ],
       "nota": "A régua: para cada decisão do contrato, quantos casos o decisor acertou, e a nota no fim.",
@@ -783,11 +788,18 @@
           ]
         },
         {
-          "linhas": "24-30",
-          "titulo": "executar o arquivo",
-          "texto": "Este trecho só é executado quando o arquivo é chamado direto, com uv run python baseline.py. Ele mede o sempre_passar e imprime a nota.",
+          "linhas": "24-33",
+          "titulo": "os casos adicionais são opcionais",
+          "texto": "Sem argumento, o comando lê só referencia.jsonl. Com um caminho, como meus-casos.jsonl, carregar_referencia lê esse arquivo também e soma seus casos aos oficiais. O arquivo oficial não muda.",
           "termos": [
-            "if __name__ == \"__main__\"",
+            "if __name__ == \"__main__\""
+          ]
+        },
+        {
+          "linhas": "34-38",
+          "titulo": "executar o arquivo",
+          "texto": "A mesma régua mede sempre_passar e imprime acertos e totais por decisão, além da nota. O argumento muda o conjunto medido, não a regra de acerto.",
+          "termos": [
             "f\"{d:<14}\"",
             "f\"{x:.0%}\""
           ]

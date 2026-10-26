@@ -9,7 +9,8 @@ ajustes é ajudar o leitor a continuar e a tomar decisões sozinho, preservando 
 **Origem.** Review solicitado por Erick em 25/10/2026. Este documento organiza propostas para implementação;
 as aprovações registradas são somente as comunicadas pelo responsável. Revisado no mesmo dia, a pedido do
 Erick: a leitura observada vem logo depois da etapa 1, antes dos ajustes que dependem das hipóteses. Etapa 1 aprovada
-pelo Erick em 25/10/2026; a etapa 2 fica preparada para ele conduzir a observação.
+pelo Erick em 25/10/2026; a preparação da etapa 2 também tem seu ok. A leitura continua aberta, aguardando o
+critério e os leitores. No mesmo dia, Erick autorizou a etapa 3 pelo defeito conferido na continuidade dos casos.
 
 ## O que preservar
 
@@ -22,12 +23,13 @@ pelo Erick em 25/10/2026; a etapa 2 fica preparada para ele conduzir a observaç
 
 ## Etapas
 
-As etapas abaixo seguem uma ordem proposta. A etapa 1 está concluída com o ok do Erick. A etapa atual, 2, está
-detalhada abaixo; as seguintes serão detalhadas com a evidência e a revisão da leitura. Cada etapa de produto terá
+A etapa 1 está concluída. A preparação da etapa 2 tem o ok do Erick; a leitura continua pendente. A etapa atual,
+3, foi autorizada pelo Erick para corrigir a continuidade dos exercícios, um problema conferido no projeto. As
+etapas 4 a 7 continuam dependendo da evidência e da revisão da leitura. Cada etapa de produto terá
 um commit em português e evidência real no registro; o ok do responsável fecha a etapa. As pendências dos outros planos continuam nos próprios planos.
 
-A etapa 1 vem primeiro porque corrige o livro afirmando o que não mediu, e isso é regra. A 2 vem antes das outras
-porque elas partem de hipóteses: a leitura observada diz quais delas valem o trabalho, e em que ordem. Uma etapa que a
+A etapa 1 veio primeiro porque corrigia o livro afirmando o que não mediu. A leitura da etapa 2 orienta as
+hipóteses restantes; o defeito da etapa 3 já foi conferido e sua correção foi autorizada pelo Erick. Para as demais, a leitura observada diz quais delas valem o trabalho, e em que ordem. Uma etapa que a
 leitura não confirmar sai do plano ou fica registrada como descartada.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
@@ -52,83 +54,83 @@ leitura não confirmar sai do plano ou fica registrada como descartada.
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 2 — leitura observada do percurso
+## Etapa atual: 3 — continuidade e conclusão dos exercícios
 
 ### Pergunta que esta etapa responde
 
-Quem não escreveu o livro chega ao fim do capítulo 1 e quer o 2? Onde cansa, pula, se perde e como retoma?
+Quem faz as cinco perguntas novas consegue conferir o exercício e chegar ao capítulo 2 com a mesma régua oficial
+do livro, sem perder os próprios casos?
 
 ### Escopo
 
-Preparar e, quando houver leitores, registrar a observação do percurso da introdução e dos capítulos 1 e 2.
-**Esta entrega prepara os materiais; não realiza leitura nem preenche uma sessão. Quem observa os leitores é o Erick.**
+Defeito conferido: o exercício do capítulo 1 acrescentava R21 a R25 a `referencia.jsonl`; o leitor passava a medir
+25 casos no capítulo 2, que compara 20, inclusive no exercício de remover a regra da instrução.
 
-Decisões comunicadas pelo Erick em 25/10/2026:
+**Decisão do Erick, 25/10/2026:** os casos do leitor vão para um arquivo à parte, `meus-casos.jsonl`; a referência
+oficial continua com as 20 perguntas. O `carregar_referencia` já recebe um caminho e será reaproveitado.
 
-- Por enquanto, tudo só na máquina e na rede local: sem hospedagem, túnel ou endereço público.
-- Ainda não há leitores de fora. Quando houver anotações do Erick, entram na mesma ficha dos leitores, marcadas
-  como **autor**. A leitura em voz alta com o Victor segue `docs/PRINCIPIOS.md` e também é marcada como autor.
-  As fichas dos autores não substituem a evidência de quem não escreveu o livro.
+1. Acrescentar a `baseline.py` um argumento opcional de caminho para somar os casos do leitor aos oficiais só
+   naquela medida. Sem argumento, conservar os 5 de 20 (25%); `medir.py` continua lendo só a referência oficial.
+2. Fazer os testes de coerência existentes incluírem `meus-casos.jsonl` se ele existir ao lado da referência,
+   inclusive ids, existência do pedido, titularidade e prazo. Não escrever a solução R21–R25 no projeto do livro.
+3. Alterar o exercício do capítulo 1: arquivo separado, previsão, testes verdes, comparação da nota com e sem
+   argumento e totais por decisão. Acrescentar uma única frase no 2.4 sobre a referência oficial e o arquivo pessoal.
+4. Atualizar somente as ações necessárias do roteiro 01, os textos relacionados dos passos e os estados/saídas
+   gravados; manter `marcos/cap-01` igual ao fim do roteiro e as tags do repositório do leitor válidas.
 
-Preparar protocolo, ficha, um caso novo com resposta sustentada pelos dados do projeto, mapa de hipóteses das
-etapas 3 a 7 e um critério de seguir ou mudar marcado **PROPOSTA**, para o Erick decidir antes da leitura. O leitor
-lê em voz alta no aparelho que usaria; o observador não explica além do que o livro dá. A sessão registra o que ele
-faz, não apenas a opinião final. O caso novo não entra em `referencia.jsonl` nem altera a régua oficial.
+A etapa 2 continua aberta. A preparação aprovada está em `docs/leituras/`, incluindo a folha de campo; faltam o
+critério de `sinal.md` decidido pelo Erick e os leitores. Esta implementação não realiza a observação.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| [protocolo.md](../leituras/protocolo.md) | Preparação local, duração, condução sem explicação adicional, travas, parada, retomada e encerramento. |
-| [ficha.md](../leituras/ficha.md) | Modelo único para leitor e autor, com origem explícita, versão, aparelho, eventos por seção e resultados ainda em branco. |
-| [caso-novo.md](../leituras/caso-novo.md) | Cartão separado da solução do observador; decisão, justificativa e fontes nos dados reais da loja fictícia. |
-| [hipoteses.md](../leituras/hipoteses.md) | Evidência a favor, contra ou sem sinal para cada hipótese das etapas 3 a 7, sem aprovar as soluções. |
-| [sinal.md](../leituras/sinal.md) | PROPOSTA de limiares anteriores à leitura; decisão do Erick pendente. |
-| `livros/ciclo-de-vida/capitulos/{00,01,02}-*.mdx`, `passos/` e `roteiros/` | O percurso observado, incluindo exercício e IDE, sem ajustes nesta preparação. |
-| `livros/ciclo-de-vida/projeto/dados/` e `referencia.jsonl` | Fontes do caso novo e conferência de que a combinação não está na referência. |
-| `scripts/dev.sh`, `package.json`, `astro.config.mjs` e `README.md` | Comandos existentes e funcionamento real do acesso na máquina e na rede local. |
-| `docs/PRINCIPIOS.md` e `docs/RITMO.md` | Leitura em voz alta com o Victor; distinguir ação do leitor de simples passagem ou exibição. |
+| `projeto/baseline.py` e `projeto/test_referencia.py` | Medida opcional somada e mesmas regras aplicadas aos casos pessoais. |
+| `projeto/contrato.py`, `projeto/dados/` e `referencia.jsonl` | Leitor de caminho existente, dados fictícios e as 20 perguntas oficiais preservadas. |
+| `marcos/cap-01/{baseline.py,test_referencia.py}` | O projeto congelado que o roteiro 01 deve reproduzir. |
+| `capitulos/01-o-problema-e-o-contrato.mdx` e `02-o-primeiro-agente.mdx` | Exercício verificável e uma frase de continuidade. |
+| `roteiros/01.json`, `passos/01.json`, `roteiros/{01,02}.estados.json` e `saidas.json` | Mudanças mínimas no percurso, com execução e estados reais conferidos. |
+| `testes/casos-leitor.test.mjs` | Regressão de execução: nota com/sem casos, integridade da referência e teste de titularidade que falha. |
+| `.leitor/atendimento-bemtevi`, gerado por `npm run leitor` | Tags e cópia externa para produzir a evidência do exercício e da passagem ao capítulo 2. |
+
+Os caminhos sem prefixo da tabela são relativos a `livros/ciclo-de-vida/`.
 
 ### Critérios de revisão
 
-- O protocolo pode ser seguido pelo Erick sem explicar o livro ao leitor; prevê duração, travas e encerramento.
-- A ficha distingue autor de leitor que não escreveu o livro, ação de interpretação, não alcançado de erro,
-  pedido espontâneo do 2 de resposta à pergunta final, desistência de limite de tempo e impedimento técnico.
-- Aparelho, sistema, navegador, reduzir movimento e modo de leitura ficam registrados junto dos defeitos.
-- Parada e retomada, conclusão do capítulo 1, vontade de continuar e solução do caso novo têm campo e evidência.
-- O caso usa os dados do projeto, não consta na referência e tem resposta esperada separada da parte do leitor.
-- Cada hipótese das etapas 3 a 7 tem observação discriminante; falta de oportunidade fica como sem sinal.
-- Os limiares de seguir ou mudar são PROPOSTA, sem decisão tomada pelo modelo; autores ficam fora da contagem.
-- Os comandos de abertura foram conferidos no script e no navegador, sem infraestrutura pública ou script novo.
+- Sem arquivo pessoal, notas e testes permanecem os mesmos; o medir gravado continua 6 de 20 (30%).
+- Os mesmos testes conferem também os casos pessoais quando o arquivo existe; pedido de outra pessoa marcado
+  como responder falha com o id do caso e a mensagem de que o e-mail não é do dono.
+- O exercício permite conferir cinco casos pela nota de partida somada e pelos totais: 9 responder, 3 abrir
+  chamado, 7 recusar e 6 passar, enquanto os totais oficiais permanecem 8/2/5/5.
+- O arquivo pessoal sobrevive à troca para o capítulo 2, cuja medida ignora esses casos e usa os 20 oficiais.
+- Roteiro e IDE mantêm o percurso; nenhum componente da IDE nem as etapas 4 a 7 são alterados.
 
 ### Evidência e verificação
 
-Nesta preparação, entregar os cinco materiais, a conferência do caso contra os dados e a referência, e o teste de
-acesso local no navegador. A evidência técnica vai no [relatório da preparação](../relatorios/revisao-do-percurso-inicial-etapa-2-preparacao.md).
-Nenhuma ficha está preenchida; os testes do software não são leitura observada.
-
-Depois, o Erick registra as sessões e relaciona os eventos às hipóteses; aplica somente o critério que tiver decidido
-antes de observar. Sem leitores de fora ou sem oportunidade de observar uma hipótese, registrar sem sinal. As
-anotações dos autores continuam identificadas e separadas do denominador. O responsável decide se uma hipótese
-confirma um próximo ajuste, é descartada ou precisa de mais observação. A etapa só fecha com o ok do Erick.
+- Em cópia do repositório do leitor, fora do projeto do livro, criar cinco casos válidos no `cap-01/fim` e executar
+  testes, nota sem argumento e nota com argumento: 5 de 20 e 6 de 25. Depois mostrar uma falha de titularidade real.
+- Restaurar os casos válidos e, na mesma cópia com o arquivo pessoal presente, seguir até o projeto do capítulo 2
+  para executar `medir.py` usando exclusivamente `gravacoes/r02-medir.json`: 6 de 20.
+- Executar `npm run saidas`, `npm run leitor`, `npm run ritmo` (antes: 3/2/0 avisos) e `npm test`.
+- Conferir na página montada o exercício do 1, a frase do 2 e o passo do baseline na IDE.
+- Apresentar antes/depois, mudanças do roteiro e saídas reais no relatório, com marca de redação; registrar o hash
+  do commit de produto e deixar aguardando revisão. Só o ok do Erick fecha a etapa.
 
 ### Limite da etapa
 
-Agora, preparar apenas: sem recrutar, contatar ou observar leitores pelo agente, simular respostas, preencher fichas
-com achados inventados ou concluir redução de abandono. Não detalhar nem executar as etapas 3 a 7. Não publicar,
-hospedar, criar túnel, script novo, instrumentação automática, chamada paga ou alteração do produto para preparar a
-leitura. Defeitos de aparelho, quando relatados e reproduzidos, seguem separados conforme o plano.
+Só continuidade e conclusão dos exercícios. Sem comando novo de conferência, componentes da IDE, alteração da
+referência oficial, casos resolvidos no projeto, chamada paga, push, túnel ou `.env`. A etapa 7 de `imersao-ide.md`
+(`uv run conferir`) continua parada. Não alterar as etapas 4 a 7 deste plano nem realizar a leitura pendente da 2.
 
 ## Questões para detalhar nas próximas etapas
 
-- **Etapa 2 (detalhada acima):** observar o que o leitor faz, onde avança sem pensar, como retoma e como resolve
+- **Etapa 2 (preparação aprovada, leitura pendente):** observar o que o leitor faz, onde avança sem pensar, como retoma e como resolve
   um caso novo. Em 25/10/2026, Erick decidiu preparar tudo só localmente; a proposta anterior de endereço fixo público
   fica fora desta preparação. Ainda não há leitores de fora; anotações dos autores usam a mesma ficha com origem
   autor, sem substituir esses leitores. O critério anterior à leitura está em `docs/leituras/sinal.md` como PROPOSTA
   pendente de decisão. Registrar observações e dúvidas, sem concluir redução de abandono por testes ou cliques.
-- **Etapa 3:** a proposta inicial é fazer os casos adicionais numa cópia da referência, preservando a comparação
-  oficial. Conferir o projeto real antes de definir os arquivos e os critérios de conclusão. Com os cinco casos
-  pedidos hoje, a referência passa a 25 perguntas e a nota de partida passa a 6/25 (24%).
+- **Etapa 3 (detalhada acima):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
+  oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
 - **Etapa 4:** aproveitar os mecanismos existentes. A preparação deve esclarecer a diferença entre criar um
   projeto vazio e recuperar uma tag no clone do repositório do leitor. A alternativa gratuita precisa exercitar
   uma decisão relevante; observar a gravação, sozinho, não cumpre a atividade.

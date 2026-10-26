@@ -22,7 +22,15 @@ def avaliar(decidir, casos: list[Caso]) -> dict[Decisao, tuple[int, int]]:
 
 
 if __name__ == "__main__":
+    import argparse
+    from pathlib import Path
+
+    argumentos = argparse.ArgumentParser(description="A nota de partida contra os casos do contrato.")
+    argumentos.add_argument("casos", nargs="?", type=Path, help="arquivo de casos para somar à referência oficial")
+    opcoes = argumentos.parse_args()
     casos = carregar_referencia()
+    if opcoes.casos:
+        casos += carregar_referencia(opcoes.casos)
     placar = avaliar(sempre_passar, casos)
     for d, (certos, total) in placar.items():
         print(f"{d:<14} {certos:>2} de {total:>2}")

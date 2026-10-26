@@ -3,7 +3,7 @@ from datetime import date
 
 import pytest
 
-from contrato import Decisao, carregar, carregar_referencia
+from contrato import AQUI, Decisao, carregar, carregar_referencia
 
 CASOS = carregar_referencia()
 PEDIDOS = {p["id"]: p for p in carregar("pedidos")}
@@ -51,3 +51,8 @@ def test_linha_invalida_diz_qual_linha(tmp_path):
     arquivo.write_text('{"id": "R01", "pergunta": "Oi, tudo bem?", "decisao": "talvez", "motivo": "não existe"}\n', encoding="utf-8")
     with pytest.raises(ValueError, match="linha 1"):
         carregar_referencia(arquivo)
+
+
+CASOS_DO_LEITOR = AQUI / "meus-casos.jsonl"
+if CASOS_DO_LEITOR.exists():
+    CASOS += carregar_referencia(CASOS_DO_LEITOR)
