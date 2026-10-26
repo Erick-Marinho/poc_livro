@@ -88,8 +88,9 @@ outra visita e não deve ser comprimido para caber. A duração não é uma meta
    para ele. O computador que serve o site não precisa ser o aparelho de leitura.
 2. Dizer: “Leia em voz alta e faça como faria sozinho. Pode consultar o próprio livro, voltar, pular ou parar.
    Se algo não fizer sentido, diga o que está tentando fazer.” Não antecipar as hipóteses nem o caso novo.
-3. Começar pela introdução, seguir pelo capítulo 1 e registrar seção e passo da IDE nos eventos da ficha.
-   O observador anota ação, frase e horário aproximado; separa o que viu da interpretação. Conforme
+3. Começar pela introdução e seguir pelo capítulo 1. Durante a sessão, usar a [folha de campo](folha-de-campo.md)
+   para anotar horário, seção ou passo e o que o leitor fez ou disse; depois passar a limpo na [ficha](ficha.md),
+   separando o que viu da interpretação. Conforme
    [RITMO](../RITMO.md), avançar ou abrir uma resposta não demonstra compreensão por si só.
 4. Se ficar em silêncio, aguardar. Depois de cerca de um minuto sem progresso, perguntar apenas “O que você está
    tentando fazer agora?”. Se continuar travado por cerca de três minutos, perguntar se prefere procurar no livro,
