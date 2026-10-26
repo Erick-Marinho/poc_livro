@@ -33,11 +33,11 @@ Quase todo material sobre agentes termina no mesmo lugar: o agente respondeu uma
 
 <Aposta dados={ondeSePega} pergunta="Cada um desses problemas é capturado numa fase da vida do agente. Invista em qual." />
 
-Trabalhamos com isso e sentíamos falta de um livro em português que acompanhasse um agente antes, durante e depois de ir para o ar, com código real. Como não achamos, resolvemos escrever.
+Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro em português que acompanhasse um agente antes, durante e depois de ir para o ar, com código real. Como não achamos, resolvemos escrever.
 
 ## Um livro que executa
 
-Na página, você avança o código, prevê, compara caminhos e explora no terminal as saídas do projeto. Na sua máquina, escreve o código e executa os comandos.
+Este não é um livro para só ler. Na página, você avança o código, prevê, compara caminhos e explora no terminal as saídas do projeto. Na sua máquina, escreve o código e executa os comandos.
 
 Por trás disso há uma regra: o livro não pode mentir. Código e saídas vêm do projeto real. A conferência executa os comandos de novo e compara o resultado com o gravado, ignorando variações como tempo e caminho. As respostas do modelo são repetidas da gravação, sem chamar o serviço; se faltar gravação ou algo divergir, a conferência falha.
 
@@ -79,7 +79,9 @@ Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe
 
 Leia em ordem. Escreva o código e compare as saídas: fazer revela o que ainda não entendeu.
 
-Comece numa pasta vazia no capítulo 1 ou **por uma tag**: `git clone https://github.com/Erick-Marinho/atendimento-bemtevi`, `cd atendimento-bemtevi` e `git checkout cap-02/inicio` — ou a tag indicada.
+**Do zero**, no capítulo 1, você começa numa pasta vazia e constrói o projeto na IDE.
+
+**Por uma tag**, você clona uma versão pronta com `git clone https://github.com/Erick-Marinho/atendimento-bemtevi`, entra nela com `cd atendimento-bemtevi` e usa a tag indicada pelo ponto de volta, como em `git checkout cap-02/inicio`.
 
 <Pendente o="Publicar o repositório do leitor no endereço acima antes de o livro ir para leitores" parte="dos autores" />
 
@@ -90,7 +92,7 @@ Ative **Modo direto** na engrenagem: código, saídas e respostas ficam abertos,
 Pelo caminho:
 
 - **Pare e pense:** tente responder antes de abrir a resposta.
-- **Ponto de volta:** no clone, `git checkout` recupera os arquivos versionados da tag, preserva os pessoais não rastreados e para diante de conflitos.
+- **Ponto de volta:** troca o projeto pela versão daquele ponto, mantém os seus arquivos à parte, como `meus-casos.jsonl`, e para com um aviso antes de apagar uma mudança sua.
 - **Exercício:** no capítulo 1, confira testes, notas e totais; no 2, compare decisões e justifique a mudança. O enunciado traz o critério de conclusão.
 
 ## Um livro em construção

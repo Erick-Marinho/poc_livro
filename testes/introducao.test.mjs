@@ -43,6 +43,11 @@ test("a aposta antes do mapa explica as fases sem mudar as outras apostas", asyn
     assert.ok(ciclo.fases.some((f) => f.nome === fase), `${fase} não vem do ciclo.json`);
     assert.ok(glosa.trim().split(/\s+/).length <= 8, `${fase}: glosa com mais de oito palavras`);
   }
+  const palavras = (texto) => new Set(texto.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().match(/\p{L}+/gu));
+  for (const m of aposta.mensagens) for (const fase of m.opcoes) {
+    const repetidas = [...palavras(aposta.glosas[fase])].filter((p) => palavras(m.texto).has(p));
+    assert.deepEqual(repetidas, [], `${fase}: a glosa repete palavras de "${m.texto}"`);
+  }
 
   const pagina = parse(html);
   const glosas = pagina.querySelectorAll(".apo-glosa");

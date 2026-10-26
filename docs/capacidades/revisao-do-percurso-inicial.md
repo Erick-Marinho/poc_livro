@@ -67,7 +67,7 @@ ação. Não alterar a partir de 1.6, a IDE, outros componentes nem os desenhos 
 
 - A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). Por decisão do Erick em 26/10/2026, cada
   fase nas opções recebe uma glosa curta, derivada de `figuras/ciclo.json`, que explica sua função sem marcar a
-  resposta. A mesma fase usa a mesma glosa em todas as perguntas.
+  resposta. A mesma fase usa a mesma glosa em todas as perguntas, sem repetir palavras do enunciado em que aparece.
 - A figura 1.1 continua nas três histórias de atendentes, sem figura em texto, componente novo ou mudança visual
   (`laco-do-agente.md`). Os casos vêm antes dos nomes da escala.
 - A política da loja abre 1.4; a palavra contrato, Meyer, a troca de prompt e a definição permanecem
@@ -85,7 +85,7 @@ ação. Não alterar a partir de 1.6, a IDE, outros componentes nem os desenhos 
    resumir os atendentes que o leitor viu, sem mudar a figura nem suas fontes.
 4. Enxugar o começo de 1.4 até sair do aviso de 200 palavras, preservando política, Meyer, troca de prompt,
    definição e camadas.
-5. Enxugar os trechos ampliados nas etapas 1 e 4: até 319 palavras no primeiro aviso da introdução e até 210 em
+5. Enxugar os trechos ampliados nas etapas 1 e 4: até 319 palavras no primeiro aviso da introdução e cerca de 240 em
    “Como ler”, preservando a distinção entre código reexecutado, modelo repetido da gravação e chamada real paga.
 
 ### Peças e fontes
@@ -104,17 +104,17 @@ Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
 
 ### Critérios de revisão
 
-- Os dois pare e pense da introdução fazem sentido sem “régua” nem id de caso; Bruno, Ana e o pedido sustentam a
-  diferença entre definir antes, medir depois e dar peso aos erros.
+- Os dois pare e pense da introdução fazem sentido sem “régua”, id ou nome de caso; o pedido de outra pessoa sustenta
+  a diferença entre definir antes, medir depois e dar peso aos erros.
 - As respostas da aposta das fases citam as duas fases que concorriam e as distinguem com `ciclo.json`; a opção
   marcada continua pertencendo ao capítulo citado.
-- Cada fase usada nas opções tem uma glosa de até oito palavras, idêntica em todas as ocorrências; as apostas sem
-  glosas conservam sua apresentação.
+- Cada fase usada nas opções tem uma glosa de até oito palavras, idêntica em todas as ocorrências e sem palavras do
+  enunciado em que aparece; as apostas sem glosas conservam sua apresentação.
 - Escala, camadas, Pilhas e Classificador concordam com o contrato e a política. Caso com duas decisões defensáveis
   sai da classificação de resposta única ou é tornado inequívoco sem mudar o contrato.
 - Em 1.1, o leitor vê os atendentes antes de receber os quatro nomes da escala; as citações permanecem.
 - O primeiro trecho de 1.4 fica em até 200 palavras no relógio, sem retirar nenhuma peça decidida.
-- O primeiro aviso da introdução fica em até 319 palavras e “Como ler”, em até 210, sem perder a precisão sobre
+- O primeiro aviso da introdução fica em até 319 palavras e “Como ler”, em cerca de 240, sem perder a precisão sobre
   execução, gravação e chamadas pagas.
 - O número de avisos não aumenta, e nenhuma mudança alcança 1.6, IDE, outros componentes, desenhos ou projeto.
 
@@ -124,6 +124,8 @@ Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
 - Executar `npm test`, incluindo apostas, formato e vocabulário. Não regravar nem chamar modelo.
 - Conferir na página montada a aposta e os dois pare e pense da introdução, a ordem da figura e da escala em 1.1 e
   o começo de 1.4. Conferir as glosas em largura de computador e de celular.
+- Numa cópia do repositório do leitor gerado, conferir que o ponto de volta preserva `meus-casos.jsonl` e para antes
+  de sobrescrever uma alteração do leitor.
 - Relatar antes/depois, justificativa das classificações e propostas não aplicadas por decisão anterior. Aguardar o
   ok do Erick para fechar a etapa.
 

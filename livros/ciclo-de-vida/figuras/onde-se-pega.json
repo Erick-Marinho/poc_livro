@@ -2,13 +2,13 @@
   "sobre": "A aposta da introdução: os quatro problemas do primeiro parágrafo, e a fase do ciclo que captura cada um (figuras/ciclo.json). O pedido de outra pessoa é um caso do capítulo 1; o teste confere que os problemas estão no texto, que as fases existem e que as glosas vêm das definições do ciclo.",
   "resultado": "Onde é capturado",
   "glosas": {
-    "Planejar": "Define o que o agente deve fazer.",
-    "Quando dá errado": "Investiga a causa e evita que volte.",
+    "Planejar": "Define tarefas e limites do agente.",
+    "Quando dá errado": "Investiga causas, impedindo reincidências.",
     "Evoluir": "Compara mudanças antes de trocar.",
-    "Avaliar": "Mede melhora e tipos de erro.",
-    "Observar": "Mostra o que aconteceu em cada conversa.",
-    "Pôr no ar": "Leva o agente além da sua máquina.",
-    "Construir": "Define o caminho e o acesso ao sistema."
+    "Avaliar": "Mede acertos atuais.",
+    "Observar": "Revela conversas, tempo e custo.",
+    "Pôr no ar": "Leva agentes além da máquina local.",
+    "Construir": "Define caminhos, ferramentas, acessos ao sistema."
   },
   "fechos": {
     "nenhum": "Nenhuma bateu, e tudo bem: o mapa logo abaixo é para isso.",
