@@ -4,18 +4,20 @@
  * (docs/RITMO.md: "tem um padrão" pede que o leitor separe antes de ler). Os itens são casos do referencia.jsonl (pelo
  * id, separados pela decisão do contrato) ou cartas escritas, cada uma com a sua pilha (`cartas` e `grupos`). O texto de
  * dentro (o slot) é a explicação, que aparece depois da separação. Duas separações são iguais se juntam os mesmos
- * itens, seja qual for a letra. No modo direto, tudo aparece separado.
+ * itens, seja qual for a letra. No modo direto, tudo aparece separado. Com `exemplo`, um item já vem na pilha A, com o
+ * porquê, para quem começa ter o critério antes de separar o resto (docs/capacidades/achados-da-leitura-do-victor.md).
  */
 import { casos, DECISOES } from "../../lib/referencia.ts";
 
 type Grupo = { nome: string; quando: string };
 interface Props { referencia?: string; casos?: string[]; cartas?: { texto: string; pilha: string }[]; grupos?: Record<string, Grupo>;
-  pergunta: string; quem?: string }
-const { referencia = "", casos: ids, cartas, grupos = DECISOES, pergunta, quem = "contrato" } = Astro.props;
+  pergunta: string; quem?: string; exemplo?: { id: string; texto: string } }
+const { referencia = "", casos: ids, cartas, grupos = DECISOES, pergunta, quem = "contrato", exemplo } = Astro.props;
 const lista = ids ? casos(referencia, ids, "Pilhas").map((c) => ({ id: c.id, pergunta: c.pergunta, decisao: c.decisao }))
   : (cartas ?? []).map((c, i) => ({ id: `carta ${i + 1}`, pergunta: c.texto, decisao: c.pilha }));
 lista.forEach((c) => { if (!grupos[c.decisao]) throw new Error(`Pilhas: "${c.pergunta}" está na pilha "${c.decisao}", que não existe`); });
 if (lista.length < 2) throw new Error("Pilhas: precisa de ao menos duas cartas");
+if (exemplo && !lista.some((c) => c.id === exemplo.id)) throw new Error(`Pilhas: o exemplo ${exemplo.id} não está entre as cartas`);
 const DECISOES_ = grupos;
 const decisoes = Object.keys(grupos).filter((d) => lista.some((c) => c.decisao === d));
 const dados = { cartas: lista, nomes: grupos };
@@ -28,8 +30,12 @@ const dados = { cartas: lista, nomes: grupos };
       <div class="pil-carta" data-decisao={c.decisao}>
         <q>{c.pergunta}</q>
         <div class="pil-letras" role="group" aria-label={`pilha de ${c.id}`}>
-          {["A", "B", "C", "D"].map((p) => <button type="button" data-p={p} aria-pressed="false" aria-label={`pilha ${p}`}>{p}</button>)}
+          {["A", "B", "C", "D"].map((p) => {
+            const ex = exemplo?.id === c.id;
+            return <button type="button" data-p={p} aria-pressed={String(ex && p === "A")} disabled={ex} aria-label={`pilha ${p}`}>{p}</button>;
+          })}
         </div>
+        {exemplo?.id === c.id && <span class="pil-exemplo"><b>Exemplo, na pilha A:</b> {exemplo.texto}</span>}
         <span class="pil-contrato">{quem}: {DECISOES_[c.decisao].nome}</span>
       </div>
     ))}
@@ -53,7 +59,7 @@ const dados = { cartas: lista, nomes: grupos };
   document.querySelectorAll<HTMLElement>("[data-pilhas]").forEach((fig) => {
     const d: Dados = JSON.parse(fig.querySelector("[data-dados]")!.textContent!);
     const cartas = [...fig.querySelectorAll<HTMLElement>(".pil-carta")];
-    const escolha: (string | null)[] = cartas.map(() => null);
+    const escolha: (string | null)[] = cartas.map((c) => c.querySelector<HTMLElement>('button[aria-pressed="true"]')?.dataset.p ?? null);
     const ver = fig.querySelector<HTMLButtonElement>("[data-ver]")!, rev = fig.querySelector<HTMLElement>("[data-revelado]")!;
     cartas.forEach((c, i) => c.querySelectorAll<HTMLButtonElement>("button").forEach((b) => b.addEventListener("click", () => {
       if (!rev.hidden) return;
@@ -92,6 +98,8 @@ const dados = { cartas: lista, nomes: grupos };
   .pil-letras { display: flex; gap: 4px }
   .pil-letras button { width: 34px; height: 30px; border-radius: 7px; border: 1px solid var(--linha); background: var(--papel-2); font: 600 13px var(--f-mono); cursor: pointer }
   .pil-letras button[aria-pressed="true"] { color: var(--papel); border-color: transparent; background: var(--ink) }
+  .pil-letras button:disabled { cursor: default }
+  .pil-exemplo { grid-column: 1 / -1; font: 13.5px/1.45 var(--f-ui); color: var(--ink-2) }
   .pil-contrato { display: none; grid-column: 1 / -1; font: 600 12.5px var(--f-ui); color: var(--ok) }
   .pil-feito .pil-contrato { display: block }
   .pil-acao { margin: 12px 0 0 }
@@ -108,5 +116,5 @@ const dados = { cartas: lista, nomes: grupos };
   /* modo direto: as pilhas do contrato, sem pedir a separação */
   html[data-direto] .pil-revelado { display: grid !important }
   html[data-direto] .pil-contrato { display: block }
-  html[data-direto] .pil-letras, html[data-direto] .pil-acao, html[data-direto] .pil-leitura { display: none }
+  html[data-direto] .pil-letras, html[data-direto] .pil-acao, html[data-direto] .pil-leitura, html[data-direto] .pil-exemplo { display: none }
 </style>

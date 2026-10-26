@@ -22,6 +22,15 @@ test("as pilhas separam como o contrato, que vem do referencia.jsonl", () => {
   assert.equal(new Set(cartas).size, 4, "as quatro decisões aparecem");
 });
 
+test("as pilhas do 1.3 dão o critério: o exemplo já vem na pilha A, travado, e a pergunta separa pelo que se faz", () => {
+  const pil = html.split("data-pilhas")[1];
+  const primeira = pil.split('class="pil-carta"')[1];
+  assert.match(primeira, /data-p="A" aria-pressed="true" disabled/);
+  assert.match(primeira, /class="pil-exemplo"/);
+  assert.equal([...pil.matchAll(/class="pil-exemplo"/g)].length, 1, "só a primeira carta é exemplo");
+  assert.match(pil, /pelo que você faria com cada uma, e não pelo assunto/);
+});
+
 test("a troca tem uma variante que o contrato pega, e o veredito sai da comparação", () => {
   assert.equal([...html.matchAll(/class="tro-ok"/g)].length, 2);
   assert.equal([...html.matchAll(/class="tro-nao"/g)].length, 1);

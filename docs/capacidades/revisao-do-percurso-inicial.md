@@ -176,6 +176,8 @@ pendências restantes, a leitura e a revisão do encaminhamento pelo Erick.
   texto das perguntas tem o ok do Erick.
 - **Etapa 8 (detalhada acima):** repositório público e acesso de Victor estão resolvidos. A preparação ainda aguarda
   as pendências listadas; depois delas, Victor revisa e lê pelo túnel, com origem `autor` na ficha.
+- **Achados do Victor (26/10/2026):** viram etapas de `achados-da-leitura-do-victor.md`, e não ajustes nesta etapa. O
+  primeiro, relatado pelo Erick: o 1.3 está complexo e abstrato para quem começa em engenharia de IA.
 
 ## Registro
 

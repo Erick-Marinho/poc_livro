@@ -28,7 +28,7 @@ escreveu o livro. Agora não há fichas de leitores de fora.
 | H3 | sem sinal — leitura ainda não realizada | | |
 | H4a | sem sinal — leitura ainda não realizada | | |
 | H4b | sem sinal — leitura ainda não realizada | | |
-| H5 | sem sinal — leitura ainda não realizada | | |
+| H5 | sem sinal para quem não escreveu o livro; achado de autor no 1.3 | Victor (autor), 26/10/2026, relatado pelo Erick: o 1.3 está complexo e abstrato para quem começa; ajuste em `achados-da-leitura-do-victor.md`, etapa 1 | se quem não escreveu o livro separa as mensagens do 1.3 pelo que faria, depois do ajuste |
 | H6 | sem sinal — leitura ainda não realizada | | |
 | H7a | sem sinal — leitura ainda não realizada | | |
 | H7b | sem sinal — leitura ainda não realizada | | |
