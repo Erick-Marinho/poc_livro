@@ -42,9 +42,11 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 - O 1.4 continua a cena do 1.3: a colega vai sair de férias, e o agente fica no lugar dela. Como saber se ele aprendeu?
   Como a escola sabe se o aluno aprendeu: com uma prova que já tem gabarito. O contrato é esse gabarito, e as
   respostas saem da política e dos dados da loja.
-- O gabarito cobra o que se faz, não a frase: a troca de prompt (o `Troca`, que fica) mostra isso com o desconto.
-- Prompt e contrato: o prompt é como você explica o trabalho a um novato; o gabarito é como você confere se ele
-  aprendeu. Um pare e pense novo: trocar o prompt muda o gabarito? (Não.)
+- (26/10/2026, Erick) "Fala-se do prompt, porém sem ligação com o contrato": antes de sair, a colega deixa duas
+  coisas ao substituto. Um bilhete explicando o trabalho, que com um modelo se chama prompt; e o gabarito para
+  conferir se ele aprendeu, que é o contrato. A troca de prompt (o `Troca`, que fica) mostra por que o bilhete não
+  basta: com dois bilhetes e depois com outro modelo, a terceira tentativa promete o desconto, e quem pega é o
+  gabarito. O pare e pense pergunta o que muda no contrato quando se reescreve o prompt. (Nada.)
 - O Meyer fica numa frase, depois da imagem; a definição fica, com as três partes ligadas à colega.
 - A aposta e o quadro das camadas saem do 1.4 (decisão registrada em `contrato-em-camadas.md`). Fica uma frase: as
   outras conferências chegam nos capítulos 2, 3 e 5.

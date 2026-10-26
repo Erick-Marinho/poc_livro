@@ -113,18 +113,20 @@ Ela sabe isso de cor, depois de anos no atendimento. O agente não sabe nada dis
 
 ## 1.4 O que é um contrato
 
-A colega vai sair de férias, e quem fica no lugar dela é o agente. Como saber se ele aprendeu o que ela sabe? Do jeito que uma escola descobre se o aluno aprendeu: com uma prova que já tem gabarito. Antes de o aluno sentar, alguém escreveu as perguntas e a resposta certa de cada uma.
+A colega vai sair de férias, e quem fica no lugar dela é o agente. Antes de sair, ela deixa duas coisas para o substituto.
 
-O contrato é esse gabarito: mensagens que chegam à loja, cada uma com o que se deve fazer com ela. As respostas não saem da cabeça de ninguém. Saem da política da loja (troca por defeito em até 90 dias, nada de desconto, todo reembolso passa por uma pessoa) e dos dados dos pedidos e do catálogo.
+A primeira é um bilhete explicando o trabalho: "não damos desconto; troca por defeito, até 90 dias; reembolso, chame alguém da equipe". Com um modelo de linguagem, esse bilhete tem nome: é o **prompt**, o texto que vai junto de cada mensagem dizendo ao modelo como se comportar.
 
-Repare no que esse gabarito cobra. Não cobra a frase: nem a colega escreve duas vezes a mesma. Cobra o que se faz com a mensagem. Lembra do desconto que o agente apressado prometeu? É a mesma mensagem, agora pedida ao modelo de três jeitos.
+A segunda é o que ela vai usar para conferir se o substituto aprendeu: um gabarito, como o de uma prova. Mensagens que chegam à loja, cada uma com o que se deve fazer com ela, tirado da política e dos dados da loja. Esse gabarito é o **contrato**.
 
-<Troca referencia={referencia} dados={trocaDePrompt} pergunta="Troque o jeito de pedir. O que muda, e o que fica?" ilustracao="Ilustração: as três respostas foram escritas para mostrar o padrão. A mensagem e a decisão do contrato são as do arquivo de referência." />
+Se o bilhete já explica tudo, para que o gabarito? Porque bilhete bom não garante nada. Veja a mensagem do desconto, a que o agente apressado aceitou, com dois bilhetes diferentes e, por fim, com o mesmo bilhete num outro modelo.
 
-O jeito de pedir ao modelo, o prompt, é como você explica o trabalho a um novato: dá para explicar de muitos jeitos, e você vai trocar de explicação, e de modelo, muitas vezes ao longo do livro. O gabarito é como você confere se o novato aprendeu, e ele não muda a cada explicação. É por não mudar que serve de régua.
+<Troca referencia={referencia} dados={trocaDePrompt} pergunta="Troque o bilhete, ou o modelo. O que muda, e o que fica?" ilustracao="Ilustração: as três respostas foram escritas para mostrar o padrão. A mensagem e a decisão do contrato são as do arquivo de referência." />
 
-<PareEPense pergunta="Amanhã você troca o prompt simpático por um seco. O que muda no gabarito?">
-Nada. O gabarito diz o que fazer com cada mensagem; o prompt só muda como o modelo escreve. Se o prompt seco começar a prometer desconto, é o gabarito que avisa.
+Três tentativas, três frases diferentes, e o gabarito não liga para a frase: liga para o que foi feito. As duas primeiras recusaram o desconto, como manda o gabarito. A terceira prometeu, e quem pega é o gabarito, não o bilhete. Você vai reescrever o bilhete, e trocar de modelo, muitas vezes ao longo do livro. O gabarito fica, e é por ficar que ele serve de régua.
+
+<PareEPense pergunta="Amanhã você reescreve o prompt, o bilhete, num tom mais seco. O que muda no contrato, o gabarito?">
+Nada. O gabarito diz o que fazer com cada mensagem; o bilhete só muda o jeito de o modelo escrever. Se o bilhete novo fizer o agente prometer desconto, é o gabarito que avisa.
 </PareEPense>
 
 Com um agente, o gabarito pesa mais do que num programa comum: no programa, o caminho está no código; no agente, o modelo escolhe o caminho a cada mensagem. A ideia tem até autor em software: Bertrand Meyer propôs que cada rotina declarasse o que promete, para a promessa poder ser conferida.
