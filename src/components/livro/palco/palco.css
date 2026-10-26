@@ -96,11 +96,21 @@ astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibil
   .ac-avancar button:disabled { cursor: default; opacity: .65 }
   .ac-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
 
-/* as animações que andam com a rolagem (RolaCena.tsx): o trilho alto, e a figura presa na tela enquanto ele passa */
+/* as animações que o leitor toca ou rola (RolaCena.tsx): no modo de rolar, o trilho alto, e a figura presa na tela */
 .rc-trilho { position: relative }
 .rc-quadro { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 10px }
 .rc-preso { position: sticky; top: 58px }
 .rc-video { margin-inline: auto }
-.rc-role { margin: 6px 0 0; text-align: center; font: 13px var(--f-ui); color: var(--ink-2); transition: opacity .3s }
+.rc-controles { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; font: 13px var(--f-ui); color: var(--ink-2) }
+.rc-tocar { border: 1px solid var(--linha); border-radius: 999px; background: var(--papel); color: var(--ink); padding: 6px 16px; font: 600 14px var(--f-ui); cursor: pointer }
+.rc-tocar:hover { border-color: var(--acento) }
+.rc-dica { transition: opacity .3s }
+.rc-chave { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--ink-2); font: 13px var(--f-ui); cursor: pointer; padding: 4px 2px }
+.rc-chave:hover { color: var(--ink) }
+.rc-trilho-chave { position: relative; width: 30px; height: 17px; border-radius: 999px; background: var(--linha); transition: background .2s }
+.rc-trilho-chave i { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--papel); transition: transform .2s }
+.rc-chave[aria-checked="true"] .rc-trilho-chave { background: var(--acento) }
+.rc-chave[aria-checked="true"] .rc-trilho-chave i { transform: translateX(13px) }
 .rc-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap }
 @media (max-width: 640px) { .rc-preso { top: 50px } .rc-quadro { padding: 6px } }
+@media (prefers-reduced-motion: reduce) { .rc-trilho-chave, .rc-trilho-chave i, .rc-dica { transition: none } }

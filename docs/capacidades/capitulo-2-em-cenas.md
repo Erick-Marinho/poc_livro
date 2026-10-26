@@ -19,6 +19,10 @@ intuitivo", e a repetição cansa (26/10/2026).
   não ficou boa com a rolagem. Refeita: sem pergunta e sem botão, a rolagem da página é a agulha da animação, para a
   frente e para trás, com um pouco de inércia; as explicações são balões, um por vez, apontando para o que acontece.
 - (26/10/2026, Erick) "Ficou muito rápido ao rolar": o trilho do 2.1 passa de 4 para 8 telas, e a inércia fica mais macia.
+- (26/10/2026, Erick) Dois jeitos de avançar: um play discreto (o começo), que toca a animação no ritmo de leitura,
+  com pausar e ver de novo; ou rolar com a página, ligado por uma chave ao lado do play e nas configurações. A escolha
+  fica lembrada para todas as figuras (`palco/rolar.ts`). Desligada, o trilho alto some e a página rola normalmente;
+  trocar de modo mantém a figura no lugar da tela e a animação no mesmo quadro.
 - (1) Uma base nova, `palco/RolaCena.tsx`: a figura presa na tela por um trilho de rolagem, a agulha seguindo a
   rolagem pelo `seekTo` (que o navegador deixa sem clique), o aviso "role" até a primeira rolagem, o quadro final no
   modo direto e o texto dos balões para leitor de tela. As próximas figuras do capítulo usam a mesma base.
@@ -61,5 +65,6 @@ intuitivo", e a repetição cansa (26/10/2026).
 |---|---|---|---|
 | 1 | `7927299` | primeira versão, com cenas e pergunta, substituída pela de baixo; `npm test`: 129 testes do livro (5 novos, `roteiro-do-agente.test.mjs`) e 5 da gravação, 30 + 16 saídas conferidas; 2.1 com 57 e 95 palavras entre as ações; a animação da introdução conferida depois da mudança na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) no computador e em 390 px, rolando com a roda do mouse e clicando no balcão, da chegada ao grafo. | aguardando revisão |
 | 1 (refeita) | `35c3286` | A rolagem como agulha e os balões, sem pergunta; `npm test`: 129 testes do livro e 5 da gravação, 30 + 16 saídas conferidas; a animação da introdução conferida depois dos consertos na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) ao longo do trilho (8 % a 100 %), no computador e em 390 px, rolando com a roda do mouse. | aguardando revisão |
+| 1 (play e rolar) | COMMIT | O play no ritmo de leitura e a chave "rolar com a página", lembrada e também nas configurações; conferido no navegador: começa sem trilho (602 px), toca, pausa, liga (trilho de 8 telas, rolagem no quadro em que estava), desliga (figura no topo, mesmo quadro); `npm test`: 129 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) `a-` a `e-`. | aguardando revisão |
 
 (redação: Claude Opus 5.5)

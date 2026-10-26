@@ -1,75 +1,128 @@
 /**
- * A base das animações que andam com a rolagem (docs/capacidades/capitulo-2-em-cenas.md): a figura fica presa na tela
- * enquanto o leitor rola por um trilho alto, e a posição da rolagem é a agulha do vídeo, para a frente e para trás.
- * Nada toca sozinho: quem anda é o leitor. A agulha segue a rolagem com um pouco de inércia, para a roda do mouse não
- * dar trancos. Sem dica de botão: só um aviso discreto, "role", enquanto ninguém rolou. No modo direto, sem trilho: o
- * quadro final. Para leitor de tela, o texto da figura vai à parte (`descricao`), porque o vídeo não se lê.
- * O Player: https://www.remotion.dev/docs/player/player (seekTo).
+ * A base das animações que o leitor toca ou rola (docs/capacidades/capitulo-2-em-cenas.md). Dois modos, e a escolha
+ * fica lembrada para todas as figuras (rolar.ts):
+ * - tocar (o começo): a página rola normalmente; um play discreto toca a animação inteira, no ritmo de leitura (metade
+ *   da velocidade), com pausar e ver de novo. Nada toca sozinho: quem aperta é o leitor.
+ * - rolar com a página: a figura fica presa na tela enquanto o leitor rola por um trilho alto, e a posição da rolagem
+ *   é a agulha do vídeo, para a frente e para trás, com um pouco de inércia (pelo seekTo, que o navegador deixa sem
+ *   clique). Desligado, o trilho some, para quem não quer rolar várias telas para passar da figura.
+ * Trocar de modo mantém a figura no mesmo lugar da tela e a animação no mesmo quadro. No modo direto, o quadro final,
+ * sem controles. Para leitor de tela, o texto da figura vai à parte (`descricao`), porque o vídeo não se lê.
+ * O Player: https://www.remotion.dev/docs/player/player (play, pause, seekTo, getCurrentFrame e os eventos).
  */
 import { Player, type PlayerRef } from "@remotion/player";
-import { type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
+import { type ComponentType, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { useDireto } from "./direto";
+import { definirRolar, useRolar } from "./rolar";
 import "./palco.css";
 
 type Props<P extends Record<string, unknown>> = {
   component: ComponentType<P>; inputProps: P; duracao: number; fps: number; largura: number; altura: number;
   /** muda o desenho (largo ou estreito): o Player recomeça */
   chave?: string;
-  /** quantas telas de rolagem a animação inteira ocupa */
+  /** quantas telas de rolagem a animação inteira ocupa, no modo de rolar */
   telas: number;
-  /** o espaço da tela que fica para o resto (o topo do livro, a margem): o vídeo cabe no que sobra */
+  /** o espaço da tela que fica para o resto (o topo do livro, os controles): o vídeo cabe no que sobra */
   reserva: number;
   descricao: ReactNode;
 };
+type Toque = "parado" | "tocando" | "fim";
+const TOPO = 58; // a barra do livro: a figura presa fica logo abaixo dela
 
 export default function RolaCena<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, telas, reserva, descricao }: Props<P>) {
   const ref = useRef<PlayerRef>(null);
+  const caixa = useRef<HTMLDivElement>(null);
   const trilho = useRef<HTMLDivElement>(null);
   const direto = useDireto();
-  const [rolou, setRolou] = useState(false);
+  const rolar = useRolar();
+  const [toque, setToque] = useState<Toque>("parado");
+  const [andou, setAndou] = useState(false);
 
+  /* o que o Player conta: tocou, pausou, chegou ao fim */
   useEffect(() => {
-    if (direto) { ref.current?.seekTo(duracao - 1); return; }
-    let alvo = 0, agora = 0, laco = 0;
-    /* onde a rolagem está no trilho: 0 quando a figura chega ao topo, 1 quando o trilho acaba */
-    const medir = () => {
-      const t = trilho.current;
-      if (!t) return;
-      const caixa = t.getBoundingClientRect();
-      const percurso = caixa.height - innerHeight;
-      alvo = Math.min(1, Math.max(0, -caixa.top / Math.max(1, percurso))) * (duracao - 1);
-      if (alvo > 0) setRolou(true);
-      if (!laco) laco = requestAnimationFrame(andar);
-    };
-    /* a agulha vai até onde a rolagem pede, um pouco por quadro */
+    const p = ref.current;
+    if (!p) return;
+    const tocou = () => setToque("tocando"), pausou = () => setToque((t) => (t === "fim" ? t : "parado")), acabou = () => setToque("fim");
+    p.addEventListener("play", tocou); p.addEventListener("pause", pausou); p.addEventListener("ended", acabou);
+    return () => { p.removeEventListener("play", tocou); p.removeEventListener("pause", pausou); p.removeEventListener("ended", acabou); };
+  }, [chave, direto]);
+
+  /* rolar com a página: a agulha segue a rolagem, de onde o vídeo está */
+  useEffect(() => {
+    const p = ref.current;
+    if (direto) { p?.seekTo(duracao - 1); return; }
+    if (!rolar || !p) return;
+    p.pause();
+    let alvo = p.getCurrentFrame(), agora = alvo, laco = 0;
     const andar = () => {
       agora += (alvo - agora) * 0.12;
       if (Math.abs(alvo - agora) < 0.5) agora = alvo;
       ref.current?.seekTo(Math.round(agora));
       laco = agora === alvo ? 0 : requestAnimationFrame(andar);
     };
-    medir();
+    /* onde a rolagem está no trilho: 0 quando a figura chega ao topo, 1 quando o trilho acaba */
+    const medir = () => {
+      const t = trilho.current;
+      if (!t) return;
+      const c = t.getBoundingClientRect();
+      alvo = Math.min(1, Math.max(0, (TOPO - c.top) / Math.max(1, c.height - innerHeight))) * (duracao - 1);
+      if (alvo > 0) setAndou(true);
+      setToque(alvo >= duracao - 1 ? "fim" : "parado");
+      if (!laco) laco = requestAnimationFrame(andar);
+    };
     addEventListener("scroll", medir, { passive: true });
     addEventListener("resize", medir);
     return () => { removeEventListener("scroll", medir); removeEventListener("resize", medir); cancelAnimationFrame(laco); };
-  }, [direto, duracao, chave]);
+  }, [direto, rolar, duracao, chave]);
 
-  const video = (
-    <div className="rc-video" style={{ width: `min(100%, calc((100vh - ${reserva}px) * ${largura / altura}))` }}>
-      <Player key={chave} ref={ref} component={component} inputProps={inputProps} durationInFrames={duracao} fps={fps}
-        compositionWidth={largura} compositionHeight={altura} initialFrame={direto ? duracao - 1 : 0}
-        numberOfSharedAudioTags={0} style={{ width: "100%", display: "block" }} acknowledgeRemotionLicense />
+  const tocar = (e: MouseEvent) => {
+    const p = ref.current;
+    if (!p) return;
+    if (toque === "tocando") { p.pause(); return; }
+    if (toque === "fim" || p.getCurrentFrame() >= duracao - 1) p.seekTo(0);
+    setAndou(true);
+    p.play(e);
+  };
+
+  /* trocar de modo sem perder o lugar: ao ligar, a rolagem vai até onde o vídeo está; ao desligar, a figura fica no
+     topo da tela, solta */
+  const alternar = () => {
+    const quadro = ref.current?.getCurrentFrame() ?? 0;
+    const ligar = !rolar;
+    definirRolar(ligar);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const c = caixa.current;
+      if (!c) return;
+      const topo = c.getBoundingClientRect().top + scrollY - TOPO;
+      const percurso = ligar && trilho.current ? trilho.current.offsetHeight - innerHeight : 0;
+      scrollTo({ top: topo + (percurso * quadro) / Math.max(1, duracao - 1), behavior: "instant" as ScrollBehavior });
+    }));
+  };
+
+  const rotulo = toque === "tocando" ? "❚❚ Pausar" : toque === "fim" ? "↺ Ver de novo" : andou ? "▶ Continuar" : "▶ Tocar";
+  const quadro = (preso: boolean) => (
+    <div className={`rc-quadro${preso ? " rc-preso" : ""}`}>
+      <div className="rc-video" style={{ width: `min(100%, calc((100vh - ${reserva}px) * ${largura / altura}))` }}>
+        <Player key={chave} ref={ref} component={component} inputProps={inputProps} durationInFrames={duracao} fps={fps}
+          compositionWidth={largura} compositionHeight={altura} initialFrame={direto ? duracao - 1 : 0} playbackRate={0.5}
+          moveToBeginningWhenEnded={false} numberOfSharedAudioTags={0} style={{ width: "100%", display: "block" }} acknowledgeRemotionLicense />
+      </div>
+      {direto ? null : (
+        <div className="rc-controles">
+          {rolar ? <span className="rc-dica" style={{ opacity: andou ? 0 : 1 }}>role a página para a cena andar ↓</span>
+            : <button type="button" className="rc-tocar" onClick={tocar} aria-label={rotulo.replace(/^\S+ /, "")}>{rotulo}</button>}
+          <button type="button" role="switch" aria-checked={rolar} className="rc-chave" onClick={alternar}
+            title={rolar ? "Desligar: a página rola normalmente, e a animação toca pelo play" : "Ligar: a figura fica presa na tela, e a rolagem anda a animação"}>
+            <span aria-hidden="true">↕</span> Rolar com a página <span className="rc-trilho-chave" aria-hidden="true"><i /></span>
+          </button>
+        </div>
+      )}
     </div>
   );
-  return <>
+
+  return <div ref={caixa}>
     <div className="rc-leitor">{descricao}</div>
-    {direto ? <div className="rc-quadro">{video}</div> : (
-      <div ref={trilho} className="rc-trilho" style={{ height: `${telas * 100}vh` }}>
-        <div className="rc-quadro rc-preso">
-          {video}
-          <p className="rc-role" aria-hidden="true" style={{ opacity: rolou ? 0 : 1 }}>role a página para a cena andar ↓</p>
-        </div>
-      </div>
-    )}
-  </>;
+    {/* o mesmo lugar na árvore nos dois modos: trocar de modo não recria o Player, e o vídeo fica no quadro em que estava */}
+    <div ref={trilho} className="rc-trilho" style={!direto && rolar ? { height: `${telas * 100}vh` } : undefined}>{quadro(!direto && rolar)}</div>
+  </div>;
 }

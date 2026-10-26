@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
 import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
 import { definirDireto, useDireto } from "../palco/direto";
+import { definirRolar, useRolar } from "../palco/rolar";
 import { definirOnde, useOnde } from "../palco/onde";
 import type { Onde } from "../palco/onde";
 import type { Placar } from "../Navegacao.astro";
@@ -66,6 +67,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const [fonte, setFonte] = useState<Fonte>("serifada");
   const [tamanho, setTamanho] = useState<Tamanho>("medio");
   const direto = useDireto();
+  const rolar = useRolar();
   const fazer = useOnde();
   const x = useMotionValue(0);
   const sumindo = useTransform(x, [0, 160], [1, 0.35]);
@@ -286,6 +288,10 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
             <p className="cm-titulo cm-titulo-2">Leitura</p>
             <button type="button" role="switch" aria-checked={direto} className="cm-chave cm-chave-2" onClick={() => definirDireto(!direto)}>
               <span>Modo direto<small>sem passo a passo: código, saídas e respostas já abertos</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
+            </button>
+            {/* a mesma chave das animações (palco/rolar.ts): presa na tela, a rolagem anda a figura; solta, o play */}
+            <button type="button" role="switch" aria-checked={rolar} className="cm-chave cm-chave-2" onClick={() => definirRolar(!rolar)}>
+              <span>Rolar com a página<small>nas animações, a rolagem anda a cena; desligado, você toca pelo play</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
             </button>
             {/* a mesma pergunta da IDE do capítulo (palco/onde.ts): muda os terminais e o "sua vez" */}
             <p className="cm-titulo cm-titulo-2">Onde você faz o projeto</p>
