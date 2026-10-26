@@ -7,8 +7,9 @@ observado: o percurso pode cansar na condução da IDE e perder continuidade dep
 ajustes é ajudar o leitor a continuar e a tomar decisões sozinho, preservando o argumento de cada capítulo.
 
 **Origem.** Review solicitado por Erick em 25/10/2026. Este documento organiza propostas para implementação;
-não registra aprovação das soluções nem fecha etapas em nome do responsável. Revisado no mesmo dia, a pedido do
-Erick: a leitura observada vem logo depois da etapa 1, antes dos ajustes que dependem das hipóteses.
+as aprovações registradas são somente as comunicadas pelo responsável. Revisado no mesmo dia, a pedido do
+Erick: a leitura observada vem logo depois da etapa 1, antes dos ajustes que dependem das hipóteses. Etapa 1 aprovada
+pelo Erick em 25/10/2026; a etapa 2 fica preparada para ele conduzir a observação.
 
 ## O que preservar
 
@@ -21,9 +22,9 @@ Erick: a leitura observada vem logo depois da etapa 1, antes dos ajustes que dep
 
 ## Etapas
 
-As etapas abaixo seguem uma ordem proposta. Só a etapa 1 está detalhada. As seguintes serão detalhadas com a
-evidência e a revisão da anterior. Cada etapa de produto terá um commit em português e evidência real no registro;
-o ok do responsável fecha a etapa. As pendências dos outros planos continuam nos próprios planos.
+As etapas abaixo seguem uma ordem proposta. A etapa 1 está concluída com o ok do Erick. A etapa atual, 2, está
+detalhada abaixo; as seguintes serão detalhadas com a evidência e a revisão da leitura. Cada etapa de produto terá
+um commit em português e evidência real no registro; o ok do responsável fecha a etapa. As pendências dos outros planos continuam nos próprios planos.
 
 A etapa 1 vem primeiro porque corrige o livro afirmando o que não mediu, e isso é regra. A 2 vem antes das outras
 porque elas partem de hipóteses: a leitura observada diz quais delas valem o trabalho, e em que ordem. Uma etapa que a
@@ -32,7 +33,7 @@ leitura não confirmar sai do plano ou fica registrada como descartada.
 | Etapa | Ajuste | Resultado esperado para revisão |
 |---|---|---|
 | 1 | Precisão sobre execução e resultados | A introdução descreve a experiência que a página oferece; a leitura dos resultados distingue decisão medida, risco possível e comportamento observado. |
-| 2 | Leitura observada do percurso | O Victor e mais dois ou três leitores de fora, do público do livro, leem a introdução e os capítulos 1 e 2 no aparelho que usariam (computador, tablet, celular). O registro diz onde cansaram, onde avançaram sem pensar, onde pararam e como retomaram, se terminaram, se pediram o capítulo seguinte e o que não funcionou no aparelho. Cada hipótese das etapas 3 a 7 sai confirmada, descartada ou sem sinal. |
+| 2 | Leitura observada do percurso | Protocolo e ficha para o Erick observar a introdução e os capítulos 1 e 2 no aparelho do leitor, só localmente. Registrar cansaço, passagens sem pensar, parada/retomada, conclusão do 1, vontade de ler o 2, caso novo e defeitos de aparelho. Ainda não há leitores de fora; anotações de Erick e Victor usam a mesma ficha com origem autor. Após as leituras, cada hipótese das etapas 3 a 7 sai confirmada, descartada ou sem sinal. |
 | 3 | Continuidade e conclusão dos exercícios | Quem faz o exercício do capítulo 1 consegue começar o 2 com a referência correta; o critério de conclusão verifica o que a atividade pediu. |
 | 4 | Preparação, recuperação e percurso sem chave | O leitor sabe preparar o ambiente, usar os pontos de volta, encontrar o modo direto e concluir uma atividade sem chamada paga. |
 | 5 | Menos abstração antes da primeira entrega | A introdução e a parte conceitual do capítulo 1 apresentam os conceitos quando um caso da loja pede por eles; as perguntas evitam classificações ambíguas. |
@@ -51,80 +52,80 @@ leitura não confirmar sai do plano ou fica registrada como descartada.
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 1 — precisão sobre execução e resultados
+## Etapa atual: 2 — leitura observada do percurso
 
 ### Pergunta que esta etapa responde
 
-O leitor consegue distinguir o que foi executado e gravado, o que ele executa na própria máquina e o que cada
-medição permite concluir?
+Quem não escreveu o livro chega ao fim do capítulo 1 e quer o 2? Onde cansa, pula, se perde e como retoma?
 
 ### Escopo
 
-Revisar os trechos abaixo, com as implementações e as saídas existentes como fonte:
+Preparar e, quando houver leitores, registrar a observação do percurso da introdução e dos capítulos 1 e 2.
+**Esta entrega prepara os materiais; não realiza leitura nem preenche uma sessão. Quem observa os leitores é o Erick.**
 
-1. **Introdução, “Um livro que executa”** (`00-introducao.mdx`, linhas 39 e 41). Hoje: "o terminal executa quando
-   você aperta o botão" e "antes de cada versão do livro ir para o ar, tudo é executado de novo". O código é executado
-   de novo, mas as respostas do modelo são repetidas das gravações (`scripts/saidas.py`). Descrever a exploração de
-   execuções registradas na página e a execução do projeto na máquina do leitor. Alinhar a descrição das figuras ao
-   controle que o leitor tem. Explicar a conferência das saídas sem sugerir que toda publicação faz novas chamadas ao
-   modelo ou comprova sua qualidade atual no serviço externo.
-2. **Capítulo 1, “O que ficou de pé”** (`01-o-problema-e-o-contrato.mdx`, linha 176). O texto já põe "respondeu"
-   entre aspas e fala em "pior erro possível": é um ajuste de palavra, não uma correção. A escolha indevida no R12 é
-   medida; a exposição de dados é uma consequência possível, e a frase deve deixar isso claro.
-3. **Capítulo 2, “O que ficou de pé” e resumo** (`02-o-primeiro-agente.mdx`, linhas 124 e 139). É o erro de fato:
-   a linha 124 diz que o decisor de 40% "mostrou a compra de uma pessoa para outra", e esse decisor só devolve uma
-   decisão, sem texto. Corrigir. Descrever o comportamento conservador observado nos 20 casos, sem transformá-lo numa
-   garantia geral de segurança. Preservar o gancho das ferramentas com essa mesma precisão.
-4. **Textos da IDE relacionados aos resultados.** Conferir `passos/01.json`, `passos/02.json` e as notas dos
-   roteiros, para que a explicação guiada e o texto principal sustentem a mesma conclusão.
+Decisões comunicadas pelo Erick em 25/10/2026:
+
+- Por enquanto, tudo só na máquina e na rede local: sem hospedagem, túnel ou endereço público.
+- Ainda não há leitores de fora. Quando houver anotações do Erick, entram na mesma ficha dos leitores, marcadas
+  como **autor**. A leitura em voz alta com o Victor segue `docs/PRINCIPIOS.md` e também é marcada como autor.
+  As fichas dos autores não substituem a evidência de quem não escreveu o livro.
+
+Preparar protocolo, ficha, um caso novo com resposta sustentada pelos dados do projeto, mapa de hipóteses das
+etapas 3 a 7 e um critério de seguir ou mudar marcado **PROPOSTA**, para o Erick decidir antes da leitura. O leitor
+lê em voz alta no aparelho que usaria; o observador não explica além do que o livro dá. A sessão registra o que ele
+faz, não apenas a opinião final. O caso novo não entra em `referencia.jsonl` nem altera a régua oficial.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `livros/ciclo-de-vida/capitulos/00-introducao.mdx` | A promessa de execução e interação. |
-| `livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx` | A interpretação do decisor que sempre responde. |
-| `livros/ciclo-de-vida/capitulos/02-o-primeiro-agente.mdx` | A interpretação dos 30% e a ligação com o próximo capítulo. |
-| `livros/ciclo-de-vida/passos/{01,02}.json` e `roteiros/{01,02}.json` | As explicações que o leitor encontra dentro da IDE. |
-| `livros/ciclo-de-vida/projeto/baseline.py`, `agente.py` e `medir.py` | O que a régua conta e o que o agente executa. Fontes de conferência. |
-| `livros/ciclo-de-vida/saidas.json` e `gravacoes/r02-medir.json` | Os resultados e respostas registrados. Fontes de conferência. |
-| `src/components/livro/ide/IdeCapitulo.tsx` e `scripts/saidas.py` | Como a página apresenta a execução e como as saídas são conferidas. Fontes de conferência. |
+| [protocolo.md](../leituras/protocolo.md) | Preparação local, duração, condução sem explicação adicional, travas, parada, retomada e encerramento. |
+| [ficha.md](../leituras/ficha.md) | Modelo único para leitor e autor, com origem explícita, versão, aparelho, eventos por seção e resultados ainda em branco. |
+| [caso-novo.md](../leituras/caso-novo.md) | Cartão separado da solução do observador; decisão, justificativa e fontes nos dados reais da loja fictícia. |
+| [hipoteses.md](../leituras/hipoteses.md) | Evidência a favor, contra ou sem sinal para cada hipótese das etapas 3 a 7, sem aprovar as soluções. |
+| [sinal.md](../leituras/sinal.md) | PROPOSTA de limiares anteriores à leitura; decisão do Erick pendente. |
+| `livros/ciclo-de-vida/capitulos/{00,01,02}-*.mdx`, `passos/` e `roteiros/` | O percurso observado, incluindo exercício e IDE, sem ajustes nesta preparação. |
+| `livros/ciclo-de-vida/projeto/dados/` e `referencia.jsonl` | Fontes do caso novo e conferência de que a combinação não está na referência. |
+| `scripts/dev.sh`, `package.json`, `astro.config.mjs` e `README.md` | Comandos existentes e funcionamento real do acesso na máquina e na rede local. |
+| `docs/PRINCIPIOS.md` e `docs/RITMO.md` | Leitura em voz alta com o Victor; distinguir ação do leitor de simples passagem ou exibição. |
 
 ### Critérios de revisão
 
-- Na introdução, fica claro o que o leitor faz na página e na própria máquina.
-- A conferência das gravações é descrita de acordo com seu alcance real.
-- O texto não afirma que o decisor fixo produziu uma resposta ou vazou dados.
-- As conclusões sobre o primeiro agente se referem à execução e aos casos observados.
-- A diferença entre acerto da decisão, qualidade da resposta e segurança continua compreensível.
-- O capítulo continua defendendo uma ideia: medir a decisão ajuda, mas essa medida tem limites.
+- O protocolo pode ser seguido pelo Erick sem explicar o livro ao leitor; prevê duração, travas e encerramento.
+- A ficha distingue autor de leitor que não escreveu o livro, ação de interpretação, não alcançado de erro,
+  pedido espontâneo do 2 de resposta à pergunta final, desistência de limite de tempo e impedimento técnico.
+- Aparelho, sistema, navegador, reduzir movimento e modo de leitura ficam registrados junto dos defeitos.
+- Parada e retomada, conclusão do capítulo 1, vontade de continuar e solução do caso novo têm campo e evidência.
+- O caso usa os dados do projeto, não consta na referência e tem resposta esperada separada da parte do leitor.
+- Cada hipótese das etapas 3 a 7 tem observação discriminante; falta de oportunidade fica como sem sinal.
+- Os limiares de seguir ou mudar são PROPOSTA, sem decisão tomada pelo modelo; autores ficam fora da contagem.
+- Os comandos de abertura foram conferidos no script e no navegador, sem infraestrutura pública ou script novo.
 
 ### Evidência e verificação
 
-- Apresentar os trechos alterados com antes/depois e indicar a fonte que sustenta cada correção.
-- Conferir os trechos na página montada, incluindo as explicações relacionadas dentro da IDE.
-- Executar `npm run ritmo` e comparar com os avisos anteriores: três na introdução, dois no capítulo 1 e nenhum
-  no capítulo 2. O contador não substitui a leitura do texto.
-- Executar `npm test`, usando as gravações existentes. Avaliar falhas relacionadas às alterações e concluir os
-  checks exigidos pelo repositório. Uma correção textual simples não pede teste novo que apenas repita sua frase.
-- Registrar um commit de produto em português, as evidências e o estado “aguardando revisão”. A etapa fecha
-  somente com o ok do responsável.
+Nesta preparação, entregar os cinco materiais, a conferência do caso contra os dados e a referência, e o teste de
+acesso local no navegador. A evidência técnica vai no [relatório da preparação](../relatorios/revisao-do-percurso-inicial-etapa-2-preparacao.md).
+Nenhuma ficha está preenchida; os testes do software não são leitura observada.
+
+Depois, o Erick registra as sessões e relaciona os eventos às hipóteses; aplica somente o critério que tiver decidido
+antes de observar. Sem leitores de fora ou sem oportunidade de observar uma hipótese, registrar sem sinal. As
+anotações dos autores continuam identificadas e separadas do denominador. O responsável decide se uma hipótese
+confirma um próximo ajuste, é descartada ou precisa de mais observação. A etapa só fecha com o ok do Erick.
 
 ### Limite da etapa
 
-A etapa trata da precisão das explicações. A leitura observada, a escolha de como preservar a régua depois do
-exercício, a preparação do ambiente e a redução de interações pertencem às próximas etapas; a voz dos autores corre
-em paralelo. Chamadas pagas continuam
-dependendo do ok dos autores, conforme o `AGENTS.md`; esta etapa usa as gravações existentes.
+Agora, preparar apenas: sem recrutar, contatar ou observar leitores pelo agente, simular respostas, preencher fichas
+com achados inventados ou concluir redução de abandono. Não detalhar nem executar as etapas 3 a 7. Não publicar,
+hospedar, criar túnel, script novo, instrumentação automática, chamada paga ou alteração do produto para preparar a
+leitura. Defeitos de aparelho, quando relatados e reproduzidos, seguem separados conforme o plano.
 
 ## Questões para detalhar nas próximas etapas
 
-- **Etapa 2:** observar o que o leitor faz, onde avança sem pensar, como retoma e como resolve um caso novo.
-  Leitores de fora valem mais que conhecidos dos autores; ninguém recebe explicação além do que o livro dá. A página
-  precisa estar num endereço fixo (o túnel muda de endereço e depende da máquina ligada); publicar pede a decisão
-  escrita do responsável. Decidir antes da leitura o que conta como sinal: por exemplo, quantos terminam o capítulo 1
-  e quantos pedem o 2. Registrar observações e dúvidas, sem concluir redução de abandono apenas pelos testes ou pela
-  contagem de cliques.
+- **Etapa 2 (detalhada acima):** observar o que o leitor faz, onde avança sem pensar, como retoma e como resolve
+  um caso novo. Em 25/10/2026, Erick decidiu preparar tudo só localmente; a proposta anterior de endereço fixo público
+  fica fora desta preparação. Ainda não há leitores de fora; anotações dos autores usam a mesma ficha com origem
+  autor, sem substituir esses leitores. O critério anterior à leitura está em `docs/leituras/sinal.md` como PROPOSTA
+  pendente de decisão. Registrar observações e dúvidas, sem concluir redução de abandono por testes ou cliques.
 - **Etapa 3:** a proposta inicial é fazer os casos adicionais numa cópia da referência, preservando a comparação
   oficial. Conferir o projeto real antes de definir os arquivos e os critérios de conclusão. Com os cinco casos
   pedidos hoje, a referência passa a 25 perguntas e a nota de partida passa a 6/25 (24%).
@@ -146,5 +147,7 @@ dependendo do ok dos autores, conforme o `AGENTS.md`; esta etapa usa as gravaç�
 | — | — | Plano revisado em 25/10/2026: leitura observada como etapa 2, voz dos autores e defeitos de aparelho em paralelo, linhas no escopo da etapa 1. | — |
 | 1 | `aa3784f` | Precisão sobre execução e resultados; [relatório com antes/depois e fontes](../relatorios/revisao-do-percurso-inicial-etapa-1.md); ritmo 3/2/0 avisos, como antes; npm test: 29 + 16 saídas conferidas, 112 testes do livro e 5 da gravação passaram; texto e IDE conferidos no navegador. | Erick, 25/10/2026 |
 | 1 (correção) | `7513682` | Revisão de redação solicitada pelo Erick em 25/10/2026: [antes/depois e fontes somente dos trechos corrigidos](../relatorios/revisao-do-percurso-inicial-etapa-1-correcao.md); ritmo 3/2/0 avisos; npm test: 29 + 16 saídas conferidas, 112 testes do livro e 5 da gravação passaram; HTML e dados da IDE montados conferidos. | Erick, 25/10/2026 |
+| 1 (fecho) | `3a4e367` | “Sem dados da loja” restituído no resumo; npm test: 112 testes do livro e 5 da gravação passaram, 29 + 16 saídas conferidas. | Erick, 25/10/2026 |
+| 2 (preparação) | este commit | Protocolo, ficha, caso novo, hipóteses e sinal PROPOSTA preparados para uso local; [relatório técnico](../relatorios/revisao-do-percurso-inicial-etapa-2-preparacao.md). Nenhuma sessão realizada; sem leitores de fora. | aguardando revisão da preparação; leitura pelo Erick pendente |
 
-(redação: GPT-6; revisão: Claude Opus 5.5)
+(redação: GPT-6; revisão do plano inicial: Claude Opus 5.5)
