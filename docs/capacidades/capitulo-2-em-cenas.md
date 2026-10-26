@@ -59,6 +59,6 @@ intuitivo", e a repetição cansa (26/10/2026).
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `7927299` | primeira versão, com cenas e pergunta, substituída pela de baixo; `npm test`: 129 testes do livro (5 novos, `roteiro-do-agente.test.mjs`) e 5 da gravação, 30 + 16 saídas conferidas; 2.1 com 57 e 95 palavras entre as ações; a animação da introdução conferida depois da mudança na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) no computador e em 390 px, rolando com a roda do mouse e clicando no balcão, da chegada ao grafo. | aguardando revisão |
-| 1 (refeita) | COMMIT | A rolagem como agulha e os balões, sem pergunta; `npm test`: 129 testes do livro e 5 da gravação, 30 + 16 saídas conferidas; a animação da introdução conferida depois dos consertos na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) ao longo do trilho (8 % a 100 %), no computador e em 390 px, rolando com a roda do mouse. | aguardando revisão |
+| 1 (refeita) | `35c3286` | A rolagem como agulha e os balões, sem pergunta; `npm test`: 129 testes do livro e 5 da gravação, 30 + 16 saídas conferidas; a animação da introdução conferida depois dos consertos na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) ao longo do trilho (8 % a 100 %), no computador e em 390 px, rolando com a roda do mouse. | aguardando revisão |
 
 (redação: Claude Opus 5.5)
