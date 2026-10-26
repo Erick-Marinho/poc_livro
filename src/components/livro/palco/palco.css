@@ -95,3 +95,12 @@ astro-island[ssr] .palco-controles, astro-island[ssr] .palco-segmentos { visibil
   .ac-avancar button:hover { border-color: var(--acento) }
   .ac-avancar button:disabled { cursor: default; opacity: .65 }
   .ac-anuncio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+
+/* as animações que andam com a rolagem (RolaCena.tsx): o trilho alto, e a figura presa na tela enquanto ele passa */
+.rc-trilho { position: relative }
+.rc-quadro { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 10px }
+.rc-preso { position: sticky; top: 58px }
+.rc-video { margin-inline: auto }
+.rc-role { margin: 6px 0 0; text-align: center; font: 13px var(--f-ui); color: var(--ink-2); transition: opacity .3s }
+.rc-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap }
+@media (max-width: 640px) { .rc-preso { top: 50px } .rc-quadro { padding: 6px } }

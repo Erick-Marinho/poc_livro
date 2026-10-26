@@ -19,9 +19,18 @@ export type Balcao = { id: string; rotulo: string; modelo: "escreve" | "não"; p
 export type Mensagem = { id: string; pergunta: string; balcao: string };
 
 export const FPS = 30;
-/** as cenas, em segundos: a chegada, o primeiro caminho, o segundo, e o roteiro virando grafo */
-export const CENAS = [{ de: 0, ate: 3.5 }, { de: 3.5, ate: 9 }, { de: 9, ate: 13.5 }, { de: 13.5, ate: 18 }];
-export const DURACAO = Math.round(CENAS.at(-1)!.ate * FPS);
+/** a animação inteira, em segundos; a rolagem a percorre de ponta a ponta */
+export const SEGUNDOS = 21;
+export const DURACAO = SEGUNDOS * FPS;
+/**
+ * Os momentos da animação, em segundos: a primeira mensagem entra (0 a 2), o substituto decide (2 a 3), ela vai ao
+ * balcão e ao fim (3 a 6,5); a segunda entra e faz o mesmo (9,5 a 14); de 15 a 17, o roteiro vira o grafo.
+ */
+export const T = {
+  a: { entra: [0.4, 2], decide: 3, balcao: [3.2, 5], fim: [5.6, 6.6] },
+  b: { troca: [9.4, 10], entra: [10.2, 11.4], decide: 11.8, balcao: [12, 13.2], fim: [13.6, 14.4] },
+  grafo: [15, 16.6],
+};
 
 export function montarRoteiro({ arestas, nos, referencia, mensagens }: Entrada) {
   const s = setas(arestas.saida);
@@ -51,16 +60,24 @@ export type Roteiro = ReturnType<typeof montarRoteiro>;
 const curta = (p: string) => p.replace(/\s+\S+@\S+$/, "").replace(/\s+/g, " ").trim();
 const rotulo = (r: Roteiro, id: string) => r.balcoes.find((b) => b.id === id)!.rotulo;
 
-/** A legenda de cada cena, para a faixa do vídeo e para o leitor de tela. */
-export function legenda(r: Roteiro, k: number): string {
+/** O que o balão aponta: o substituto (que vira o nó decidir), o balcão de uma mensagem, a ficha (o estado) ou as setas. */
+export type Alvo = "decidir" | "balcao-a" | "balcao-b" | "ficha" | "setas";
+export type Balao = { de: number; ate: number; alvo: Alvo; texto: string };
+
+/** Os balões, na ordem: um por vez, cada um no seu trecho da animação. São também o texto da figura para quem não a vê. */
+export function baloes(r: Roteiro): Balao[] {
   const [a, b] = r.mensagens;
   const ba = r.balcoes.find((x) => x.id === a.balcao)!, bb = r.balcoes.find((x) => x.id === b.balcao)!;
+  const como = (x: Balcao) => x.modelo === "não" ? "uma frase fixa, e o caso vai para uma pessoa da equipe" : "o modelo escreve a resposta";
   return [
-    `Chega uma mensagem: “${curta(a.pergunta).replace(/\.$/, "")}”. O substituto lê e decide para qual balcão ela vai.`,
-    `Ele decide uma vez e segue um caminho só: ${ba.rotulo}. ${ba.modelo === "não" ? "Neste balcão, uma frase fixa: o caso vai para uma pessoa da equipe." : "Neste balcão, o modelo escreve a resposta."}`,
-    `Outra mensagem, outro balcão: ${bb.rotulo}. ${bb.modelo === "não" ? "Uma frase fixa." : "O modelo escreve a resposta."} O roteiro é o mesmo.`,
-    "Esse roteiro, escrito como desenho, é um grafo: cada passo é um nó, as setas dizem o que vem depois, e a ficha que passa de nó em nó é o estado.",
-  ][k];
+    { de: 1.2, ate: 3.2, alvo: "decidir", texto: `Chega uma mensagem: “${curta(a.pergunta).replace(/\.$/, "")}”. O substituto lê e decide para qual balcão ela vai.` },
+    { de: 3.2, ate: 6.4, alvo: "balcao-a", texto: `Ele decide uma vez e segue um caminho só: ${ba.rotulo}. Neste balcão, ${como(ba)}.` },
+    { de: 6.4, ate: 9.6, alvo: "ficha", texto: "Uma ficha vai junto, e cada passo escreve nela: a pergunta, a decisão, a resposta." },
+    { de: 9.6, ate: 15, alvo: "balcao-b", texto: `Outra mensagem, outro balcão: ${bb.rotulo}. Neste, ${como(bb)}. O roteiro é o mesmo.` },
+    { de: 15, ate: 17, alvo: "decidir", texto: `Escrito como desenho, o roteiro é um grafo. Cada passo é um nó: o substituto é o nó ${r.rotuloDecide}, onde o modelo decide.` },
+    { de: 17, ate: 19, alvo: "setas", texto: "As setas dizem o que vem depois. Estas escolhem: a decisão manda a mensagem por um caminho só." },
+    { de: 19, ate: SEGUNDOS + 1, alvo: "ficha", texto: "E a ficha é o estado: o que passa de nó em nó, do começo ao fim." },
+  ];
 }
 
 export { curta, rotulo };

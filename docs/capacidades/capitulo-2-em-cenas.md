@@ -15,15 +15,16 @@ intuitivo", e a repetição cansa (26/10/2026).
 - (1) O que a figura mostra do agente vem do projeto real: as setas, da saída gravada `grafo-02`; os nós, do
   `figuras/grafo-02.json`; as mensagens e decisões, do `referencia.jsonl`. O que for ilustração diz que é.
 - (1) No máximo um pare e pense por seção; a decisão do leitor passa a acontecer dentro da figura.
-- (26/10/2026, Erick) A escolha fica embaixo do vídeo, perto do botão, e escolher já toca a cena seguinte ("marquei a
-  opção e esperei algo"). Rolar a página também avança as cenas: a figura fica presa na tela enquanto o leitor rola.
-- (1) A base `AvancaCena` ganha, opcionais: `trava` (uma cena espera o leitor escolher), `irPara` (pedir de fora para
-  tocar até uma cena), `abaixo` (entre o vídeo e o botão) e `aoMudar`. Ela também liga o ouvinte de quadros quando o
-  Player existe (antes, só na montagem, e a cena tocava sem parar), dispensa as trilhas de áudio (nenhuma figura tem
-  som) e, quando o pedido não vem de um clique, anda os quadros pelo `seekTo`, porque o navegador não deixa o Player
-  dar play só com a rolagem.
-- (1) Dois desenhos: o largo, com a legenda dentro do vídeo; e o estreito (até 640 px), com letra maior e a legenda
-  fora do vídeo, para a figura caber na tela do celular enquanto o leitor rola.
+- (26/10/2026, Erick) A primeira versão (cenas que tocavam sozinhas depois de um avanço, e uma pergunta do balcão)
+  não ficou boa com a rolagem. Refeita: sem pergunta e sem botão, a rolagem da página é a agulha da animação, para a
+  frente e para trás, com um pouco de inércia; as explicações são balões, um por vez, apontando para o que acontece.
+- (1) Uma base nova, `palco/RolaCena.tsx`: a figura presa na tela por um trilho de rolagem, a agulha seguindo a
+  rolagem pelo `seekTo` (que o navegador deixa sem clique), o aviso "role" até a primeira rolagem, o quadro final no
+  modo direto e o texto dos balões para leitor de tela. As próximas figuras do capítulo usam a mesma base.
+- (1) Na base antiga, `AvancaCena`, dois consertos que valem para todas: o ouvinte de quadros se liga quando o Player
+  existe (antes, só na montagem, e a cena podia tocar sem parar) e o Player vai sem trilhas de áudio.
+- (1) Dois desenhos: o largo, com os balões ao lado, ligados por uma linha ao que apontam; e o estreito (até 640 px),
+  com letra maior e o balão embaixo, para a figura caber inteira na tela do celular.
 
 ## Etapas
 
@@ -42,21 +43,22 @@ intuitivo", e a repetição cansa (26/10/2026).
   até o balcão de abrir chamado, e uma ficha vai junto, preenchendo a pergunta, a decisão e a resposta. Depois, o CPF
   da prima (R15) vai a outro balcão, pelo mesmo roteiro. Na última cena, o roteiro vira o grafo: o substituto é o nó
   `decidir`, os balcões são os nós dos caminhos, as setas que escolhem aparecem, e a ficha é o estado.
-- Depois de a mensagem chegar ao substituto, o leitor escolhe o balcão, logo embaixo do vídeo; a escolha toca o
-  caminho, e a cena diz se ele escolheu o mesmo do contrato.
+- O leitor rola, e a animação anda com ele; os balões explicam cada momento (a chegada, o caminho, a ficha, a
+  segunda mensagem, o nó, as setas que escolhem, o estado).
 - O texto do 2.1 vira a cena e a ideia (desenhar antes de chamar o modelo); fica um pare e pense, o do porquê do
   grafo. A figura animada toma o lugar do `GrafoAgente` em modo desenho no 2.1; o modo caminhos, no 2.6, fica.
 
 ### Verificação
 
 - Teste da montagem: os nós e as setas da figura são os do grafo real; as mensagens vão ao balcão da decisão do
-  contrato; uma figura que descreva nó que o grafo não tem não monta.
+  contrato, e os balões dizem qual; os balões se sucedem sem buraco; uma figura com nó que o grafo não tem não monta.
 - `npm run ritmo`, `npm test` e capturas no computador e no celular, no começo, depois da escolha e no quadro final.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `7927299` | `npm test`: 129 testes do livro (5 novos, `roteiro-do-agente.test.mjs`) e 5 da gravação, 30 + 16 saídas conferidas; 2.1 com 57 e 95 palavras entre as ações; a animação da introdução conferida depois da mudança na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) no computador e em 390 px, rolando com a roda do mouse e clicando no balcão, da chegada ao grafo. | aguardando revisão |
+| 1 | `7927299` | primeira versão, com cenas e pergunta, substituída pela de baixo; `npm test`: 129 testes do livro (5 novos, `roteiro-do-agente.test.mjs`) e 5 da gravação, 30 + 16 saídas conferidas; 2.1 com 57 e 95 palavras entre as ações; a animação da introdução conferida depois da mudança na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) no computador e em 390 px, rolando com a roda do mouse e clicando no balcão, da chegada ao grafo. | aguardando revisão |
+| 1 (refeita) | COMMIT | A rolagem como agulha e os balões, sem pergunta; `npm test`: 129 testes do livro e 5 da gravação, 30 + 16 saídas conferidas; a animação da introdução conferida depois dos consertos na base; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) ao longo do trilho (8 % a 100 %), no computador e em 390 px, rolando com a roda do mouse. | aguardando revisão |
 
 (redação: Claude Opus 5.5)
