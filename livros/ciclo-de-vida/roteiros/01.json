@@ -269,11 +269,11 @@
       "pergunta_saida": {
         "texto": "Por que o caso com id R7 não entrou?",
         "opcoes": [
-          "Porque o id exige R seguido de dois dígitos, e R7 tem só um.",
           "Porque o pydantic não aceita letras em um id.",
+          "Porque o id exige R seguido de dois dígitos, e R7 tem só um.",
           "Porque a decisão responder não serve para perguntas de pedido."
         ],
-        "certa": 0,
+        "certa": 1,
         "evidencia": "String should match pattern '^R\\d{2}$'",
         "porque": "A saída diz `String should match pattern '^R\\d{2}$'`. No `Caso`, `Field(pattern=r\"^R\\d{2}$\")` exige R e dois dígitos; R7 tem só um."
       },
@@ -574,11 +574,11 @@
       "pergunta_saida": {
         "texto": "Para que os testes vão precisar enxergar esses pedidos?",
         "opcoes": [
-          "Para conferir cada caso com os dados, inclusive se o e-mail é do dono.",
           "Para completar automaticamente os campos ausentes de cada caso.",
-          "Para escolher a decisão esperada no lugar de quem escreveu a referência."
+          "Para escolher a decisão esperada no lugar de quem escreveu a referência.",
+          "Para conferir cada caso com os dados, inclusive se o e-mail é do dono."
         ],
-        "certa": 0,
+        "certa": 2,
         "evidencia": "6 pedidos na loja",
         "porque": "A saída confirma `6 pedidos na loja`. Em `test_referencia.py`, `PEDIDOS`, `EMAIL` e `dono()` permitem ao teste `test_so_responde_sobre_pedido_quando_o_email_bate` comparar cada caso com o dono real do pedido."
       }
@@ -765,11 +765,11 @@
       "pergunta_saida": {
         "texto": "Depois de corrigir o R12, o que os sete testes verdes sustentam?",
         "opcoes": [
-          "Que as vinte referências passam pelas regras que as conferem contra a loja.",
           "Só que o R12 mudou de responder para recusar.",
+          "Que as vinte referências passam pelas regras que as conferem contra a loja.",
           "Que o decisor do próximo passo acertará as vinte perguntas."
         ],
-        "certa": 0,
+        "certa": 1,
         "evidencia": "7 passed in 0.28s",
         "porque": "A saída termina em `7 passed in 0.28s`. Em `test_referencia.py`, os sete testes usam `CASOS = carregar_referencia()` e conferem formato e coerência com os dados da loja; não executam o decisor do passo seguinte."
       }

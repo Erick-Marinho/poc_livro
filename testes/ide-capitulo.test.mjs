@@ -109,6 +109,10 @@ test("cinco confirmações viram perguntas que interpretam a saída e bloqueiam 
   const ids = ["r01-caso-id-torto", "r01-tres-casos", "r01-seis-pedidos", "r01-testes-passam", "r01-sempre-passar"];
   const comPergunta = acoes.filter((a) => a.tipo === "rodar" && a.perguntaSaida);
   assert.deepEqual(comPergunta.map((a) => a.id), ids);
+  const posicoesCertas = comPergunta.map((a) => a.perguntaSaida.certa);
+  assert.deepEqual(posicoesCertas, [1, 0, 2, 1, 0], "as posições são estáveis, sem sorteio na página");
+  assert.ok(new Set(posicoesCertas).size > 1, "as respostas certas não ficam todas na mesma posição");
+  assert.ok(posicoesCertas.slice(1).every((certa, i) => certa !== posicoesCertas[i]), "perguntas seguidas não repetem a posição certa");
   for (const a of comPergunta) {
     assert.equal(perguntaSustentada(saidas[a.id].saida, a.perguntaSaida), true, a.id);
     assert.equal(respostaEntregue(saidas[a.id].saida, a.nota, a.perguntaSaida), false, `${a.id}: a prova não entrega a conclusão`);
@@ -119,9 +123,9 @@ test("cinco confirmações viram perguntas que interpretam a saída e bloqueiam 
   }
   const semProva = entrada(); semProva.roteiro.passos[11].pergunta_saida.evidencia = "uma prova que não saiu";
   await assert.rejects(montarIde(semProva), /evidência.*não aparece na saída gravada/);
-  const entregueNaSaida = entrada(); entregueNaSaida.roteiro.passos[16].pergunta_saida.opcoes[0] = "3 perguntas de referência";
+  const entregueNaSaida = entrada(); entregueNaSaida.roteiro.passos[16].pergunta_saida.opcoes[entregueNaSaida.roteiro.passos[16].pergunta_saida.certa] = "3 perguntas de referência";
   await assert.rejects(montarIde(entregueNaSaida), /resposta certa.*já está escrita na saída ou na nota/);
-  const entregueNaNota = entrada(); entregueNaNota.roteiro.passos[28].pergunta_saida.opcoes[0] = entregueNaNota.roteiro.passos[28].nota;
+  const entregueNaNota = entrada(); entregueNaNota.roteiro.passos[28].pergunta_saida.opcoes[entregueNaNota.roteiro.passos[28].pergunta_saida.certa] = entregueNaNota.roteiro.passos[28].nota;
   await assert.rejects(montarIde(entregueNaNota), /resposta certa.*já está escrita na saída ou na nota/);
 });
 

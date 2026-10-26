@@ -24,9 +24,9 @@ e a única leitura acontece no fim, com o Victor, coautor, registrado como autor
 
 ## Etapas
 
-As etapas 1, 3, 4 e 5 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A etapa
-6 foi dividida: a 6a conta o percurso atual e oferece alternativas; a 6b implementa somente a alternativa que Erick
-escolher. As etapas 6 e 7 seguem sem esperar observação. Depois delas, Victor revisa e lê o percurso com o kit
+As etapas 1, 3, 4, 5 e 6 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A
+etapa 6 foi dividida: a 6a contou e propôs; a 6b implementou A e C, aprovadas em 26/10/2026. A etapa 7 segue sem
+esperar observação. Depois dela, Victor revisa e lê o percurso com o kit
 preparado; essa é a única leitura do plano. Cada etapa de produto tem um commit em português e evidência no
 registro; só o ok do responsável fecha a etapa.
 
@@ -58,7 +58,7 @@ e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
 - **6a — contar e propor (concluída):** mediu o percurso, localizou retomadas e comparou três alternativas sem
   mudar o produto.
-- **6b — implementar (atual):** junta as propostas A e C, escolhidas por Erick em 26/10/2026. A proposta B fica
+- **6b — implementar (concluída):** junta as propostas A e C, escolhidas por Erick em 26/10/2026. A proposta B fica
   descartada.
 
 ### Pergunta que esta etapa responde
@@ -82,6 +82,8 @@ da IDE.
   gravada: pergunta o que ela prova, ainda não prova ou por que aconteceu. A resposta do leitor é a passagem; no
   modo direto, a pergunta não aparece. Na revisão de 26/10/2026, Erick recusou perguntas que apenas pediam para ler
   o texto já visível.
+- Erick aprovou em 26/10/2026 o texto das cinco perguntas, suas opções, respostas e explicações. As respostas certas
+  ficam em posições fixas e variadas, sem repetir a posição em perguntas seguidas.
 - Depois dos passos 4, 10, 16 e 18, a IA avisa que aquele é um bom lugar para parar, nomeia a entrega e dá a tag de
   volta, sem interromper quem prefere seguir.
 - Permanecem as apostas, o “modificar antes de criar”, as dúvidas, as perguntas de bloco, o teto de cerca de 15
@@ -114,6 +116,8 @@ da IDE.
 - As cinco perguntas bloqueiam somente o guiado; cada uma aponta uma evidência da saída, mas a opção certa não está
   escrita literalmente nela nem na nota. As alternativas exigem decidir o que a prova sustenta, e responder já
   leva ao quadro seguinte. O modo direto não mostra essas perguntas.
+- As posições certas não são todas iguais nem se repetem em duas perguntas seguidas; a ordem mora nos dados, sem
+  sorteio na página.
 - Nenhum quadro acrescenta mais que cerca de 15 linhas novas; apostas, variantes, dúvidas e erros permanecem.
 - Os passos 4, 10, 16 e 18 encerram com aviso curto, entrega e a tag decidida, sem impedir a continuação.
 - A contagem passa de 79 para cerca de 53 passagens mecânicas nos modos guiados e de 28 para 33 decisões principais;
@@ -169,8 +173,8 @@ abrir túnel ou inventar opinião dos autores.
 | 5 (correção) | `877fbdb` | [Antes/depois somente dos trechos corrigidos](../relatorios/revisao-do-percurso-inicial-etapa-5-correcao.md): glosas opcionais antes do mapa, nomes retirados da introdução, porquê do contrato e texto enxugado; ritmo 366→294, 246→246, 323→209 e 214→214; npm test com 30 + 16 saídas, 116 testes do livro e 5 da gravação; página conferida no computador e a 360 px, sem chamada paga. | Erick, 26/10/2026 |
 | 5 (segunda correção) | `c814914` | [Antes/depois somente dos três ajustes](../relatorios/revisao-do-percurso-inicial-etapa-5-correcao-2.md): glosas sem palavras das perguntas, duas frases restituídas e dois começos separados; ponto de volta conferido na cópia do leitor; ritmo 76→76, 294→308 e 209→239; npm test com 30 + 16 saídas, 116 testes do livro e 5 da gravação, sem chamada paga. | Erick, 26/10/2026 |
 | 5 (ajuste das glosas) | `f499020` | Glosas restauradas de `877fbdb`, exceto Avaliar; Observar sem custo nem gasto. npm test: 30 + 16 saídas conferidas, 116 testes do livro e 5 da gravação passaram. | Erick, 26/10/2026 |
-| 6a | `8f4bf05` | [Contagem reproduzível e três propostas, sem mudança de produto](../relatorios/revisao-do-percurso-inicial-etapa-6a.md): 79 passagens nos modos guiados e 58 no direto; 28 decisões ou investigações principais e 12 opcionais; quatro pontos de parada; script conferido; npm test com 30 + 16 saídas, 116 testes do livro e 5 da gravação. | aguardando a escolha do Erick |
-| 6b | `91b4659` | [A e C implementadas, com perguntas, paradas e 18 capturas](../relatorios/revisao-do-percurso-inicial-etapa-6b.md): passagens mecânicas guiadas 79 → 53 e decisões principais 28 → 33; modo direto em 58 e 4; saídas e leitor conferidos; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação. | aguardando revisão |
-| 6b (correção) | `100525d` | [As cinco perguntas passaram de leitura literal a interpretação da prova](../relatorios/revisao-do-percurso-inicial-etapa-6b-correcao.md): 5 de 5 com evidência na saída e conclusão ausente da saída e da nota; contagem mantida em 79 → 53 passagens e 28 → 33 decisões; 30 saídas conferidas; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação; quadro dos cinco blocos capturado no computador e a 360 px. | aguardando revisão |
+| 6a | `8f4bf05` | [Contagem reproduzível e três propostas, sem mudança de produto](../relatorios/revisao-do-percurso-inicial-etapa-6a.md): 79 passagens nos modos guiados e 58 no direto; 28 decisões ou investigações principais e 12 opcionais; quatro pontos de parada; script conferido; npm test com 30 + 16 saídas, 116 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
+| 6b | `91b4659` | [A e C implementadas, com perguntas, paradas e 18 capturas](../relatorios/revisao-do-percurso-inicial-etapa-6b.md): passagens mecânicas guiadas 79 → 53 e decisões principais 28 → 33; modo direto em 58 e 4; saídas e leitor conferidos; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação. | Erick, 26/10/2026 |
+| 6b (correção) | `100525d` | [As cinco perguntas passaram de leitura literal a interpretação da prova](../relatorios/revisao-do-percurso-inicial-etapa-6b-correcao.md): 5 de 5 com evidência na saída e conclusão ausente da saída e da nota; contagem mantida em 79 → 53 passagens e 28 → 33 decisões; 30 saídas conferidas; npm test com 30 + 16 saídas, 120 testes do livro e 5 da gravação; quadro dos cinco blocos capturado no computador e a 360 px. | Erick, 26/10/2026 |
 
 (redação: GPT-6; revisão do plano inicial: Claude Opus 5.5)
