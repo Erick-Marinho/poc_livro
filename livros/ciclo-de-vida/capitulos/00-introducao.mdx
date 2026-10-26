@@ -36,11 +36,11 @@ Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro que 
 
 ## Um livro que executa
 
-Este não é um livro para só ler. Ao longo dos capítulos, o código vai se montando na página, as figuras se mexem quando você chega nelas, e o terminal executa quando você aperta o botão.
+Este não é um livro para só ler. Na página, você avança a construção do código, faz previsões e explora saídas gravadas do projeto real; o terminal mostra essas saídas quando você digita o comando do passo. Nas figuras, você decide, avança e compara caminhos. Na sua máquina, você escreve o código e executa os comandos no próprio terminal.
 
-Por trás disso há uma regra que levamos a sério: o livro não pode mentir. Todo trecho de código que aparece aqui é lido do arquivo real do projeto, e não de uma cópia que alguém esqueceu de atualizar. Toda saída de terminal foi gravada executando esse código. E antes de cada versão do livro ir para o ar, tudo é executado de novo: se alguma saída mudou, a montagem do livro falha, e a gente corrige antes de você ler.
+Por trás disso há uma regra: o livro não pode mentir. O código mostrado vem dos arquivos do projeto; as saídas foram gravadas executando esse código. A conferência executa os comandos e compara as saídas com as gravadas, descontando variações como tempo e caminho da máquina. As respostas do modelo são repetidas das gravações, sem novas chamadas ao serviço. Se uma chamada não estiver gravada ou uma saída divergir, a conferência falha.
 
-Bibliotecas de inteligência artificial mudam a cada poucos meses. Livro técnico costuma envelhecer em silêncio. Este foi feito para avisar quando envelhece.
+Bibliotecas de inteligência artificial mudam. Essa conferência detecta divergências entre o projeto executado e o livro; não mede a qualidade atual do modelo no serviço externo. Na sua máquina, os comandos que chamam o modelo fazem chamadas reais, pagas, e podem produzir respostas diferentes.
 
 ## O que você vai construir
 

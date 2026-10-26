@@ -374,7 +374,7 @@
         {
           "linhas": "21-25",
           "titulo": "a régua não muda",
-          "texto": "avaliar é a régua do capítulo 1: recebe um decisor e conta acertos. O decisor aqui executa o agente inteiro e guarda o que ele decidiu, para listar os erros depois sem pagar de novo.",
+          "texto": "avaliar é a régua do capítulo 1: compara decisões com o contrato, sem avaliar o texto da resposta. O decisor executa o agente inteiro e guarda apenas a decisão, para listar os erros sem executar o agente de novo.",
           "termos": [
             "{chave: valor}"
           ]
@@ -405,7 +405,7 @@
         ],
         "certa": 1
       },
-      "nota": "O agente com o GPT-6 Luna, nas 20 perguntas, pela régua da nota de partida."
+      "nota": "Nesta execução gravada com o GPT-6 Luna: 6 de 20 (30%), 19 decisões de passar e uma de recusar. Os 14 erros foram passar a vez, inclusive no R12. Isso descreve estes casos, sem garantir segurança geral; a nota mede decisões, não a qualidade das respostas. Aqui repetimos a gravação; na sua máquina, o comando chama o modelo de verdade."
     }
   ]
 }

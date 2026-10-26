@@ -743,7 +743,7 @@
         {
           "linhas": "1-5",
           "titulo": "o que é a nota de partida",
-          "texto": "A explicação do arquivo: um \"agente\" que passa tudo para a equipe. Ele nunca erra feio, mas também não ajuda ninguém.",
+          "texto": "A nota de partida usa uma função que sempre devolve passar. Ela não escreve resposta nem consulta dados: o que será medido é a decisão.",
           "termos": [
             "docstring"
           ]
@@ -776,7 +776,7 @@
         {
           "linhas": "15-21",
           "titulo": "a régua",
-          "texto": "Para cada decisão esperada, conta quantos casos existem e quantos o decisor acertou. A régua não sabe qual decisor está medindo: serve para este e para todo agente depois.",
+          "texto": "Para cada decisão esperada, conta os casos e compara a decisão devolvida com a do contrato. Serve para este decisor e para os próximos agentes; não avalia o texto da resposta nem mede exposição de dados.",
           "termos": [
             "Counter",
             "+= (com verdadeiro e falso)"
@@ -828,7 +828,7 @@
               ],
               "certa": 0
             },
-            "nota": "40%: oito acertos, mais que o passar. E é o mais perigoso dos quatro: responderia ao Bruno sobre o pedido da Ana. A nota sozinha não diz se o agente presta; por isso a régua conta cada decisão em separado."
+            "nota": "40%: oito decisões certas. No R12, devolveu responder quando o contrato pede recusar. A função não escreve resposta nem mostra compras; num atendimento, essa escolha poderia expor dados da Ana ao Bruno. A nota conta decisões e dá o mesmo peso a todo erro, sem medir essa consequência."
           },
           {
             "id": "r01-nota-sempre-recusar",

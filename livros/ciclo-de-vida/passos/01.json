@@ -270,7 +270,7 @@
       "objetivo": "um \"agente\" que nem lê a pergunta.",
       "temos": "`sempre_passar`, que responde passar a tudo.",
       "antes": [
-        "Ainda não existe agente, mas já dá para medir um. O mais simples possível: um \"agente\" que passa toda pergunta para uma pessoa da equipe. Ele nunca erra feio: não inventa prazo, não mostra pedido alheio, não promete desconto. Mas também não ajuda ninguém."
+        "Ainda não existe agente, mas já dá para medir um decisor. O mais simples possível: uma função que sempre devolve passar, sem escrever resposta nem consultar dados. A régua vai contar em quantos dos vinte casos essa decisão coincide com o contrato."
       ],
       "pedido": "Antes de qualquer agente: qual é o mais simples possível?"
     },
@@ -284,7 +284,7 @@
       "objetivo": "uma régua que mede qualquer decisor contra as vinte perguntas, e a primeira nota.",
       "temos": "a nota de partida: o número que todo agente do livro tem que bater.",
       "depois": [
-        "Vinte e cinco por cento. Esta é a nota de partida do livro. Todo agente que você construir daqui para a frente tem que passar dela, senão é melhor mandar tudo para a equipe e desligar o agente. A partir daqui ela fica no placar, no canto de cima da página, e cada capítulo vai tentar empurrá-la."
+        "Vinte e cinco por cento: cinco decisões certas em vinte. Esta é a nota de partida do livro, que cada agente vai tentar superar. Na variante RESPONDER, são oito acertos (40%), mas o R12 recebe a decisão errada. Essa função só devolve uma decisão: não escreve resposta nem expõe compras. Num atendimento, responder sobre pedido alheio poderia expor dados; a nota não mede essa consequência. O placar permite comparar decisões, mas não basta para julgar as respostas."
       ],
       "pedido": "E como a gente mede esse agente contra as vinte perguntas?"
     }
