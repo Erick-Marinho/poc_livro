@@ -67,7 +67,8 @@ ação. Não alterar a partir de 1.6, a IDE, outros componentes nem os desenhos 
 
 - A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). Por decisão do Erick em 26/10/2026, cada
   fase nas opções recebe uma glosa curta, derivada de `figuras/ciclo.json`, que explica sua função sem marcar a
-  resposta. A mesma fase usa a mesma glosa em todas as perguntas, sem repetir palavras do enunciado em que aparece.
+  resposta. A mesma fase usa a mesma glosa em todas as perguntas. Na revisão, Erick restaurou as glosas de `877fbdb`,
+  exceto Avaliar (“Mede quanto o agente atual acerta.”); Observar não cita custo nem gasto.
 - A figura 1.1 continua nas três histórias de atendentes, sem figura em texto, componente novo ou mudança visual
   (`laco-do-agente.md`). Os casos vêm antes dos nomes da escala.
 - A política da loja abre 1.4; a palavra contrato, Meyer, a troca de prompt e a definição permanecem
@@ -108,8 +109,8 @@ Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
   a diferença entre definir antes, medir depois e dar peso aos erros.
 - As respostas da aposta das fases citam as duas fases que concorriam e as distinguem com `ciclo.json`; a opção
   marcada continua pertencendo ao capítulo citado.
-- Cada fase usada nas opções tem uma glosa de até oito palavras, idêntica em todas as ocorrências e sem palavras do
-  enunciado em que aparece; as apostas sem glosas conservam sua apresentação.
+- Cada fase usada nas opções tem uma glosa de até oito palavras e idêntica em todas as ocorrências; Avaliar não
+  repete “melhora”, Observar não cita custo nem gasto, e as apostas sem glosas conservam sua apresentação.
 - Escala, camadas, Pilhas e Classificador concordam com o contrato e a política. Caso com duas decisões defensáveis
   sai da classificação de resposta única ou é tornado inequívoco sem mudar o contrato.
 - Em 1.1, o leitor vê os atendentes antes de receber os quatro nomes da escala; as citações permanecem.
