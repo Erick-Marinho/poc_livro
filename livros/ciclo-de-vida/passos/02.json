@@ -4,6 +4,7 @@
     "Erick Marinho",
     "Victor Fontela"
   ],
+  "repositorio": "https://github.com/Erick-Marinho/atendimento-bemtevi",
   "prefixo_tag": "cap-02",
   "abre_com": "contrato.py",
   "passos": [
