@@ -52,5 +52,6 @@ autor: dizem onde o texto trava, mas não substituem a leitura de quem não escr
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `d3b50a3` | 1.3 de 183 para 192 palavras antes da ação (sem aviso); `npm test`: 30 + 16 saídas conferidas, 124 testes do livro e 5 da gravação passaram; [capturas](../relatorios/capturas/achados-da-leitura-do-victor-etapa-1/) antes e depois de separar, no computador e em 360 px. | aguardando revisão |
 
 (redação: Claude Opus 5.5)
