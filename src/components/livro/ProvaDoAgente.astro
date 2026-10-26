@@ -1,0 +1,19 @@
+---
+/**
+ * A figura do 2.4 (docs/capacidades/capitulo-2-em-cenas.md, etapa 4): a prova do substituto, como a régua mede
+ * (roteiro/FiguraProva.tsx). As perguntas e o gabarito são os do referencia.jsonl; a nota de partida é a do baseline.py
+ * gravado; a do agente não aparece, porque é o palpite que o leitor investe na IDE. A montagem confere tudo no build
+ * (roteiro/prova.ts). Sem JS, só um aviso.
+ */
+import FiguraProva from "./roteiro/FiguraProva";
+import { montarProva, type Entrada } from "./roteiro/prova.ts";
+
+interface Props extends Entrada { numero: string; legenda: string }
+const { referencia, baseline, numero, legenda } = Astro.props;
+montarProva({ referencia, baseline });
+---
+<figure class="roteiro" data-prova>
+  <FiguraProva client:visible={{ rootMargin: "400px" }} referencia={referencia} baseline={baseline} />
+  <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
+  <noscript><p class="rt-semjs">Esta figura é animada e precisa de JavaScript.</p></noscript>
+</figure>

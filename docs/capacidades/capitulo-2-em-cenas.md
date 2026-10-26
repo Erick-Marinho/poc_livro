@@ -40,7 +40,26 @@ intuitivo", e a repetição cansa (26/10/2026).
 | 3 | 2.3 | O ensaio com um cliente de mentira, que segue um roteiro. | o modelo falso | o que o ensaio prova, e o que não prova |
 | 4 | 2.4 | A prova: as 20 questões e o placar. | a régua | o palpite da nota |
 
-## Etapa atual: 3 — o ensaio do substituto, no 2.3
+## Etapa atual: 4 — a prova do substituto, no 2.4
+
+### O que muda
+
+- Uma animação nova (`roteiro/ProvaAnimado.tsx`, sobre a `RolaCena`): as 20 perguntas com o gabarito do
+  `referencia.jsonl`; o decisor do capítulo 1, que passa tudo para a equipe, responde uma por uma, e a régua marca ✓
+  ou ✗ e enche o placar até a nota de partida (5 de 20, 25%, conferida contra o `baseline.py` gravado); depois, o
+  decisor vira o grafo deste capítulo com o GPT-6 Luna, e o placar fica em "? de 20", com a marca dos 25% a bater.
+- A nota do agente não aparece: ela é o palpite que o leitor investe na IDE, logo depois, e o resultado está no 2.6.
+  O último balão pede o palpite; o pare e pense do palpite sai do texto.
+- O texto do 2.4 fica com a pergunta (ele bate os 25%?), a figura e o parágrafo da gravação.
+
+### Verificação
+
+- Teste da montagem (`prova-do-agente.test.mjs`): as perguntas e o gabarito vêm da referência, e a conta é a do
+  `baseline.py` gravado (outra conta não monta); nenhum balão traz a nota do agente, e a animação não lê a gravação
+  dele; na página, o 2.4 tem a figura e não mais o pare e pense do palpite.
+- `npm run ritmo`, `npm test` e capturas ao longo da rolagem, no computador e no celular.
+
+## Etapa 3 — o ensaio do substituto, no 2.3
 
 ### O que muda
 
@@ -112,5 +131,6 @@ intuitivo", e a repetição cansa (26/10/2026).
 | 1 (play e rolar) | `fa1f610` | O play no ritmo de leitura e a chave "rolar com a página", lembrada e também nas configurações; conferido no navegador: começa sem trilho (602 px), toca, pausa, liga (trilho de 8 telas, rolagem no quadro em que estava), desliga (figura no topo, mesmo quadro); `npm test`: 129 testes do livro e 5 da gravação; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-1/) `a-` a `e-`. | Erick, 26/10/2026 |
 | 2 | `6b68056` | O formulário no 2.2, com a resposta gravada do modelo; peças comuns em `pecas.tsx`; `npm test`: 133 testes do livro (5 novos no formulário; o das pilhas do 2.2 saiu) e 5 da gravação, 30 + 16 saídas conferidas; 2.2 com 42 e 191 palavras entre as ações; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-2/) ao longo da rolagem, no computador e em 390 px. | Erick, 26/10/2026 |
 | 3 | `7521a1f` | O ensaio no 2.3, com os testes reais e o pytest gravado; `npm test`: 137 testes do livro (4 novos) e 5 da gravação, 30 + 16 saídas conferidas; 2.3 com 48 palavras até o pare e pense; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-3/) ao longo da rolagem, no computador e em 390 px. | Erick, 26/10/2026 |
+| 4 | COMMIT | A prova no 2.4, com a régua e a nota de partida gravada, sem a nota do agente; `npm test`: 140 testes do livro (3 novos) e 5 da gravação, 30 + 16 saídas conferidas; 2.4 com 40 e 158 palavras entre as ações; [capturas](../relatorios/capturas/capitulo-2-em-cenas-etapa-4/) ao longo da rolagem, no computador e em 390 px. | aguardando revisão |
 
 (redação: Claude Opus 5.5)

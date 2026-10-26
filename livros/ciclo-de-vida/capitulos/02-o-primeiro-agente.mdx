@@ -33,6 +33,7 @@ import Listagem from "../../../src/components/livro/Listagem.astro";
 import FormularioDoAgente from "../../../src/components/livro/FormularioDoAgente.astro";
 import agentePy from "../projeto/agente.py?raw";
 import EnsaioDoAgente from "../../../src/components/livro/EnsaioDoAgente.astro";
+import ProvaDoAgente from "../../../src/components/livro/ProvaDoAgente.astro";
 import testeAgente from "../projeto/test_agente.py?raw";
 import nosDoGrafo from "../figuras/grafo-02.json";
 import gravacaoMedir from "../gravacoes/r02-medir.json";
@@ -80,13 +81,11 @@ Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada
 
 ## 2.4 Medir com a mesma régua
 
-Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%? A régua é a mesma: as 20 perguntas de referência, as quatro decisões do contrato e a contagem de acertos. Só o decisor muda. Antes era um "agente" que passava tudo para a equipe; agora é o grafo com o GPT-6 Luna. Os casos do seu exercício ficam no `meus-casos.jsonl`, fora dela.
+Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%? É a prova do substituto, e o gabarito é o mesmo da colega. Os casos do seu exercício ficam no `meus-casos.jsonl`, fora dela.
+
+<ProvaDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} numero="2.4" legenda="A prova do substituto: como a régua mede. As perguntas e o gabarito são os do referencia.jsonl, e a nota de partida é a do baseline.py, gravada. A nota do agente fica para depois do seu palpite." />
 
 O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com um modelo, isso pede um cuidado a mais, porque ele não responde sempre igual e cada chamada custa. Então a resposta do modelo é gravada uma vez, e o livro repete a gravação, sem chamar o modelo de novo. O terminal da IDE diz de quando é a gravação e de qual modelo. Na sua máquina, o comando chama o modelo de verdade, com a sua chave, e a sua nota pode sair um pouco diferente.
-
-<PareEPense pergunta="Antes de medir: o agente com o GPT-6 Luna, sem acesso aos pedidos, ao catálogo e à política da loja, acerta quanto das 20?">
-Guarde o seu palpite. A IDE vai pedir que você invista num palpite antes de executar, e a resposta está no fim do capítulo.
-</PareEPense>
 
 ## 2.5 Mão na massa
 
