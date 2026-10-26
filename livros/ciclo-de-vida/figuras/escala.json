@@ -12,7 +12,7 @@
       "porque": "O modelo decide uma vez, entre caminhos que alguém desenhou. É o agente do capítulo 2." },
     { "texto": "Atender o cliente consultando o pedido, e de novo se precisar.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 2,
       "porque": "O modelo decide o próximo passo a cada volta, como o atendente: olha, decide se basta, olha de novo." },
-    { "texto": "Um coordenador que divide o atendimento entre um especialista em trocas e outro em entregas.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 3,
+    { "texto": "Um agente coordenador que divide o atendimento entre um agente de trocas e outro de entregas.", "opcoes": ["fluxo fixo", "roteador", "agente", "vários agentes"], "fez": 3,
       "porque": "Cada especialista é um agente, e um deles coordena os outros." }
   ]
 }

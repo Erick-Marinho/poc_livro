@@ -51,8 +51,8 @@ A cada capítulo, o mesmo agente passa por uma fase da vida dele. As fases são 
 
 <MapaDoCiclo ciclo={ciclo} sumario={sumario} cenas={cicloAnimado} aposta={ondeSePega} numero="1" legenda="O ciclo de vida de um agente, e o capítulo de cada fase." />
 
-<PareEPense pergunta="No mapa, Avaliar vem depois de Construir. Por que, então, o capítulo 1 escreve a régua antes de existir agente?">
-Porque avaliar começa no planejamento. A régua nasce com o contrato, antes do código, e a fase de avaliar só a amplia, com conversas inteiras e erros com peso. Medir só depois de construir é tarde: não haveria como saber se o primeiro agente melhorou alguma coisa.
+<PareEPense pergunta="No mapa, Avaliar vem depois de Construir. Por que, então, o capítulo 1 já decide o que fazer quando o Bruno pede o pedido da Ana, antes de existir agente?">
+Porque avaliar começa no planejamento. Antes do código, o capítulo guarda perguntas da loja e a decisão esperada para cada uma; mais tarde, a fase de avaliar amplia essa base com conversas inteiras e erros com peso. Medir só depois de construir seria tarde: não daria para saber se o primeiro agente melhorou alguma coisa.
 </PareEPense>
 
 <FiguraAgente roteiro={roteiroAgente} referencia={referenciaAgente} clientes={clientesAgente} pedidos={pedidosAgente} politica={politicaAgente} />
@@ -72,7 +72,7 @@ Não é um catálogo de ferramentas. Usamos LangGraph para o fluxo do agente, o 
 Também não é um livro de promessas. Agente erra. O que dá para fazer é saber quando ele erra, quanto, e o que fazer com isso. Se em algum capítulo parecer que está fácil demais, desconfie, e procure o "Quando dá errado" mais à frente.
 
 <PareEPense pergunta="No atendimento da Casa Bem-te-vi, qual erro é pior: passar para uma pessoa uma pergunta que o agente sabia responder, ou responder uma que devia passar?">
-Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe; o segundo pode mostrar o pedido de um cliente a outro, como no caso R12 da régua. Por isso, no capítulo 4, os erros passam a ter peso.
+Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe; o segundo pode tentar responder ao Bruno sobre o pedido da Ana e expor dados de outra pessoa. Por isso, no capítulo 4, os erros passam a ter peso.
 </PareEPense>
 
 ## Como ler

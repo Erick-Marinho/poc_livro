@@ -58,8 +58,6 @@ O seu código. O modelo só pede, e lê o que volta.
 
 A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para executar. Repare no verbo: o modelo não executa nada. Ele pede, o seu código executa, e o resultado volta para ele ler.
 
-Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem, sempre procura o número do pedido, sempre consulta, sempre pede ao modelo para escrever a resposta. Um passo adiante, o **roteador**: o modelo toma uma decisão só, escolhendo entre caminhos que você desenhou. Mais adiante, o **agente**: quem decide o próximo passo é o modelo, num laço, como o atendente. Ele lê a pergunta, escolhe se precisa de uma ferramenta e qual, lê o resultado e decide de novo: usar outra ferramenta, responder ou parar. No fim da escala ficam **vários agentes**, cada um especialista, coordenados por um deles.
-
 Acompanhe três atendentes diante das mesmas perguntas (na última história, quem atende é você) e repare em quem decide o próximo passo:
 
 <FiguraLaco laco={laco} tresJeitos={tresJeitos} clientes={clientesDaLoja} numero="1.1" legenda="Quem decide o próximo passo, em três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido, do produto e da cliente são os da loja." />
@@ -67,6 +65,8 @@ Acompanhe três atendentes diante das mesmas perguntas (na última história, qu
 O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
 
 <Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
+
+Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem. Um passo adiante, o **roteador**: o modelo toma uma decisão só, entre caminhos desenhados por você. Mais adiante, o **agente** decide o próximo passo a cada volta: usar uma ferramenta, responder ou parar. No fim ficam **vários agentes**, cada um especialista, coordenados por um deles.
 
 <Aposta dados={escala} pergunta="Onde cada um destes sistemas fica na escala?" ilustracao="Ilustração: os quatro sistemas foram escritos para o exemplo; o segundo é o agente do capítulo 2." />
 
@@ -102,11 +102,11 @@ Olhando de perto, aparece um padrão. Algumas perguntas se respondem com os dado
 
 ## 1.4 O que é um contrato
 
-Na loja, o combinado já existe: é a política de atendimento. Ela diz o que o atendente pode prometer (troca por defeito em até 90 dias), o que não pode (desconto) e quando chamar alguém da equipe (todo reembolso passa por uma pessoa). Um atendente novo lê a política antes do primeiro cliente. O contrato é essa política escrita de um jeito que uma máquina consegue conferir: em vez de "não damos desconto", uma lista de perguntas com a decisão certa para cada uma.
+Na loja, o combinado já existe: a política de atendimento. Ela permite troca por defeito em até 90 dias, proíbe desconto e manda todo reembolso para uma pessoa. Um atendente a lê antes do primeiro cliente. O contrato torna esse combinado conferível: guarda perguntas com a decisão certa para cada uma.
 
-A palavra vem do direito, e a ideia é a mesma: um acordo escrito antes, que diz o que cada lado pode esperar do outro. Em software, ela tem até autor. Nos anos 1980, Bertrand Meyer propôs que cada rotina declarasse o que exige de quem a chama e o que garante de volta, e chamou isso de projeto por contrato. A rotina deixa de ser "um código que parece funcionar" e passa a ter uma promessa que dá para conferir.
+A ideia vem do direito: um acordo escrito antes. Em software, Bertrand Meyer chamou de projeto por contrato a rotina que declara o que exige e o que garante. A promessa deixa de ficar escondida no código e pode ser conferida.
 
-Um agente precisa disso mais do que uma rotina comum. Numa função escrita à mão, o caminho está no código, e quem lê o código sabe o que ela faz. Num agente, quem escolhe o caminho é o modelo, a cada pergunta, e o texto da resposta muda de uma vez para outra. Se a promessa ficar implícita, ninguém consegue dizer se o agente cumpriu. Por isso o contrato deste livro não fala de frases. Ele fala de decisões: a frase pode variar à vontade, a decisão não.
+No agente, o modelo escolhe o caminho e pode escrever uma frase diferente a cada vez. Por isso o contrato deste livro fixa decisões, não frases: as palavras podem variar; a decisão, não.
 
 Lembra do desconto que o agente apressado prometeu? É a mesma mensagem, agora com três jeitos de pedir ao modelo.
 
@@ -148,7 +148,7 @@ As saídas são as pilhas que você separou na seção 1.3. Para toda pergunta, 
 
 Parece simples até você tentar aplicar. Tente: para cada pergunta abaixo, escolha o que o agente deveria fazer, e veja o que o contrato diz.
 
-<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R17", "R18", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
+<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R16", "R17", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
 
 Duas perguntas costumam pegar todo mundo. A do pedido BT-1001 parece responder: tem número de pedido e tem e-mail. Mas o e-mail é do Bruno e o pedido é da Ana. Responder ali seria mostrar a compra de uma pessoa para outra. E a do boleto em 12 vezes parece recusar, mas a política da loja não fala de pagamento. Quando a política não diz, o agente não promete: passa a vez.
 

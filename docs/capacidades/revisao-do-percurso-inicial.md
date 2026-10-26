@@ -9,9 +9,9 @@ ajustes é ajudar o leitor a continuar e a tomar decisões sozinho, preservando 
 **Origem.** Review solicitado por Erick em 25/10/2026. Este documento organiza propostas para implementação;
 as aprovações registradas são somente as comunicadas pelo responsável. Etapa 1 aprovada pelo Erick em 25/10/2026;
 a preparação do kit de leitura também tem seu ok. A etapa 3 tem o ok do Erick na mesma data; nesse dia ele autorizou
-a etapa 4 para os problemas conferidos de preparação, recuperação e percurso sem chave. Em 26/10/2026, decidiu
-que não haverá leitura com pessoas entre as etapas: as etapas 5 a 7 seguem, e a única leitura acontece no fim, com
-o Victor, coautor, registrado como autor na ficha preparada.
+a etapa 4 para os problemas conferidos de preparação, recuperação e percurso sem chave. Em 26/10/2026, aprovou a
+etapa 4 e autorizou a 5. Também decidiu que não haverá leitura com pessoas entre as etapas: as etapas 5 a 7 seguem,
+e a única leitura acontece no fim, com o Victor, coautor, registrado como autor na ficha preparada.
 
 ## O que preservar
 
@@ -24,10 +24,10 @@ o Victor, coautor, registrado como autor na ficha preparada.
 
 ## Etapas
 
-As etapas 1 e 3 estão concluídas com o ok do Erick. A preparação do kit de leitura tem seu ok. A etapa atual, 4,
-trata de problemas conferidos e foi autorizada pelo Erick. As etapas 5 a 7 seguem sem esperar observação. Depois
-delas, Victor revisa e lê o percurso com o kit preparado; essa é a única leitura do plano. Cada etapa de produto
-tem um commit em português e evidência no registro; só o ok do responsável fecha a etapa.
+As etapas 1, 3 e 4 estão concluídas com o ok do Erick. A preparação do kit de leitura também tem seu ok. A etapa
+atual, 5, reduz abstrações e ambiguidades antes da primeira entrega. As etapas 5 a 7 seguem sem esperar observação.
+Depois delas, Victor revisa e lê o percurso com o kit preparado; essa é a única leitura do plano. Cada etapa de
+produto tem um commit em português e evidência no registro; só o ok do responsável fecha a etapa.
 
 | Etapa | Ajuste | Resultado esperado para revisão |
 |---|---|---|
@@ -50,87 +50,79 @@ tem um commit em português e evidência no registro; só o ok do responsável f
 **Quem executa.** A IDE do capítulo é da outra sessão de trabalho (`docs/capacidades/passo-a-passo.md`). As etapas 6
 e 7 mexem nela: antes de detalhá-las, combinar com o responsável quem as faz.
 
-## Etapa atual: 4 — preparação, recuperação e percurso sem chave
+## Etapa atual: 5 — menos abstração antes da primeira entrega
 
 ### Pergunta que esta etapa responde
 
-O leitor distingue começar numa pasta vazia de recuperar uma versão por tag, preserva seus arquivos e consegue
-concluir uma investigação do capítulo 2 sem chave nem chamada paga?
+Quem chega sem o vocabulário do livro encontra primeiro os casos da loja e, quando precisa classificar algo, tem uma
+resposta claramente melhor segundo as definições já apresentadas?
 
 ### Escopo
 
-Problemas conferidos: os pontos de volta pressupõem tags sem explicar o clone; o repositório do leitor ainda só
-existe localmente em `.leitor/atendimento-bemtevi`; a introdução não apresenta o modo direto, promete testes de
-conclusão para todo exercício e deixa o exercício do capítulo 2 dependente de chave.
+Somente a introdução e o capítulo 1, das seções 1.1 a 1.5. Corrigir conceitos usados antes do caso que lhes dá
+sentido, classificações com duas respostas defensáveis e o trecho de 1.4 que passa de 200 palavras antes da primeira
+ação. Não alterar a partir de 1.6, a IDE, componentes nem os desenhos da figura 1.1 e do mapa.
 
-**Decisões do Erick, 25 e 26/10/2026:**
+**Decisões anteriores que esta etapa preserva:**
 
-- O endereço do repositório do leitor é `https://github.com/Erick-Marinho/atendimento-bemtevi`. Ele ainda não foi
-  publicado; publicar é uma decisão do Erick fora desta etapa. O livro usa o endereço definitivo, e o `Pendente`
-  dos autores lembra de publicá-lo antes de o livro ir para leitores.
-- Está autorizada **uma gravação paga**, exclusivamente a variante de `medir.py` nas 20 perguntas oficiais com a
-  `INSTRUCAO` sem “Quando a política não diz, não prometa: passe a vez.”. Nenhuma outra chamada paga está autorizada.
-  Depois dessa execução, todas as verificações e montagens usam somente repetição das gravações.
-- Não haverá leitura com pessoas entre as etapas. As etapas 5 a 7 não esperam observação; no fim delas, Victor,
-  coautor, revisa e lê com o kit de `docs/leituras/`, e sua ficha registra a origem como autor.
+- A aposta das fases continua antes do mapa (`ajustes-da-introducao.md`). A ordem não muda nesta etapa; uma solução
+  para o leitor ainda não conhecer as fases vai apenas como proposta ao Erick.
+- A figura 1.1 continua nas três histórias de atendentes, sem figura em texto, componente novo ou mudança visual
+  (`laco-do-agente.md`). Os casos vêm antes dos nomes da escala.
+- A política da loja abre 1.4; a palavra contrato, Meyer, a troca de prompt e a definição permanecem
+  (`capitulo-1-revisado.md`).
+- As quatro camadas — comportamento, formato, ferramenta e execução — permanecem (`contrato-em-camadas.md`).
+  As citações da Anthropic e de Nicole Koenigstein também ficam.
 
-1. Na introdução, distinguir pasta vazia e clone com tags; manter curtos os pontos de partida dos capítulos.
-   Explicar o alcance do checkout sobre arquivos versionados, alterações locais e arquivos pessoais não rastreados;
-   verificar numa cópia real.
-2. Mostrar onde ligar Modo direto, usando o painel existente. Corrigir a promessa dos exercícios: testes e totais
-   no 1, comparação e justificativa no 2. Não criar componente nem comando de preparação novo.
-3. Usar `variar` na medida do roteiro 02 para a variante sem a regra. O leitor prevê antes de revelar, compara a
-   nota e o R12, justifica os casos e restaura o código. Com chave, pode optar por executar no próprio projeto;
-   sem chave, realiza a mesma comparação com as duas gravações na IDE.
-4. Deixar explícito o que conclui a atividade; testes do grafo não se tornam prova de acerto da decisão. Conservar
-   projeto, referência, gravação original e pontos de volta. Usar nos passos o endereço definitivo decidido pelo
-   Erick, sem publicar o repositório nesta etapa.
+1. Nos dois pare e pense da introdução, substituir “régua” e “R12” pelo caso concreto do Bruno pedindo o pedido da
+   Ana e por palavras disponíveis naquele ponto. Fazer o mesmo nas respostas da aposta quando o caso resolve o
+   jargão sem antecipar o capítulo 1.
+2. Em `onde-se-pega.json`, distinguir “Quando dá errado” de “Evoluir” e “Avaliar” de “Evoluir” pelas perguntas e
+   ganhos de `ciclo.json`. Auditar também escala, camadas, Pilhas e Classificador contra o contrato e a política;
+   mudar apenas classificações realmente concorrentes.
+3. Mover o parágrafo da escala em 1.1 para depois da figura e imediatamente antes da aposta. Os nomes passam a
+   resumir os atendentes que o leitor viu, sem mudar a figura nem suas fontes.
+4. Enxugar o começo de 1.4 até sair do aviso de 200 palavras, preservando política, Meyer, troca de prompt,
+   definição e camadas.
 
 ### Peças e fontes
 
 | Peça | Papel nesta etapa |
 |---|---|
-| `capitulos/00-introducao.mdx` e partidas dos capítulos 1 e 2 | Dois pontos de partida, clone no endereço definitivo, modo direto e partidas curtas. |
-| `capitulos/02-o-primeiro-agente.mdx`, exercício | Investigação com previsão, comparação e justificativa, usando chave opcional. |
-| `passos/{01,02}.json` | Endereço definitivo nos pontos de volta; explicação do exercício no passo da medida. |
-| `roteiros/02.json` e `02.estados.json` | Seletor `variar` existente, com remoção da regra e restauração ao final. |
-| `gravacoes/r02-medir-sem-regra.json` e `saidas.json` | Evidência da única medição autorizada; repetição nas conferências. |
-| `src/components/livro/PontoDeVolta.astro` e painel existente | Recuperação de arquivos versionados no clone e Modo direto sem componente novo. |
-| `scripts/saidas.py`, `scripts/gravacao/` e `.leitor/atendimento-bemtevi` | Construção, variação, gravação, restauração e tags reais. Fontes de conferência. |
-| `projeto/{agente.py,medir.py,referencia.jsonl}` e gravação original | O projeto e a referência permanecem iguais; só a cópia da variante perde a frase. |
+| `capitulos/00-introducao.mdx` | Pare e pense concretos, sem depender do vocabulário do capítulo 1. |
+| `figuras/onde-se-pega.json` e `figuras/ciclo.json` | Classificações das fases e as definições que justificam cada distinção. |
+| `capitulos/01-o-problema-e-o-contrato.mdx`, 1.1–1.5 | Escala depois do caso, 1.4 mais curto e Classificador sem caso ambíguo. |
+| `figuras/escala.json` e `figuras/camadas.json` | Sistemas e camadas com uma opção claramente melhor. |
+| `projeto/referencia.jsonl`, `projeto/contrato.py` e `projeto/dados/politica.md` | Fonte das Pilhas, do Classificador e das decisões da loja. |
+| Os quatro planos citados acima | Decisões do Erick que limitam a revisão de texto e dados. |
 
 Caminhos sem prefixo são relativos a `livros/ciclo-de-vida/`.
 
 ### Critérios de revisão
 
-- O leitor sabe que as tags pertencem ao clone, não à pasta vazia criada no capítulo 1. O livro e a IDE usam o
-  endereço definitivo; o `Pendente` reserva aos autores a publicação antes de o livro ir para leitores.
-- A explicação do checkout corresponde ao comportamento real com arquivos versionados e pessoais; conflitos
-  barram a troca e não são contornados com força ou limpeza de arquivos do leitor.
-- Modo direto é encontrável no painel e muda o que o texto promete.
-- O exercício sem chave exige uma previsão e uma conclusão sobre decisões observadas; não se limita a assistir.
-- A única gravação nova corresponde à retirada da frase nas 20 perguntas; a original permanece intacta.
-- O caminho com chave é opcional; o enunciado distingue testes do desenho de avaliação da decisão e diz como concluir.
+- Os dois pare e pense da introdução fazem sentido sem “régua” nem id de caso; Bruno, Ana e o pedido sustentam a
+  diferença entre definir antes, medir depois e dar peso aos erros.
+- As respostas da aposta das fases citam as duas fases que concorriam e as distinguem com `ciclo.json`; a opção
+  marcada continua pertencendo ao capítulo citado.
+- Escala, camadas, Pilhas e Classificador concordam com o contrato e a política. Caso com duas decisões defensáveis
+  sai da classificação de resposta única ou é tornado inequívoco sem mudar o contrato.
+- Em 1.1, o leitor vê os atendentes antes de receber os quatro nomes da escala; as citações permanecem.
+- O primeiro trecho de 1.4 fica em até 200 palavras no relógio, sem retirar nenhuma peça decidida.
+- O número de avisos não aumenta, e nenhuma mudança alcança 1.6, IDE, componentes, desenhos ou projeto.
 
 ### Evidência e verificação
 
-- Gerar o leitor e, numa cópia local, clonar, usar as tags e conferir arquivo pessoal preservado, arquivo
-  versionado restaurado e conflitos que barram a troca. Não publicar nem acessar o remoto ainda inexistente.
-- Conferir a variante contra as mensagens gravadas e os 20 casos; registrar a execução paga, seu resultado e a
-  integridade das gravações anteriores. Repetir o roteiro com `npm run saidas` sem chave e sem novas chamadas.
-- Executar `npm run leitor`, `npm run ritmo` e `npm test`. Os testes relevantes conferem os dados gravados e o
-  comportamento do seletor, sem testar apenas uma frase editorial.
-- No navegador, conferir preparação, Pendente, ponto de volta com endereço e tag, chave de Modo direto, previsão e
-  comparação da variante; voltar ao código do livro. Apresentar antes/depois e evidências no relatório com marca
-  de redação.
-- Aguardar o ok do Erick para fechar a etapa. A leitura fica para a etapa final, sem observação inventada.
+- Comparar `npm run ritmo` com 3 avisos na introdução, 2 no capítulo 1 e 0 no capítulo 2; 1.4 precisa sair do aviso.
+- Executar `npm test`, incluindo apostas, formato e vocabulário. Não regravar nem chamar modelo.
+- Conferir na página montada a aposta e os dois pare e pense da introdução, a ordem da figura e da escala em 1.1 e
+  o começo de 1.4.
+- Relatar antes/depois, justificativa das classificações e propostas não aplicadas por decisão anterior. Aguardar o
+  ok do Erick para fechar a etapa.
 
 ### Limite da etapa
 
-Sem publicar repositório, site ou túnel; sem `.env`, credencial em arquivo, mudança no projeto oficial,
-componente de IDE novo ou alteração das etapas 5 a 7. A única permissão paga é a variante acima, em uma medição;
-nenhuma verificação chama novamente o serviço. A atividade com chave é uma alternativa futura do leitor, não
-permissão para novas execuções do agente desta tarefa.
+Somente introdução e 1.1–1.5. Sem mudança em 1.6 ou depois, capítulo 2, IDE, componentes, desenhos, projeto,
+gravações ou etapas 6 a 8. Sem chamada paga, push, túnel ou opinião inventada dos autores. Os `Pendente` ficam.
 
 ## Questões para detalhar nas próximas etapas
 
@@ -138,11 +130,10 @@ permissão para novas execuções do agente desta tarefa.
   etapas; a leitura real foi transferida para o fim do plano e não bloqueia as etapas 5 a 7.
 - **Etapa 3 (aprovada):** por decisão do Erick, os cinco casos vão para `meus-casos.jsonl`. A referência
   oficial permanece em 20; a medida opcional somada tem 25 casos e nota de partida 6/25 (24%).
-- **Etapa 4 (detalhada acima):** aproveitar clone, tags, PontoDeVolta, Modo direto e `variar`. A alternativa
-  gratuita pede previsão, comparação e justificativa; o endereço foi decidido, a publicação continua fora desta
-  etapa e a única gravação paga autorizada é a variante sem a regra de passar a vez.
-- **Etapa 5:** reduzir ou reposicionar explicações antes de acrescentar componentes. Rever associações de um
-  problema a uma única fase quando mais de uma resposta é defensável.
+- **Etapa 4 (aprovada):** clone, tags, PontoDeVolta, Modo direto e `variar` sustentam a recuperação e o exercício
+  sem chave. O endereço foi decidido; a publicação continua fora deste plano.
+- **Etapa 5 (detalhada acima):** casos antes dos nomes, classificações sem duas respostas defensáveis e 1.4 abaixo
+  do aviso, sem mudar figuras nem componentes.
 - **Etapas 6 e 7:** contar passagens mecânicas e decisões dentro da IDE. Os roteiros atuais têm 40 ações em 18
   passos no capítulo 1 e 16 ações em 10 passos no capítulo 2; quantidade menor, sozinha, não comprova melhoria.
 - **Etapa 8 (leitura final):** depois das etapas 5 a 7, Victor revisa e lê o percurso com o kit já preparado. A ficha
