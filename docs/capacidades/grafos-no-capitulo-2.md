@@ -43,5 +43,6 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 |---|---|---|---|
 | 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | Erick, 27/10/2026 |
 | 2 | d09c708 | `npm test` 190/190; ritmo 166 palavras; capturas da listagem | recusada pelo Erick, 27/10/2026: código e texto abstrato no início |
+| 2 | 819b564 | `npm test` 190/190; `npm run ritmo`: 56 palavras até a figura e 44 entre a figura e o Pare e pense; o 2.1 sem `Listagem` e sem balcão (teste) | aguardando revisão |
 
 (redação: Claude Opus 5.5)
