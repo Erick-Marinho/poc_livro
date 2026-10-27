@@ -2,13 +2,13 @@
  * A pausa e o fluxo (Remotion; docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5), que o leitor toca ou rola
  * (palco/RolaCena.tsx). O desenho se monta inteiro à vista, uma coisa por vez: a mensagem chega e o modelo lê (a barra
  * "lê" cresce na linha do tempo); a primeira palavra fecha a pausa; os outros pedaços saem no mesmo compasso, um tique
- * por pedaço; a chave do fluxo abraça os tiques; o medidor mostra as três mensagens; e só a pergunta fica. O que já
+ * por pedaço; a chave do fluxo abraça os tiques; o medidor mostra as três mensagens; e fica o fecho, com os resumos. O que já
  * passou vira uma linha de resumo. Os tempos e os textos saem de pausa.ts; o tamanho das barras é ilustração.
  */
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
 import { Balao, entre, opacidadeDoBalao } from "../roteiro/pecas";
-import { baloes, CENAS, PERGUNTA, type Pausa, pedacoEm, RESUMOS } from "./pausa.ts";
+import { baloes, CENAS, FECHO, type Pausa, pedacoEm, RESUMOS } from "./pausa.ts";
 
 export type Desenho = "largo" | "estreito";
 export const MEDIDAS = {
@@ -43,7 +43,7 @@ export const PausaAnimada: React.FC<Props> = ({ pausa: p, desenho }) => {
   const chave = (de0: number) => kf(t, [[de0, 0], [de0 + 0.6, 1]], suave);
   const montagem = kf(t, [[de(4) - 0.3, 1], [de(4), 0]]);
   const medidor = kf(t, [[de(4) + 0.1, 0], [de(4) + 0.5, 1], [de(5) - 0.3, 1], [de(5), 0]]);
-  const pergunta = kf(t, [[de(5) + 0.2, 0], [de(5) + 0.6, 1]]);
+  const fecho = kf(t, [[de(5) + 0.2, 0], [de(5) + 0.6, 1]]);
 
   const lista = baloes();
   const balao = lista.find((b) => entre(t, b.de, b.ate)) ?? null;
@@ -142,7 +142,7 @@ export const PausaAnimada: React.FC<Props> = ({ pausa: p, desenho }) => {
       </div>
       {k <= 4 ? montado : null}
       {k >= 4 ? medicao : null}
-      {k === 5 ? <div style={{ position: "absolute", left: X, top: 52, width: W, opacity: pergunta, font: `700 ${M.fonte + 9}px/1.3 ${ui}`, color: cor.texto }}>{PERGUNTA}</div> : null}
+      {k === 5 ? <div style={{ position: "absolute", left: X, top: 52, width: W, opacity: fecho, font: `700 ${M.fonte + 9}px/1.3 ${ui}`, color: cor.texto }}>{FECHO}</div> : null}
       {resumos}
       {k <= 3 ? <div style={{ position: "absolute", left: X, top: M.balao.lado ? M.h - 22 : M.balao.y - 22, width: W, font: `italic 11px ${ui}`, color: cor.fraco, opacity: montagem }}>ilustração: a linha do tempo não é medida</div> : null}
       {balao && M.balao.lado ? <svg width={M.w} height={M.h} style={{ position: "absolute", inset: 0 }}>

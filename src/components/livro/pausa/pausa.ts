@@ -1,7 +1,8 @@
 /**
  * A pausa e o fluxo (docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5): a animação de "O que vamos construir",
  * em seis cenas que o leitor toca ou rola (palco/RolaCena.tsx): o modelo lê, a pausa até a primeira palavra, a
- * resposta escrita um pedaço por vez, o fluxo, o medidor nas três mensagens e a pergunta que o leitor leva para a IDE. É
+ * resposta escrita um pedaço por vez, o fluxo, o medidor nas três mensagens e o fecho: dois trabalhos, dois cronômetros. Sem pergunta dentro da figura: a
+ * decisão do leitor fica no Invista logo antes (docs/capacidades/pausa-e-fluxo-revisao.md). É
  * ilustração (figuras/pausa.json): sem número medido, para não adiantar o resultado. Puro de propósito: o teste chama
  * isto direto.
  */
@@ -16,7 +17,7 @@ export const CENAS = [
   { nome: "Escrever", de: 9 },
   { nome: "O fluxo", de: 15 },
   { nome: "O medidor", de: 19.5 },
-  { nome: "A pergunta", de: 25 },
+  { nome: "Dois cronômetros", de: 25 },
 ];
 export const SEGUNDOS = 30;
 export const DURACAO = SEGUNDOS * FPS;
@@ -32,11 +33,11 @@ export function montarPausa(d: Pausa): Pausa {
   return d;
 }
 
-/** o que fica de cada cena, numa linha, embaixo; a última cena é só a pergunta */
+/** o que fica de cada cena, numa linha, embaixo; a última cena junta tudo, com o fecho em cima */
 export const RESUMOS = ["lê tudo antes de escrever", "pausa: até a primeira palavra", "escreve um pedaço por vez",
   "fluxo: pedaços por segundo", "o medidor mede três mensagens"];
 
-export const PERGUNTA = "Com a mensagem maior, o que muda: a pausa, o fluxo ou os dois?";
+export const FECHO = "Dois trabalhos, dois cronômetros: a pausa mede a leitura, e o fluxo, a escrita.";
 
 export type Balao = { de: number; ate: number; texto: string };
 

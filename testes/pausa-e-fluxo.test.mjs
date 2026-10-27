@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
-import { baloes, CENAS, DURACAO, FPS, montarPausa, pedacoEm, PERGUNTA, RESUMOS, SEGUNDOS } from "../src/components/livro/pausa/pausa.ts";
+import { baloes, CENAS, DURACAO, FPS, montarPausa, pedacoEm, FECHO, RESUMOS, SEGUNDOS } from "../src/components/livro/pausa/pausa.ts";
 
 const projeto = new URL("../experimentos/pausa-e-fluxo/projeto/", import.meta.url);
 const casos = readFileSync(new URL("casos.jsonl", projeto), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -32,7 +32,8 @@ test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar 
   assert.equal(bs.length, CENAS.length, "um balão por cena");
   bs.forEach((b, i) => { if (i) assert.equal(b.de, bs[i - 1].ate); });
   assert.ok(bs.at(-1).ate >= SEGUNDOS, "o último balão fica até o fim");
-  const textos = [...bs.map((b) => b.texto), ...RESUMOS, PERGUNTA];
+  const textos = [...bs.map((b) => b.texto), ...RESUMOS, FECHO];
+  assert.doesNotMatch(FECHO, /\?/, "sem pergunta dentro da figura: a decisão fica no Invista");
   for (const s of textos) {
     assert.ok(s.split(/\s+/).length <= 14, `curto demais para ler de uma vez? "${s}"`);
     assert.doesNotMatch(s, /\d/, `sem número da coleta: "${s}"`);
@@ -77,6 +78,7 @@ test("as ações do texto dizem o que as coletas gravadas mostram", () => {
   const vezes = saida("pf-vezes").map((l) => l.match(/(\d+) de (\d+) tokens vieram do cache/).slice(1).map(Number));
   assert.ok(vezes[0][0] < 100 && vezes.slice(1).every(([cache, lidos]) => cache > lidos - 5));
   const a = json("previsoes-artigo.json").mensagens[0];
-  assert.match(a.opcoes[a.fez], /começam iguais/);
+  assert.match(a.opcoes[a.fez], /^Pode crescer menos/);
+  assert.ok(a.opcoes.every((o) => !/começam iguais|cache/.test(o)), "as opções não trazem o porquê");
   assert.match(a.porque, /Não medimos o laboratório do artigo/);
 });
