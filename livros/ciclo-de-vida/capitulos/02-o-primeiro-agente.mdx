@@ -68,11 +68,11 @@ O modelo responde preenchendo esse molde, e o grafo lê a caixa marcada para esc
 
 Cada vez que o agente consulta o GPT-6 Luna, a OpenAI cobra, como um taxímetro: centavos por pergunta. Só que um teste é executado toda vez que você muda uma linha, dezenas de vezes por dia. E o modelo pode responder diferente de uma vez para outra: um teste que passou agora pode falhar daqui a pouco sem você mexer em nada.
 
-Para conferir o desenho, cada balcão ligado e cada caminho fazendo o que deve, não precisa de um modelo inteligente. Precisa de um que diga exatamente o que você mandar. É o **modelo falso**: como um ator que recebe o roteiro antes ("quando perguntarem, responda passar a vez") e o segue à risca, sem chamar ninguém e sem custar nada.
+Para conferir o desenho, cada nó ligado e cada caminho fazendo o que deve, não precisa de um modelo inteligente. Precisa de um que diga exatamente o que você mandar. É o **modelo falso**: como um ator que recebe o roteiro antes ("quando perguntarem, responda passar a vez") e o segue à risca, sem chamar ninguém e sem custar nada.
 
 <EnsaioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} testes={testeAgente} pytest={saidas["r02-pytest"]} numero="2.3" legenda="O ensaio com o modelo de mentira: ele responde o que se combinou, sem chamar a OpenAI e sem custo. O grafo é o real; os dois ensaios são os do test_agente.py, e a saída é a do pytest, gravada." />
 
-O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso do LangChain não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes do LangChain recomenda.
+O modelo falso tem um limite, e você vai tropeçar nele na IDE. O erro é de verdade, e o conserto é o que a própria documentação de testes do LangChain recomenda.
 
 <PareEPense pergunta="Se o modelo falso responde o que a gente combinou, o que esses testes provam?">
 Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada decisão, que cada caminho faz o que deve, que o caminho de passar a vez não gasta uma chamada. Se o modelo decide bem, eles não dizem: para isso existe a régua. Os dois juntos dizem onde está o problema quando a nota cai: no desenho (os testes quebram) ou na decisão do modelo (os testes passam e a nota cai).
@@ -84,7 +84,7 @@ Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%?
 
 <ProvaDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} numero="2.4" legenda="A prova do substituto: como ela é corrigida. As perguntas e o gabarito são os do referencia.jsonl, e a nota de partida é a do baseline.py, gravada. A nota do agente fica para depois do seu palpite." />
 
-O livro tem uma regra: toda saída de terminal é gravada do projeto real. Com um modelo, isso pede um cuidado a mais, porque ele não responde sempre igual e cada chamada custa. Então a resposta do modelo é gravada uma vez, e o livro repete a gravação, sem chamar o modelo de novo. O terminal da IDE diz de quando é a gravação e de qual modelo. Na sua máquina, o comando chama o modelo de verdade, com a sua chave, e a sua nota pode sair um pouco diferente.
+Como a introdução avisou, a resposta do modelo foi gravada uma vez, e o terminal da IDE diz de quando e de qual modelo. Na sua máquina, com a sua chave, a nota pode sair um pouco diferente.
 
 ## 2.5 Mão na massa
 
@@ -101,7 +101,7 @@ No 2.4, a prova parou em "? de 20", e você investiu um palpite na IDE. Agora el
 O pydantic não recusou nenhuma das 20 respostas: todas vieram no molde da Escolha, e 14 estavam erradas. O molde garante a forma; só a correção pelo gabarito pega a decisão.
 
 <PareEPense pergunta="No capítulo 1, um agente que respondia tudo tirava 40%. Este tirou 30%. Ele é pior?">
-Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no R12, onde a próxima coisa, num atendimento, seria mostrar a compra da Ana ao Bruno. Ele só devolve a decisão: não escreve resposta nem mostra compras. Este agente errou passando a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
+Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no R12, onde a próxima coisa, num atendimento, seria mostrar a compra da Ana ao Bruno. O decisor só devolve a decisão: não escreve resposta nem mostra compras. Este agente errou passando a vez, e uma pessoa da equipe resolveria. A nota conta os dois erros igual, e por isso ainda engana. No capítulo 4, os erros passam a ter peso.
 </PareEPense>
 
 <Pendente o="Opinião dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
@@ -116,7 +116,7 @@ Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e 
 - Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm frase fixa.
 - Os testes do grafo usam um modelo falso: provam o desenho e os caminhos, sem custo; a régua mede a decisão.
 - A resposta do modelo é gravada uma vez e repetida pelo livro; na sua máquina, ela pode sair diferente.
-- Nesta execução com o GPT-6 Luna, sem dados da loja, o agente acertou 6 de 20 (30%) e errou para o lado seguro nestes casos, mas a régua só mede a decisão; falta informação, e ela vem com as ferramentas.
+- Com o GPT-6 Luna e sem os dados da loja, o agente acertou 6 de 20 (30%) e, nestes casos, errou para o lado seguro. A informação que falta vem com as ferramentas.
 </Resumo>
 
 <Exercicio titulo="Tire a regra de passar a vez">

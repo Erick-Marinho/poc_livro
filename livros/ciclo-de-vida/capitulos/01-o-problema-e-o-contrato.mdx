@@ -83,13 +83,13 @@ Uma confusão comum: achar que um modelo de linguagem dentro de um fluxo já faz
 
 <FluxoOuAgente dados={fluxoOuAgente} tresJeitos={tresJeitos} laco={laco} />
 
-Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Pense numa torre: no térreo, o **fluxo fixo**, em que o código decide tudo; no topo, **vários agentes**. Quanto mais alto o andar, mais o modelo decide. Toque num andar e acompanhe a mesma mensagem:
+Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Pense numa torre, uma escala de autonomia: no térreo, o **fluxo fixo**, em que o código decide tudo; no topo, **vários agentes**. Quanto mais alto o andar, mais o modelo decide. Toque num andar e acompanhe a mesma mensagem:
 
 <QuemDecide dados={quemDecide} aposta={escala} pedidos={pedidosDaLoja} ilustracao="Ilustração: os passos foram escritos para mostrar o padrão. Os dados do pedido são os da loja." />
 
 <Aposta dados={escala} pergunta="Onde cada um destes sistemas fica na escala?" ilustracao="Ilustração: os quatro sistemas foram escritos para o exemplo; o segundo é o agente do capítulo 2." />
 
-Fora do livro, a escala também aparece. No relatório do Banco da Inglaterra de outubro de 2026, quase todas as instituições financeiras que responderam já usam agentes, e quase nenhuma deixa o agente decidir sozinho:
+Fora do livro, a escala também aparece. No relatório do Banco da Inglaterra de outubro de 2026, quatro em cada cinco instituições financeiras que responderam já usam agentes, e quase nenhuma deixa o agente decidir sozinho:
 
 <NumerosDaPesquisa dados={autonomiaNoMundo} />
 
@@ -119,7 +119,7 @@ Por isso este livro começa sem agente. Neste capítulo você vai escrever o que
 
 ## 1.3 As perguntas que chegam
 
-O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. Antes de pensar no agente, pense em você: é o seu primeiro dia no atendimento, e uma colega que atende ali há anos senta ao seu lado.
+O agente vai trabalhar para a Casa Bem-te-vi, uma loja online de utilidades para a casa: panelas, potes, organizadores, roupa de cama e mesa. Antes de pensar no agente, pense em você: é o seu primeiro dia no atendimento, e uma colega que atende ali há anos senta ao seu lado. Na loja, hoje é 10/11/2026.
 
 <PrimeiroDia referencia={referencia} casos={["R03", "R06", "R07", "R10", "R15", "R17"]} exemplo="R03"
   acoes={{ responder: "Respondo", abrir_chamado: "Abro um chamado", recusar: "Digo que não posso", passar: "Chamo alguém da equipe" }}
@@ -149,7 +149,7 @@ A colega vai sair de férias, e quem fica no lugar dela é o agente. Antes de sa
 
 A primeira é um bilhete explicando o trabalho: "não damos desconto; troca por defeito, até 90 dias; reembolso, chame alguém da equipe". Com um modelo de linguagem, esse bilhete tem nome: é o **prompt**, o texto que vai junto de cada mensagem dizendo ao modelo como se comportar.
 
-A segunda é o que ela vai usar para conferir se o substituto aprendeu: um gabarito, como o de uma prova. Mensagens que chegam à loja, cada uma com o que se deve fazer com ela, tirado da política e dos dados da loja. Esse gabarito é o **contrato**.
+A segunda é o que confere, enquanto ela está fora, se o substituto aprendeu: um gabarito, como o de uma prova. Mensagens que chegam à loja, cada uma com o que se deve fazer com ela, tirado da política e dos dados da loja. Esse gabarito é o **contrato**.
 
 Se o bilhete já explica tudo, para que o gabarito? Porque bilhete bom não garante nada. Veja a mensagem do desconto, a que o agente apressado aceitou, com dois bilhetes diferentes e, por fim, com o mesmo bilhete num outro modelo.
 
