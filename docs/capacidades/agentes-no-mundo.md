@@ -13,7 +13,8 @@ ligado aos agentes e à indústria (27/10/2026), com referências: a previsão d
 - (1) Só entra número conferido na fonte, com data, fonte, link e o tipo de amostra. Conferidos: Salt Security, pela
   reportagem da Campus Technology (49,8%, 12,5%, 17,5%, mais de 380 profissionais); Banco da Inglaterra, no relatório
   (80% implantados, 80% em apoio à decisão, 2% com autonomia ampla; 105 instituições no questionário completo); o
-  Gartner, pelas reproduções do comunicado (a página original devolve 403). Ficam de fora, até alguém conferir: os 46%
+  Gartner, pelas reproduções do comunicado (a página original devolve 403 ao modelo; o Erick conferiu na página
+  original em 27/10/2026). Ficam de fora, até alguém conferir: os 46%
   e 22% atribuídos ao Banco da Inglaterra (não estão no texto do relatório), os números da McKinsey (sem link) e o
   Valor (só título e subtítulo; os US$ 450 bilhões não dizem de quem é a estimativa).
 - (1) Uma peça só para os dois lugares (`NumerosDaPesquisa`): barras com o número, o rótulo e, quando há, a fase do
