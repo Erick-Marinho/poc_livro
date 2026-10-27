@@ -32,5 +32,7 @@ ligado aos agentes e à indústria (27/10/2026), com referências: a previsão d
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `eeb0452` | `testes/introducao.test.mjs` reescrito: o Invista e a figura usam os mesmos números, a resposta certa é a faixa em que o número cai (e só ela), cada fase leva ao capítulo dela, fonte e amostra na página, o Gartner dito como previsão; sem o Invista das fases. `npm test` 178/178. Ritmo da introdução: 164 → Invista, os mesmos avisos de antes (303 onde eram 308). Capturas a 1280 e 390 px: o Invista em cartões, o retorno e a figura | aguardando revisão |
+| 2 | `424bf6e` | `testes/agentes-no-mundo.test.mjs` (2): os números do Banco da Inglaterra vêm depois da escala, com fonte, amostra e o aviso de não somar; os não conferidos (46%, 22%, 450 bilhões, McKinsey) ficaram de fora. `npm test` 180/180. Ritmo do 1.1: 169 → PareEPense. Capturas a 1280 e 390 px | aguardando revisão |
 
 (redação: Claude Opus 5.5)
