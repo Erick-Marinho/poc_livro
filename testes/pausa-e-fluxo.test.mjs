@@ -82,3 +82,24 @@ test("as ações do texto dizem o que as coletas gravadas mostram", () => {
   assert.ok(a.opcoes.every((o) => !/começam iguais|cache/.test(o)), "as opções não trazem o porquê");
   assert.match(a.porque, /Não medimos o laboratório do artigo/);
 });
+
+test("os tempos de verdade: a linha do tempo usa as medianas gravadas, e a aposta de escala da IDE acerta a conta", async () => {
+  const { montarTempos, legendas, fimDe, EIXO, DE_NOVO, SEGUNDOS } = await import("../src/components/livro/pausa/tempos.ts");
+  const coleta = json("projeto/coleta.json");
+  const escritos = Object.fromEntries(Object.keys(coleta.repeticoes[0]).map((c) => [c, coleta.repeticoes.map((r) => r[c].escritos)]));
+  const t = montarTempos(saida("pf-limpa").map((l) => [l, ""]), json("figuras/pausa.json").mensagens, escritos);
+  const [curta, media, longa] = ["curta", "media", "longa"].map((c) => linhaDe("pf-limpa", c));
+  assert.deepEqual(t.linhas.map((l) => l.pausa), [curta, media, longa].map((l) => numero(l, "pausa")));
+  assert.deepEqual(t.linhas.map((l) => l.fluxo), [curta, media, longa].map((l) => numero(l, "fluxo")));
+  assert.equal(t.deNovo.pausa, numero(linhaDe("pf-limpa", "de_novo"), "pausa"));
+  assert.ok(fimDe(t, t.linhas[2]) <= EIXO && DE_NOVO + fimDe(t, t.deNovo) < SEGUNDOS);
+  assert.match(legendas(t)[1].texto, new RegExp(`${t.vezes} vezes`));
+  assert.deepEqual([...t.linhas, t.deNovo].map((l) => l.escritos), [64, 64, 64, 50], "a mediana dos tokens escritos, caso a caso");
+  assert.throws(() => montarTempos(saida("pf-limpa").map((l) => [l, ""]), json("figuras/pausa.json").mensagens, { curta: [64] }), /não está no coleta/);
+  const aposta = json("roteiros/01.json").passos.find((p) => p.id === "pf-limpa").aposta;
+  const vezes = (o) => Number(o.match(/\d+/)[0]);
+  const perto = aposta.opcoes.reduce((a, o, i) => (Math.abs(vezes(o) - t.vezes) < Math.abs(vezes(aposta.opcoes[a]) - t.vezes) ? i : a), 0);
+  assert.equal(aposta.certa, perto, "a certa é a mais perto da conta gravada");
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  assert.ok(mdx.indexOf("<IdeCapitulo") < mdx.indexOf("<TemposReais") && mdx.indexOf("<TemposReais") < mdx.indexOf("## O tropeço"));
+});

@@ -36,10 +36,12 @@ import estados from "./roteiros/01.estados.json";
 import passos from "./passos/01.json";
 import glossario from "./glossario.json";
 import saidas from "./saidas.json";
+import coleta from "./projeto/coleta.json";
+import TemposReais from "../../src/components/livro/TemposReais.astro";
 
 Você pergunta algo a um chat de IA. Por um instante, nada acontece. Depois, a resposta aparece, palavra por palavra. Parece um trabalho só, mas são dois.
 
-Pense na atendente da Casa Bem-te-vi, que responde mensagens por escrito. Antes de responder, ela **lê** a mensagem inteira. Depois, **escreve** a resposta, uma palavra de cada vez.
+Pense numa atendente que responde mensagens por escrito. Antes de responder, ela **lê** a mensagem inteira. Depois, **escreve** a resposta, uma palavra de cada vez.
 
 O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/10/llm-inference-explained-optimization-techniques/) diz que um modelo de linguagem funciona assim, e propõe um laboratório no Ollama para medir. Vamos medir. No caminho, você vai tropeçar num detalhe que o laboratório do artigo não mostra.
 
@@ -62,6 +64,8 @@ Mais: 1072. Muitas palavras viram mais de um token, e o Ollama ainda acrescenta 
 Você começa numa pasta vazia e monta o medidor passo a passo, com testes que fingem ser o modelo. Aqui na página, o modelo não é executado. As duas coletas que você vai ler foram gravadas com o código de cada momento, numa máquina identificada no resultado. Na sua máquina, o mesmo código mede de verdade.
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "As mensagens", "2": "O medidor", "3": "A coleta", "4": "O conserto" }} numero="2" legenda="O medidor construído desde a pasta vazia. Os comandos são executados no projeto real; as duas coletas foram gravadas com o modelo de verdade, cada uma com o código daquele momento. As mensagens do chat são um roteiro, não um modelo ao vivo." />
+
+<TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 50 na longa de novo). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
 
 <Nota titulo="o que é inventado">A loja Casa Bem-te-vi e os seus dados são inventados: são os mesmos do livro. Na figura, a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As conversas do chat da IDE são um roteiro. As coletas são reais: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 

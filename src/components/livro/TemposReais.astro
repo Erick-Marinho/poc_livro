@@ -1,0 +1,24 @@
+---
+/**
+ * Os tempos de verdade, depois da IDE do "Pausa e fluxo" (docs/capacidades/pausa-e-fluxo-revisao.md, etapa 3): a coleta
+ * corrigida numa linha do tempo, que o leitor toca (em tempo real) ou rola. Os números são os da saída gravada pf-limpa
+ * e do coleta.json, pelas medianas (pausa/tempos.ts). Sem JS, as legendas em lista.
+ */
+import FiguraTempos from "./pausa/FiguraTempos";
+import { legendas, montarTempos } from "./pausa/tempos.ts";
+
+interface Props { saida: [string, string][]; mensagens: { nome: string; palavras: number }[]; coleta: { repeticoes: Record<string, { escritos: number }>[] }; legenda: string }
+const { saida, mensagens, coleta, legenda } = Astro.props;
+const casos = Object.keys(coleta.repeticoes[0]);
+const tempos = montarTempos(saida, mensagens, Object.fromEntries(casos.map((c) => [c, coleta.repeticoes.map((r) => r[c].escritos)])));
+---
+<figure class="tempos-reais" data-tempos-reais>
+  <FiguraTempos client:visible={{ rootMargin: "400px" }} tempos={tempos} />
+  <noscript><ol>{legendas(tempos).map((l) => <li>{l.texto}</li>)}</ol></noscript>
+  <figcaption>{legenda}</figcaption>
+</figure>
+
+<style is:global>
+  .tempos-reais { margin: 1.8em auto 2em; max-width: 800px }
+  .tempos-reais figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>

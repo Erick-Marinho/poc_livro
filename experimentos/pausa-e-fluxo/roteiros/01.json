@@ -362,12 +362,13 @@
       "comando": "uv run python medir.py",
       "nota": "Leia a coleta corrigida.",
       "aposta": {
-        "pergunta": "E a longa pedida de novo, logo em seguida, com o mesmo número de atendimento?",
+        "pergunta": "Agora cada atendimento começa diferente. A pausa da longa fica quantas vezes a da curta?",
         "opcoes": [
-          "Demora o mesmo que a longa",
-          "Começa quase na hora"
+          "umas 2 vezes",
+          "umas 5 vezes",
+          "umas 25 vezes"
         ],
-        "certa": 1
+        "certa": 2
       }
     }
   ]

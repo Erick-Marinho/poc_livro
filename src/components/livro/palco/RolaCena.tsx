@@ -25,13 +25,15 @@ type Props<P extends Record<string, unknown>> = {
   /** o espaço da tela que fica para o resto (o topo do livro, os controles): o vídeo cabe no que sobra */
   reserva: number;
   descricao: ReactNode;
+  /** a velocidade do play: metade (o ritmo de leitura) por padrão; 1 quando o tempo da figura é o tempo de verdade */
+  velocidade?: number;
   /** ouve cada quadro, tocando ou rolando, para acender o que está fora do vídeo (o cartão do mapa do ciclo) */
   aoQuadro?: (quadro: number) => void;
 };
 type Toque = "parado" | "tocando" | "fim";
 const TOPO = 58; // a barra do livro: a figura presa fica logo abaixo dela
 
-export default function RolaCena<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, telas, reserva, descricao, aoQuadro }: Props<P>) {
+export default function RolaCena<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, telas, reserva, descricao, aoQuadro, velocidade = 0.5 }: Props<P>) {
   const ref = useRef<PlayerRef>(null);
   const caixa = useRef<HTMLDivElement>(null);
   const trilho = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export default function RolaCena<P extends Record<string, unknown>>({ component,
     <div className={`rc-quadro${preso ? " rc-preso" : ""}`}>
       <div className="rc-video" style={{ width: `min(100%, calc((100vh - ${reserva}px) * ${largura / altura}))` }}>
         <Player key={chave} ref={ref} component={component} inputProps={inputProps} durationInFrames={duracao} fps={fps}
-          compositionWidth={largura} compositionHeight={altura} initialFrame={direto ? duracao - 1 : 0} playbackRate={0.5}
+          compositionWidth={largura} compositionHeight={altura} initialFrame={direto ? duracao - 1 : 0} playbackRate={velocidade}
           moveToBeginningWhenEnded={false} numberOfSharedAudioTags={0} style={{ width: "100%", display: "block" }} acknowledgeRemotionLicense />
       </div>
       {direto ? null : (

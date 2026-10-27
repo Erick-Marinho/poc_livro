@@ -35,7 +35,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 | Conta | Não conta |
 |---|---|
-| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do Invista), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no Invista logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
+| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do Invista), `TemposReais` (toca ou rola; a aposta de escala fica na IDE, logo antes), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no Invista logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
@@ -54,5 +54,6 @@ um momento-chave, mais lento, com uma decisão antes (aposta) → quadro final p
 direto). O leitor controla: nada toca sozinho. Números e textos vêm das saídas e gravações; ilustração diz que é.
 Legendas curtas (cerca de 12 palavras). Cor com sentido fixo: acento é o que acontece agora, verde é o que o contrato
 pede, âmbar é erro, cinza é o que já passou. Analogia só do elenco da loja (a ficha de atendimento, os balcões, a
-recepção, o taxímetro, o boneco de teste, o replay), e a última cena diz onde ela quebra. Legível a 360 px. O que sai
+recepção, o taxímetro, o boneco de teste, o replay), e a última cena diz onde ela quebra. Nos experimentos, o exemplo e
+a analogia podem sair do caso do livro (decisão do Erick, 27/10/2026): o experimento não precisa ser da loja. Legível a 360 px. O que sai
 sem perder sentido, sai.
