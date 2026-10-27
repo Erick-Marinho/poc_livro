@@ -2,6 +2,7 @@
 import { existsSync } from "node:fs";
 import { getCollection, render } from "astro:content";
 import Experimento from "../../layouts/Experimento.astro";
+import { experimentos as listar } from "../../lib/vitrine";
 
 /** Um experimento por página, em /experimentos/<experimento>/: o nome da pasta do experimento é o endereço. */
 export async function getStaticPaths() {
@@ -23,6 +24,11 @@ export async function getStaticPaths() {
   });
 }
 const { experimento, resultados } = Astro.props;
-const { Content } = await render(experimento);
+const { Content, headings } = await render(experimento);
+/* o sumário: os experimentos, o mais novo em cima, como na vitrine; a pílula anda nessa ordem */
+const todos = await listar();
+const i = todos.findIndex((x) => x.id === experimento.id);
+const itens = todos.map((x) => ({ titulo: x.titulo, href: x.href, atual: x.id === experimento.id }));
+const vizinho = (x?: (typeof todos)[number]) => (x ? { href: x.href, rotulo: x.titulo } : undefined);
 ---
-<Experimento {...experimento.data} resultados={resultados}><Content /></Experimento>
+<Experimento {...experimento.data} resultados={resultados} secoes={headings} itens={itens} anterior={vizinho(todos[i - 1])} proximo={vizinho(todos[i + 1])}><Content /></Experimento>

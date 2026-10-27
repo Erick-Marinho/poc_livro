@@ -24,12 +24,18 @@ conteúdo.
 | 2 | Os experimentos com o topo, o sumário, a pílula e as configurações do livro | navega entre experimentos, liga o foco e abre a IDE como no livro |
 | 3 | A revisão dos experimentos: storytelling, padrão de caixas e conteúdo | lê experimentos no mesmo padrão dos capítulos |
 
-## Etapa atual: 1 — a pílula
+## Etapa atual: 2 — os controles nos experimentos
+
+- A página do experimento troca o topo do site pelo do livro (o ☰, a seção em que o leitor está, o foco e "Leia com a
+  IDE aberta"; sem o botão da nota, porque experimento não tem placar) e ganha a `Navegacao` do livro: o sumário, com
+  os experimentos, o mais novo em cima, e as seções do atual (com "O que se testa" e "O que deu", do molde); a pílula,
+  com o anterior e o próximo, na mesma ordem; e as configurações. O script do `<head>` é o do livro (tema, pílula,
+  sumário fechado, foco).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | aguardando revisão |
+| 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

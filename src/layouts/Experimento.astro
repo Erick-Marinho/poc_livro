@@ -4,18 +4,27 @@ import { NIVEIS, type Nivel } from "../lib/niveis";
 import "../styles/livro.css";
 import "../styles/experimentos.css";
 import { dataLonga } from "../lib/datas";
-import TopoSite from "../components/TopoSite.astro";
+import type { MarkdownHeading } from "astro";
+import { INICIO } from "../lib/site";
+import Navegacao from "../components/livro/Navegacao.astro";
+import type { ItemSumario } from "../components/livro/Navegacao.astro";
 
-/** A página de um experimento: o mesmo papel, as mesmas fontes e os mesmos componentes do livro, numa abertura mais curta.
- *  Abre com o que se testa (a afirmação e a régua) e fecha com o que deu: o resultado fica no fim, para não estragar as apostas. */
+/** A página de um experimento: o mesmo papel, as mesmas fontes, os mesmos componentes e os mesmos controles do livro
+ *  (o topo com a seção, o foco e a IDE; o sumário, com os experimentos; a pílula, com o anterior e o próximo, e as
+ *  configurações; docs/capacidades/controles-nos-experimentos.md), numa abertura mais curta. Abre com o que se testa (a
+ *  afirmação e a régua) e fecha com o que deu: o resultado fica no fim, para não estragar os palpites. */
 interface Resultado { rotulo: string; acertos: number; total: number; nota: string; comando: string }
 interface Props {
   titulo: string; lide: string; data: string; etiqueta: string; nivel: Nivel;
   afirmacao: { texto: string; fonte: { titulo: string; url: string } };
   regua: { arquivo: string; conta: string };
   resultados: Resultado[]; achado: string; custo: string;
+  secoes: MarkdownHeading[]; itens: ItemSumario[]; anterior?: Vizinho; proximo?: Vizinho;
 }
-const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achado, custo } = Astro.props;
+type Vizinho = { href: string; rotulo: string };
+const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achado, custo, secoes, itens, anterior, proximo } = Astro.props;
+/* as seções da página: o que se testa (do molde), as do texto, e o que deu (do molde) */
+const titulos = [{ id: "o-que-se-testa", texto: "O que se testa" }, ...secoes.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, texto: h.text })), { id: "o-que-deu", texto: "O que deu" }];
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -23,7 +32,7 @@ const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achad
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <!-- antes de pintar: as escolhas do leitor guardadas no navegador, as mesmas do livro (comandos/Comandos.tsx) -->
-    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;if(localStorage.getItem("fontmar:direto")==="sim")document.documentElement.setAttribute("data-direto","");var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z}catch(e){}</script>
+    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;if(localStorage.getItem("fontmar:pilula")==="circulo")document.documentElement.classList.add("pilula-recolhida");if(localStorage.getItem("fontmar:direto")==="sim")document.documentElement.setAttribute("data-direto","");var f=localStorage.getItem("fontmar:fonte");if(f)document.documentElement.dataset.fonte=f;var z=localStorage.getItem("fontmar:tamanho");if(z)document.documentElement.dataset.tamanho=z;if(localStorage.getItem("fontmar:sumario")==="fechado")document.documentElement.classList.add("sumario-fechado");if(localStorage.getItem("fontmar:foco")==="sim")document.documentElement.setAttribute("data-foco","")}catch(e){}</script>
     <title>{titulo} · Experimentos</title>
     <meta name="description" content={lide} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,7 +40,8 @@ const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achad
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
   </head>
   <body>
-    <TopoSite atual="experimentos" nome="Experimentos" nomeHref="/experimentos/"> · um experimento que executa</TopoSite>
+    <Navegacao livro="Experimentos" onde={titulo} itens={itens} secoes={titulos} anterior={anterior} proximo={proximo} />
+    <header class="topo"><div class="in"><button type="button" class="topo-sumario" data-abrir aria-controls="sumario" aria-label="Abrir o sumário" title="Abrir o sumário"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></button><a class="marca" href={INICIO} aria-label="FonteMar.ai, início">Fonte<span>Mar</span><i>.ai</i></a><span class="nome"><a href="/experimentos/"><b>Experimentos</b></a> · um experimento que executa</span><span class="esp"></span><span id="onde">{titulo}</span><span class="topo-comandos" id="topo-comandos"></span></div><div class="progresso" id="progresso"></div></header>
     <main class="livro">
       <section class="abertura-experimento">
         <div class="linha"><span class="etiqueta">{etiqueta}</span><NivelExperimento nivel={nivel} /><time class="quando" datetime={data}>{dataLonga(data)}</time></div>
@@ -62,5 +72,15 @@ const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achad
       </section>
       <nav class="proximo" aria-label="Navegação entre experimentos"><a href="/experimentos/">← Todos os experimentos</a><span /></nav>
     </main>
+    <script define:vars={{ titulos, inicio: titulo }}>
+      const prog = () => {
+        const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+        document.getElementById("progresso").style.width = (max > 0 ? h.scrollTop / max * 100 : 0) + "%";
+        let atual = inicio;
+        for (const t of titulos) { const el = document.getElementById(t.id); if (el && el.getBoundingClientRect().top < 120) atual = t.texto; }
+        document.getElementById("onde").textContent = atual;
+      };
+      addEventListener("scroll", prog, { passive: true }); prog();
+    </script>
   </body>
 </html>
