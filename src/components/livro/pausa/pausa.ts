@@ -1,7 +1,7 @@
 /**
  * A pausa e o fluxo (docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5): a animação de "O que vamos construir",
  * em seis cenas que o leitor toca ou rola (palco/RolaCena.tsx): o modelo lê, a pausa até a primeira palavra, a
- * resposta escrita um pedaço por vez, o fluxo, o medidor nas três mensagens e a pergunta que vai para a aposta. É
+ * resposta escrita um pedaço por vez, o fluxo, o medidor nas três mensagens e a pergunta que o leitor leva para a IDE. É
  * ilustração (figuras/pausa.json): sem número medido, para não adiantar o resultado. Puro de propósito: o teste chama
  * isto direto.
  */
@@ -48,7 +48,7 @@ export function baloes(): Balao[] {
     "Depois, ele escreve um pedaço por vez.",
     "O fluxo: quantos pedaços saem por segundo.",
     "O medidor cronometra os dois, nas três mensagens.",
-    "Você aposta na IDE, antes de medir.",
+    "Você investe na IDE, antes de medir.",
   ];
   return textos.map((texto, k) => ({ de: CENAS[k].de + 0.2, ate: k + 1 < CENAS.length ? CENAS[k + 1].de + 0.2 : SEGUNDOS + 1, texto }));
 }

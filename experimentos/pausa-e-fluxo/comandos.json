@@ -1,0 +1,11 @@
+{
+  "pasta_do_leitor": "/home/voce/pausa-e-fluxo",
+  "comandos": {
+    "pf-fluxo": {
+      "comando": "uv run python medir.py | grep 'fluxo da longa'"
+    },
+    "pf-cache": {
+      "comando": "uv run python medir.py | grep 'lendo do cache'"
+    }
+  }
+}

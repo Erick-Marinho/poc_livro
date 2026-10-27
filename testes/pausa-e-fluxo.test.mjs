@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { baloes, CENAS, DURACAO, FPS, montarPausa, pedacoEm, PERGUNTA, RESUMOS, SEGUNDOS } from "../src/components/livro/pausa/pausa.ts";
 
-const projeto = new URL("../rascunhos/pausa-e-fluxo/projeto/", import.meta.url);
+const projeto = new URL("../experimentos/pausa-e-fluxo/projeto/", import.meta.url);
 const casos = readFileSync(new URL("casos.jsonl", projeto), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 /* o que o modelo lê: o material da loja, nesta ordem, e a pergunta no fim */
 const texto = (c) => [...c.material.map((m) => readFileSync(new URL(`dados/${m}`, projeto), "utf8")), `Pergunta: ${c.pergunta}`].join("\n\n");
@@ -24,7 +24,7 @@ test("nenhum caso começa como outro, para o cache não encurtar a pausa medida"
 });
 
 test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar o resultado nem o cache", () => {
-  const pausa = montarPausa(JSON.parse(readFileSync(new URL("../rascunhos/pausa-e-fluxo/figuras/pausa.json", import.meta.url), "utf8")));
+  const pausa = montarPausa(JSON.parse(readFileSync(new URL("../experimentos/pausa-e-fluxo/figuras/pausa.json", import.meta.url), "utf8")));
   assert.equal(CENAS.length, 6);
   assert.ok(DURACAO / FPS <= 45);
   CENAS.forEach((c, i) => { if (i) assert.ok(c.de > CENAS[i - 1].de); });
@@ -44,7 +44,11 @@ test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar 
   assert.match(pausa.sobre, /ilustração/);
 });
 
-test("a figura só aparece no astro dev: o build não gera a página de rascunho", () => {
-  assert.ok(existsSync(new URL("../dist/experimentos/index.html", import.meta.url)), "rode depois de astro build");
-  assert.ok(!existsSync(new URL("../dist/rascunhos/", import.meta.url)));
+test("a figura está na página, em \"O que vamos construir\", antes da IDE", () => {
+  const mdx = readFileSync(new URL("../experimentos/pausa-e-fluxo/experimento.mdx", import.meta.url), "utf8");
+  const construir = mdx.indexOf("## O que vamos construir"), figura = mdx.indexOf("<PausaEFluxo"), ide = mdx.indexOf("<IdeCapitulo");
+  assert.ok(construir >= 0 && construir < figura && figura < ide);
+  const html = readFileSync(new URL("../dist/experimentos/pausa-e-fluxo/index.html", import.meta.url), "utf8");
+  assert.match(html, /data-pausa-e-fluxo/);
+  assert.match(html, /data-nivel="novato"/);
 });

@@ -1,6 +1,6 @@
 {
   "experimento": "pausa-e-fluxo",
-  "sobre": "Construção do medidor da pausa e do fluxo. O modelo não roda no build: os comandos leem as coletas reais gravadas numa máquina identificada; na máquina do leitor, coletar.py mede de verdade.",
+  "sobre": "Construção do medidor da pausa e do fluxo. O modelo não é executado no build: os comandos leem as coletas reais gravadas numa máquina identificada; na máquina do leitor, coletar.py mede de verdade.",
   "passos": [
     {
       "acao": "rodar",
@@ -37,7 +37,7 @@
         {
           "linhas": "1-13",
           "titulo": "o endereço e o modelo",
-          "texto": "O Ollama atende em localhost:11434. O modelo é o llama3.2:3b, pequeno o bastante para rodar no processador."
+          "texto": "O Ollama atende em localhost:11434. O modelo é o llama3.2:3b, pequeno o bastante para o processador."
         },
         {
           "linhas": "21-21",
@@ -107,7 +107,7 @@
       "acao": "rodar",
       "id": "pf-teste-ler",
       "comando": "uv run python -m unittest -q test_medidor.LerTest",
-      "nota": "Rode os testes de ler.",
+      "nota": "Execute os testes de ler.",
       "espera": 1,
       "aposta": {
         "pergunta": "O primeiro pedaço chega vazio no segundo 1,0; a palavra \"O\" chega no 2,5. O teste espera uma pausa de 2,5. Ele passa?",
@@ -144,7 +144,7 @@
       "acao": "rodar",
       "id": "pf-teste-ler-ok",
       "comando": "uv run python -m unittest -q test_medidor.LerTest",
-      "nota": "Rode de novo."
+      "nota": "Execute de novo."
     },
     {
       "acao": "inserir",
@@ -155,7 +155,7 @@
           "linhas": "41-50"
         }
       ],
-      "nota": "perguntar manda o texto ao Ollama e passa a resposta, aos pedaços, para ler. Ele precisa do Ollama ligado; aqui no experimento ele não roda.",
+      "nota": "perguntar manda o texto ao Ollama e passa a resposta, aos pedaços, para ler. Ele precisa do Ollama ligado; aqui no experimento ele não é executado.",
       "blocos": [
         {
           "linhas": "45-46",
@@ -183,7 +183,7 @@
           "linhas": "1-21"
         }
       ],
-      "nota": "O placar conta, de dez rodadas, em quantas cada parte da afirmação se confirmou.",
+      "nota": "O placar conta, de dez repetições, em quantas cada parte da afirmação se confirmou.",
       "blocos": [
         {
           "linhas": "5-5",
@@ -206,20 +206,20 @@
           "linhas": "63-93"
         }
       ],
-      "nota": "Os testes do placar, com rodadas de mentira."
+      "nota": "Os testes do placar, com repetições de mentira."
     },
     {
       "acao": "rodar",
       "id": "pf-testes",
       "comando": "uv run python -m unittest -q",
-      "nota": "Rode todos os testes."
+      "nota": "Execute todos os testes."
     },
     {
       "acao": "copiar",
       "arquivos": [
         "maquina.py"
       ],
-      "nota": "maquina.py anota onde a coleta rodou: a data, as versões, o modelo e o processador. Sem isso, um número de tempo não diz nada. Vem pronto."
+      "nota": "maquina.py anota onde a coleta foi feita: a data, as versões, o modelo e o processador. Sem isso, um número de tempo não diz nada. Vem pronto."
     },
     {
       "acao": "escrever",
@@ -235,7 +235,7 @@
           "linhas": "12-15"
         },
         {
-          "texto": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrodadas = []\nfor n in range(RODADAS):\n    rodada = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    rodada[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n"
+          "texto": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrepeticoes = []\nfor n in range(REPETICOES):\n    vez = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    vez[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n"
         },
         {
           "linhas": "24-27"
@@ -273,7 +273,7 @@
       "comando": "uv run python medir.py coleta-sem-numero.json",
       "nota": "Leia a coleta gravada.",
       "aposta": {
-        "pergunta": "A longa tem 430 palavras; a curta, 10. Em quantas das 10 rodadas a pausa da longa foi maior que a da curta?",
+        "pergunta": "A longa tem 430 palavras; a curta, 10. Em quantas das 10 vezes a pausa da longa foi maior que a da curta?",
         "opcoes": [
           "Em quase todas",
           "Em umas cinco",
@@ -284,19 +284,19 @@
     },
     {
       "acao": "rodar",
-      "id": "pf-rodadas",
-      "comando": "uv run python -c \"import json; r = json.load(open('coleta-sem-numero.json'))['rodadas']; [print('rodada', n + 1, '· longa: pausa', round(x['longa']['pausa'], 2), 's ·', x['longa']['do_cache'], 'de', x['longa']['lidos'], 'tokens vieram do cache') for n, x in enumerate(r[:3])]\"",
-      "nota": "Olhe a longa rodada por rodada.",
+      "id": "pf-vezes",
+      "comando": "uv run python -c \"import json; r = json.load(open('coleta-sem-numero.json'))['repeticoes']; [print('vez', n + 1, '· longa: pausa', round(x['longa']['pausa'], 2), 's ·', x['longa']['do_cache'], 'de', x['longa']['lidos'], 'tokens vieram do cache') for n, x in enumerate(r[:3])]\"",
+      "nota": "Olhe a longa, uma vez de cada vez.",
       "pergunta_saida": {
-        "texto": "O que mudou da rodada 1 para a 2?",
+        "texto": "O que mudou da primeira vez para a segunda?",
         "opcoes": [
           "O modelo ficou mais rápido depois de aquecer",
-          "Na rodada 2, o Ollama já tinha lido aquela mensagem e reaproveitou a leitura",
+          "Na segunda vez, o Ollama já tinha lido aquela mensagem e reaproveitou a leitura",
           "A mensagem longa ficou menor"
         ],
         "certa": 1,
         "evidencia": "tokens vieram do cache",
-        "porque": "Na rodada 1, o modelo leu quase tudo do zero. Da 2 em diante, quase todos os tokens vieram do cache: o Ollama guarda as leituras anteriores, e não só a última."
+        "porque": "Na primeira vez, o modelo leu quase tudo do zero. Da segunda em diante, quase todos os tokens vieram do cache: o Ollama guarda as leituras anteriores, e não só a última."
       }
     },
     {
@@ -325,7 +325,7 @@
       "acao": "rodar",
       "id": "pf-testes-todos",
       "comando": "uv run python -m unittest -q",
-      "nota": "Rode todos os testes."
+      "nota": "Execute todos os testes."
     },
     {
       "acao": "trocar",
@@ -341,7 +341,7 @@
     {
       "acao": "trocar",
       "arquivo": "coletar.py",
-      "de": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrodadas = []\nfor n in range(RODADAS):\n    rodada = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    rodada[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n",
+      "de": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrepeticoes = []\nfor n in range(REPETICOES):\n    vez = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    vez[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n",
       "para": [
         {
           "linhas": "16-23"

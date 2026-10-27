@@ -1,0 +1,381 @@
+[
+ {
+  "passo": 1,
+  "rodou": "pf-init",
+  "gerados": {
+   "pyproject.toml": "[project]\nname = \"pausa-e-fluxo\"\nversion = \"0.1.0\"\nrequires-python = \">=3.13\"\ndependencies = []\n"
+  }
+ },
+ {
+  "passo": 2,
+  "arquivos": {
+   "pyproject.toml": "[project]\nname = \"pausa-e-fluxo\"\nversion = \"0.1.0\"\ndescription = \"Mede a pausa antes da primeira palavra e o fluxo depois dela, num modelo rodando no Ollama\"\nrequires-python = \">=3.11\"\ndependencies = []\n",
+   "uv.lock": "version = 1\nrevision = 5\nrequires-python = \">=3.11\"\n\n[[package]]\nname = \"pausa-e-fluxo\"\nversion = \"0.1.0\"\nsource = { virtual = \".\" }\n",
+   "casos.jsonl": "{\"id\":\"curta\",\"material\":[],\"pergunta\":\"O meu pedido BT-1003 já saiu? Quando ele chega?\"}\n{\"id\":\"media\",\"material\":[\"pedidos.json\"],\"pergunta\":\"O meu pedido BT-1003 já saiu? Quando ele chega?\"}\n{\"id\":\"longa\",\"material\":[\"politica.md\",\"catalogo.json\",\"pedidos.json\"],\"pergunta\":\"O meu pedido BT-1003 já saiu? Quando ele chega?\"}\n",
+   "dados/politica.md": "# Política de atendimento da Casa Bem-te-vi (loja inventada)\n\n## Entrega\n- Entregamos em todo o Brasil, pela Transportadora Asa Leve.\n- O pedido sai em até 2 dias úteis depois da confirmação do pagamento.\n- O prazo de entrega aparece no pedido assim que ele é enviado.\n\n## Troca e devolução\n- Arrependimento: o cliente pode devolver em até 7 dias depois de receber, sem dizer o motivo (Código de Defesa do Consumidor, art. 49). O frete da devolução é por nossa conta.\n- Defeito: o cliente tem 90 dias depois de receber para reclamar, porque os nossos produtos são duráveis. Abrimos um chamado de troca e mandamos uma etiqueta de envio.\n- O endereço de um pedido só muda enquanto ele está \"preparando\". Depois de enviado, não muda.\n\n## Reembolso\n- Todo reembolso passa pela aprovação de uma pessoa da equipe. O agente não aprova reembolso.\n\n## O que o atendimento não faz\n- Não dá desconto e não cria cupom.\n- Não informa dados de um pedido a quem não confirmar o número do pedido e o e-mail da compra.\n- Não informa dado pessoal de cliente nenhum.\n",
+   "dados/catalogo.json": "[\n  {\"id\": \"P01\", \"nome\": \"Frigideira antiaderente 24 cm\", \"preco\": 129.90, \"detalhes\": \"Alumínio com antiaderente. Vai ao forno até 180 °C, sem o cabo de silicone. Não vai à lava-louças.\"},\n  {\"id\": \"P02\", \"nome\": \"Panela de ferro fundido 3 L\", \"preco\": 289.00, \"detalhes\": \"Tampa de ferro. Vai ao forno e serve para fogão de indução. Pesa 3,8 kg.\"},\n  {\"id\": \"P03\", \"nome\": \"Organizador de gaveta, 6 divisórias\", \"preco\": 59.90, \"detalhes\": \"Bambu. 40 × 30 × 5 cm. As divisórias saem para lavar.\"},\n  {\"id\": \"P04\", \"nome\": \"Jogo de lençol casal, 3 peças\", \"preco\": 199.00, \"detalhes\": \"Algodão 200 fios. Lençol de baixo com elástico, para colchão de até 30 cm de altura.\"},\n  {\"id\": \"P05\", \"nome\": \"Pote hermético de vidro 1 L\", \"preco\": 39.90, \"detalhes\": \"Tampa com trava e vedação de silicone. Vai ao micro-ondas sem a tampa.\"},\n  {\"id\": \"P06\", \"nome\": \"Toalha de mesa 1,60 × 2,20 m\", \"preco\": 89.90, \"detalhes\": \"Algodão e poliéster. Lavar à mão ou na máquina, sem alvejante.\"}\n]\n",
+   "dados/pedidos.json": "[\n  {\"id\": \"BT-1001\", \"cliente\": \"C01\", \"itens\": [\"P03\"], \"status\": \"entregue\", \"entregue_em\": \"2026-11-03\"},\n  {\"id\": \"BT-1002\", \"cliente\": \"C02\", \"itens\": [\"P01\", \"P05\"], \"status\": \"preparando\", \"previsao_envio\": \"2026-11-11\"},\n  {\"id\": \"BT-1003\", \"cliente\": \"C03\", \"itens\": [\"P02\"], \"status\": \"enviado\", \"transportadora\": \"Transportadora Asa Leve\", \"rastreio\": \"AL000000003BR\", \"previsao_entrega\": \"2026-11-14\"},\n  {\"id\": \"BT-1004\", \"cliente\": \"C01\", \"itens\": [\"P02\"], \"status\": \"entregue\", \"entregue_em\": \"2026-11-07\"},\n  {\"id\": \"BT-1005\", \"cliente\": \"C04\", \"itens\": [\"P04\", \"P06\"], \"status\": \"entregue\", \"entregue_em\": \"2026-10-20\"},\n  {\"id\": \"BT-1006\", \"cliente\": \"C02\", \"itens\": [\"P05\"], \"status\": \"cancelado\", \"cancelado_em\": \"2026-11-08\", \"pago\": true}\n]\n"
+  }
+ },
+ {
+  "passo": 3,
+  "arquivo": "medidor.py",
+  "conteudo": "\"\"\"O medidor: pede uma resposta ao modelo no Ollama e mede os dois trabalhos dele.\n\nA pausa é o tempo até o primeiro pedaço com texto: o modelo lendo tudo o que recebeu.\nO fluxo é quantos tokens ele escreve por segundo depois disso.\n\"\"\"\nimport json\nimport time\nimport urllib.request\nfrom pathlib import Path\n\nOLLAMA = \"http://localhost:11434/api/generate\"\nMODELO = \"llama3.2:3b\"\nPASTA = Path(__file__).parent\n\n\ndef montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ]
+ },
+ {
+  "passo": 4,
+  "rodou": "pf-tamanhos"
+ },
+ {
+  "passo": 5,
+  "arquivo": "medidor.py",
+  "conteudo": "\"\"\"O medidor: pede uma resposta ao modelo no Ollama e mede os dois trabalhos dele.\n\nA pausa é o tempo até o primeiro pedaço com texto: o modelo lendo tudo o que recebeu.\nO fluxo é quantos tokens ele escreve por segundo depois disso.\n\"\"\"\nimport json\nimport time\nimport urllib.request\nfrom pathlib import Path\n\nOLLAMA = \"http://localhost:11434/api/generate\"\nMODELO = \"llama3.2:3b\"\nPASTA = Path(__file__).parent\n\n\ndef montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n\n\ndef ler(pedacos, inicio, relogio=time.perf_counter):\n    \"\"\"Lê a resposta pedaço por pedaço; o último traz as contas do Ollama.\"\"\"\n    pausa = None\n    for linha in pedacos:\n        pedaco = json.loads(linha)\n        if pausa is None:\n            pausa = relogio() - inicio\n        if pedaco.get(\"done\"):\n            return {\n                \"pausa\": pausa,\n                \"fluxo\": pedaco[\"eval_count\"] / (pedaco[\"eval_duration\"] / 1e9),\n                \"lidos\": pedaco[\"prompt_eval_count\"],\n                \"do_cache\": pedaco.get(\"prompt_eval_cached_count\", 0),\n                \"escritos\": pedaco[\"eval_count\"],\n            }\n    raise RuntimeError(\"a resposta acabou antes do último pedaço\")\n",
+  "alteradas": [
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37
+  ]
+ },
+ {
+  "passo": 6,
+  "arquivo": "test_medidor.py",
+  "conteudo": "\"\"\"Os testes rodam sem o Ollama: as respostas e o relógio são de mentira.\n\n    uv run python -m unittest\n\"\"\"\nimport json\nimport unittest\n\nfrom medidor import ler, montar\n\n\nclass Relogio:\n    \"\"\"Um relógio que marca o segundo em que cada pedaço chegou.\"\"\"\n    agora = 0.0\n\n    def __call__(self):\n        return self.agora\n\n\ndef chegando(relogio, *pares):\n    \"\"\"Os pedaços da resposta, cada um no seu segundo.\"\"\"\n    for segundo, pedaco in pares:\n        relogio.agora = segundo\n        yield json.dumps(pedaco)\n\n\nFIM = {\"done\": True, \"prompt_eval_count\": 600, \"prompt_eval_cached_count\": 450, \"eval_count\": 64, \"eval_duration\": 4_000_000_000}\n\n\nclass LerTest(unittest.TestCase):\n    def test_a_pausa_acaba_no_primeiro_pedaco_com_texto(self):\n        relogio = Relogio()\n        pedacos = chegando(relogio, (1.0, {\"response\": \"\"}), (2.5, {\"response\": \"O\"}), (2.7, {\"response\": \" pedido\"}), (6.5, FIM))\n        self.assertEqual(ler(pedacos, 0.0, relogio)[\"pausa\"], 2.5)\n\n    def test_as_contas_vem_do_ultimo_pedaco(self):\n        relogio = Relogio()\n        medida = ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, FIM)), 0.0, relogio)\n        self.assertEqual((medida[\"fluxo\"], medida[\"lidos\"], medida[\"do_cache\"], medida[\"escritos\"]), (16.0, 600, 450, 64))\n\n    def test_sem_o_campo_do_cache_nada_veio_dele(self):\n        relogio = Relogio()\n        fim = {k: v for k, v in FIM.items() if k != \"prompt_eval_cached_count\"}\n        self.assertEqual(ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, fim)), 0.0, relogio)[\"do_cache\"], 0)\n\n    def test_resposta_cortada_e_erro(self):\n        relogio = Relogio()\n        with self.assertRaises(RuntimeError):\n            ler(chegando(relogio, (2.0, {\"response\": \"O\"})), 0.0, relogio)\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48
+  ]
+ },
+ {
+  "passo": 7,
+  "rodou": "pf-teste-ler"
+ },
+ {
+  "passo": 8,
+  "arquivo": "medidor.py",
+  "conteudo": "\"\"\"O medidor: pede uma resposta ao modelo no Ollama e mede os dois trabalhos dele.\n\nA pausa é o tempo até o primeiro pedaço com texto: o modelo lendo tudo o que recebeu.\nO fluxo é quantos tokens ele escreve por segundo depois disso.\n\"\"\"\nimport json\nimport time\nimport urllib.request\nfrom pathlib import Path\n\nOLLAMA = \"http://localhost:11434/api/generate\"\nMODELO = \"llama3.2:3b\"\nPASTA = Path(__file__).parent\n\n\ndef montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n\n\ndef ler(pedacos, inicio, relogio=time.perf_counter):\n    \"\"\"Lê a resposta pedaço por pedaço; o último traz as contas do Ollama.\"\"\"\n    pausa = None\n    for linha in pedacos:\n        pedaco = json.loads(linha)\n        if pausa is None and pedaco.get(\"response\"):\n            pausa = relogio() - inicio\n        if pedaco.get(\"done\"):\n            return {\n                \"pausa\": pausa,\n                \"fluxo\": pedaco[\"eval_count\"] / (pedaco[\"eval_duration\"] / 1e9),\n                \"lidos\": pedaco[\"prompt_eval_count\"],\n                \"do_cache\": pedaco.get(\"prompt_eval_cached_count\", 0),\n                \"escritos\": pedaco[\"eval_count\"],\n            }\n    raise RuntimeError(\"a resposta acabou antes do último pedaço\")\n",
+  "alteradas": [
+   27
+  ]
+ },
+ {
+  "passo": 9,
+  "rodou": "pf-teste-ler-ok"
+ },
+ {
+  "passo": 10,
+  "arquivo": "medidor.py",
+  "conteudo": "\"\"\"O medidor: pede uma resposta ao modelo no Ollama e mede os dois trabalhos dele.\n\nA pausa é o tempo até o primeiro pedaço com texto: o modelo lendo tudo o que recebeu.\nO fluxo é quantos tokens ele escreve por segundo depois disso.\n\"\"\"\nimport json\nimport time\nimport urllib.request\nfrom pathlib import Path\n\nOLLAMA = \"http://localhost:11434/api/generate\"\nMODELO = \"llama3.2:3b\"\nPASTA = Path(__file__).parent\n\n\ndef montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n\n\ndef ler(pedacos, inicio, relogio=time.perf_counter):\n    \"\"\"Lê a resposta pedaço por pedaço; o último traz as contas do Ollama.\"\"\"\n    pausa = None\n    for linha in pedacos:\n        pedaco = json.loads(linha)\n        if pausa is None and pedaco.get(\"response\"):\n            pausa = relogio() - inicio\n        if pedaco.get(\"done\"):\n            return {\n                \"pausa\": pausa,\n                \"fluxo\": pedaco[\"eval_count\"] / (pedaco[\"eval_duration\"] / 1e9),\n                \"lidos\": pedaco[\"prompt_eval_count\"],\n                \"do_cache\": pedaco.get(\"prompt_eval_cached_count\", 0),\n                \"escritos\": pedaco[\"eval_count\"],\n            }\n    raise RuntimeError(\"a resposta acabou antes do último pedaço\")\n\n\ndef perguntar(texto):\n    \"\"\"Manda o texto e recebe a resposta aos pedaços (stream), um por linha.\"\"\"\n    # num_gpu 0: nenhuma parte do modelo na placa de vídeo, para todo leitor medir no processador, como o livro\n    pedido = {\"model\": MODELO, \"prompt\": texto, \"stream\": True, \"options\": {\"temperature\": 0, \"num_predict\": 64, \"num_gpu\": 0}}\n    requisicao = urllib.request.Request(OLLAMA, data=json.dumps(pedido).encode(), headers={\"Content-Type\": \"application/json\"})\n    inicio = time.perf_counter()\n    with urllib.request.urlopen(requisicao) as resposta:\n        return ler(resposta, inicio)\n",
+  "alteradas": [
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47
+  ]
+ },
+ {
+  "passo": 11,
+  "arquivo": "placar.py",
+  "conteudo": "\"\"\"O placar da régua: em quantas repetições cada parte da afirmação se confirmou.\n\nCada repetição traz as medidas da curta, da longa e da longa pedida de novo logo em seguida.\n\"\"\"\nFOLGA = 0.20  # \"quase não muda\": o fluxo da longa fica a até 20% do da curta\n\n\ndef contar(acertos, total):\n    return f\"{acertos} de {total} ({acertos / total:.0%})\"\n\n\ndef placar(repeticoes):\n    pausa = sum(r[\"longa\"][\"pausa\"] > r[\"curta\"][\"pausa\"] for r in repeticoes)\n    fluxo = sum(abs(r[\"longa\"][\"fluxo\"] - r[\"curta\"][\"fluxo\"]) <= FOLGA * r[\"curta\"][\"fluxo\"] for r in repeticoes)\n    # todo pedido traz uns tokens do cache (o começo fixo que o Ollama põe antes da pergunta): conta a maior parte\n    cache = sum(r[\"de_novo\"][\"pausa\"] < r[\"longa\"][\"pausa\"] and r[\"de_novo\"][\"do_cache\"] > r[\"de_novo\"][\"lidos\"] / 2 for r in repeticoes)\n    return [\n        f\"a pausa da longa foi maior que a da curta: {contar(pausa, len(repeticoes))}\",\n        f\"o fluxo da longa ficou a até 20% do da curta: {contar(fluxo, len(repeticoes))}\",\n        f\"a longa pedida de novo começou mais rápido, lendo do cache: {contar(cache, len(repeticoes))}\",\n    ]\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21
+  ]
+ },
+ {
+  "passo": 12,
+  "arquivo": "test_medidor.py",
+  "conteudo": "\"\"\"Os testes rodam sem o Ollama: as respostas e o relógio são de mentira.\n\n    uv run python -m unittest\n\"\"\"\nimport json\nimport unittest\n\nfrom medidor import ler, montar\n\n\nclass Relogio:\n    \"\"\"Um relógio que marca o segundo em que cada pedaço chegou.\"\"\"\n    agora = 0.0\n\n    def __call__(self):\n        return self.agora\n\n\ndef chegando(relogio, *pares):\n    \"\"\"Os pedaços da resposta, cada um no seu segundo.\"\"\"\n    for segundo, pedaco in pares:\n        relogio.agora = segundo\n        yield json.dumps(pedaco)\n\n\nFIM = {\"done\": True, \"prompt_eval_count\": 600, \"prompt_eval_cached_count\": 450, \"eval_count\": 64, \"eval_duration\": 4_000_000_000}\n\n\nclass LerTest(unittest.TestCase):\n    def test_a_pausa_acaba_no_primeiro_pedaco_com_texto(self):\n        relogio = Relogio()\n        pedacos = chegando(relogio, (1.0, {\"response\": \"\"}), (2.5, {\"response\": \"O\"}), (2.7, {\"response\": \" pedido\"}), (6.5, FIM))\n        self.assertEqual(ler(pedacos, 0.0, relogio)[\"pausa\"], 2.5)\n\n    def test_as_contas_vem_do_ultimo_pedaco(self):\n        relogio = Relogio()\n        medida = ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, FIM)), 0.0, relogio)\n        self.assertEqual((medida[\"fluxo\"], medida[\"lidos\"], medida[\"do_cache\"], medida[\"escritos\"]), (16.0, 600, 450, 64))\n\n    def test_sem_o_campo_do_cache_nada_veio_dele(self):\n        relogio = Relogio()\n        fim = {k: v for k, v in FIM.items() if k != \"prompt_eval_cached_count\"}\n        self.assertEqual(ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, fim)), 0.0, relogio)[\"do_cache\"], 0)\n\n    def test_resposta_cortada_e_erro(self):\n        relogio = Relogio()\n        with self.assertRaises(RuntimeError):\n            ler(chegando(relogio, (2.0, {\"response\": \"O\"})), 0.0, relogio)\n\n\nfrom placar import placar  # noqa: E402  (o placar vem depois do medidor)\n\n\ndef vez(curta, longa, de_novo):\n    \"\"\"Cada medida como (pausa, fluxo, tokens do cache); o modelo leu 1000 tokens em cada uma.\"\"\"\n    medida = lambda p, f, c: {\"pausa\": p, \"fluxo\": f, \"do_cache\": c, \"lidos\": 1000}  # noqa: E731\n    return {\"curta\": medida(*curta), \"longa\": medida(*longa), \"de_novo\": medida(*de_novo)}\n\n\nclass PlacarTest(unittest.TestCase):\n    def test_conta_cada_parte_da_afirmacao(self):\n        repeticoes = [\n            vez((0.5, 10.0, 20), (6.0, 8.0, 20), (1.0, 8.0, 999)),  # tudo se confirma; o fluxo cai 20%, no limite\n            vez((0.5, 10.0, 20), (6.0, 7.9, 20), (6.1, 7.9, 20)),   # o fluxo cai mais que 20%; só o começo fixo do cache\n            vez((0.5, 10.0, 20), (0.4, 10.0, 20), (0.3, 10.0, 20)), # a longa não demorou mais; mais rápida, mas sem cache\n        ]\n        self.assertEqual(placar(repeticoes), [\n            \"a pausa da longa foi maior que a da curta: 2 de 3 (67%)\",\n            \"o fluxo da longa ficou a até 20% do da curta: 2 de 3 (67%)\",\n            \"a longa pedida de novo começou mais rápido, lendo do cache: 1 de 3 (33%)\",\n        ])\n\n    def test_o_comeco_fixo_do_cache_nao_conta_como_cache(self):\n        mais_rapida_com_20_do_cache = vez((0.5, 10.0, 20), (6.0, 9.0, 20), (5.0, 9.0, 20))\n        self.assertIn(\"lendo do cache: 0 de 1 (0%)\", placar([mais_rapida_com_20_do_cache])[2])\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+  "alteradas": [
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68,
+   69,
+   70,
+   71,
+   72,
+   73,
+   74,
+   75,
+   76,
+   77,
+   78,
+   79
+  ]
+ },
+ {
+  "passo": 13,
+  "rodou": "pf-testes"
+ },
+ {
+  "passo": 14,
+  "arquivos": {
+   "maquina.py": "\"\"\"Anota onde a coleta rodou: a data, as versões, o modelo e a máquina. Sem isso, um número de tempo não diz nada.\"\"\"\nimport json\nimport os\nimport platform\nimport urllib.request\nfrom datetime import datetime, timezone\n\nfrom medidor import MODELO\n\n\ndef ler_api(caminho):\n    with urllib.request.urlopen(f\"http://localhost:11434{caminho}\") as resposta:\n        return json.load(resposta)\n\n\ndef processador():\n    try:\n        linhas = open(\"/proc/cpuinfo\", encoding=\"utf-8\").read().splitlines()\n        return next(l.split(\":\", 1)[1].strip() for l in linhas if l.startswith(\"model name\"))\n    except (OSError, StopIteration):\n        return platform.processor()\n\n\ndef ambiente():\n    modelo = next(m for m in ler_api(\"/api/tags\")[\"models\"] if m[\"name\"] == MODELO)\n    return {\n        \"quando\": datetime.now(timezone.utc).isoformat(timespec=\"seconds\"),\n        \"ollama\": ler_api(\"/api/version\")[\"version\"],\n        \"modelo\": MODELO,\n        \"digest\": modelo[\"digest\"],\n        \"onde\": \"CPU (num_gpu 0)\",\n        \"processador\": processador(),\n        \"nucleos\": os.cpu_count(),\n        \"memoria_gb\": round(os.sysconf(\"SC_PAGE_SIZE\") * os.sysconf(\"SC_PHYS_PAGES\") / 2**30),\n        \"sistema\": platform.platform(),\n    }\n"
+  }
+ },
+ {
+  "passo": 15,
+  "arquivo": "coletar.py",
+  "conteudo": "\"\"\"A coleta: dez repetições no modelo de verdade, gravadas em coleta.json com a máquina e as versões.\n\n    uv run python coletar.py\n\nCada repetição pede a curta, a média, a longa e a longa de novo, logo em seguida.\n\"\"\"\nimport json\n\nfrom maquina import ambiente\nfrom medidor import PASTA, montar, perguntar\n\nREPETICOES = 10\ncasos = {c[\"id\"]: c for c in map(json.loads, (PASTA / \"casos.jsonl\").read_text(encoding=\"utf-8\").splitlines())}\n\nperguntar(\"Oi.\")  # o aquecimento não entra na conta\nrepeticoes = []\nfor n in range(REPETICOES):\n    vez = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    vez[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n    repeticoes.append(vez)\n    print(f\"vez {n + 1}: \" + \", \".join(f\"{k} {m['pausa']:.2f} s\" for k, m in vez.items()))\n\n(PASTA / \"coleta.json\").write_text(json.dumps({\"ambiente\": ambiente(), \"repeticoes\": repeticoes}, ensure_ascii=False, indent=1) + \"\\n\", encoding=\"utf-8\")\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23
+  ]
+ },
+ {
+  "passo": 16,
+  "arquivo": "medir.py",
+  "conteudo": "\"\"\"O resultado: lê uma coleta gravada e imprime o meio de cada caso e o placar.\n\n    uv run python medir.py                       # a coleta.json\n    uv run python medir.py coleta-sem-numero.json\n\"\"\"\nimport json\nimport sys\nfrom statistics import median\n\nfrom medidor import PASTA\nfrom placar import placar\n\ncoleta = json.loads((PASTA / (sys.argv[1] if len(sys.argv) > 1 else \"coleta.json\")).read_text(encoding=\"utf-8\"))\nrepeticoes = coleta[\"repeticoes\"]\na = coleta[\"ambiente\"]\nprint(f\"{a['modelo']} no Ollama {a['ollama']}, {a['onde']}: {a['processador']}, {a['memoria_gb']} GB\")\nfor caso in [\"curta\", \"media\", \"longa\", \"de_novo\"]:\n    m = [r[caso] for r in repeticoes]\n    print(f\"{caso:8} lê {m[0]['lidos']:5} tokens   pausa {median(x['pausa'] for x in m):5.2f} s   \"\n          f\"fluxo {median(x['fluxo'] for x in m):5.1f} tokens/s   do cache {median(x['do_cache'] for x in m):6.0f}\")\nfor linha in placar(repeticoes):\n    print(linha)\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22
+  ]
+ },
+ {
+  "passo": 17,
+  "arquivos": {
+   "coleta-sem-numero.json": "{\n \"ambiente\": {\n  \"quando\": \"2026-10-27T14:14:13+00:00\",\n  \"ollama\": \"0.40.11\",\n  \"modelo\": \"llama3.2:3b\",\n  \"digest\": \"a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72\",\n  \"onde\": \"CPU (num_gpu 0)\",\n  \"processador\": \"AMD Ryzen 7 5700G with Radeon Graphics\",\n  \"nucleos\": 16,\n  \"memoria_gb\": 16,\n  \"sistema\": \"Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43\"\n },\n \"repeticoes\": [\n  {\n   \"curta\": {\n    \"pausa\": 0.2538876939997863,\n    \"fluxo\": 15.194245369494372,\n    \"lidos\": 45,\n    \"do_cache\": 20,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.151508685999943,\n    \"fluxo\": 14.967994218612233,\n    \"lidos\": 367,\n    \"do_cache\": 20,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.674111354999695,\n    \"fluxo\": 13.339410175746728,\n    \"lidos\": 1072,\n    \"do_cache\": 20,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08216840500062972,\n    \"fluxo\": 13.341535907261502,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.16848590500012506,\n    \"fluxo\": 15.772046610340745,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08288524499948835,\n    \"fluxo\": 15.117068705896248,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13562864500090654,\n    \"fluxo\": 13.118859417209247,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08349323900074523,\n    \"fluxo\": 13.266049893613651,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.15352605500083882,\n    \"fluxo\": 15.73941432163739,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08418929599974945,\n    \"fluxo\": 15.133139707963506,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13968469899919,\n    \"fluxo\": 13.316160418304985,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08086099100000865,\n    \"fluxo\": 13.249800700914458,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.15423167800145166,\n    \"fluxo\": 15.756650352788938,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08257936600057292,\n    \"fluxo\": 15.116686649036831,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.12977519900050538,\n    \"fluxo\": 13.383839979835013,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08206296499884047,\n    \"fluxo\": 13.300771075256502,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.16319395299979078,\n    \"fluxo\": 15.583010330805395,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.0825518359997659,\n    \"fluxo\": 15.052699736977592,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.14126312600092206,\n    \"fluxo\": 13.286888277199921,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08218485600082204,\n    \"fluxo\": 13.35653908327394,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.15589310199902684,\n    \"fluxo\": 15.76902323220626,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08342707699921448,\n    \"fluxo\": 15.13246701535969,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13030964300014602,\n    \"fluxo\": 13.38076069624558,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08080439699915587,\n    \"fluxo\": 13.356544038751787,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.16757659600079933,\n    \"fluxo\": 15.738214474976854,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08288007800001651,\n    \"fluxo\": 15.14588205948971,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13285385000017413,\n    \"fluxo\": 13.374521907281126,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08069654900100431,\n    \"fluxo\": 13.31760869018359,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.15516791899972304,\n    \"fluxo\": 15.795944045829957,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08496459599882655,\n    \"fluxo\": 15.028600134043044,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13831151900012628,\n    \"fluxo\": 13.385591674756894,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08085613399998692,\n    \"fluxo\": 13.410663190821444,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.16188587299984647,\n    \"fluxo\": 15.78370406541359,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.08390090600005351,\n    \"fluxo\": 15.10977725711972,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.13662684600058128,\n    \"fluxo\": 13.35772850342607,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08489947999987635,\n    \"fluxo\": 13.374924394524603,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.15290002899928368,\n    \"fluxo\": 15.76562040426007,\n    \"lidos\": 45,\n    \"do_cache\": 44,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 0.083485629000279,\n    \"fluxo\": 15.162079071663804,\n    \"lidos\": 367,\n    \"do_cache\": 366,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 0.14086158399913984,\n    \"fluxo\": 13.349911946205788,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08174216999941564,\n    \"fluxo\": 13.322058924206736,\n    \"lidos\": 1072,\n    \"do_cache\": 1071,\n    \"escritos\": 36\n   }\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "passo": 18,
+  "rodou": "pf-ingenua"
+ },
+ {
+  "passo": 19,
+  "rodou": "pf-vezes"
+ },
+ {
+  "passo": 20,
+  "arquivo": "medidor.py",
+  "conteudo": "\"\"\"O medidor: pede uma resposta ao modelo no Ollama e mede os dois trabalhos dele.\n\nA pausa é o tempo até o primeiro pedaço com texto: o modelo lendo tudo o que recebeu.\nO fluxo é quantos tokens ele escreve por segundo depois disso.\n\"\"\"\nimport json\nimport time\nimport urllib.request\nfrom pathlib import Path\n\nOLLAMA = \"http://localhost:11434/api/generate\"\nMODELO = \"llama3.2:3b\"\nPASTA = Path(__file__).parent\n\n\ndef montar(caso, atendimento):\n    \"\"\"O que o modelo lê: o número do atendimento, o material da loja e a pergunta no fim.\n\n    O número vem primeiro porque o Ollama guarda as leituras anteriores: um começo diferente obriga a ler do zero.\n    \"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join([f\"Atendimento {atendimento}.\"] + material + [f\"Pergunta: {caso['pergunta']}\"])\n\n\ndef ler(pedacos, inicio, relogio=time.perf_counter):\n    \"\"\"Lê a resposta pedaço por pedaço; o último traz as contas do Ollama.\"\"\"\n    pausa = None\n    for linha in pedacos:\n        pedaco = json.loads(linha)\n        if pausa is None and pedaco.get(\"response\"):\n            pausa = relogio() - inicio\n        if pedaco.get(\"done\"):\n            return {\n                \"pausa\": pausa,\n                \"fluxo\": pedaco[\"eval_count\"] / (pedaco[\"eval_duration\"] / 1e9),\n                \"lidos\": pedaco[\"prompt_eval_count\"],\n                \"do_cache\": pedaco.get(\"prompt_eval_cached_count\", 0),\n                \"escritos\": pedaco[\"eval_count\"],\n            }\n    raise RuntimeError(\"a resposta acabou antes do último pedaço\")\n\n\ndef perguntar(texto):\n    \"\"\"Manda o texto e recebe a resposta aos pedaços (stream), um por linha.\"\"\"\n    # num_gpu 0: nenhuma parte do modelo na placa de vídeo, para todo leitor medir no processador, como o livro\n    pedido = {\"model\": MODELO, \"prompt\": texto, \"stream\": True, \"options\": {\"temperature\": 0, \"num_predict\": 64, \"num_gpu\": 0}}\n    requisicao = urllib.request.Request(OLLAMA, data=json.dumps(pedido).encode(), headers={\"Content-Type\": \"application/json\"})\n    inicio = time.perf_counter()\n    with urllib.request.urlopen(requisicao) as resposta:\n        return ler(resposta, inicio)\n",
+  "alteradas": [
+   16,
+   17,
+   18,
+   19,
+   20,
+   22
+  ]
+ },
+ {
+  "passo": 21,
+  "arquivo": "test_medidor.py",
+  "conteudo": "\"\"\"Os testes rodam sem o Ollama: as respostas e o relógio são de mentira.\n\n    uv run python -m unittest\n\"\"\"\nimport json\nimport unittest\n\nfrom medidor import ler, montar\n\n\nclass Relogio:\n    \"\"\"Um relógio que marca o segundo em que cada pedaço chegou.\"\"\"\n    agora = 0.0\n\n    def __call__(self):\n        return self.agora\n\n\ndef chegando(relogio, *pares):\n    \"\"\"Os pedaços da resposta, cada um no seu segundo.\"\"\"\n    for segundo, pedaco in pares:\n        relogio.agora = segundo\n        yield json.dumps(pedaco)\n\n\nFIM = {\"done\": True, \"prompt_eval_count\": 600, \"prompt_eval_cached_count\": 450, \"eval_count\": 64, \"eval_duration\": 4_000_000_000}\n\n\nclass LerTest(unittest.TestCase):\n    def test_a_pausa_acaba_no_primeiro_pedaco_com_texto(self):\n        relogio = Relogio()\n        pedacos = chegando(relogio, (1.0, {\"response\": \"\"}), (2.5, {\"response\": \"O\"}), (2.7, {\"response\": \" pedido\"}), (6.5, FIM))\n        self.assertEqual(ler(pedacos, 0.0, relogio)[\"pausa\"], 2.5)\n\n    def test_as_contas_vem_do_ultimo_pedaco(self):\n        relogio = Relogio()\n        medida = ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, FIM)), 0.0, relogio)\n        self.assertEqual((medida[\"fluxo\"], medida[\"lidos\"], medida[\"do_cache\"], medida[\"escritos\"]), (16.0, 600, 450, 64))\n\n    def test_sem_o_campo_do_cache_nada_veio_dele(self):\n        relogio = Relogio()\n        fim = {k: v for k, v in FIM.items() if k != \"prompt_eval_cached_count\"}\n        self.assertEqual(ler(chegando(relogio, (2.0, {\"response\": \"O\"}), (6.0, fim)), 0.0, relogio)[\"do_cache\"], 0)\n\n    def test_resposta_cortada_e_erro(self):\n        relogio = Relogio()\n        with self.assertRaises(RuntimeError):\n            ler(chegando(relogio, (2.0, {\"response\": \"O\"})), 0.0, relogio)\n\n\nclass MontarTest(unittest.TestCase):\n    def test_o_texto_le_o_material_e_termina_na_pergunta(self):\n        curta = montar({\"material\": [], \"pergunta\": \"Já saiu?\"}, 1)\n        longa = montar({\"material\": [\"politica.md\", \"pedidos.json\"], \"pergunta\": \"Já saiu?\"}, 2)\n        self.assertEqual(curta, \"Atendimento 1.\\n\\nPergunta: Já saiu?\")\n        self.assertTrue(longa.startswith(\"Atendimento 2.\\n\\n# Política de atendimento\") and longa.endswith(\"\\n\\nPergunta: Já saiu?\"))\n\n    def test_cada_atendimento_comeca_diferente_para_nao_reaproveitar_o_cache(self):\n        longa = {\"material\": [\"politica.md\"], \"pergunta\": \"Já saiu?\"}\n        primeira, segunda = montar(longa, 3), montar(longa, 4)\n        self.assertNotEqual(primeira[:14], segunda[:14], \"o começo é o que o cache reaproveita\")\n        self.assertEqual(primeira[14:], segunda[14:], \"o resto é o mesmo texto\")\n\n\nfrom placar import placar  # noqa: E402  (o placar vem depois do medidor)\n\n\ndef vez(curta, longa, de_novo):\n    \"\"\"Cada medida como (pausa, fluxo, tokens do cache); o modelo leu 1000 tokens em cada uma.\"\"\"\n    medida = lambda p, f, c: {\"pausa\": p, \"fluxo\": f, \"do_cache\": c, \"lidos\": 1000}  # noqa: E731\n    return {\"curta\": medida(*curta), \"longa\": medida(*longa), \"de_novo\": medida(*de_novo)}\n\n\nclass PlacarTest(unittest.TestCase):\n    def test_conta_cada_parte_da_afirmacao(self):\n        repeticoes = [\n            vez((0.5, 10.0, 20), (6.0, 8.0, 20), (1.0, 8.0, 999)),  # tudo se confirma; o fluxo cai 20%, no limite\n            vez((0.5, 10.0, 20), (6.0, 7.9, 20), (6.1, 7.9, 20)),   # o fluxo cai mais que 20%; só o começo fixo do cache\n            vez((0.5, 10.0, 20), (0.4, 10.0, 20), (0.3, 10.0, 20)), # a longa não demorou mais; mais rápida, mas sem cache\n        ]\n        self.assertEqual(placar(repeticoes), [\n            \"a pausa da longa foi maior que a da curta: 2 de 3 (67%)\",\n            \"o fluxo da longa ficou a até 20% do da curta: 2 de 3 (67%)\",\n            \"a longa pedida de novo começou mais rápido, lendo do cache: 1 de 3 (33%)\",\n        ])\n\n    def test_o_comeco_fixo_do_cache_nao_conta_como_cache(self):\n        mais_rapida_com_20_do_cache = vez((0.5, 10.0, 20), (6.0, 9.0, 20), (5.0, 9.0, 20))\n        self.assertIn(\"lendo do cache: 0 de 1 (0%)\", placar([mais_rapida_com_20_do_cache])[2])\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+  "alteradas": [
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64
+  ]
+ },
+ {
+  "passo": 22,
+  "rodou": "pf-testes-todos"
+ },
+ {
+  "passo": 23,
+  "arquivo": "coletar.py",
+  "conteudo": "\"\"\"A coleta: dez repetições no modelo de verdade, gravadas em coleta.json com a máquina e as versões.\n\n    uv run python coletar.py\n\nCada repetição pede a curta, a média, a longa e a longa de novo, logo em seguida.\n\"\"\"\nimport json\nimport urllib.request\n\nfrom maquina import ambiente\nfrom medidor import MODELO, PASTA, montar, perguntar\n\nREPETICOES = 10\ncasos = {c[\"id\"]: c for c in map(json.loads, (PASTA / \"casos.jsonl\").read_text(encoding=\"utf-8\").splitlines())}\n\nperguntar(\"Oi.\")  # o aquecimento não entra na conta\nrepeticoes = []\nfor n in range(REPETICOES):\n    vez = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    vez[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n    repeticoes.append(vez)\n    print(f\"vez {n + 1}: \" + \", \".join(f\"{k} {m['pausa']:.2f} s\" for k, m in vez.items()))\n\n(PASTA / \"coleta.json\").write_text(json.dumps({\"ambiente\": ambiente(), \"repeticoes\": repeticoes}, ensure_ascii=False, indent=1) + \"\\n\", encoding=\"utf-8\")\n",
+  "alteradas": [
+   8,
+   11
+  ]
+ },
+ {
+  "passo": 24,
+  "arquivo": "coletar.py",
+  "conteudo": "\"\"\"A coleta: dez repetições no modelo de verdade, gravadas em coleta.json com a máquina e as versões.\n\n    uv run python coletar.py\n\nCada repetição pede a curta, a média, a longa e a longa de novo, logo em seguida.\n\"\"\"\nimport json\nimport urllib.request\n\nfrom maquina import ambiente\nfrom medidor import MODELO, PASTA, montar, perguntar\n\nREPETICOES = 10\ncasos = {c[\"id\"]: c for c in map(json.loads, (PASTA / \"casos.jsonl\").read_text(encoding=\"utf-8\").splitlines())}\n\n# o Ollama guarda as leituras anteriores: tira o modelo da memória, e cada pedido ganha o seu número de atendimento\nurllib.request.urlopen(urllib.request.Request(\"http://localhost:11434/api/generate\", data=json.dumps({\"model\": MODELO, \"keep_alive\": 0}).encode())).close()\nperguntar(\"Oi.\")  # o aquecimento não entra na conta\nrepeticoes = []\nfor n in range(REPETICOES):\n    numeros = {\"curta\": 4 * n + 1, \"media\": 4 * n + 2, \"longa\": 4 * n + 3}\n    vez = {cid: perguntar(montar(casos[cid], numero)) for cid, numero in numeros.items()}\n    vez[\"de_novo\"] = perguntar(montar(casos[\"longa\"], numeros[\"longa\"]))  # o mesmo texto da longa\n    repeticoes.append(vez)\n    print(f\"vez {n + 1}: \" + \", \".join(f\"{k} {m['pausa']:.2f} s\" for k, m in vez.items()))\n\n(PASTA / \"coleta.json\").write_text(json.dumps({\"ambiente\": ambiente(), \"repeticoes\": repeticoes}, ensure_ascii=False, indent=1) + \"\\n\", encoding=\"utf-8\")\n",
+  "alteradas": [
+   16,
+   17,
+   21,
+   22,
+   23
+  ]
+ },
+ {
+  "passo": 25,
+  "arquivos": {
+   "coleta.json": "{\n \"ambiente\": {\n  \"quando\": \"2026-10-27T14:19:20+00:00\",\n  \"ollama\": \"0.40.11\",\n  \"modelo\": \"llama3.2:3b\",\n  \"digest\": \"a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72\",\n  \"onde\": \"CPU (num_gpu 0)\",\n  \"processador\": \"AMD Ryzen 7 5700G with Radeon Graphics\",\n  \"nucleos\": 16,\n  \"memoria_gb\": 16,\n  \"sistema\": \"Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43\"\n },\n \"repeticoes\": [\n  {\n   \"curta\": {\n    \"pausa\": 0.29942239399861137,\n    \"fluxo\": 15.75761246565025,\n    \"lidos\": 50,\n    \"do_cache\": 20,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.1613627540009475,\n    \"fluxo\": 14.964319450809477,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.783561524000106,\n    \"fluxo\": 13.270431488079835,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08288442299999588,\n    \"fluxo\": 13.243865503579363,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 64\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.3903960530005861,\n    \"fluxo\": 15.702569774614147,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.1438654780013167,\n    \"fluxo\": 14.689124195397484,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.739979587000562,\n    \"fluxo\": 13.42413017229871,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.0812690129987459,\n    \"fluxo\": 13.409119691292267,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.3808556040003168,\n    \"fluxo\": 15.699742426100821,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.164926188001118,\n    \"fluxo\": 15.059783812097194,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.782762346998425,\n    \"fluxo\": 13.23183687460705,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08031209399996442,\n    \"fluxo\": 13.035464815141832,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 64\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.3889242059995013,\n    \"fluxo\": 15.734503849298855,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.1120668270013994,\n    \"fluxo\": 14.829513883900661,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.940557372001422,\n    \"fluxo\": 13.442064701138094,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08122970399926999,\n    \"fluxo\": 13.407941076568283,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.3697204860000056,\n    \"fluxo\": 15.765010691879516,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.143243545000587,\n    \"fluxo\": 14.366329274920137,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.890358135999122,\n    \"fluxo\": 13.459372882952806,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 36\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08173698899918236,\n    \"fluxo\": 13.468693705069281,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.37836867199985136,\n    \"fluxo\": 15.275316095284396,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.1514396149996173,\n    \"fluxo\": 14.85867887307136,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 10.296121594999931,\n    \"fluxo\": 12.577842597340219,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08506952300012927,\n    \"fluxo\": 12.543057966174509,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 64\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.391916439999477,\n    \"fluxo\": 13.985066571102044,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.612367980000272,\n    \"fluxo\": 14.203596572583375,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.607748816000822,\n    \"fluxo\": 12.665181674115376,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08182469799976388,\n    \"fluxo\": 12.82969818535947,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 64\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.38971613900139346,\n    \"fluxo\": 15.616815115649208,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 35\n   },\n   \"media\": {\n    \"pausa\": 3.153333049000139,\n    \"fluxo\": 14.949746660191558,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 9.615526763000162,\n    \"fluxo\": 12.66086970283554,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08314457699998457,\n    \"fluxo\": 12.872539333653002,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 64\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.39058266099891625,\n    \"fluxo\": 15.159080336493684,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.0931285999995453,\n    \"fluxo\": 13.468795746554303,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 10.542764023999553,\n    \"fluxo\": 12.56629950164805,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.08551336100026674,\n    \"fluxo\": 11.432502031650882,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 36\n   }\n  },\n  {\n   \"curta\": {\n    \"pausa\": 0.5177127219994873,\n    \"fluxo\": 13.343321365347018,\n    \"lidos\": 50,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"media\": {\n    \"pausa\": 3.4624315979999665,\n    \"fluxo\": 12.442630239829754,\n    \"lidos\": 372,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"longa\": {\n    \"pausa\": 10.452746122000462,\n    \"fluxo\": 12.779568026639009,\n    \"lidos\": 1077,\n    \"do_cache\": 23,\n    \"escritos\": 64\n   },\n   \"de_novo\": {\n    \"pausa\": 0.0792626169986761,\n    \"fluxo\": 13.044839461509028,\n    \"lidos\": 1077,\n    \"do_cache\": 1076,\n    \"escritos\": 36\n   }\n  }\n ]\n}\n"
+  }
+ },
+ {
+  "passo": 26,
+  "rodou": "pf-limpa"
+ }
+]

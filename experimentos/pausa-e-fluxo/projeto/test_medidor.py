@@ -65,7 +65,7 @@ class MontarTest(unittest.TestCase):
 from placar import placar  # noqa: E402  (o placar vem depois do medidor)
 
 
-def rodada(curta, longa, de_novo):
+def vez(curta, longa, de_novo):
     """Cada medida como (pausa, fluxo, tokens do cache); o modelo leu 1000 tokens em cada uma."""
     medida = lambda p, f, c: {"pausa": p, "fluxo": f, "do_cache": c, "lidos": 1000}  # noqa: E731
     return {"curta": medida(*curta), "longa": medida(*longa), "de_novo": medida(*de_novo)}
@@ -73,19 +73,19 @@ def rodada(curta, longa, de_novo):
 
 class PlacarTest(unittest.TestCase):
     def test_conta_cada_parte_da_afirmacao(self):
-        rodadas = [
-            rodada((0.5, 10.0, 20), (6.0, 8.0, 20), (1.0, 8.0, 999)),  # tudo se confirma; o fluxo cai 20%, no limite
-            rodada((0.5, 10.0, 20), (6.0, 7.9, 20), (6.1, 7.9, 20)),   # o fluxo cai mais que 20%; só o começo fixo do cache
-            rodada((0.5, 10.0, 20), (0.4, 10.0, 20), (0.3, 10.0, 20)), # a longa não demorou mais; mais rápida, mas sem cache
+        repeticoes = [
+            vez((0.5, 10.0, 20), (6.0, 8.0, 20), (1.0, 8.0, 999)),  # tudo se confirma; o fluxo cai 20%, no limite
+            vez((0.5, 10.0, 20), (6.0, 7.9, 20), (6.1, 7.9, 20)),   # o fluxo cai mais que 20%; só o começo fixo do cache
+            vez((0.5, 10.0, 20), (0.4, 10.0, 20), (0.3, 10.0, 20)), # a longa não demorou mais; mais rápida, mas sem cache
         ]
-        self.assertEqual(placar(rodadas), [
+        self.assertEqual(placar(repeticoes), [
             "a pausa da longa foi maior que a da curta: 2 de 3 (67%)",
             "o fluxo da longa ficou a até 20% do da curta: 2 de 3 (67%)",
             "a longa pedida de novo começou mais rápido, lendo do cache: 1 de 3 (33%)",
         ])
 
     def test_o_comeco_fixo_do_cache_nao_conta_como_cache(self):
-        mais_rapida_com_20_do_cache = rodada((0.5, 10.0, 20), (6.0, 9.0, 20), (5.0, 9.0, 20))
+        mais_rapida_com_20_do_cache = vez((0.5, 10.0, 20), (6.0, 9.0, 20), (5.0, 9.0, 20))
         self.assertIn("lendo do cache: 0 de 1 (0%)", placar([mais_rapida_com_20_do_cache])[2])
 
 

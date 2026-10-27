@@ -59,16 +59,16 @@
       "curta": "o placar",
       "de": 11,
       "ate": 13,
-      "pedido": "Conta em quantas rodadas a afirmação se confirma.",
-      "objetivo": "o placar das três partes, testado com rodadas de mentira.",
-      "temos": "o placar das três partes, testado com rodadas de mentira.",
+      "pedido": "Conta em quantas repetições a afirmação se confirma.",
+      "objetivo": "o placar das três partes, testado com repetições de mentira.",
+      "temos": "o placar das três partes, testado com repetições de mentira.",
       "depois": []
     },
     {
       "id": "coletar",
       "secao": "3",
-      "titulo": "Dez rodadas",
-      "curta": "dez rodadas",
+      "titulo": "Dez repetições",
+      "curta": "dez repetições",
       "de": 14,
       "ate": 16,
       "pedido": "Repete o medidor dez vezes e anota a máquina.",
@@ -111,7 +111,7 @@
       "objetivo": "o placar da afirmação, medido de verdade.",
       "temos": "o placar da afirmação, medido de verdade.",
       "depois": [
-        "Bom lugar para parar: você tem o medidor e duas coletas. Na sua máquina, com o Ollama ligado, rode uv run python coletar.py e compare com as nossas."
+        "Bom lugar para parar: você tem o medidor e duas coletas. Na sua máquina, com o Ollama ligado, execute uv run python coletar.py e compare com as nossas."
       ]
     }
   ]
