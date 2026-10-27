@@ -68,3 +68,13 @@ test("o vídeo do caminho para nas frases que empatam: a escolha e a régua fica
   assert.ok(visiveis(montar(p)).every((x) => x.em < T.sem && !/régua|vale a/i.test(x.texto)));
   assert.equal(montar(p).passos.length, 6, "o desenho guarda todas as etapas, para saber onde cada uma começa");
 });
+
+test("o inesperado diz só o que está gravado: o modelo tirou 10 de 10, e a resposta da cliente passou dizendo outra coisa", () => {
+  const mdx = readFileSync(new URL("../experimentos/segundo-cerebro-local/experimento.mdx", import.meta.url), "utf8");
+  const achado = mdx.match(/^achado: "(.*)"$/m)[1];
+  assert.doesNotMatch(achado, /acento/, "sem prova na página, o caso dos acentos saiu");
+  const linhas = saidas["sc-nota-modelo"].saida.map(([l]) => l);
+  const nota = linhas.find((l) => l.startsWith("nota:")).match(/\d+ de \d+/)[0];
+  assert.ok(achado.includes(`tirou ${nota}`));
+  assert.ok(linhas.some((l) => l.startsWith("✓ Quem é a cliente do piloto?") && /a Gerente/.test(l)), "a resposta da cliente que passou é a gravada");
+});
