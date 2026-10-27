@@ -1,7 +1,19 @@
 ---
 import MapaTemperatura from "./temperatura/MapaTemperatura";
+import { montarMapa } from "./temperatura/mapa";
+type Saida = { comando: string; saida: [string,string][] };
+const { saidas } = Astro.props as { saidas: Record<string,Saida> };
+const fonte = saidas["tz-mapa"];
+if (!fonte) throw new Error("MapaTemperatura: falta a saída tz-mapa");
+const bruto = fonte.saida.find(([l])=>l.startsWith("{"))?.[0];
+if (!bruto) throw new Error("MapaTemperatura: falta o rastro JSON do exemplo");
+montarMapa(bruto);
 ---
-<figure aria-label="O caminho da pergunta até o próximo token">
-  <MapaTemperatura client:visible />
-  <figcaption><b>Figura 1</b> · O mecanismo que vamos investigar: cálculo, escolha e repetição. A animação é um esquema; os números serão medidos no projeto.</figcaption>
+<figure class="tz-figura" aria-label="Duas execuções, as pontuações e a escolha do próximo token">
+  <MapaTemperatura client:visible bruto={bruto} comando={fonte.comando}/>
+  <figcaption><b>Figura 1</b> · Mesma entrada e mesma regra de escolha. Compare as contas, preveja o vencedor e confira o caso em que B vence com folga. Os valores vêm do exemplo numérico; não são logits medidos de um LLM.</figcaption>
 </figure>
+<style>
+  .tz-figura { width: min(1040px, 100vw - 32px); max-width: none; margin-left: calc(50% - min(520px, 50vw - 16px)); }
+  figcaption { font: 14px/1.5 var(--f-ui); color: var(--ink-2); margin-top: 10px; }
+</style>

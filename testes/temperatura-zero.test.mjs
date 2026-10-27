@@ -5,6 +5,8 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { parse } from "node-html-parser";
 import { montarIde, perguntaSustentada, respostaEntregue } from "../src/lib/ideCapitulo.ts";
+import { montarMapa, muda, limitarQuadro, PERGUNTA, DURACAO, CENAS, FPS } from "../src/components/livro/temperatura/mapa.ts";
+import { eAcao } from "../scripts/ritmo.mjs";
 
 const base = new URL("../experimentos/temperatura-zero/", import.meta.url);
 const ler = (nome) => readFileSync(new URL(nome, base), "utf8");
@@ -85,10 +87,40 @@ test("temperatura zero: as perguntas interpretam comandos reais e a variante é 
 
 test("temperatura zero: o mapa tem Remotion e alternativa legível sem JS; GPU ainda não recebe placar", () => {
   const mapa=html.querySelector(".tz-mapa");
-  assert.equal(mapa.querySelectorAll("[data-tz-estatico] li").length,5);
-  assert.match(mapa.text,/Esquema do mecanismo/);
+  assert.equal(mapa.querySelectorAll("[data-tz-estatico] .tz-resumo-caso").length,2);
+  assert.equal(mapa.querySelectorAll(".tz-barra-estatica").length,8);
+  assert.match(mapa.text,/Ilustração numérica/);
   assert.match(html.text,/GPU.*ainda não foi medida/);
   assert.equal(html.querySelectorAll(".resultados li").length,1);
   assert.match(html.text,/CPU ou GPU/);
   assert.match(html.text,/90|Três perguntas/);
+});
+
+test("temperatura zero: as barras e os vencedores saem do código executado, com um controle que não troca", () => {
+  const bruto=saidas["tz-mapa"].saida[0][0];
+  const d=montarMapa(bruto);
+  assert.deepEqual(d.casos.map(muda),[true,false]);
+  const valores=d.casos.flatMap(c=>c.execucoes.flatMap(e=>e.pontuacoes));
+  const teto=Math.max(...valores);
+  const larguras=html.querySelectorAll(".tz-trilho > span").map(b=>parseFloat(b.getAttribute("style").match(/width:([\d.]+)%/)[1]));
+  assert.deepEqual(larguras,valores.map(v=>100*v/teto),"as barras precisam da mesma escala nas duas condições");
+  const real=spawnSync("python3",["figuras/mapa.py"],{cwd:base,encoding:"utf8"});
+  assert.equal(real.status,0,real.stderr);
+  assert.deepEqual(montarMapa(real.stdout),d);
+  const errado=structuredClone(d);
+  errado.casos[0].execucoes[0].escolha=0;
+  assert.throws(()=>montarMapa(JSON.stringify(errado)),/barras e escolha/);
+  const desalinhado=structuredClone(d);
+  desalinhado.casos[1].execucoes[1].pontuacoes[1]=0.5;
+  assert.throws(()=>montarMapa(JSON.stringify(desalinhado)),/barras e escolha/);
+});
+
+test("temperatura zero: o mapa segura a revelação antes da previsão e permanece dentro do ritmo", () => {
+  assert.equal(limitarQuadro(PERGUNTA+1,false),PERGUNTA);
+  assert.equal(limitarQuadro(DURACAO-1,false),PERGUNTA);
+  assert.equal(limitarQuadro(DURACAO-1,true),DURACAO-1);
+  assert.equal(limitarQuadro(-10,true),0);
+  assert.ok(CENAS.length<=6);
+  assert.ok(DURACAO/FPS<=45);
+  assert.equal(eAcao("MapaTemperatura"),true);
 });

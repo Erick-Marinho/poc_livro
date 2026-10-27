@@ -40,13 +40,11 @@ O [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nonde
 
 Um instrumento pequeno para comparar respostas. Primeiro, uma soma em que o arredondamento aparece. Depois, um seletor que escolhe sempre o maior valor. Por fim, um medidor aplicado a um modelo real: ele guarda os tokens, encontra o primeiro ponto diferente e conta quantas execuções coincidem.
 
-<MapaTemperatura />
+<MapaTemperatura saidas={saidas} />
 
 A temperatura atua na escolha, depois do cálculo. No modo guloso, a alternativa de maior valor vence sem sorteio. Isso não fixa os valores produzidos antes: bibliotecas podem organizar as contas de formas diferentes. O [PyTorch documenta essa diferença entre cálculo isolado e em lote](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html#batched-computations-or-slice-computations).
 
-<PareEPense pergunta="Se as pontuações mudarem um pouco, o próximo token precisa mudar?">
-Não. Uma alternativa que vence com folga pode continuar vencendo. Vamos construir uma troca de ordem que inverte a escolha e depois aumentar a margem para ela deixar de inverter.
-</PareEPense>
+No gráfico, você conferiu os dois casos: uma conta diferente pode inverter o vencedor, mas uma alternativa que vence com folga pode continuar vencendo. Na IDE, vamos construir essa comparação e conferir os limites dela.
 
 ## Uma prova de cada vez
 

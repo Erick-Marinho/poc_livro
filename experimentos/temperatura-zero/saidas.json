@@ -1,4 +1,14 @@
 {
+  "tz-mapa": {
+    "comando": "uv run python ../figuras/mapa.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "{\"tipo\": \"ilustração numérica, não logits de LLM\", \"casos\": [{\"id\": \"disputa\", \"nome\": \"Disputa apertada\", \"b\": 0.5, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 0.5], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 0.5], \"escolha\": 0}]}, {\"id\": \"folga\", \"nome\": \"B com folga\", \"b\": 2.0, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 2.0], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 2.0], \"escolha\": 1}]}]}",
+        ""
+      ]
+    ]
+  },
   "tz-init": {
     "comando": "uv init --bare temperatura-zero",
     "saiu_com": 0,
@@ -132,7 +142,7 @@
         ""
       ],
       [
-        "Ran 5 tests in 0.002s",
+        "Ran 5 tests in 0.001s",
         ""
       ],
       [
@@ -252,7 +262,7 @@
         ""
       ],
       [
-        "Ran 9 tests in 0.008s",
+        "Ran 9 tests in 0.007s",
         ""
       ],
       [

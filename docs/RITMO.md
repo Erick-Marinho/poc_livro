@@ -39,7 +39,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
-`MapaTemperatura` é um esquema do mecanismo, controlado pelo leitor; assistir ou mover o tempo não conta como ação.
+`MapaTemperatura` conta como ação: o leitor prevê se as duas execuções escolhem o mesmo token antes de ver o vencedor.
 
 ## Exceções
 

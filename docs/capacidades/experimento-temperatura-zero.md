@@ -18,6 +18,8 @@ a coleta na GPU da outra máquina permanece pendente e não recebe placar nesta 
 - (26/10/2026, Erick) “Feito, pode seguir”: a etapa 1 e a proposta CPU/GPU têm o ok; CPU é o caminho padrão e GPU
   uma extensão, sem exigir placa de vídeo de todo leitor.
 - (26/10/2026, Erick) Pode usar Remotion nas animações. O mapa inicial terá controle do leitor e versão estática.
+- (26/10/2026, revisão da etapa 2, Erick) Refazer a figura de “O que vamos construir” para ser mais intuitiva, com
+  gráfico animado quando ajudar o aprendizado. A revisão abaixo permanece na etapa 2, ainda sem ok.
 
 ## Tese e fonte
 
@@ -186,6 +188,27 @@ componente específico do mapa e sua classificação no ritmo; testes do experim
 - O mapa em Remotion explica onde a seleção acontece, sem apresentar uma simulação como medição da GPU. Controle
   manual, sem áudio ou autoplay; versão estática no modo direto, movimento reduzido e ausência de JavaScript.
 
+### Revisão atual da etapa 2 — o gráfico de “O que vamos construir”
+
+**Pergunta.** O leitor consegue acompanhar duas execuções e prever se a mesma regra escolhe o mesmo token quando
+mudam os valores calculados?
+
+**Escopo e peças.** Substituir a lista destacada do mapa por um diagrama com a mesma entrada, duas ordens de soma,
+gráficos de barras na mesma escala, escolha e token voltando à entrada. A figura usa dois casos do exemplo de
+`numeros.py`: troca de vencedor e controle com B à frente. Um rastro Python em `figuras/mapa.py`, registrado em
+`saidas.json`, liga os valores à figura. O pare e pense equivalente depois do mapa é incorporado à previsão da
+figura; `MapaTemperatura` passa a contar como ação no ritmo.
+
+**Critérios e evidência.** Pausa antes de revelar o vencedor, previsão pelo leitor, retorno explicando os valores,
+troca de condição reiniciando a previsão, escala comum sem barras enganosas, seis cenas e até 45 segundos, versão
+mobile com letras legíveis e versão estática completa para direto/movimento reduzido/sem JS. Teste recalcula o
+rastro a partir do projeto e recusa valores ou escolhas incoerentes; navegador confere a barreira, reprodução,
+troca de condição, largura mobile e capturas. `npm test` e `npm run ritmo`.
+
+**Limite.** A revisão é somente desta figura e do trecho imediatamente ligado a ela. Não fecha a etapa 2 nem
+executa a etapa 3 inteira: não altera a IDE, o medidor ou a coleta CPU, não mede GPU e não cria o comparador de
+tokens. A apresentação das duas somas fica no mapa, sem desenvolver as árvores de arredondamento da etapa 3.
+
 **Evidência.** Coleta CPU real e análise, testes do projeto, roteiro aplicado em pasta vazia, saídas regravadas e
 conferidas, `npm test`, `npm run ritmo` e página percorrida no computador e no celular. Relatório registra as falas
 redigidas pelo modelo e as limitações da coleta. O caminho GPU só recebe evidência depois de executado na outra
@@ -206,6 +229,7 @@ controle visual da margem ou comparador interativo de tokens da etapa 3.
 | Etapa | Evidência | Estado |
 |---|---|---|
 | 1 — `32143e2` | [Auditoria e sondagem numérica](../relatorios/experimento-temperatura-zero-etapa-1.md); CPU/GPU aprovados, GPU em outra máquina; inferência real ainda não executada nesta etapa | Erick, 26/10/2026 |
-| 2 (entrega) | [Projeto, coleta, perguntas e capturas](../relatorios/experimento-temperatura-zero-etapa-2.md): 90/90 respostas-alvo repetidas em CPU; 15 passos, 26 ações, 15 saídas offline; 9 testes Python, npm test com 168 testes do site e 5 da gravação; sem avisos de ritmo no experimento; mapa Remotion e três modos conferidos no computador e celular; coleta GPU pendente | aguardando revisão do Erick |
+| 2 — `c63f4fa` | [Projeto, coleta, perguntas e capturas](../relatorios/experimento-temperatura-zero-etapa-2.md): 90/90 respostas-alvo repetidas em CPU; 15 passos, 26 ações, 15 saídas offline; 9 testes Python, npm test com 168 testes do site e 5 da gravação; sem avisos de ritmo no experimento; mapa Remotion e três modos conferidos no computador e celular; coleta GPU pendente | aguardando revisão do Erick |
+| 2 (revisão do mapa) | [Diagrama, barras, previsão e capturas](../relatorios/experimento-temperatura-zero-mapa.md): mesma entrada, duas execuções, escala comum e controle com folga; valores calculados por `numeros.py`; 173 testes do site e 5 da gravação em cópia isolada e na pasta compartilhada, 30 + 16 + 16 saídas conferidas; navegador no computador e celular; sem avisos de ritmo no experimento; etapa 3 não iniciada | aguardando revisão do Erick |
 
 (redação: gpt-6.1-sol)
