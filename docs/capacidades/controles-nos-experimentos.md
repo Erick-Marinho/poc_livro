@@ -44,5 +44,6 @@ conteúdo.
 |---|---|---|---|
 | 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | Erick, 27/10/2026 |
 | 2 | f88b321 | `testes/controles-experimentos.test.mjs` (2): em cada experimento, o sumário com os três, o atual marcado, o topo com a seção e os comandos, a pílula, as seções do molde; e a pílula que se recolhe ao rolar sem guardar. `npm test` 200/200. Num navegador, no Pausa e fluxo a 1280 e 390 px: o sumário, o topo, a pílula e o recolhimento ao rolar e ao tocar | Erick, 27/10/2026 |
+| 3a | 325c753 | Conferido nas gravações (sc-nota-modelo: 3,7 a 16,1 s, média 10,8), no cofre (dois e-mails com 21/11, um sobre a entrega) e no PyTorch (2.8 responde). `npm test` 200/200; a página do Pausa e fluxo tem a Figura 1 | aguardando revisão |
 
 (redação: Claude Opus 5.5)
