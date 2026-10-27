@@ -30,5 +30,6 @@ cenário com um palpite e os dois bilhetes desenhados, está melhor (27/10/2026)
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | 9f5ac64 | `testes/acoes.test.mjs`: três cartões, dois que cumprem e um que o gabarito pega, o motivo do R11 na página, e o primeiro bilhete igual ao da colega no texto. `npm test` 208/208; ritmo do 1.4 sem aviso. Capturas a 1280 e 390 px, do primeiro cartão até a conta no fim | aguardando revisão |
 
 (redação: Claude Opus 5.5)
