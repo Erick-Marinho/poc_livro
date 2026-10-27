@@ -1,7 +1,7 @@
 /** A figura 1.1 (docs/capacidades/laco-do-agente.md): três histórias de atendentes da loja, para quem começa do zero.
  *  As mensagens, o que o sistema e o catálogo devolvem e as respostas são os de tres-jeitos.json; as previsões, os
  *  passos da ficha e o caminho da atendente batem com eles; os quadros não usam jargão, e o nome técnico só vem no fim
- *  de cada história. E a base das animações cena a cena, que o mapa da introdução usa. Rode depois de `astro build`. */
+ *  de cada história. E o mapa da introdução, sobre a base das animações que tocam ou rolam. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -82,9 +82,11 @@ test("a figura não é mais vídeo: saíram a composição do laço e o player c
     assert.ok(!existsSync(new URL(`../src/components/livro/${f}`, import.meta.url)), `${f} ficou`);
 });
 
-test("o mapa da introdução avança sobre a base das animações, e não tem um Player só dele", () => {
+test("o mapa da introdução toca ou rola sobre a base das outras figuras, e não tem um Player só dele", async () => {
+  const { existsSync } = await import("node:fs");
   const ilha = ler("src/components/livro/ciclo/FiguraCiclo.tsx");
-  assert.match(ilha, /import AvancaCena from "\.\.\/palco\/AvancaCena"/);
+  assert.match(ilha, /import RolaCena from "\.\.\/palco\/RolaCena"/);
+  assert.match(ilha, /aoQuadro=/, "a animação ainda acende a fase no mapa");
   assert.doesNotMatch(ilha, /@remotion\/player/);
-  assert.match(ler("src/components/livro/palco/AvancaCena.tsx"), /prefers-reduced-motion/);
+  assert.ok(!existsSync(new URL("../src/components/livro/palco/AvancaCena.tsx", import.meta.url)), "a base cena a cena saiu");
 });

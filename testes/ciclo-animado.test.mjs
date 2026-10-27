@@ -37,7 +37,7 @@ test("um cartão por fase, com o nome e a pergunta à vista, e o resto dentro", 
 });
 
 /* a animação (etapa 2): as cenas respondem a aposta, nos limites do docs/RITMO.md */
-const { montarCenas, limites } = await import("../src/components/livro/ciclo/cenas.ts");
+const { montarCenas } = await import("../src/components/livro/ciclo/cenas.ts");
 const cenas = JSON.parse(ler("livros/ciclo-de-vida/figuras/ciclo-animado.json"));
 const aposta = JSON.parse(ler("livros/ciclo-de-vida/figuras/onde-se-pega.json"));
 const pagina = parse(ler("dist/ciclo-de-vida/00-introducao/index.html"));
@@ -62,7 +62,6 @@ test("a animação cabe no docs/RITMO.md: até 6 cenas, 45 s, 8 s por cena e 12 
     assert.ok(c.segundos <= 8, `"${c.legenda}": ${c.segundos} s`);
     for (const l of [c.legenda, c.sabendo].filter(Boolean)) assert.ok(l.split(/\s+/).length <= 12, `"${l}" passa de 12 palavras`);
   }
-  assert.equal(limites(m).length, m.cenas.length);
 });
 
 /* ajustes da introdução (etapa 6): os cartões abrem num modal, pelo nó, que mostra que é clicável */

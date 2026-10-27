@@ -2,7 +2,7 @@
  * A animação do mapa do ciclo (Remotion; docs/capacidades/ciclo-animado.md): os quatro problemas da aposta andando pelo
  * anel até a fase que pega cada um, com a aposta do leitor ao lado. É o mesmo desenho do mapa parado (Anel.tsx), com
  * os problemas por cima, nas mesmas coordenadas. Cor com sentido fixo (docs/RITMO.md): acento é o que anda agora,
- * âmbar é o que falhou, verde é o que foi pego. O leitor avança cena a cena (a ilha, FiguraCiclo.tsx); o último quadro
+ * âmbar é o que falhou, verde é o que foi pego. O leitor toca ou rola (a ilha, FiguraCiclo.tsx); o último quadro
  * é o do modo direto. O Studio do my-video importa esta composição.
  */
 import { useMemo } from "react";

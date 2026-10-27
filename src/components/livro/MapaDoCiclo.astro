@@ -6,7 +6,7 @@
  * num modal (docs/capacidades/ajustes-da-introducao.md). Os dados vêm de `figuras/ciclo.json`; os capítulos, do
  * `sumario.json`. Abrir um cartão não é ação do leitor (docs/RITMO.md). Sem JS, no modo direto e na impressão, os
  * cartões ficam embaixo (são <details>); no modo direto e na impressão, abrem todos.
- * Com as cenas e a aposta, o desenho vira a animação (ciclo/FiguraCiclo.tsx), que o leitor avança cena a cena; sem JS e
+ * Com as cenas e a aposta, o desenho vira a animação (ciclo/FiguraCiclo.tsx), que o leitor toca ou rola; sem JS e
  * na impressão, fica o desenho parado.
  */
 import { X } from "lucide-react";
@@ -139,11 +139,13 @@ const ordem = [...ciclo.fases.filter((f) => !f.transversal && f.id !== "evoluir"
   .mc-modal-fechar:hover { background: var(--papel-2); color: var(--ink) }
   .mc figcaption { margin-top: 8px; font: 13.5px/1.5 var(--f-ui); color: var(--ink-2) }
 
-  /* a animação: no lugar do desenho parado, quando a ilha carrega; o botão de avançar, discreto, embaixo */
+  /* a animação: no lugar do desenho parado, quando a ilha carrega */
   /* antes de a ilha carregar, 1 px e não display: none: o client:visible só carrega o que chega a aparecer na tela */
   .mc-video { height: 1px; overflow: hidden }
   .mc[data-animado] .mc-video { height: auto; overflow: visible }
   .mc[data-animado] .mc-desenho { display: none }
+  /* o quadro do mapa já tem moldura: o da animação não repete a dele */
+  .mc .rc-quadro { border: 0; padding: 0 }
 
   @media (max-width: 640px) {
     .mc-quadro { padding: 10px }

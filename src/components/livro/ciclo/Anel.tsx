@@ -43,27 +43,29 @@ const arco = (i: number) => {
   const p0 = ponto(a0), p1 = ponto(a1);
   return `M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)} A ${RAIO} ${RAIO} 0 0 1 ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
 };
-const EVOLUIR_ANEL: Caixa = { x: 490, y: 536, w: 140, h: 48 };
+const EVOLUIR_ANEL: Caixa = { x: 450, y: 518, w: 130, h: 48 }; // dentro do halo, sem encostar no arco de Pôr no ar
 const GOVERNAR_ANEL: Caixa = { x: 210, y: 20, w: 300, h: 40 };
 
 /* ---------- a coluna ---------- */
 
-const COL = { x: 80, w: 200, h: 48, y0: 74, passo: 76 };
+const COL = { x: 98, w: 184, h: 48, y0: 74, passo: 76 };
+const MEIO_COL = COL.x + COL.w / 2;
 const noDaColuna = (i: number): Caixa => ({ x: COL.x, y: COL.y0 + i * COL.passo, w: COL.w, h: COL.h });
-const EVOLUIR_COLUNA = { cx: 40, w: 132, h: 30 }; // em pé, na faixa da esquerda
+const EVOLUIR_COLUNA = { cx: 50, w: 84, h: 52 }; // deitado, na faixa da esquerda
 const meioEvoluir = (noDaColuna(1).y + noDaColuna(4).y + COL.h) / 2;
+const evoluirNaColuna: Caixa = { x: EVOLUIR_COLUNA.cx - EVOLUIR_COLUNA.w / 2, y: meioEvoluir - EVOLUIR_COLUNA.h / 2, w: EVOLUIR_COLUNA.w, h: EVOLUIR_COLUNA.h };
 const GOVERNAR_COLUNA: Caixa = { x: 55, y: 14, w: 250, h: 34 };
 const alturaDaColuna = noDaColuna(5).y + COL.h + 40;
 
 /** O tamanho do desenho, nas unidades do viewBox. */
 export const VISTA: Record<Desenho, { w: number; h: number }> = { anel: { w: 720, h: 660 }, coluna: { w: 360, h: alturaDaColuna } };
 
-/** Onde fica a caixa de cada fase, nas unidades do viewBox (a de Evoluir, na coluna, já em pé). */
+/** Onde fica a caixa de cada fase, nas unidades do viewBox. */
 export function caixas(desenho: Desenho): Record<string, Caixa> {
   const ida = desenho === "anel" ? IDA.map((_, i) => noDoAnel(i)) : IDA.map((_, i) => noDaColuna(i));
   return {
     ...Object.fromEntries(IDA.map((id, i) => [id, ida[i]])),
-    evoluir: desenho === "anel" ? EVOLUIR_ANEL : { x: EVOLUIR_COLUNA.cx - EVOLUIR_COLUNA.h / 2, y: meioEvoluir - EVOLUIR_COLUNA.w / 2, w: EVOLUIR_COLUNA.h, h: EVOLUIR_COLUNA.w },
+    evoluir: desenho === "anel" ? EVOLUIR_ANEL : evoluirNaColuna,
     governar: desenho === "anel" ? GOVERNAR_ANEL : GOVERNAR_COLUNA,
   };
 }
@@ -73,20 +75,22 @@ export function caixas(desenho: Desenho): Record<string, Caixa> {
 export const ESTILO = `
 .an-halo { fill: none; stroke: var(--linha, #ddd4c4); stroke-width: 1.5; stroke-dasharray: 6 6; transition: stroke .3s }
 .an-halo.an-halo-aceso { stroke: var(--acento, #2a4fb5); stroke-width: 2.5 }
-.an-ida { fill: none; stroke: var(--ink-2, #6b6357); stroke-width: 1.6; opacity: .75 }
+.an-trilha { fill: none; stroke: color-mix(in srgb, var(--acento, #2a4fb5) 6%, transparent); stroke-width: 34 }
+.an-ida { fill: none; stroke: var(--ink-2, #6b6357); stroke-width: 2.2 }
 .an-seta, .an-seta-evoluir { fill: var(--ink-2, #6b6357) }
 .an-erro { fill: none; stroke: var(--aviso, #9a5b00); stroke-width: 3 }
 .an-seta-erro { fill: var(--aviso, #9a5b00) }
 .an-rotulo-erro { font: 600 13px var(--f-ui, "IBM Plex Sans", system-ui, sans-serif); fill: var(--aviso, #9a5b00) }
 .an-fundo-rotulo { fill: var(--nota, #fbf8f2) }
-.an-evoluir { fill: none; stroke: var(--ink-2, #6b6357); stroke-width: 1.6; stroke-dasharray: 5 4 }
+.an-evoluir { fill: none; stroke: var(--ink-2, #6b6357); stroke-width: 1.8; stroke-dasharray: 5 4 }
 .an-no { cursor: pointer; outline: none }
-.an-caixa { fill: var(--papel, #f6f2ea); stroke: var(--linha, #ddd4c4); stroke-width: 1.5 }
+.an-caixa { fill: var(--papel, #f6f2ea); stroke: color-mix(in srgb, var(--ink, #24201a) 22%, var(--linha, #ddd4c4)); stroke-width: 1.5;
+  filter: drop-shadow(0 1px 1px rgb(40 30 10 / .10)) drop-shadow(0 3px 8px rgb(40 30 10 / .08)) }
 .an-no:hover .an-caixa, .an-no:focus-visible .an-caixa { stroke: var(--acento, #2a4fb5) }
 .an-no.an-aceso .an-caixa { stroke: var(--acento, #2a4fb5); stroke-width: 2.5; fill: color-mix(in srgb, var(--acento, #2a4fb5) 10%, var(--papel, #f6f2ea)) }
 .an-no.an-realce-erro .an-caixa { stroke: var(--aviso, #9a5b00); stroke-width: 2.5 }
 .an-no.an-realce-pego .an-caixa { stroke: var(--ok, #1f7a4c); stroke-width: 2.5 }
-.an-nome { font: 600 15px var(--f-ui, "IBM Plex Sans", system-ui, sans-serif); fill: var(--ink, #24201a) }
+.an-nome { font: 650 15.5px var(--f-ui, "IBM Plex Sans", system-ui, sans-serif); fill: var(--ink, #24201a) }
 .an-abre { color: var(--ink-2, #6b6357); pointer-events: none }
 .an-no:hover .an-abre, .an-no:focus-visible .an-abre, .an-no.an-aceso .an-abre { color: var(--acento, #2a4fb5) }
 .an-cap { font: 12px var(--f-mono, "JetBrains Mono", ui-monospace, monospace); fill: var(--ink-2, #6b6357) }
@@ -140,6 +144,8 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
         </defs>
         {/* Governar: o halo em volta de tudo */}
         <ellipse cx={CENTRO.x} cy={CENTRO.y} rx={340} ry={300} className={halo} />
+        {/* o trilho do anel: a ida é um caminho só, de fase em fase */}
+        <circle cx={CENTRO.x} cy={CENTRO.y} r={RAIO} className="an-trilha" />
         {ida.slice(0, -1).map((f, i) => <path key={f.id} d={arco(i)} className="an-ida" markerEnd={`url(#${m("ida")})`} />)}
         {/* a volta do erro, por dentro do anel: a falha vira caso da régua */}
         <g data-volta="errado-avaliar">
@@ -151,7 +157,7 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
         </g>
         {/* Evoluir, por fora: de Observar de volta a Construir, medido pela mesma régua */}
         <g data-volta="observar-construir">
-          <path d={`M 204 ${noDoAnel(4).y + NO.h + 4} C 204 560, 380 575, ${EVOLUIR_ANEL.x - 4} ${EVOLUIR_ANEL.y + EVOLUIR_ANEL.h / 2}`} className="an-evoluir" />
+          <path d={`M 204 ${noDoAnel(4).y + NO.h + 4} C 204 610, 390 620, ${EVOLUIR_ANEL.x - 4} ${EVOLUIR_ANEL.y + EVOLUIR_ANEL.h / 2}`} className="an-evoluir" />
           <path d={`M ${EVOLUIR_ANEL.x + EVOLUIR_ANEL.w - 18} ${EVOLUIR_ANEL.y - 4} C 660 470, 650 330, ${noDoAnel(1).x + NO.w * 0.8} ${noDoAnel(1).y + NO.h + 6}`}
             className="an-evoluir" markerEnd={`url(#${m("evoluir")})`} />
         </g>
@@ -171,7 +177,7 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
       </defs>
       <rect x={6} y={GOVERNAR_COLUNA.y + GOVERNAR_COLUNA.h / 2} width={348} height={alturaDaColuna - GOVERNAR_COLUNA.h / 2 - 22} rx={22} className={halo} />
       {ida.slice(0, -1).map((f, i) => (
-        <line key={f.id} x1={180} y1={noDaColuna(i).y + COL.h + 3} x2={180} y2={noDaColuna(i + 1).y - 4} className="an-ida" markerEnd={`url(#${m("ida")})`} />
+        <line key={f.id} x1={MEIO_COL} y1={noDaColuna(i).y + COL.h + 3} x2={MEIO_COL} y2={noDaColuna(i + 1).y - 4} className="an-ida" markerEnd={`url(#${m("ida")})`} />
       ))}
       {/* a volta do erro, pela direita */}
       <g data-volta="errado-avaliar">
@@ -183,9 +189,7 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
         <path d={`M ${COL.x - 3} ${noDaColuna(4).y + COL.h / 2} H ${EVOLUIR_COLUNA.cx} V ${noDaColuna(1).y + COL.h / 2} H ${COL.x - 6}`} className="an-evoluir" markerEnd={`url(#${m("evoluir")})`} />
       </g>
       {ida.map((f, i) => no(f, noDaColuna(i)))}
-      <g transform={`rotate(-90 ${EVOLUIR_COLUNA.cx} ${meioEvoluir})`}>
-        {no(evoluir, { x: EVOLUIR_COLUNA.cx - EVOLUIR_COLUNA.w / 2, y: meioEvoluir - EVOLUIR_COLUNA.h / 2, w: EVOLUIR_COLUNA.w, h: EVOLUIR_COLUNA.h }, true)}
-      </g>
+      {no(evoluir, evoluirNaColuna)}
       {no(governar, GOVERNAR_COLUNA, true)}
     </svg>
   );

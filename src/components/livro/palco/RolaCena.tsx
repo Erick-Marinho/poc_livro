@@ -25,11 +25,13 @@ type Props<P extends Record<string, unknown>> = {
   /** o espaço da tela que fica para o resto (o topo do livro, os controles): o vídeo cabe no que sobra */
   reserva: number;
   descricao: ReactNode;
+  /** ouve cada quadro, tocando ou rolando, para acender o que está fora do vídeo (o cartão do mapa do ciclo) */
+  aoQuadro?: (quadro: number) => void;
 };
 type Toque = "parado" | "tocando" | "fim";
 const TOPO = 58; // a barra do livro: a figura presa fica logo abaixo dela
 
-export default function RolaCena<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, telas, reserva, descricao }: Props<P>) {
+export default function RolaCena<P extends Record<string, unknown>>({ component, inputProps, duracao, fps, largura, altura, chave, telas, reserva, descricao, aoQuadro }: Props<P>) {
   const ref = useRef<PlayerRef>(null);
   const caixa = useRef<HTMLDivElement>(null);
   const trilho = useRef<HTMLDivElement>(null);
@@ -37,6 +39,8 @@ export default function RolaCena<P extends Record<string, unknown>>({ component,
   const rolar = useRolar();
   const [toque, setToque] = useState<Toque>("parado");
   const [andou, setAndou] = useState(false);
+  const ouvir = useRef(aoQuadro);
+  ouvir.current = aoQuadro;
 
   /* o que o Player conta: tocou, pausou, chegou ao fim */
   useEffect(() => {
@@ -45,6 +49,15 @@ export default function RolaCena<P extends Record<string, unknown>>({ component,
     const tocou = () => setToque("tocando"), pausou = () => setToque((t) => (t === "fim" ? t : "parado")), acabou = () => setToque("fim");
     p.addEventListener("play", tocou); p.addEventListener("pause", pausou); p.addEventListener("ended", acabou);
     return () => { p.removeEventListener("play", tocou); p.removeEventListener("pause", pausou); p.removeEventListener("ended", acabou); };
+  }, [chave, direto]);
+
+  /* cada quadro, para quem ouve: o seekTo da rolagem também muda o quadro */
+  useEffect(() => {
+    const p = ref.current;
+    if (!p) return;
+    const quadro = (e: { detail: { frame: number } }) => ouvir.current?.(e.detail.frame);
+    p.addEventListener("frameupdate", quadro); p.addEventListener("seeked", quadro);
+    return () => { p.removeEventListener("frameupdate", quadro); p.removeEventListener("seeked", quadro); };
   }, [chave, direto]);
 
   /* rolar com a página: a agulha segue a rolagem, de onde o vídeo está */

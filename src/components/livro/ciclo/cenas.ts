@@ -61,9 +61,6 @@ export const jaSabe = (apostas: (number | null)[] | undefined, direto: boolean) 
 export const titulo = (m: Montado, sabe: boolean) => (sabe ? m.sabendo : m.pergunta);
 export const legenda = (c: CenaDados, sabe: boolean) => (sabe && c.sabendo ? c.sabendo : c.legenda);
 
-/** Onde cada cena começa e termina, em quadros: o avançar toca de um até o outro e para. */
-export const limites = (m: Montado) => m.cenas.map((c) => ({ de: Math.round(c.inicio * FPS), ate: Math.round(c.fim * FPS) - 1 }));
-
 /** A cena de um momento (em segundos), e quanto dela já passou. */
 export const cenaEm = (m: Montado, t: number) => {
   const k = Math.max(0, m.cenas.filter((c) => c.inicio <= t).length - 1);

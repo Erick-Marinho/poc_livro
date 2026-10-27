@@ -1,16 +1,16 @@
 /**
- * A ilha do mapa do ciclo animado (docs/capacidades/ciclo-animado.md): a composição (CicloAnimado.tsx) no Player, que o
- * leitor avança cena a cena, sobre a base das animações (palco/AvancaCena.tsx). O investimento em cada problema é lido da
+ * A ilha do mapa do ciclo animado (docs/capacidades/ciclo-animado.md): a composição (CicloAnimado.tsx), que o leitor toca
+ * ou rola com a página, como as outras figuras (palco/RolaCena.tsx; docs/capacidades/mapa-do-ciclo-rola.md). O investimento em cada problema é lido da
  * caixa da página (Aposta.astro), ao carregar e a cada clique nela: quem já investiu lê o caminho, e não a pergunta. A
  * fase por onde o problema passa acende o cartão dela, e clicar num nó do vídeo abre o cartão: a ilha só avisa a figura
  * (evento "ciclo:fase"), e o MapaDoCiclo acende. Sem JS, fica o mapa parado.
  */
 import { type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
-import AvancaCena from "../palco/AvancaCena";
+import RolaCena from "../palco/RolaCena";
 import { useDireto } from "../palco/direto";
 import type { Desenho } from "./Anel";
 import { CicloAnimado, quadroDoCiclo } from "./CicloAnimado";
-import { type Entrada, FPS, faseAcesa, jaSabe, legenda, limites, montarCenas } from "./cenas";
+import { type Entrada, FPS, faseAcesa, jaSabe, legenda, montarCenas } from "./cenas";
 
 // a aposta da página com os mesmos problemas: o índice da opção que o leitor marcou em cada um, ou null
 const lerApostas = (aposta: Entrada["aposta"]) => {
@@ -30,7 +30,6 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   const caixa = useRef<HTMLDivElement>(null);
   const direto = useDireto();
   const m = useMemo(() => montarCenas({ ciclo, cenas, aposta }), [ciclo, cenas, aposta]);
-  const cortes = useMemo(() => limites(m), [m]);
   const [desenho, setDesenho] = useState<Desenho>("anel");
   const [apostas, setApostas] = useState<(number | null)[]>(() => aposta.mensagens.map(() => null));
   const acesa = useRef<string | undefined>(undefined);
@@ -70,8 +69,8 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   };
 
   return <div ref={caixa} className="mc-video" onClick={clicar}>
-    <AvancaCena chave={desenho} component={CicloAnimado} inputProps={props} duracao={q.duracao} fps={q.fps} largura={q.largura} altura={q.altura}
-      cortes={cortes} primeiro={sabe ? "▶ Ver o caminho de cada problema" : "▶ Ver onde cada problema é capturado"}
-      anuncio={(k) => legenda(m.cenas[k], sabe)} aoQuadro={(f) => avisar(faseAcesa(m, f / FPS))} />
+    <RolaCena chave={desenho} component={CicloAnimado} inputProps={props} duracao={q.duracao} fps={q.fps} largura={q.largura} altura={q.altura}
+      telas={9} reserva={desenho === "coluna" ? 100 : 110} aoQuadro={(f) => avisar(faseAcesa(m, f / FPS))}
+      descricao={<ol>{m.cenas.map((c, k) => <li key={k}>{legenda(c, sabe)}</li>)}</ol>} />
   </div>;
 }
