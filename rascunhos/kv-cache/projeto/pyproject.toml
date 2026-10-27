@@ -1,0 +1,6 @@
+[project]
+name = "kv-cache"
+version = "0.1.0"
+description = "Gera com e sem o KV cache e cronometra cada passo, num modelo executado no PyTorch"
+requires-python = ">=3.11"
+dependencies = []

@@ -65,19 +65,29 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 1 (detalhe)
+## Etapa 2 (detalhe)
 
-- **Arquivos:** este plano; `rascunhos/kv-cache/projeto/casos.jsonl` e `projeto/dados/` (cópia do regulamento);
-  `testes/kv-cache.test.mjs`.
-- **Muda:** o corpus fica congelado antes de qualquer código do medidor.
-- **Evidência:** o teste confere a mesma pergunta nos dois casos, a longa lendo ao menos 40 vezes as palavras da curta,
-  os dados iguais byte a byte aos do `pausa-e-fluxo` e a nota "(condomínio inventado)"; ele falha com um arquivo
-  alterado. Os testes do livro passam.
-- **Fica fora:** o medidor, o modelo e as figuras.
+- **Arquivos:** `rascunhos/kv-cache/projeto/`: `pyproject.toml`, `laco.py` (o laço), `placar.py` (os quatro itens),
+  `test_laco.py`.
+- **Muda:** o laço recebe um modelo com um método `ler(ids, cache)`, que devolve o próximo token e o cache. Com cache,
+  o primeiro passo lê a mensagem inteira e cada passo seguinte, só o token novo; sem cache, cada passo lê a sequência
+  inteira e o modelo nunca recebe cache. O relógio é cronometrado em volta de cada leitura. O modelo de verdade, com
+  PyTorch, fica para a etapa 3.
+- **Decisões:** (2) O laço não para no fim da resposta: gera sempre 128 tokens, para os dois modos medirem o mesmo
+  número de passos; onde a resposta acabou fica registrado. (2) O passo 0 lê a mensagem (a pausa) e fica fora dos
+  itens 1 a 3, que contam só os 127 passos de escrita. (2) O item 4 compara os dois modos em cada repetição dos dois
+  casos: X de 10.
+- **Evidência:** `uv run python -m unittest -q`, sem PyTorch: com um modelo de mentira, o laço lê `[n, 1, 1, …]` com
+  cache e `[n, n+1, n+2, …]` sem, e os tokens saem iguais; o placar respeita os limites (2,0 vezes conta e 1,99 não;
+  10 vezes conta; 20% conta e 21% não); a conta dos bytes dá os 40 GiB do Daily Dose para o Llama 3.3 70B a 128 mil
+  tokens ([config](https://huggingface.co/unsloth/Llama-3.3-70B-Instruct/raw/main/config.json)). Falha se o laço
+  sem cache ler só o token novo.
+- **Fica fora:** o modelo real, a coleta e as figuras.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `11bec6d` | `testes/kv-cache.test.mjs` (2): a mesma pergunta, a longa lendo 46 vezes a curta (10 e 462 palavras), o regulamento igual byte a byte ao do `pausa-e-fluxo`; falha com `mudancas.md` alterado. Testes do livro 207/207 (o `gravacao:testar` já quebrava antes, sem `pytest` no ambiente) | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
