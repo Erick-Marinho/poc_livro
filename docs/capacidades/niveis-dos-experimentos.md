@@ -12,7 +12,7 @@ intermediário e avançado (27/10/2026).
   - **Intermediário:** Python e terminal no básico, e já ter usado um modelo de linguagem; o experimento explica o resto.
   - **Avançado:** entender o que acontece dentro do modelo ou da máquina (contas, precisão, inferência), e Python com
     folga.
-- (1) A classificação de hoje, para o Erick confirmar: "Um segundo cérebro…" é **intermediário** (constrói a busca e
+- (27/10/2026, Erick, confirmada) A classificação de hoje: "Um segundo cérebro…" é **intermediário** (constrói a busca e
   as respostas sobre as notas, com o chat guiando); "Temperatura zero" é **avançado** (binary16, pontuações, lotes,
   inferência com PyTorch).
 - (1) O nível é obrigatório no molde: experimento sem nível não monta. Aparece no cabeçalho do experimento (com a frase
@@ -28,6 +28,6 @@ intermediário e avançado (27/10/2026).
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `7bdfc21` | `testes/niveis.test.mjs` (2): só os três níveis, cada um dizendo o que pede; o molde exige o nível; cada experimento mostra o nível no cabeçalho (com "Para quem é"), na lista e no `index.json`. `npm test` 183/183. Capturas da lista e do cabeçalho a 1280 e 390 px, no claro e no escuro | aguardando revisão |
+| 1 | `7bdfc21` | `testes/niveis.test.mjs` (2): só os três níveis, cada um dizendo o que pede; o molde exige o nível; cada experimento mostra o nível no cabeçalho (com "Para quem é"), na lista e no `index.json`. `npm test` 183/183. Capturas da lista e do cabeçalho a 1280 e 390 px, no claro e no escuro | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
