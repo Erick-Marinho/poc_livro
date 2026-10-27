@@ -4,12 +4,13 @@
  * então a landing nunca mostra algo diferente do site.
  */
 import { getCollection } from "astro:content";
+import type { Nivel } from "./niveis";
 
 export type Livro = {
   id: string; titulo: string; lide: string; autores: string[];
   href: string; comeca: string; escritos: number; planejados: number;
 };
-export type Experimento = { id: string; titulo: string; lide: string; data: string; etiqueta: string; href: string };
+export type Experimento = { id: string; titulo: string; lide: string; data: string; etiqueta: string; nivel: Nivel; href: string };
 
 const sumarios = import.meta.glob<{ capitulos: { numero: number; titulo: string }[] }>("../../livros/*/sumario.json", { eager: true, import: "default" });
 

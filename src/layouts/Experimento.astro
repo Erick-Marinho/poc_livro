@@ -1,4 +1,6 @@
 ---
+import NivelExperimento from "../components/NivelExperimento.astro";
+import { NIVEIS, type Nivel } from "../lib/niveis";
 import "../styles/livro.css";
 import "../styles/experimentos.css";
 import { dataLonga } from "../lib/datas";
@@ -8,12 +10,12 @@ import TopoSite from "../components/TopoSite.astro";
  *  Abre com o que se testa (a afirmação e a régua) e fecha com o que deu: o resultado fica no fim, para não estragar as apostas. */
 interface Resultado { rotulo: string; acertos: number; total: number; nota: string; comando: string }
 interface Props {
-  titulo: string; lide: string; data: string; etiqueta: string;
+  titulo: string; lide: string; data: string; etiqueta: string; nivel: Nivel;
   afirmacao: { texto: string; fonte: { titulo: string; url: string } };
   regua: { arquivo: string; conta: string };
   resultados: Resultado[]; achado: string; custo: string;
 }
-const { titulo, lide, data, etiqueta, afirmacao, regua, resultados, achado, custo } = Astro.props;
+const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achado, custo } = Astro.props;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -32,9 +34,10 @@ const { titulo, lide, data, etiqueta, afirmacao, regua, resultados, achado, cust
     <TopoSite atual="experimentos" nome="Experimentos" nomeHref="/experimentos/"> · um experimento que executa</TopoSite>
     <main class="livro">
       <section class="abertura-experimento">
-        <div class="linha"><span class="etiqueta">{etiqueta}</span><time class="quando" datetime={data}>{dataLonga(data)}</time></div>
+        <div class="linha"><span class="etiqueta">{etiqueta}</span><NivelExperimento nivel={nivel} /><time class="quando" datetime={data}>{dataLonga(data)}</time></div>
         <h1>{titulo}</h1>
         <p class="lide">{lide}</p>
+        <p class="para-quem"><b>Para quem é:</b> {NIVEIS[nivel].nome.toLowerCase()}. Pede {NIVEIS[nivel].pede}.</p>
       </section>
       <section class="molde teste" aria-labelledby="o-que-se-testa">
         <h2 id="o-que-se-testa">O que se testa</h2>

@@ -16,6 +16,8 @@
 
 .abertura-experimento { margin-bottom: 2.4em }
 .abertura-experimento .linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.para-quem { margin: 10px 0 0; font: 14.5px/1.5 var(--f-ui); color: var(--ink-2) } .para-quem b { color: var(--ink) }
+.experimentos-lista .linha { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
 .abertura-experimento h1 { font: 700 42px/1.12 var(--f-texto); letter-spacing: -.02em; margin: 14px 0 14px; text-wrap: balance }
 .abertura-experimento .lide { font-size: calc(20px * var(--escala)); line-height: 1.55; color: var(--ink-2); margin: 0 }
 

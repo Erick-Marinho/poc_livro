@@ -1,0 +1,29 @@
+---
+/**
+ * A etiqueta do nível de um experimento (docs/capacidades/niveis-dos-experimentos.md): três degraus, os do nível
+ * acesos, e o nome; a frase do que ele pede do leitor vai no título (ao passar o mouse) e no texto para leitor de tela.
+ */
+import { NIVEIS, type Nivel } from "../lib/niveis";
+
+interface Props { nivel: Nivel }
+const { nivel } = Astro.props;
+const n = NIVEIS[nivel];
+---
+<span class:list={["nivel", `nivel-${nivel}`]} data-nivel={nivel} title={`${n.nome}: pede ${n.pede}`}>
+  <span class="nivel-degraus" aria-hidden="true">{[1, 2, 3].map((d) => <i class:list={{ aceso: d <= n.degrau }} />)}</span>
+  <span class="nivel-nome">{n.nome}</span>
+  <span class="sr-only">: pede {n.pede}</span>
+</span>
+
+<style is:global>
+  .nivel { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 1px 10px 1px 8px; font: 600 12px/1.6 var(--f-ui);
+    border: 1px solid var(--nivel-cor); color: var(--nivel-cor); background: color-mix(in srgb, var(--nivel-cor) 8%, transparent) }
+  .nivel-novato { --nivel-cor: var(--ok) }
+  .nivel-intermediario { --nivel-cor: var(--acento) }
+  .nivel-avancado { --nivel-cor: var(--aviso) }
+  .nivel-degraus { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px }
+  .nivel-degraus i { width: 3px; border-radius: 1px; background: currentColor; opacity: .25 }
+  .nivel-degraus i:nth-child(1) { height: 5px } .nivel-degraus i:nth-child(2) { height: 8px } .nivel-degraus i:nth-child(3) { height: 11px }
+  .nivel-degraus i.aceso { opacity: 1 }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+</style>

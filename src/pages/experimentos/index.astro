@@ -3,6 +3,7 @@ import "../../styles/livro.css";
 import "../../styles/experimentos.css";
 import { experimentos as listar } from "../../lib/vitrine";
 import TopoSite from "../../components/TopoSite.astro";
+import NivelExperimento from "../../components/NivelExperimento.astro";
 import { dataCurta } from "../../lib/datas";
 
 /* o mais novo em cima (lib/vitrine.ts) */
@@ -30,7 +31,7 @@ const experimentos = await listar();
       <ul class="experimentos-lista">
         {experimentos.map((g) => (
           <li>
-            <span class="etiqueta">{g.etiqueta}</span>
+            <div class="linha"><span class="etiqueta">{g.etiqueta}</span><NivelExperimento nivel={g.nivel} /></div>
             <h2><a href={g.href}>{g.titulo}</a></h2>
             <p class="lide">{g.lide}</p>
             <time class="quando" datetime={g.data}>{dataCurta(g.data)}</time>
