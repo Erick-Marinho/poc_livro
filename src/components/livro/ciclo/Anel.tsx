@@ -23,8 +23,9 @@ const caps = (f: Fase) => `cap. ${f.capitulos.join(" e ")}`;
 
 /* ---------- o anel ---------- */
 
-const CENTRO = { x: 360, y: 340 };
-const RAIO = 180;
+const CENTRO = { x: 360, y: 290 };
+const RAIO = 160;
+const HALO = { rx: 340, ry: 250 }; // Governar em volta de tudo, sem sobrar altura
 const NO = { w: 148, h: 54 };
 const angulo = (i: number) => ((-90 + 60 * i) * Math.PI) / 180;
 const noDoAnel = (i: number): Caixa => ({
@@ -43,7 +44,7 @@ const arco = (i: number) => {
   const p0 = ponto(a0), p1 = ponto(a1);
   return `M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)} A ${RAIO} ${RAIO} 0 0 1 ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
 };
-const EVOLUIR_ANEL: Caixa = { x: 450, y: 518, w: 130, h: 48 }; // dentro do halo, sem encostar no arco de Pôr no ar
+const EVOLUIR_ANEL: Caixa = { x: 440, y: 440, w: 125, h: 48 }; // dentro do halo, sem encostar no arco de Pôr no ar
 const GOVERNAR_ANEL: Caixa = { x: 210, y: 20, w: 300, h: 40 };
 
 /* ---------- a coluna ---------- */
@@ -58,7 +59,7 @@ const GOVERNAR_COLUNA: Caixa = { x: 55, y: 14, w: 250, h: 34 };
 const alturaDaColuna = noDaColuna(5).y + COL.h + 40;
 
 /** O tamanho do desenho, nas unidades do viewBox. */
-export const VISTA: Record<Desenho, { w: number; h: number }> = { anel: { w: 720, h: 660 }, coluna: { w: 360, h: alturaDaColuna } };
+export const VISTA: Record<Desenho, { w: number; h: number }> = { anel: { w: 720, h: 560 }, coluna: { w: 360, h: alturaDaColuna } };
 
 /** Onde fica a caixa de cada fase, nas unidades do viewBox. */
 export function caixas(desenho: Desenho): Record<string, Caixa> {
@@ -143,22 +144,23 @@ export default function Anel({ fases, desenho, aceso, realces = {}, governar: ha
           <Seta id={m("evoluir")} classe="an-seta-evoluir" />
         </defs>
         {/* Governar: o halo em volta de tudo */}
-        <ellipse cx={CENTRO.x} cy={CENTRO.y} rx={340} ry={300} className={halo} />
+        <ellipse cx={CENTRO.x} cy={CENTRO.y} rx={HALO.rx} ry={HALO.ry} className={halo} />
         {/* o trilho do anel: a ida é um caminho só, de fase em fase */}
         <circle cx={CENTRO.x} cy={CENTRO.y} r={RAIO} className="an-trilha" />
         {ida.slice(0, -1).map((f, i) => <path key={f.id} d={arco(i)} className="an-ida" markerEnd={`url(#${m("ida")})`} />)}
         {/* a volta do erro, por dentro do anel: a falha vira caso da régua */}
         <g data-volta="errado-avaliar">
           <line x1={e.x + e.w * 0.86} y1={e.y + e.h + 4} x2={a.x + a.w * 0.14} y2={a.y - 4} className="an-erro" markerEnd={`url(#${m("erro")})`} />
+          {/* em duas linhas, acima da seta: numa só, o rótulo passava do comprimento dela */}
           <g transform={`translate(${CENTRO.x} ${CENTRO.y}) rotate(30)`}>
-            <rect x={-104} y={-24} width={208} height={20} rx={6} className="an-fundo-rotulo" />
-            <text x={0} y={-9} textAnchor="middle" className="an-rotulo-erro">a falha vira caso da régua</text>
+            <rect x={-58} y={-40} width={116} height={36} rx={6} className="an-fundo-rotulo" />
+            <text x={0} y={-25} textAnchor="middle" className="an-rotulo-erro">a falha vira<tspan x={0} dy={15}>caso da régua</tspan></text>
           </g>
         </g>
         {/* Evoluir, por fora: de Observar de volta a Construir, medido pela mesma régua */}
         <g data-volta="observar-construir">
-          <path d={`M 204 ${noDoAnel(4).y + NO.h + 4} C 204 610, 390 620, ${EVOLUIR_ANEL.x - 4} ${EVOLUIR_ANEL.y + EVOLUIR_ANEL.h / 2}`} className="an-evoluir" />
-          <path d={`M ${EVOLUIR_ANEL.x + EVOLUIR_ANEL.w - 18} ${EVOLUIR_ANEL.y - 4} C 660 470, 650 330, ${noDoAnel(1).x + NO.w * 0.8} ${noDoAnel(1).y + NO.h + 6}`}
+          <path d={`M ${noDoAnel(4).x + NO.w / 2} ${noDoAnel(4).y + NO.h + 4} C ${noDoAnel(4).x + NO.w / 2} 505, 380 520, ${EVOLUIR_ANEL.x - 4} ${EVOLUIR_ANEL.y + EVOLUIR_ANEL.h / 2}`} className="an-evoluir" />
+          <path d={`M ${EVOLUIR_ANEL.x + EVOLUIR_ANEL.w - 18} ${EVOLUIR_ANEL.y - 4} C 650 420, 640 300, ${noDoAnel(1).x + NO.w * 0.8} ${noDoAnel(1).y + NO.h + 6}`}
             className="an-evoluir" markerEnd={`url(#${m("evoluir")})`} />
         </g>
         {ida.map((f, i) => no(f, noDoAnel(i)))}

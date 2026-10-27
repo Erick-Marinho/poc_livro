@@ -15,7 +15,7 @@ import { type Cena, cenaEm, type Entrada, faseAcesa, jaSabe, legenda, montarCena
 export type Props = Entrada & { desenho: Desenho; apostas?: (number | null)[]; sabe?: boolean };
 
 const TOPO = 56; // a pergunta
-const FAIXA: Record<Desenho, number> = { anel: 124, coluna: 156 }; // a legenda e o resultado
+const FAIXA: Record<Desenho, number> = { anel: 104, coluna: 128 }; // a legenda e o resultado
 export const tamanho = (desenho: Desenho) => ({ w: VISTA[desenho].w, h: TOPO + VISTA[desenho].h + FAIXA[desenho] });
 
 // a etiqueta do problema fica logo abaixo da caixa da fase, sem tampar o nome nem o capítulo
