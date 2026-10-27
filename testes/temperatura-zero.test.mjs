@@ -7,6 +7,7 @@ import { parse } from "node-html-parser";
 import { montarIde, perguntaSustentada, respostaEntregue } from "../src/lib/ideCapitulo.ts";
 import { montarMapa, muda, baloes, DURACAO, CENAS, FPS, SEGUNDOS } from "../src/components/livro/temperatura/mapa.ts";
 import { eAcao } from "../scripts/ritmo.mjs";
+import { montarRespostas } from "../src/components/livro/temperatura/respostas.ts";
 
 const base = new URL("../experimentos/temperatura-zero/", import.meta.url);
 const ler = (nome) => readFileSync(new URL(nome, base), "utf8");
@@ -128,4 +129,20 @@ test("temperatura zero: o vídeo cabe no limite do experimento, a previsão vem 
   assert.equal(eAcao("MapaTemperatura"),false);
   const mdx=ler("experimento.mdx");
   assert.ok(mdx.indexOf("<Aposta dados={previsoesMapa}")<mdx.indexOf("<MapaTemperatura"),"a previsão vem antes do vídeo");
+});
+
+test("temperatura zero: a grade das 90 respostas sai da coleta e bate com a saída gravada do medir.py", () => {
+  const r=montarRespostas(coleta,saidas["tz-medida"].saida);
+  assert.equal(r.total,90);
+  assert.deepEqual(r.tamanhos,[1,4,16]);
+  assert.equal(r.iguais,r.linhas.flatMap(l=>l.lotes.flatMap(x=>x.iguais)).filter(Boolean).length);
+  assert.deepEqual(r.linhas.filter(l=>l.cortada).map(l=>l.id),["livre"],"só a resposta que usou os 48 tokens foi cortada");
+  const outra=structuredClone(coleta);
+  outra.casos[0].lotes[1].sequencias[3]=[...outra.casos[0].referencia,1];
+  assert.throws(()=>montarRespostas(outra,saidas["tz-medida"].saida),/saída gravada do medir.py/);
+  const fig=html.querySelector("[data-tz-respostas]");
+  assert.equal(fig.querySelectorAll(".tzr-q").length,90);
+  assert.equal(fig.querySelectorAll(".tzr-q.tzr-igual").length,r.iguais);
+  assert.match(fig.text,/cortada no limite de 48 tokens/);
+  assert.equal(eAcao("RespostasDaColeta"),true);
 });

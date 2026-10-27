@@ -1,0 +1,114 @@
+---
+/**
+ * As 90 respostas da coleta, na temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 3). O leitor
+ * prevê se algum grupo muda alguma resposta; depois escolhe o tamanho do grupo (sozinha, 4, 16) e vê as dez repetições
+ * de cada pergunta acenderem: igual à referência ou diferente. A resposta cortada pelo limite de tokens fica marcada.
+ * Os dados são os da coleta real, conferidos com a saída gravada do medir.py (temperatura/respostas.ts). Sem JS e no
+ * modo direto, a grade aparece inteira, comparada.
+ */
+import { montarRespostas, type Coleta } from "./temperatura/respostas.ts";
+
+interface Props { coleta: Coleta; medida: { comando: string; saida: [string, string][] }; pergunta: string }
+const { coleta, medida, pergunta } = Astro.props;
+const r = montarRespostas(coleta, medida.saida);
+const nomeDoLote = (n: number) => (n === 1 ? "sozinha" : `grupo de ${n}`);
+const curta = (s: string) => (s.length > 64 ? `${s.slice(0, 62).trimEnd()}…` : s);
+---
+<figure class="tz-respostas" data-tz-respostas data-iguais={r.iguais} data-total={r.total}>
+  <div class="tzr">
+    <p class="tzr-rotulo">as {r.total} respostas</p>
+    <p class="tzr-pergunta">{pergunta}</p>
+    <div class="tzr-previsao" role="group" aria-label="Sua previsão">
+      <button type="button" data-preve="muda">Sim: em algum grupo, alguma muda</button>
+      <button type="button" data-preve="repete">Não: todas repetem</button>
+    </div>
+    <div class="tzr-lotes" role="group" aria-label="Compare um tamanho de grupo" hidden>
+      <span>Compare:</span>
+      {r.tamanhos.map((t) => <button type="button" data-lote={t} aria-pressed="false">{nomeDoLote(t)}</button>)}
+    </div>
+    <div class="tzr-grade">
+      <div class="tzr-cabeca"><span></span>{r.tamanhos.map((t) => <b>{nomeDoLote(t)}</b>)}</div>
+      {r.linhas.map((l) => (
+        <div class="tzr-linha">
+          <div class="tzr-caso">
+            <span class="tzr-p">“{curta(l.pergunta)}”</span>
+            <span class="tzr-ref">referência: <i>“{l.texto}”</i>{l.cortada && <em> cortada no limite de {r.limite} tokens</em>}</span>
+          </div>
+          {l.lotes.map((x) => (
+            <div class="tzr-bloco" data-lote={x.tamanho}>
+              {x.iguais.map((ok, k) => <span class:list={["tzr-q", { "tzr-igual": ok, "tzr-dif": !ok }]} style={`--k:${k}`} title={`repetição ${k + 1}: ${ok ? "igual" : "diferente"}`}></span>)}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+    <p class="tzr-fim" aria-live="polite" hidden data-fim></p>
+  </div>
+  <figcaption>As respostas são as da coleta real na CPU, conferidas com a saída gravada de <code>{medida.comando}</code>. Cada quadradinho é uma repetição; verde, igual à primeira resposta da mesma pergunta.</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-tz-respostas]").forEach((fig) => {
+    const iguais = Number(fig.dataset.iguais), total = Number(fig.dataset.total);
+    const lotes = fig.querySelector<HTMLElement>(".tzr-lotes")!, fim = fig.querySelector<HTMLElement>("[data-fim]")!;
+    let previsao = "";
+    const vistos = new Set<string>();
+    fig.classList.add("tzr-viva");
+    fig.querySelectorAll<HTMLButtonElement>("[data-preve]").forEach((b) => b.addEventListener("click", () => {
+      previsao = b.dataset.preve!;
+      fig.querySelectorAll<HTMLButtonElement>("[data-preve]").forEach((x) => { x.disabled = true; x.setAttribute("aria-pressed", String(x === b)); });
+      lotes.hidden = false;
+    }));
+    lotes.querySelectorAll<HTMLButtonElement>("[data-lote]").forEach((b) => b.addEventListener("click", () => {
+      const t = b.dataset.lote!;
+      vistos.add(t);
+      b.setAttribute("aria-pressed", "true");
+      fig.querySelectorAll<HTMLElement>(`.tzr-bloco[data-lote="${t}"]`).forEach((x) => x.classList.add("tzr-aceso"));
+      if (vistos.size === lotes.querySelectorAll("[data-lote]").length) {
+        const mudou = iguais < total;
+        const acertou = (previsao === "muda") === mudou;
+        fim.hidden = false;
+        fim.textContent = `${iguais} de ${total} iguais à referência. ${mudou ? "Algum grupo mudou alguma resposta." : "Nenhum grupo mudou nenhuma resposta: neste modelo, nesta máquina, a ordem das contas não chegou a trocar um token."} ${acertou ? "Sua previsão confere." : "Sua previsão era outra, e é por isso que se mede."}`;
+      }
+    }));
+  });
+</script>
+
+<style is:global>
+  .tz-respostas { margin: 1.8em auto 2em; max-width: 800px }
+  .tz-respostas figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .tzr { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 14px 16px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui) }
+  .tzr p { margin: 0 }
+  .tzr-rotulo { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .tzr-pergunta { font: 600 16.5px/1.4 var(--f-ui) }
+  .tzr-previsao, .tzr-lotes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+  .tzr-lotes[hidden] { display: none }
+  .tzr-lotes span { font-size: 14px; color: var(--ink-2) }
+  .tzr button { border: 1px solid var(--linha); background: var(--papel); border-radius: 999px; padding: 5px 14px; cursor: pointer; font: 500 14px var(--f-ui); color: var(--ink) }
+  .tzr button:not(:disabled):hover { border-color: var(--acento) }
+  .tzr button[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .tzr button:disabled:not([aria-pressed="true"]) { opacity: .5; cursor: default }
+  .tzr-grade { display: grid; gap: 10px }
+  .tzr-cabeca, .tzr-linha { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center }
+  .tzr-cabeca b { font: 600 12px var(--f-mono); color: var(--ink-2); text-align: center }
+  .tzr-caso { display: grid; gap: 2px; min-width: 0 }
+  .tzr-p { font: italic 14.5px/1.35 var(--f-texto) }
+  .tzr-ref { font-size: 12.5px; color: var(--ink-2) } .tzr-ref em { font-style: normal; font-weight: 600; color: var(--aviso) }
+  .tzr-bloco { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; justify-items: center }
+  .tzr-q { width: 100%; max-width: 18px; aspect-ratio: 1; border-radius: 4px; background: var(--linha); transition: background .3s calc(var(--k) * 40ms) }
+  /* sem JS, ou já comparado: a cor da comparação */
+  .tz-respostas:not(.tzr-viva) .tzr-igual, .tzr-aceso .tzr-igual { background: var(--ok) }
+  .tz-respostas:not(.tzr-viva) .tzr-dif, .tzr-aceso .tzr-dif { background: var(--aviso) }
+  .tz-respostas:not(.tzr-viva) .tzr-previsao, .tz-respostas:not(.tzr-viva) .tzr-pergunta { display: none }
+  .tzr-fim { font-weight: 600 }
+  .tzr-fim[hidden] { display: none }
+  @media (max-width: 640px) {
+    .tzr-cabeca, .tzr-linha { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tzr-cabeca span { display: none }
+    .tzr-caso { grid-column: 1 / -1 }
+  }
+  @media (prefers-reduced-motion: reduce) { .tzr-q { transition: none } }
+  /* modo direto: a grade inteira, comparada, sem a previsão */
+  html[data-direto] .tzr-q.tzr-igual { background: var(--ok) } html[data-direto] .tzr-q.tzr-dif { background: var(--aviso) }
+  html[data-direto] .tzr-previsao, html[data-direto] .tzr-pergunta, html[data-direto] .tzr-lotes { display: none }
+</style>

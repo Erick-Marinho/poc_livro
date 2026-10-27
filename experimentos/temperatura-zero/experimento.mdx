@@ -19,6 +19,7 @@ custo: "Na CPU Intel i7-1355U, com quatro threads, a geração levou 1.002,79 se
 ---
 import Aposta from "../../src/components/livro/Aposta.astro";
 import MapaTemperatura from "../../src/components/livro/MapaTemperatura.astro";
+import RespostasDaColeta from "../../src/components/livro/RespostasDaColeta.astro";
 import PareEPense from "../../src/components/livro/PareEPense.astro";
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import Nota from "../../src/components/livro/Nota.astro";
@@ -30,6 +31,7 @@ import estados from "./roteiros/01.estados.json";
 import passos from "./passos/01.json";
 import glossario from "./glossario.json";
 import saidas from "./saidas.json";
+import coleta from "./projeto/coleta-cpu.json";
 
 Um modelo de linguagem escreve um pedaço de texto por vez, um **token**: uma palavra ou parte dela. A cada passo, ele dá uma pontuação a cada token possível, e um sorteio escolhe um deles. A **temperatura** regula esse sorteio; em temperatura zero, não há sorteio: vence sempre o token de maior pontuação. Parece suficiente para repetir a resposta. Mas a escolha é só a última parte do caminho: antes dela, alguém calculou as pontuações.
 
@@ -76,6 +78,12 @@ O nosso coletor chama o modelo diretamente, e os lotes são os grupos de pergunt
 <PareEPense pergunta="A sua máquina devolveu uma sequência diferente da gravação, mas repetiu essa nova sequência em todas as tentativas. Isso contradiz a medida?">
 Não. A referência da sua coleta é a primeira execução dela. Compare dentro do mesmo ambiente; mudar biblioteca, precisão ou dispositivo pode mudar a sequência sem causar variação entre repetições dessa coleta.
 </PareEPense>
+
+## O que a coleta mostrou
+
+Na IDE, o medidor contou as respostas iguais. Aqui, veja cada uma: três perguntas, dez repetições, sozinha e em grupos de 4 e de 16 perguntas, cada repetição comparada com a primeira resposta da mesma pergunta.
+
+<RespostasDaColeta coleta={coleta} medida={saidas["tz-medida"]} pergunta="Antes de comparar: em algum grupo, alguma resposta vai sair diferente da primeira?" />
 
 ## O que esta medida não resolve
 
