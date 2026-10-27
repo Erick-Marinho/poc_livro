@@ -35,5 +35,6 @@ fazer nada; e "fluxo fixo" vira "fluxo (flow)".
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | b376ba5 | `testes/vocabulario.test.mjs`: "aposta", "invista" e "investe" barrados nas páginas montadas, nos textos, nos dados e nas frases dos componentes; "palpite" na introdução. `npm test` 208/208. Captura da caixa da introdução depois do clique | Erick, 27/10/2026 |
+| 2 | 2474f82 | `npm test` 208/208; ritmo de "A nota": 99 palavras até o Pare e pense (os avisos da introdução são os de antes). Capturas do mapa rolando a 1280 e 390 px; ajuste: o rótulo da volta do erro encostava em "Quando dá errado" | aguardando revisão |
 
 (redação: Claude Opus 5.5)
