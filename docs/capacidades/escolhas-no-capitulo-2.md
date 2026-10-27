@@ -36,5 +36,6 @@ a instrução do modelo de "o contrato dito em palavras", e isso apaga a diferen
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | 7bf8c8e | `testes/escolhas-no-capitulo-2.test.mjs` (2): as opções são os nós do grafo real, na ordem da figura, a resposta é a do gabarito e as glosas, as do grafo-02.json; nada entre o Invista e a figura; as cinco figuras fora da conta. `npm test` 194/194. Ritmo: o 2.1 fica 56 → Invista e 44 → Pare e pense; o 2.2 passa a 241 (aviso), que a etapa 2 fecha. Capturas a 1280 e 390 px, antes e depois do clique | Erick, 27/10/2026 |
+| 2 | 829a23b | `testes/escolhas-no-capitulo-2.test.mjs` (+2): o texto é o SOLTO da figura e diz "encaminhar", as caixas são nós do grafo e a resposta é "nenhuma"; a abertura não entrega a resposta, o Invista vem logo antes do formulário, sem listagem no 2.2. `npm test` 196/196. Ritmo: o 2.2 fica 37 → Invista e 198 → Pare e pense, sem aviso no capítulo. Capturas a 1280 e 390 px, antes e depois do clique | aguardando revisão |
 
 (redação: Claude Opus 5.5)
