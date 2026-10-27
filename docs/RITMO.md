@@ -35,7 +35,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 | Conta | Não conta |
 |---|---|
-| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente`, `ResultadoDoAgente`, `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
+| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente`, `ResultadoDoAgente`, `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 

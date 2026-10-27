@@ -1,0 +1,24 @@
+{
+  "sobre": "O Invista da introdução sobre a pesquisa da Salt Security (agentes-em-producao.json): a resposta certa de cada pergunta é a faixa em que cai o número da pesquisa; o teste confere.",
+  "resultado": "Na pesquisa",
+  "fechos": {
+    "nenhum": "Os números estão logo abaixo, com o que o livro faz com cada um.",
+    "alguns": "Você acertou {n} de {total}. Os números estão logo abaixo, com o que o livro faz com cada um."
+  },
+  "mensagens": [
+    {
+      "texto": "Uma pesquisa de outubro de 2026 perguntou a mais de 380 profissionais se um agente da empresa tinha feito algo inesperado ou não autorizado no último ano. Quantos disseram que sim, ou que suspeitavam?",
+      "opcoes": ["Perto de 1 em cada 10", "Perto de metade", "Quase todos"],
+      "fez": 1,
+      "porque": "49,8%. Mais da metade desses casos foram chamadas a sistemas de fora sem autorização; mais de 40%, dados alterados ou apagados.",
+      "barra": "inesperado"
+    },
+    {
+      "texto": "E quantos conseguem rastrear tudo o que o agente fez, do pedido ao resultado?",
+      "opcoes": ["Menos de 1 em cada 5", "Perto de metade", "A maioria"],
+      "fez": 0,
+      "porque": "Só 12,5%. E só 17,5% conseguem parar sozinhos um agente que começa a agir de forma inesperada.",
+      "barra": "rastrear"
+    }
+  ]
+}

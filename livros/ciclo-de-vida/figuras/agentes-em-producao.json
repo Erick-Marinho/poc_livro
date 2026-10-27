@@ -1,0 +1,15 @@
+{
+  "sobre": "A pesquisa da Salt Security de outubro de 2026, na introdução (docs/capacidades/agentes-no-mundo.md): números conferidos na reportagem da Campus Technology. O Invista (a previsão) e a figura usam os mesmos números; o teste confere.",
+  "titulo": "Agentes em produção, segundo quem cuida deles",
+  "fonte": {
+    "nome": "Salt Security, State of Agentic AI and API Security 2H 2026, na reportagem de Sean Parker (Campus Technology, 21/10/2026)",
+    "url": "https://campustechnology.com/articles/2026/10/21/unexpected-ai-agent-activity-reported-by-nearly-half-of-organizations-in-recent-survey.aspx",
+    "amostra": "mais de 380 profissionais de segurança e tecnologia; pesquisa de uma empresa de segurança",
+    "aviso": "\"Confirmou ou suspeitou\" não é incidente comprovado."
+  },
+  "barras": [
+    { "id": "inesperado", "valor": 49.8, "rotulo": "viram, ou suspeitam, que um agente fez algo inesperado ou não autorizado no último ano", "fase": "Avaliar", "como": "saber antes do que ele é capaz" },
+    { "id": "rastrear", "valor": 12.5, "rotulo": "conseguem rastrear tudo o que o agente fez, do pedido ao resultado", "fase": "Observar", "como": "ver o que ele fez" },
+    { "id": "parar", "valor": 17.5, "rotulo": "conseguem parar sozinhos um agente que começa a agir de forma inesperada", "fase": "Governar", "como": "parar a tempo" }
+  ]
+}

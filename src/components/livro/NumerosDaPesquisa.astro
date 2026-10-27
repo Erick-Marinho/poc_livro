@@ -1,0 +1,67 @@
+---
+/**
+ * Os números de uma pesquisa sobre agentes (docs/capacidades/agentes-no-mundo.md): uma barra por número, com o rótulo
+ * e, quando há, a fase do livro que trata daquilo e o capítulo dela (do ciclo.json). Os números, a fonte, o link e a
+ * amostra vêm de um JSON por pesquisa, conferido na fonte antes de entrar; a figura diz de onde vêm e o que a amostra
+ * não permite. As barras crescem quando entram na tela; sem JS, no modo direto ou com movimento reduzido, já cheias.
+ */
+type Barra = { id: string; valor: number; rotulo: string; fase?: string; como?: string };
+type Dados = { titulo: string; fonte: { nome: string; url: string; amostra: string; aviso?: string }; barras: Barra[] };
+type Fase = { nome: string; capitulos: number[] };
+interface Props { dados: Dados; ciclo?: { fases: Fase[] }; numero?: string }
+const { dados, ciclo, numero } = Astro.props;
+const fase = (b: Barra) => {
+  if (!b.fase) return undefined;
+  const f = ciclo?.fases.find((x) => x.nome === b.fase);
+  if (!f) throw new Error(`NumerosDaPesquisa: "${b.fase}" não é uma fase do ciclo.json`);
+  return f;
+};
+for (const b of dados.barras) if (!(b.valor >= 0 && b.valor <= 100)) throw new Error(`NumerosDaPesquisa: ${b.id} não é uma porcentagem`);
+const pct = (v: number) => `${v.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+const caps = (f: Fase) => (f.capitulos.length > 1 ? `caps. ${f.capitulos.join(" e ")}` : `cap. ${f.capitulos[0]}`);
+---
+<figure class="pesquisa" data-pesquisa>
+  <p class="pq-titulo">{dados.titulo}</p>
+  <ol class="pq-barras">
+    {dados.barras.map((b) => {
+      const f = fase(b);
+      return (
+        <li data-barra={b.id}>
+          <b class="pq-valor">{pct(b.valor)}</b>
+          <span class="pq-rotulo">{b.rotulo}</span>
+          <span class="pq-trilho" aria-hidden="true"><i style={`--v:${b.valor}%`}></i></span>
+          {f && <span class="pq-fase">no livro: <b>{f.nome}</b>, {caps(f)}{b.como && <>: {b.como}</>}</span>}
+        </li>
+      );
+    })}
+  </ol>
+  <figcaption>
+    {numero && <b>Figura {numero} · </b>}Fonte: <a href={dados.fonte.url}>{dados.fonte.nome}</a>. Amostra: {dados.fonte.amostra}.{dados.fonte.aviso && <> {dados.fonte.aviso}</>}
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-pesquisa]").forEach((fig) => {
+    fig.classList.add("pq-espera");
+    const ver = new IntersectionObserver(([e]) => { if (e.isIntersecting) { fig.classList.remove("pq-espera"); ver.disconnect(); } }, { threshold: 0.4 });
+    ver.observe(fig);
+  });
+</script>
+
+<style is:global>
+  .pesquisa { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px 18px; font: 15px/1.5 var(--f-ui) }
+  .pq-titulo { margin: 0 0 12px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .pq-barras { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px }
+  .pq-barras li { display: grid; grid-template-columns: 4.6em 1fr; gap: 2px 12px; align-items: baseline }
+  .pq-valor { font: 700 22px/1 var(--f-mono); color: var(--ink) }
+  .pq-rotulo { font-size: 15px }
+  .pq-trilho { grid-column: 2; height: 8px; border-radius: 4px; background: var(--linha); overflow: hidden; margin-top: 4px }
+  .pq-trilho i { display: block; height: 100%; width: var(--v); background: var(--acento); border-radius: 4px; transition: width 1s cubic-bezier(.2, .7, .2, 1) }
+  .pq-espera .pq-trilho i { width: 0 }
+  .pq-fase { grid-column: 2; font-size: 13.5px; color: var(--ink-2) } .pq-fase b { color: var(--ok); font-weight: 600 }
+  .pesquisa figcaption { margin-top: 14px; font-size: 13px; color: var(--ink-2) }
+  .pesquisa figcaption a { color: inherit }
+  @media (max-width: 520px) { .pq-barras li { grid-template-columns: 1fr } .pq-trilho, .pq-fase { grid-column: 1 } }
+  @media (prefers-reduced-motion: reduce) { .pq-trilho i { transition: none } }
+  html[data-direto] .pq-espera .pq-trilho i { width: var(--v) }
+</style>

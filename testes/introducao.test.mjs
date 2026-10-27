@@ -1,4 +1,4 @@
-/** A introdução: o mapa do ciclo e a aposta de onde cada problema se pega. Os dados batem com o sumário, o texto e a régua. Rode depois de `astro build`. */
+/** A introdução: a pesquisa sobre agentes em produção, o mapa do ciclo e onde cada problema é capturado. Os dados batem com o sumário, o texto e a régua. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -29,35 +29,37 @@ test("a aposta usa os problemas do primeiro parágrafo, e cada resposta é uma f
   assert.match(r12, /bruno/); assert.match(r12, /outra cliente/);
 });
 
-test("a página tem a aposta, o mapa com as oito fases e as quatro referências", () => {
-  assert.equal([...html.matchAll(/class="apo-msg"/g)].length, 4);
+test("a página tem o Invista da pesquisa, a figura dos números e o mapa com as oito fases e as referências, sem o Invista das fases", () => {
+  const previsao = json("livros/ciclo-de-vida/figuras/agentes-em-producao-previsao.json");
+  assert.equal([...html.matchAll(/class="apo-msg"/g)].length, previsao.mensagens.length);
+  assert.doesNotMatch(mdx, /Invista em qual/);
   assert.equal([...html.matchAll(/data-cartao="/g)].length, ciclo.fases.length);
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
-test("a aposta antes do mapa explica as fases sem mudar as outras apostas", async () => {
-  const { parse } = await import("node-html-parser");
-  const opcoes = [...new Set(aposta.mensagens.flatMap((m) => m.opcoes))].toSorted();
-  assert.deepEqual(Object.keys(aposta.glosas).toSorted(), opcoes);
-  for (const [fase, glosa] of Object.entries(aposta.glosas)) {
-    assert.ok(ciclo.fases.some((f) => f.nome === fase), `${fase} não vem do ciclo.json`);
-    assert.ok(glosa.trim().split(/\s+/).length <= 8, `${fase}: glosa com mais de oito palavras`);
+test("a pesquisa: o Invista e a figura usam os mesmos números, com fonte e amostra, e cada fase aponta o capítulo dela", () => {
+  const dados = json("livros/ciclo-de-vida/figuras/agentes-em-producao.json");
+  const previsao = json("livros/ciclo-de-vida/figuras/agentes-em-producao-previsao.json");
+  const pct = (v) => `${v.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+  /* a resposta certa de cada pergunta é a faixa em que cai o número da pesquisa */
+  const faixa = { "Perto de 1 em cada 10": [5, 15], "Perto de metade": [40, 60], "Quase todos": [85, 100], "Menos de 1 em cada 5": [0, 20], "A maioria": [50, 100] };
+  for (const m of previsao.mensagens) {
+    const b = dados.barras.find((x) => x.id === m.barra);
+    assert.ok(b, `a pergunta "${m.texto}" aponta uma barra que não existe`);
+    assert.ok(m.porque.includes(pct(b.valor)), `a resposta não traz ${pct(b.valor)}`);
+    const [de, ate] = faixa[m.opcoes[m.fez]];
+    assert.ok(b.valor >= de && b.valor <= ate, `${pct(b.valor)} não cai em "${m.opcoes[m.fez]}"`);
+    m.opcoes.forEach((o, k) => { if (k !== m.fez) { const [x, y] = faixa[o]; assert.ok(b.valor < x || b.valor > y, `"${o}" também estaria certa`); } });
   }
-  assert.equal(aposta.glosas.Avaliar, "Mede quanto o agente atual acerta.");
-  assert.doesNotMatch(aposta.glosas.Avaliar, /melhor/i, "Avaliar puxa para a palavra da pergunta");
-  assert.doesNotMatch(aposta.glosas.Observar, /\b(?:custo|gasto)\b/i, "Observar entrega a resposta da pergunta do gasto");
-
-  const pagina = parse(html);
-  const glosas = pagina.querySelectorAll(".apo-glosa");
-  assert.equal(glosas.length, aposta.mensagens.flatMap((m) => m.opcoes).length);
-  for (const [fase, glosa] of Object.entries(aposta.glosas)) {
-    const repetidas = glosas.filter((g) => g.getAttribute("data-fase") === fase);
-    assert.equal(repetidas.length, aposta.mensagens.flatMap((m) => m.opcoes).filter((o) => o === fase).length);
-    assert.ok(repetidas.every((g) => g.text.trim() === glosa), `${fase}: a glosa mudou entre perguntas`);
+  for (const b of dados.barras) {
+    assert.match(html, new RegExp(`data-barra="${b.id}"`));
+    assert.ok(html.includes(pct(b.valor)), `a figura não mostra ${pct(b.valor)}`);
+    const fase = ciclo.fases.find((f) => f.nome === b.fase);
+    assert.ok(fase, `${b.fase} não é uma fase do ciclo`);
+    assert.ok(html.includes(`<b>${fase.nome}</b>, cap. ${fase.capitulos[0]}`), `${b.id}: a fase não leva ao capítulo dela`);
   }
-
-  const capitulo1 = parse(ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html"));
-  assert.equal(capitulo1.querySelectorAll(".apo-glosa").length, 0, "as outras apostas ganharam glosa");
+  assert.ok(html.includes(dados.fonte.url) && html.includes("mais de 380 profissionais"));
+  assert.match(mdx, /o \[Gartner previu\]\(https:\/\/www\.gartner\.com\/[^)]+\) que mais de 40% [^.]+\. É uma previsão/);
 });
 
 
