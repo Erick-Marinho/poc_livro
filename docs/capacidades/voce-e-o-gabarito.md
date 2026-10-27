@@ -12,8 +12,12 @@ cenário com um palpite e os dois bilhetes desenhados, está melhor (27/10/2026)
   desenho do 2.4), quem responde e a resposta ao desconto. O leitor corrige: "cumpriu o gabarito" ou "o gabarito
   pega". No fim, a conta de quantas ele corrigiu como o gabarito, e a ideia: as frases mudam, o gabarito só olha o que
   foi feito.
-- (1) O primeiro bilhete é o da colega, o mesmo do texto do 1.4, e o teste confere. A decisão do gabarito e o motivo
-  vêm do `referencia.jsonl` e aparecem antes dos cartões, para o leitor corrigir sabendo a regra. Os bilhetes e as
+- (27/10/2026, Erick) "Fala de cumprir o gabarito sem nem ter ensinado a criar o gabarito": a caixa deixa de pedir que o
+  leitor corrija pelo gabarito. Ele se põe no lugar da colega, que escreveu o bilhete, e diz se ela aprovaria cada
+  resposta; sabe responder porque leu o bilhete. O parágrafo depois da caixa dá o nome: olhar o que foi feito, e não as
+  palavras, escrito antes e mensagem por mensagem, é o gabarito. Nenhuma peça a mais.
+- (1) O primeiro bilhete é o da colega, o mesmo do texto do 1.4, e o teste confere. O motivo vem do `referencia.jsonl` e aparece no
+  retorno de cada cartão. Os bilhetes e as
   respostas são ilustração, e a caixa diz.
 - (1) O componente continua sendo o `Troca` (conta como ação no ritmo), refeito; o parágrafo depois da caixa deixa de
   repetir a conclusão dela.

@@ -1,8 +1,9 @@
 ---
 /**
- * Ação do leitor: ser o gabarito (docs/capacidades/voce-e-o-gabarito.md). A mesma mensagem, três tentativas (o bilhete
- * muda, ou o modelo muda), uma por vez em cartões; o leitor corrige cada resposta: cumpriu o gabarito, ou o gabarito
- * pega. A frase muda a cada tentativa; o gabarito só olha o que foi feito. A mensagem e a decisão do gabarito vêm do
+ * Ação do leitor: no lugar da colega (docs/capacidades/voce-e-o-gabarito.md). A mesma mensagem, três tentativas (o
+ * bilhete muda, ou o modelo muda), uma por vez em cartões; o leitor, que leu o bilhete, diz se a colega aprovaria cada
+ * resposta. A frase muda a cada tentativa, e ele julga o que foi feito; só no fim a caixa diz que isso, escrito antes,
+ * é o gabarito: o leitor aprende o gabarito fazendo, sem precisar dele para responder. A mensagem e a decisão do gabarito vêm do
  * referencia.jsonl; os bilhetes e as respostas são ilustração, e a caixa diz. O veredito sai da comparação, não do JSON.
  * No modo direto, os vereditos aparecem todos, sem pedir a correção.
  */
@@ -14,13 +15,11 @@ const { referencia, dados, pergunta, ilustracao } = Astro.props;
 const [caso] = casos(referencia, [dados.caso], "Troca");
 dados.variantes.forEach((v) => { if (!DECISOES[v.decisao]) throw new Error(`Troca: a decisão "${v.decisao}" não é do contrato`); });
 if (!dados.variantes.some((v) => v.decisao !== caso.decisao)) throw new Error("Troca: precisa de ao menos uma tentativa que o gabarito pega");
-const certo = DECISOES[caso.decisao].nome;
 ---
 <div class="tro" data-troca>
-  <p class="tro-rotulo">palpite · você é o gabarito</p>
+  <p class="tro-rotulo">palpite · no lugar da colega</p>
   <p class="tro-pergunta">{pergunta}</p>
   <q class="tro-msg">{caso.pergunta}</q>
-  <p class="tro-gabarito">O gabarito diz: <b>{certo}</b>, porque {caso.motivo}.</p>
   {dados.variantes.map((v) => {
     const ok = v.decisao === caso.decisao;
     return (
@@ -28,8 +27,8 @@ const certo = DECISOES[caso.decisao].nome;
         <div class="tro-bilhete"><span>o bilhete</span>{v.bilhete}</div>
         <p class="tro-modelo">{v.modelo} responde:</p>
         <p class="tro-resposta">“{v.resposta}”</p>
-        <div class="tro-opcoes"><button type="button" data-j="0" aria-pressed="false">cumpriu o gabarito</button><button type="button" data-j="1" aria-pressed="false">o gabarito pega</button></div>
-        <p class:list={["tro-fez", ok ? "tro-ok" : "tro-nao"]} hidden>{ok ? `✓ Cumpriu: decidiu ${certo}, como o gabarito manda. Outra frase, a mesma decisão.` : `✗ O gabarito pega: ${v.como ?? `decidiu ${DECISOES[v.decisao].nome}`}, e ele manda ${certo}.`}</p>
+        <div class="tro-opcoes"><button type="button" data-j="0" aria-pressed="false">ela aprovaria</button><button type="button" data-j="1" aria-pressed="false">ela não aprovaria</button></div>
+        <p class:list={["tro-fez", ok ? "tro-ok" : "tro-nao"]} hidden>{ok ? `✓ Aprovaria: ele recusou, e ${caso.motivo}. As palavras são dele; o que ele fez é o que ela faria.` : `✗ Não aprovaria: ele ${v.como ?? `decidiu ${DECISOES[v.decisao].nome}`}, e ${caso.motivo}.`}</p>
       </div>
     );
   })}
@@ -54,7 +53,7 @@ const certo = DECISOES[caso.decisao].nome;
       feitas++; if (b.dataset.j === c.dataset.certa) iguais++;
       if (feitas === cartoes.length) {
         placar.hidden = false;
-        placar.textContent = `Você corrigiu como o gabarito em ${iguais} de ${cartoes.length}. As frases mudaram a cada tentativa; o gabarito só olhou o que foi feito.`;
+        placar.textContent = `Você julgou como a colega em ${iguais} de ${cartoes.length}, com três respostas de palavras diferentes.`;
       }
     })));
   });
@@ -64,8 +63,7 @@ const certo = DECISOES[caso.decisao].nome;
   .tro { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px; font: 15.5px/1.55 var(--f-ui) }
   .tro-rotulo { margin: 0 0 4px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
   .tro-pergunta { margin: 0 0 10px; font: 600 17px/1.4 var(--f-ui) }
-  .tro-msg { display: block; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 10px 13px; margin-bottom: 8px; font: italic 16px/1.45 var(--f-texto) }
-  .tro-gabarito { margin: 0 0 12px; font-size: 14.5px; color: var(--ink-2) } .tro-gabarito b { color: var(--ok) }
+  .tro-msg { display: block; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 10px 13px; margin-bottom: 12px; font: italic 16px/1.45 var(--f-texto) }
   .tro-cartao { border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 12px 13px }
   /* o bilhete como papel, como os do 2.4 */
   .tro-bilhete { display: grid; gap: 4px; padding: 10px 13px; border-radius: 4px; transform: rotate(-.6deg); font: italic 16px/1.45 var(--f-texto);
