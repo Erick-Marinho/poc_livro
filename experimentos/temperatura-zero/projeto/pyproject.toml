@@ -1,0 +1,26 @@
+[project]
+name = "temperatura-zero"
+version = "0.1.0"
+description = "Um medidor de repetição, da soma ao modelo real"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+modelo = ["torch==2.8.0", "transformers==4.57.1"]
+gpu = ["torch==2.8.0", "transformers==4.57.1"]
+
+[tool.uv]
+conflicts = [[{ extra = "modelo" }, { extra = "gpu" }]]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", extra = "modelo" }, { index = "pytorch-cuda", extra = "gpu" }]

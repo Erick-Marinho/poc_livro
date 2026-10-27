@@ -1,0 +1,7 @@
+{
+  "coleta_sha256": "e6f9b82077be6f1463369edca90c5315a82956ba9b37b993c92ce0711eabe53e",
+  "coletor_sha256": "ec5d6fb94520c79ea9e44a5cc7123163b0f83a791a734c89b1a4c6b0052d6b9b",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-1355U",
+  "threads_hardware": 12,
+  "nota": "Captura real em CPU. Identificação de CPU anotada junto da coleta; platform.processor não a retornou. Nenhuma coleta GPU nesta versão."
+}

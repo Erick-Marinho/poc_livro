@@ -1,0 +1,194 @@
+{
+  "autores": [
+    "Erick Marinho",
+    "Victor Fontela"
+  ],
+  "passos": [
+    {
+      "id": "pasta",
+      "secao": "1",
+      "titulo": "O projeto nasce",
+      "curta": "o projeto nasce",
+      "de": 1,
+      "ate": 2,
+      "pedido": "Quero medir repetição sem confundir com acerto. Cria o projeto.",
+      "objetivo": "uma pasta com a configuração do experimento, sem instalar o modelo.",
+      "temos": "uma pasta com a configuração do experimento, sem instalar o modelo.",
+      "depois": []
+    },
+    {
+      "id": "arredondar",
+      "secao": "1",
+      "titulo": "Guardar um número",
+      "curta": "guardar um número",
+      "de": 3,
+      "ate": 4,
+      "pedido": "Começa pelo menor cálculo que eu consiga conferir.",
+      "objetivo": "fp16: a conversão explícita para binary16.",
+      "temos": "fp16: a conversão explícita para binary16.",
+      "depois": []
+    },
+    {
+      "id": "ordem",
+      "secao": "1",
+      "titulo": "Mudar os parênteses",
+      "curta": "mudar os parênteses",
+      "de": 5,
+      "ate": 6,
+      "pedido": "Agora soma os mesmos números nas duas ordens.",
+      "objetivo": "duas somas com os mesmos operandos e resultados diferentes.",
+      "temos": "duas somas com os mesmos operandos e resultados diferentes.",
+      "depois": []
+    },
+    {
+      "id": "erro",
+      "secao": "1",
+      "titulo": "Uma regra que falha",
+      "curta": "uma regra que falha",
+      "de": 7,
+      "ate": 7,
+      "pedido": "E se eu testar que soma sempre é associativa?",
+      "objetivo": "uma asserção que falha por uma hipótese errada, não por sorteio.",
+      "temos": "uma asserção que falha por uma hipótese errada, não por sorteio.",
+      "depois": []
+    },
+    {
+      "id": "controle",
+      "secao": "1",
+      "titulo": "Um controle que repete",
+      "curta": "um controle que repete",
+      "de": 8,
+      "ate": 8,
+      "pedido": "Repete uma ordem fixa e depois troca as frações por inteiros.",
+      "objetivo": "o contraste entre mudar a ordem e repetir exatamente a mesma operação.",
+      "temos": "o contraste entre mudar a ordem e repetir exatamente a mesma operação.",
+      "depois": []
+    },
+    {
+      "id": "escolha",
+      "secao": "1",
+      "titulo": "Escolher o maior",
+      "curta": "escolher o maior",
+      "de": 9,
+      "ate": 10,
+      "pedido": "Quero ver se uma escolha fixa pode mudar depois dessas somas.",
+      "objetivo": "um seletor com desempate explícito e pontuações construídas.",
+      "temos": "um seletor com desempate explícito e pontuações construídas.",
+      "depois": []
+    },
+    {
+      "id": "numeros",
+      "secao": "1",
+      "titulo": "Fechar a prova numérica",
+      "curta": "fechar a prova numérica",
+      "de": 11,
+      "ate": 12,
+      "pedido": "Junta os controles numa saída que eu possa reproduzir.",
+      "objetivo": "numeros.py executável; ele não carrega nenhum modelo.",
+      "temos": "numeros.py executável; ele não carrega nenhum modelo.",
+      "depois": []
+    },
+    {
+      "id": "desvio",
+      "secao": "2",
+      "titulo": "A primeira diferença",
+      "curta": "a primeira diferença",
+      "de": 13,
+      "ate": 14,
+      "pedido": "Antes do modelo, faz um comparador de sequências.",
+      "objetivo": "primeiro_desvio, que também detecta uma sequência mais curta.",
+      "temos": "primeiro_desvio, que também detecta uma sequência mais curta.",
+      "depois": []
+    },
+    {
+      "id": "contar",
+      "secao": "2",
+      "titulo": "Contar repetições",
+      "curta": "contar repetições",
+      "de": 15,
+      "ate": 16,
+      "pedido": "Conta igualdade e diversidade sem confundir as duas medidas.",
+      "objetivo": "o resumo com iguais, total, sequências únicas e desvios.",
+      "temos": "o resumo com iguais, total, sequências únicas e desvios.",
+      "depois": []
+    },
+    {
+      "id": "testar",
+      "secao": "2",
+      "titulo": "Testar o instrumento",
+      "curta": "testar o instrumento",
+      "de": 17,
+      "ate": 18,
+      "pedido": "Antes de medir um modelo, confere se o próprio medidor presta.",
+      "objetivo": "testes dos números, do fim antecipado, da margem e da contagem.",
+      "temos": "testes dos números, do fim antecipado, da margem e da contagem.",
+      "depois": []
+    },
+    {
+      "id": "coleta",
+      "secao": "3",
+      "titulo": "As perguntas e a coleta",
+      "curta": "as perguntas e a coleta",
+      "de": 19,
+      "ate": 20,
+      "pedido": "Mostra os dados reais que vamos medir, com a origem deles.",
+      "objetivo": "três perguntas, a configuração congelada e a captura real em CPU.",
+      "temos": "três perguntas, a configuração congelada e a captura real em CPU.",
+      "depois": []
+    },
+    {
+      "id": "validar",
+      "secao": "3",
+      "titulo": "Aceitar só uma coleta completa",
+      "curta": "aceitar só uma coleta completa",
+      "de": 21,
+      "ate": 21,
+      "pedido": "Não quero uma nota bonita calculada com metade das execuções.",
+      "objetivo": "medir.py começa pela validação das entradas e do denominador.",
+      "temos": "medir.py começa pela validação das entradas e do denominador.",
+      "depois": []
+    },
+    {
+      "id": "medir",
+      "secao": "3",
+      "titulo": "Medir a repetição",
+      "curta": "medir a repetição",
+      "de": 22,
+      "ate": 23,
+      "pedido": "Agora compara cada resposta com o controle da mesma pergunta.",
+      "objetivo": "o placar de repetição, separado da qualidade das respostas.",
+      "temos": "o placar de repetição, separado da qualidade das respostas.",
+      "depois": []
+    },
+    {
+      "id": "modelo",
+      "secao": "4",
+      "titulo": "Uma coleta nova: CPU ou GPU",
+      "curta": "uma coleta nova: cpu ou gpu",
+      "antes": [
+        "Para executar inferências novas na sua máquina, escolha um caminho. CPU: `uv run --extra modelo python coletar.py cpu minha-coleta.json`. GPU NVIDIA: `uv run --extra gpu python coletar.py cuda minha-coleta-gpu.json`.",
+        "A primeira execução baixa os pesos. Depois, `uv run python medir.py minha-coleta.json` (ou `minha-coleta-gpu.json`) mede a sua captura. Aqui na página reanalisamos a coleta CPU já identificada."
+      ],
+      "de": 24,
+      "ate": 25,
+      "pedido": "Quero repetir com um modelo de verdade na minha máquina. Posso escolher CPU ou GPU?",
+      "objetivo": "um coletor local e os dois comandos documentados, com dependências opcionais.",
+      "temos": "um coletor local e os dois comandos documentados, com dependências opcionais.",
+      "depois": []
+    },
+    {
+      "id": "conferir",
+      "secao": "4",
+      "titulo": "Fechar o instrumento",
+      "curta": "fechar o instrumento",
+      "de": 26,
+      "ate": 26,
+      "pedido": "Confere o projeto inteiro antes de eu escrever uma conclusão.",
+      "objetivo": "o comparador testado e a coleta íntegra, prontos para uma nova coleta local.",
+      "temos": "o comparador testado e a coleta íntegra, prontos para uma nova coleta local.",
+      "depois": [
+        "Bom lugar para parar: você tem o medidor completo e uma coleta CPU identificada. O projeto e a trilha ficam disponíveis para retomar."
+      ]
+    }
+  ]
+}

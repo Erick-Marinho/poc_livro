@@ -1,0 +1,225 @@
+[
+ {
+  "passo": 1,
+  "rodou": "tz-init",
+  "gerados": {
+   "pyproject.toml": "[project]\nname = \"temperatura-zero\"\nversion = \"0.1.0\"\nrequires-python = \">=3.13\"\ndependencies = []\n"
+  }
+ },
+ {
+  "passo": 2,
+  "arquivos": {
+   "pyproject.toml": "[project]\nname = \"temperatura-zero\"\nversion = \"0.1.0\"\ndescription = \"Um medidor de repetição, da soma ao modelo real\"\nrequires-python = \">=3.11\"\ndependencies = []\n\n[project.optional-dependencies]\nmodelo = [\"torch==2.8.0\", \"transformers==4.57.1\"]\ngpu = [\"torch==2.8.0\", \"transformers==4.57.1\"]\n\n[tool.uv]\nconflicts = [[{ extra = \"modelo\" }, { extra = \"gpu\" }]]\n\n[[tool.uv.index]]\nname = \"pytorch-cpu\"\nurl = \"https://download.pytorch.org/whl/cpu\"\nexplicit = true\n\n[[tool.uv.index]]\nname = \"pytorch-cuda\"\nurl = \"https://download.pytorch.org/whl/cu128\"\nexplicit = true\n\n[tool.uv.sources]\ntorch = [{ index = \"pytorch-cpu\", extra = \"modelo\" }, { index = \"pytorch-cuda\", extra = \"gpu\" }]\n",
+   "uv.lock": null,
+   "README.md": "# Temperatura zero: um medidor de repetição\n\n`uv run python numeros.py` executa a prova numérica. As pontuações são construídas, não logits de um LLM.\n\n`uv run python medir.py coleta-cpu.json` reanalisa a captura real publicada junto deste projeto. Não carrega pesos\nnem executa inferências novas. `uv run python -m unittest -q` confere o comparador, os controles e a integridade da\ncoleta, sem dependências opcionais.\n\n## Uma coleta nova, na sua máquina\n\nEscolha apenas um caminho. O modelo é público e o download é gratuito; não precisa de chave. A primeira execução\nbaixa cerca de 1,5 GB de pesos. O tempo e a memória dependem da sua máquina.\n\n```bash\n# CPU: PyTorch sem bibliotecas CUDA\nuv run --extra modelo python coletar.py cpu minha-coleta.json\n\n# GPU NVIDIA: PyTorch com CUDA; confira antes o driver no seu sistema\nuv run --extra gpu python coletar.py cuda minha-coleta-gpu.json\n\n# O mesmo medidor lê qualquer uma das duas\nuv run python medir.py minha-coleta.json\n```\n\nOs extras são mutuamente exclusivos. Trocar de CPU para GPU muda também a precisão: a comparação válida é entre\nlotes no mesmo ambiente, não uma atribuição de diferenças exclusivamente ao dispositivo. O arquivo publicado foi\ncoletado em CPU; não há resultado medido em GPU nesta versão.\n\nO script usa Transformers, não o servidor vLLM: os tamanhos em `configuracao.json` são os batches de entrada\npassados diretamente ao modelo. As perguntas de preenchimento são as mesmas em toda a coleta. Os IDs do alvo\ndepois de EOS são descartados por serem padding do lote; EOS continua na sequência comparada. Entrada e máscara\nsão tratadas separadamente para que padding da entrada também não vire mudança de pergunta.\n\nO modo é guloso (`do_sample=False`, `num_beams=1`), sem herdar os padrões de amostragem do modelo. Uma proteção\ninterrompe a coleta se `torch.multinomial` for chamado. A temperatura não é uma divisão por zero neste código.\nHá uma chamada de aquecimento antes do relógio da geração; download/carregamento ficam fora desse relógio.\n\nPara a comparação adicional de vLLM comum/invariante, ainda é necessária uma coleta específica, com versão,\nbackend, GPU e parâmetros registrados. Não há um “conserto da GPU” medido ou prometido por este projeto.\n\nO limite informado para a outra máquina dos autores é 6 GB de VRAM; ainda não foi validado nela. Se uma condição\nfalhar por memória, registre a falha e revise a matriz antes de iniciar uma nova coleta; não misture só as condições\nque couberam num denominador de coleta completa.\n"
+  }
+ },
+ {
+  "passo": 3,
+  "arquivo": "numeros.py",
+  "conteudo": "\"\"\"Arredondamento explícito em binary16; as pontuações são construídas.\"\"\"\nimport struct\n\n\ndef fp16(valor):\n    return struct.unpack(\"e\", struct.pack(\"e\", valor))[0]\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ]
+ },
+ {
+  "passo": 4,
+  "rodou": "tz-decimal"
+ },
+ {
+  "passo": 5,
+  "arquivo": "numeros.py",
+  "conteudo": "\"\"\"Arredondamento explícito em binary16; as pontuações são construídas.\"\"\"\nimport struct\n\n\ndef fp16(valor):\n    return struct.unpack(\"e\", struct.pack(\"e\", valor))[0]\n\n\ndef somas(pequeno=0.4):\n    a, b = fp16(1024), fp16(pequeno)\n    esquerda = fp16(fp16(a + b) + b)\n    direita = fp16(a + fp16(b + b))\n    return esquerda, direita\n",
+  "alteradas": [
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13
+  ]
+ },
+ {
+  "passo": 6,
+  "rodou": "tz-somas"
+ },
+ {
+  "passo": 7,
+  "rodou": "tz-assert"
+ },
+ {
+  "passo": 8,
+  "rodou": "tz-controle"
+ },
+ {
+  "passo": 9,
+  "arquivo": "numeros.py",
+  "conteudo": "\"\"\"Arredondamento explícito em binary16; as pontuações são construídas.\"\"\"\nimport struct\n\n\ndef fp16(valor):\n    return struct.unpack(\"e\", struct.pack(\"e\", valor))[0]\n\n\ndef somas(pequeno=0.4):\n    a, b = fp16(1024), fp16(pequeno)\n    esquerda = fp16(fp16(a + b) + b)\n    direita = fp16(a + fp16(b + b))\n    return esquerda, direita\n\n\ndef escolher(pontuacoes):\n    return max(range(len(pontuacoes)), key=pontuacoes.__getitem__)\n\n\ndef escolhas(margem=0.5):\n    return [escolher([soma - 1024, margem]) for soma in somas()]\n",
+  "alteradas": [
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21
+  ]
+ },
+ {
+  "passo": 10,
+  "rodou": "tz-margem",
+  "variantes": {
+   "tz-margem-larga": {}
+  }
+ },
+ {
+  "passo": 11,
+  "arquivo": "numeros.py",
+  "conteudo": "\"\"\"Arredondamento explícito em binary16; as pontuações são construídas.\"\"\"\nimport struct\n\n\ndef fp16(valor):\n    return struct.unpack(\"e\", struct.pack(\"e\", valor))[0]\n\n\ndef somas(pequeno=0.4):\n    a, b = fp16(1024), fp16(pequeno)\n    esquerda = fp16(fp16(a + b) + b)\n    direita = fp16(a + fp16(b + b))\n    return esquerda, direita\n\n\ndef escolher(pontuacoes):\n    return max(range(len(pontuacoes)), key=pontuacoes.__getitem__)\n\n\ndef escolhas(margem=0.5):\n    return [escolher([soma - 1024, margem]) for soma in somas()]\n\n\nif __name__ == \"__main__\":\n    print(\"Arredondamento binary16; pontuações construídas, não logits de LLM.\")\n    print(\"duas ordens:\", somas())\n    print(\"com inteiros:\", somas(1))\n    print(\"escolhas A=0, B=1:\", escolhas())\n",
+  "alteradas": [
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28
+  ]
+ },
+ {
+  "passo": 12,
+  "rodou": "tz-numeros"
+ },
+ {
+  "passo": 13,
+  "arquivo": "comparar.py",
+  "conteudo": "\"\"\"Compara IDs completos, inclusive quando uma sequência termina primeiro.\"\"\"\nfrom itertools import zip_longest\n\n\ndef primeiro_desvio(referencia, tentativa):\n    fim = object()\n    for indice, (a, b) in enumerate(zip_longest(referencia, tentativa, fillvalue=fim)):\n        if a != b:\n            return indice\n    return None\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ]
+ },
+ {
+  "passo": 14,
+  "rodou": "tz-fim"
+ },
+ {
+  "passo": 15,
+  "arquivo": "comparar.py",
+  "conteudo": "\"\"\"Compara IDs completos, inclusive quando uma sequência termina primeiro.\"\"\"\nfrom itertools import zip_longest\n\n\ndef primeiro_desvio(referencia, tentativa):\n    fim = object()\n    for indice, (a, b) in enumerate(zip_longest(referencia, tentativa, fillvalue=fim)):\n        if a != b:\n            return indice\n    return None\n\n\ndef resumo(sequencias, referencia):\n    if not sequencias:\n        raise ValueError(\"não há execuções para medir\")\n    desvios = [primeiro_desvio(referencia, s) for s in sequencias]\n    return {\n        \"iguais\": desvios.count(None), \"total\": len(sequencias),\n        \"unicas\": len({tuple(s) for s in sequencias}), \"desvios\": desvios,\n    }\n",
+  "alteradas": [
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20
+  ]
+ },
+ {
+  "passo": 16,
+  "rodou": "tz-resumo"
+ },
+ {
+  "passo": 17,
+  "arquivos": {
+   "validar.py": "\"\"\"Não deixe um denominador incompleto ou entradas distintas virarem placar.\"\"\"\n\n\ndef validar(coleta):\n    cfg = coleta[\"configuracao\"]\n    casos = coleta[\"casos\"]\n    if not casos or len({c[\"id\"] for c in casos}) != len(casos):\n        raise ValueError(\"casos ausentes ou repetidos\")\n    if coleta[\"ambiente\"][\"modo\"] != \"greedy_search\":\n        raise ValueError(\"a coleta não usou seleção gulosa\")\n    if coleta[\"ambiente\"][\"amostragem\"] is not False:\n        raise ValueError(\"a coleta usou amostragem\")\n    for caso in casos:\n        lotes = caso[\"lotes\"]\n        if [l[\"tamanho\"] for l in lotes] != cfg[\"lotes\"] or cfg[\"lotes\"][0] != 1:\n            raise ValueError(\"a matriz de lotes está incompleta\")\n        if caso[\"referencia\"] != lotes[0][\"sequencias\"][0]:\n            raise ValueError(\"a referência não é a primeira execução no lote 1\")\n        for lote in lotes:\n            if lote[\"entrada\"] != lotes[0][\"entrada\"]:\n                raise ValueError(\"a entrada alvo mudou entre lotes\")\n            if len(lote[\"sequencias\"]) != cfg[\"repeticoes\"]:\n                raise ValueError(\"faltam repetições na coleta\")\n            for ids in lote[\"sequencias\"]:\n                if not ids or len(ids) > cfg[\"max_new_tokens\"]:\n                    raise ValueError(\"comprimento de saída inválido\")\n                if any(type(t) is not int or t < 0 for t in ids):\n                    raise ValueError(\"IDs de token inválidos\")\n",
+   "test_experimento.py": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\n\nfrom comparar import primeiro_desvio, resumo\nfrom numeros import escolhas, escolher, somas\nfrom validar import validar\n\n\nclass ComparadorTest(unittest.TestCase):\n    def test_igual_e_primeiro_token(self):\n        self.assertIsNone(primeiro_desvio([1, 2], [1, 2]))\n        self.assertEqual(primeiro_desvio([1, 2], [7, 2]), 0)\n\n    def test_fim_tambem_diverge(self):\n        self.assertEqual(primeiro_desvio([1, 2], [1]), 1)\n        self.assertEqual(primeiro_desvio([], [1]), 0)\n\n    def test_conta_ids_sem_normalizar(self):\n        r = resumo([[1, 2], [1, 2], [1]], [1, 2])\n        self.assertEqual((r[\"iguais\"], r[\"total\"], r[\"unicas\"]), (2, 3, 2))\n        with self.assertRaises(ValueError):\n            resumo([], [])\n\n    def test_margem_e_desempate(self):\n        self.assertEqual(escolhas(), [1, 0])\n        self.assertEqual(escolhas(2), [1, 1])\n        self.assertEqual(escolher([1, 1]), 0)\n\n    def test_controles_da_soma(self):\n        self.assertEqual(somas(), (1024, 1025))\n        self.assertEqual(somas(1), (1026, 1026))\n        self.assertEqual(len({somas() for _ in range(1000)}), 1)\n\n\nclass ColetaTest(unittest.TestCase):\n    def setUp(self):\n        self.coleta = json.loads(Path(\"coleta-cpu.json\").read_text())\n\n    def test_coleta_real_completa(self):\n        validar(self.coleta)\n        cfg = json.loads(Path(\"configuracao.json\").read_text())\n        self.assertEqual(self.coleta[\"configuracao\"], cfg)\n        corpus = [json.loads(l) for l in Path(\"casos.jsonl\").read_text().splitlines()]\n        self.assertEqual([(c[\"id\"], c[\"pergunta\"]) for c in self.coleta[\"casos\"]],\n                         [(c[\"id\"], c[\"pergunta\"]) for c in corpus])\n\n    def test_recusa_denominador_incompleto(self):\n        c = copy.deepcopy(self.coleta)\n        c[\"casos\"][0][\"lotes\"][0][\"sequencias\"].pop()\n        with self.assertRaisesRegex(ValueError, \"faltam repetições\"):\n            validar(c)\n\n    def test_recusa_mudanca_de_entrada(self):\n        c = copy.deepcopy(self.coleta)\n        c[\"casos\"][0][\"lotes\"][1][\"entrada\"].append(123)\n        with self.assertRaisesRegex(ValueError, \"entrada alvo mudou\"):\n            validar(c)\n\n    def test_recusa_amostragem(self):\n        c = copy.deepcopy(self.coleta)\n        c[\"ambiente\"][\"amostragem\"] = True\n        with self.assertRaisesRegex(ValueError, \"usou amostragem\"):\n            validar(c)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n"
+  }
+ },
+ {
+  "passo": 18,
+  "rodou": "tz-testes-instrumento"
+ },
+ {
+  "passo": 19,
+  "arquivos": {
+   "casos.jsonl": "{\"id\":\"loja\",\"pergunta\":\"Uma loja só pode informar o pedido ao dono. Um cliente pede o pedido de outra pessoa. O atendente deve responder ou passar para a equipe? Explique em uma frase.\"}\n{\"id\":\"fato\",\"pergunta\":\"Complete em uma frase: A água ferve ao nível do mar a\"}\n{\"id\":\"livre\",\"pergunta\":\"Em duas frases, explique por que guardar uma cópia de um arquivo importante.\"}\n",
+   "configuracao.json": "{\n  \"modelo\": \"Qwen/Qwen3-0.6B\",\n  \"revisao\": \"c1899de289a04d12100db370d81485cdf75e47ca\",\n  \"repeticoes\": 10,\n  \"max_new_tokens\": 48,\n  \"threads\": 4,\n  \"lotes\": [1, 4, 16],\n  \"preenchimento\": \"Responda em uma frase: o que é um arquivo de texto?\"\n}\n",
+   "coleta-cpu.json": null
+  }
+ },
+ {
+  "passo": 20,
+  "rodou": "tz-origem"
+ },
+ {
+  "passo": 21,
+  "arquivo": "medir.py",
+  "conteudo": "\"\"\"Lê uma coleta; repetir este comando não faz novas inferências.\"\"\"\nimport json\nimport sys\nfrom pathlib import Path\n\nfrom comparar import resumo\nfrom validar import validar\n\n\ndef medir(arquivo):\n    coleta = json.loads(Path(arquivo).read_text())\n    validar(coleta)\n    print(\"Leitura da coleta:\", coleta[\"ambiente\"][\"dispositivo\"])\n    print(\"modelo:\", coleta[\"configuracao\"][\"modelo\"])\n    print(\"revisão:\", coleta[\"configuracao\"][\"revisao\"])\n    iguais = total = 0\n",
+  "alteradas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16
+  ]
+ },
+ {
+  "passo": 22,
+  "arquivo": "medir.py",
+  "conteudo": "\"\"\"Lê uma coleta; repetir este comando não faz novas inferências.\"\"\"\nimport json\nimport sys\nfrom pathlib import Path\n\nfrom comparar import resumo\nfrom validar import validar\n\n\ndef medir(arquivo):\n    coleta = json.loads(Path(arquivo).read_text())\n    validar(coleta)\n    print(\"Leitura da coleta:\", coleta[\"ambiente\"][\"dispositivo\"])\n    print(\"modelo:\", coleta[\"configuracao\"][\"modelo\"])\n    print(\"revisão:\", coleta[\"configuracao\"][\"revisao\"])\n    iguais = total = 0\n    for caso in coleta[\"casos\"]:\n        for lote in caso[\"lotes\"]:\n            r = resumo(lote[\"sequencias\"], caso[\"referencia\"])\n            iguais += r[\"iguais\"]\n            total += r[\"total\"]\n            print(f'{caso[\"id\"]}, lote {lote[\"tamanho\"]}: {r[\"iguais\"]}/{r[\"total\"]} iguais; {r[\"unicas\"]} sequência(s) única(s)')\n    print(f\"iguais à referência: {iguais} de {total} ({100 * iguais // total}%)\")\n    print(\"Repetição não mede se a resposta está certa.\")\n\n\nif __name__ == \"__main__\":\n    medir(sys.argv[1])\n",
+  "alteradas": [
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28
+  ]
+ },
+ {
+  "passo": 23,
+  "rodou": "tz-medida"
+ },
+ {
+  "passo": 24,
+  "arquivos": {
+   "coletar.py": "\"\"\"Inferências novas e locais. Não é executado pelo build nem pelo roteiro.\"\"\"\nimport json\nimport platform\nimport sys\nimport time\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom unittest.mock import patch\n\n\ndef coletar(dispositivo, destino):\n    import torch\n    import transformers\n    from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig\n\n    if dispositivo not in (\"cpu\", \"cuda\"):\n        raise ValueError(\"escolha cpu ou cuda\")\n    if dispositivo == \"cuda\" and not torch.cuda.is_available():\n        raise RuntimeError(\"CUDA não está disponível; use cpu ou confira a instalação da GPU\")\n    aqui = Path(__file__).parent\n    cfg = json.loads((aqui / \"configuracao.json\").read_text())\n    torch.set_num_threads(cfg[\"threads\"])\n    tokenizador = AutoTokenizer.from_pretrained(cfg[\"modelo\"], revision=cfg[\"revisao\"], padding_side=\"left\")\n    tipo = torch.float32 if dispositivo == \"cpu\" else torch.float16\n    inicio = time.perf_counter()\n    modelo = AutoModelForCausalLM.from_pretrained(cfg[\"modelo\"], revision=cfg[\"revisao\"], torch_dtype=tipo, attn_implementation=\"eager\")\n    modelo.to(dispositivo).eval()\n    carregamento = time.perf_counter() - inicio\n    geracao = GenerationConfig(do_sample=False, num_beams=1, max_new_tokens=cfg[\"max_new_tokens\"],\n        temperature=1.0, top_k=0, top_p=1.0, bos_token_id=tokenizador.bos_token_id,\n        eos_token_id=modelo.generation_config.eos_token_id, pad_token_id=tokenizador.pad_token_id)\n    assert geracao.get_generation_mode().value == \"greedy_search\"\n\n    def gerar(perguntas):\n        mensagens = [[{\"role\": \"user\", \"content\": p}] for p in perguntas]\n        entradas = tokenizador.apply_chat_template(mensagens, tokenize=True, add_generation_prompt=True,\n            enable_thinking=False, padding=True, return_tensors=\"pt\", return_dict=True).to(dispositivo)\n        with torch.inference_mode(), patch(\"torch.multinomial\", side_effect=RuntimeError(\"a coleta não pode sortear\")):\n            saida = modelo.generate(**entradas, generation_config=geracao, use_model_defaults=False, do_sample=False, num_beams=1)\n        # Guarde EOS, mas não o padding posterior que só completa o lote.\n        ids = saida[0, entradas.input_ids.shape[1]:].tolist()\n        eos = geracao.eos_token_id\n        eos = [eos] if isinstance(eos, int) else eos\n        parada = next((i for i, token in enumerate(ids) if token in eos), None)\n        if parada is not None:\n            ids = ids[:parada + 1]\n        entrada_alvo = entradas.input_ids[0][entradas.attention_mask[0].bool()].tolist()\n        return ids, entrada_alvo\n\n    gerar([\"Diga olá.\"])\n    inicio = time.perf_counter()\n    casos = []\n    for linha in (aqui / \"casos.jsonl\").read_text().splitlines():\n        caso = json.loads(linha)\n        lotes = []\n        for tamanho in cfg[\"lotes\"]:\n            sequencias = []\n            for repeticao in range(cfg[\"repeticoes\"]):\n                ids, entrada = gerar([caso[\"pergunta\"]] + [cfg[\"preenchimento\"]] * (tamanho - 1))\n                sequencias.append(ids)\n                print(f'{caso[\"id\"]} lote={tamanho} repetição={repeticao + 1}', flush=True)\n            lotes.append({\"tamanho\": tamanho, \"entrada\": entrada, \"sequencias\": sequencias})\n        casos.append({**caso, \"referencia\": lotes[0][\"sequencias\"][0], \"lotes\": lotes,\n            \"texto_referencia\": tokenizador.decode(lotes[0][\"sequencias\"][0], skip_special_tokens=True)})\n    ambiente = {\"dispositivo\": dispositivo, \"hardware\": platform.processor(), \"sistema\": platform.platform(),\n        \"python\": platform.python_version(), \"torch\": torch.__version__, \"transformers\": transformers.__version__,\n        \"precisao\": str(tipo), \"atencao\": \"eager\", \"threads\": torch.get_num_threads(), \"cuda\": torch.version.cuda,\n        \"carregamento_segundos\": carregamento, \"geracao_segundos\": time.perf_counter() - inicio,\n        \"quando\": datetime.now(timezone.utc).isoformat(), \"aquecimento\": \"Diga olá.\",\n        \"amostragem\": False, \"modo\": geracao.get_generation_mode().value, \"beams\": 1, \"cache\": True, \"thinking\": False}\n    if dispositivo == \"cuda\":\n        ambiente.update(hardware=torch.cuda.get_device_name(), memoria_pico_bytes=torch.cuda.max_memory_allocated())\n    coleta = {\"formato\": 1, \"configuracao\": cfg, \"ambiente\": ambiente, \"casos\": casos}\n    Path(destino).write_text(json.dumps(coleta, ensure_ascii=False, indent=2) + \"\\n\")\n\n\nif __name__ == \"__main__\":\n    coletar(*sys.argv[1:])\n"
+  }
+ },
+ {
+  "passo": 25,
+  "rodou": "tz-configuracao"
+ },
+ {
+  "passo": 26,
+  "rodou": "tz-testes"
+ }
+]

@@ -39,6 +39,8 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
+`MapaTemperatura` é um esquema do mecanismo, controlado pelo leitor; assistir ou mover o tempo não conta como ação.
+
 ## Exceções
 
 - Trecho narrativo (uma história da loja que segura o leitor) pode passar de 200: quem diz é a leitura.

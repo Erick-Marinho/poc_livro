@@ -1,0 +1,352 @@
+{
+  "experimento": "temperatura-zero",
+  "versoes_ate": "2026-10-26T23:59:59Z",
+  "sobre": "Construção do medidor. Inferência local é explícita e opcional; o roteiro só reanalisa uma coleta real identificada.",
+  "passos": [
+    {
+      "acao": "rodar",
+      "id": "tz-init",
+      "comando": "uv init --bare temperatura-zero",
+      "nota": "O projeto nasce sem exemplo pronto.",
+      "onde": "acima"
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "pyproject.toml",
+        "uv.lock",
+        "README.md"
+      ],
+      "nota": "A configuração fixa as versões opcionais. O caminho normal só precisa de Python. O README explica CPU e GPU."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "numeros.py",
+      "partes": [
+        {
+          "linhas": "1-6"
+        }
+      ],
+      "nota": "Guardar e ler em binary16 arredonda o número. O Python devolve o valor que coube, não o decimal que escrevemos.",
+      "blocos": [
+        {
+          "linhas": "1-6",
+          "titulo": "um número que cabe",
+          "texto": "Guardar e ler em binary16 arredonda o número. O Python devolve o valor que coube, não o decimal que escrevemos."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-decimal",
+      "comando": "uv run python -c \"from numeros import fp16; print(fp16(0.4))\"",
+      "nota": "Veja a representação de 0,4. Não há modelo aqui.",
+      "duvidas": [
+        {
+          "pergunta": "A CPU está executando um kernel de GPU?",
+          "resposta": "Não. struct faz a conversão de representação; isto isola o arredondamento e não mede um kernel de GPU."
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "numeros.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "7-13"
+        }
+      ],
+      "nota": "Cada resultado intermediário também volta para binary16. Converter só o resultado final esconderia o efeito.",
+      "blocos": [
+        {
+          "linhas": "7-13",
+          "titulo": "duas árvores de soma",
+          "texto": "Cada resultado intermediário também volta para binary16. Converter só o resultado final esconderia o efeito."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-somas",
+      "comando": "uv run python -c \"from numeros import somas; print(somas())\"",
+      "nota": "Confira as duas ordens.",
+      "aposta": {
+        "pergunta": "As duas ordens guardam o mesmo total?",
+        "opcoes": [
+          "Sim, as entradas são as mesmas",
+          "Não, o arredondamento intermediário pode mudar"
+        ],
+        "certa": 1
+      }
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-assert",
+      "comando": "uv run python -c \"from numeros import somas; a, b = somas(); assert a == b, (a, b)\" 2>&1 | tail -1",
+      "nota": "A mensagem mostra os dois valores que a asserção comparou.",
+      "pergunta_saida": {
+        "texto": "O que precisa ser revisto depois dessa falha?",
+        "opcoes": [
+          "A regra de que esses cálculos são sempre equivalentes",
+          "A seed que escolheu um dos valores",
+          "A instalação do modelo que respondeu errado"
+        ],
+        "certa": 0,
+        "evidencia": "AssertionError",
+        "porque": "A asserção comparou 1024.0 e 1025.0. somas converte cada soma parcial em binary16; não usa random nem modelo."
+      }
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-controle",
+      "comando": "uv run python -c \"from numeros import somas; print('resultados únicos:', len({somas() for _ in range(1000)})); print('inteiros:', somas(1))\"",
+      "nota": "Agora investigue as condições em que a diferença aparece.",
+      "pergunta_saida": {
+        "texto": "O que esse controle permite concluir?",
+        "opcoes": [
+          "Ponto flutuante funciona como um sorteio",
+          "Mudar a ordem pode importar, mas repetição fixa pode permanecer estável",
+          "Toda execução de LLM repetirá para sempre"
+        ],
+        "certa": 1,
+        "evidencia": "resultados únicos: 1",
+        "porque": "Mil chamadas de somas deram o mesmo par; com 1, os dois lados deram 1026. O código usa ordens fixas e nenhum sorteio."
+      }
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "numeros.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "14-21"
+        }
+      ],
+      "nota": "max escolhe a primeira posição de maior valor. As somas viram pontuações de A; a de B fica fixa. São valores construídos, não logits de LLM.",
+      "blocos": [
+        {
+          "linhas": "14-21",
+          "titulo": "a escolha gulosa",
+          "texto": "max escolhe a primeira posição de maior valor. As somas viram pontuações de A; a de B fica fixa. São valores construídos, não logits de LLM."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-margem",
+      "comando": "uv run python -c \"from numeros import escolhas; print(escolhas(0.5))\"",
+      "nota": "A=0 e B=1. Compare o vencedor nas duas ordens.",
+      "variar": {
+        "trecho": "escolhas(0.5)",
+        "original": "0.5",
+        "convite": "Aumente a pontuação fixa de B. Toda diferença precisa mudar a escolha?",
+        "opcoes": [
+          {
+            "id": "tz-margem-larga",
+            "rotulo": "2.0",
+            "por": "escolhas(2.0)",
+            "nota": "Agora B vence nas duas ordens; diferença numérica não basta para inverter toda escolha.",
+            "aposta": {
+              "pergunta": "Com B valendo 2, as duas ordens ainda escolhem alternativas diferentes?",
+              "opcoes": [
+                "Sim",
+                "Não"
+              ],
+              "certa": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "numeros.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "22-28"
+        }
+      ],
+      "nota": "O if só imprime o exemplo quando este arquivo é executado diretamente. Importar as funções não inicia a demonstração.",
+      "blocos": [
+        {
+          "linhas": "22-28",
+          "titulo": "executar ou importar",
+          "texto": "O if só imprime o exemplo quando este arquivo é executado diretamente. Importar as funções não inicia a demonstração."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-numeros",
+      "comando": "uv run python numeros.py",
+      "nota": "Guarde o alcance da prova: arredondamento e escolha construída."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "comparar.py",
+      "partes": [
+        {
+          "linhas": "1-10"
+        }
+      ],
+      "nota": "zip_longest não esconde o final da sequência maior. O objeto exclusivo marca um fim que não é token. Os índices começam em zero.",
+      "blocos": [
+        {
+          "linhas": "1-10",
+          "titulo": "o primeiro token diferente",
+          "texto": "zip_longest não esconde o final da sequência maior. O objeto exclusivo marca um fim que não é token. Os índices começam em zero."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-fim",
+      "comando": "uv run python -c \"from comparar import primeiro_desvio; print(primeiro_desvio([10, 20], [10]))\"",
+      "nota": "A tentativa acabou antes da referência.",
+      "pergunta_saida": {
+        "texto": "Por que a comparação não pode usar apenas zip?",
+        "opcoes": [
+          "Porque zip normaliza o texto",
+          "Porque os IDs negativos significam o fim",
+          "Porque zip pararia na sequência menor e esconderia o fim antecipado"
+        ],
+        "certa": 2,
+        "evidencia": "1",
+        "porque": "primeiro_desvio usa zip_longest. Em [10, 20] contra [10], o índice 1 existe só no primeiro lado; zip comum não o compararia."
+      }
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "comparar.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "11-20"
+        }
+      ],
+      "nota": "A referência é explícita. Uma sequência pode ser nova sem estar certa. A coleção vazia dá erro em vez de fabricar 100%.",
+      "blocos": [
+        {
+          "linhas": "11-20",
+          "titulo": "o denominador",
+          "texto": "A referência é explícita. Uma sequência pode ser nova sem estar certa. A coleção vazia dá erro em vez de fabricar 100%."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-resumo",
+      "comando": "uv run python -c \"from comparar import resumo; print(resumo([[10, 20], [10, 20], [10]], [10, 20]))\"",
+      "nota": "Os IDs deste teste são inventados para conferir o comparador."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "validar.py",
+        "test_experimento.py"
+      ],
+      "nota": "Vieram os testes e a validação da coleta. Primeiro execute só os testes do instrumento; ainda não há coleta."
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-testes-instrumento",
+      "comando": "uv run python -m unittest -q test_experimento.ComparadorTest",
+      "nota": "O instrumento passa antes de entrar qualquer resposta de modelo."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "casos.jsonl",
+        "configuracao.json",
+        "coleta-cpu.json"
+      ],
+      "nota": "A coleta veio de inferências locais reais. Copiá-la serve para conferir o placar sem baixar o modelo; não equivale a uma nova coleta de inferência."
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-origem",
+      "comando": "uv run python -c \"import json; c=json.load(open('coleta-cpu.json')); print('dispositivo:', c['ambiente']['dispositivo']); print('modo:', c['ambiente']['modo']); print('perguntas:', len(c['casos']))\"",
+      "nota": "Confira a procedência antes do resultado."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "medir.py",
+      "partes": [
+        {
+          "linhas": "1-16"
+        }
+      ],
+      "nota": "O leitor de coleta importa o comparador e valida antes de contar. Aqui ficam modelo, revisão e dispositivo.",
+      "blocos": [
+        {
+          "linhas": "1-16",
+          "titulo": "a origem antes do placar",
+          "texto": "O leitor de coleta importa o comparador e valida antes de contar. Aqui ficam modelo, revisão e dispositivo."
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "medir.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "17-28"
+        }
+      ],
+      "nota": "Cada lote usa a primeira execução de lote 1 da mesma pergunta. O percentual conta igualdade de IDs; não há gabarito factual.",
+      "blocos": [
+        {
+          "linhas": "17-28",
+          "titulo": "a medida",
+          "texto": "Cada lote usa a primeira execução de lote 1 da mesma pergunta. O percentual conta igualdade de IDs; não há gabarito factual."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-medida",
+      "comando": "uv run python medir.py coleta-cpu.json",
+      "nota": "Leia o alcance desta amostra.",
+      "pergunta_saida": {
+        "texto": "Se todas as sequências desta amostra coincidirem, o que podemos afirmar?",
+        "opcoes": [
+          "O modelo acertou as três perguntas",
+          "Neste ambiente e nesta amostra não observamos divergência",
+          "Temperatura zero garante igualdade em qualquer servidor"
+        ],
+        "certa": 1,
+        "evidencia": "Repetição não mede se a resposta está certa.",
+        "porque": "medir só compara IDs com a referência de cada pergunta. A coleta registra um ambiente fixo; não possui gabarito de acerto e não testa todos os ambientes."
+      }
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "coletar.py"
+      ],
+      "nota": "O coletor fica separado: ele carrega pesos e executa inferências novas. Ele não é chamado pelo site nem pelos testes offline.",
+      "suavez": "Na sua máquina, CPU: uv run --extra modelo python coletar.py cpu minha-coleta.json. GPU NVIDIA: uv run --extra gpu python coletar.py cuda minha-coleta-gpu.json. Escolha só um. Confira o README; a primeira execução baixa os pesos. Depois: uv run python medir.py minha-coleta.json (ou minha-coleta-gpu.json). Aqui na página só repetimos a leitura da coleta CPU identificada; GPU ainda não foi medida."
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-configuracao",
+      "comando": "uv run python -c \"import json; c=json.load(open('configuracao.json')); print('repetições por condição:',c['repeticoes']); print('lotes:',c['lotes']); print('limite de tokens novos:',c['max_new_tokens'])\"",
+      "nota": "A matriz é definida antes da sua coleta. Não reduza só as condições que falharem."
+    },
+    {
+      "acao": "rodar",
+      "id": "tz-testes",
+      "comando": "uv run python -m unittest -q",
+      "nota": "Os testes verdes verificam o instrumento e a estrutura da coleta. Não garantem determinismo universal.",
+      "duvidas": [
+        {
+          "pergunta": "Se o resultado repetir sempre, o experimento falhou?",
+          "resposta": "Não. Uma única sequência nesta amostra é resultado válido. O experimento mede as condições registradas; não precisa forçar uma divergência para contar uma boa história."
+        }
+      ]
+    }
+  ]
+}

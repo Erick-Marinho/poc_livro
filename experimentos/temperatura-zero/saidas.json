@@ -1,0 +1,268 @@
+{
+  "tz-init": {
+    "comando": "uv init --bare temperatura-zero",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Initialized project `temperatura-zero` at `/home/voce/temperatura-zero`",
+        ""
+      ]
+    ]
+  },
+  "tz-decimal": {
+    "comando": "uv run python -c \"from numeros import fp16; print(fp16(0.4))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "0.39990234375",
+        ""
+      ],
+      [
+        "Using CPython 3.13.13",
+        ""
+      ],
+      [
+        "Creating virtual environment at: .venv",
+        ""
+      ]
+    ]
+  },
+  "tz-somas": {
+    "comando": "uv run python -c \"from numeros import somas; print(somas())\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "(1024.0, 1025.0)",
+        ""
+      ]
+    ]
+  },
+  "tz-assert": {
+    "comando": "uv run python -c \"from numeros import somas; a, b = somas(); assert a == b, (a, b)\" 2>&1 | tail -1",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "AssertionError: (1024.0, 1025.0)",
+        "err"
+      ]
+    ]
+  },
+  "tz-controle": {
+    "comando": "uv run python -c \"from numeros import somas; print('resultados únicos:', len({somas() for _ in range(1000)})); print('inteiros:', somas(1))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "resultados únicos: 1",
+        ""
+      ],
+      [
+        "inteiros: (1026.0, 1026.0)",
+        ""
+      ]
+    ]
+  },
+  "tz-margem": {
+    "comando": "uv run python -c \"from numeros import escolhas; print(escolhas(0.5))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "[1, 0]",
+        ""
+      ]
+    ]
+  },
+  "tz-margem-larga": {
+    "comando": "uv run python -c \"from numeros import escolhas; print(escolhas(2.0))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "[1, 1]",
+        ""
+      ]
+    ]
+  },
+  "tz-numeros": {
+    "comando": "uv run python numeros.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Arredondamento binary16; pontuações construídas, não logits de LLM.",
+        ""
+      ],
+      [
+        "duas ordens: (1024.0, 1025.0)",
+        ""
+      ],
+      [
+        "com inteiros: (1026.0, 1026.0)",
+        ""
+      ],
+      [
+        "escolhas A=0, B=1: [1, 0]",
+        ""
+      ]
+    ]
+  },
+  "tz-fim": {
+    "comando": "uv run python -c \"from comparar import primeiro_desvio; print(primeiro_desvio([10, 20], [10]))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "1",
+        ""
+      ]
+    ]
+  },
+  "tz-resumo": {
+    "comando": "uv run python -c \"from comparar import resumo; print(resumo([[10, 20], [10, 20], [10]], [10, 20]))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "{'iguais': 2, 'total': 3, 'unicas': 2, 'desvios': [None, None, 1]}",
+        ""
+      ]
+    ]
+  },
+  "tz-testes-instrumento": {
+    "comando": "uv run python -m unittest -q test_experimento.ComparadorTest",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 5 tests in 0.002s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "tz-origem": {
+    "comando": "uv run python -c \"import json; c=json.load(open('coleta-cpu.json')); print('dispositivo:', c['ambiente']['dispositivo']); print('modo:', c['ambiente']['modo']); print('perguntas:', len(c['casos']))\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "dispositivo: cpu",
+        ""
+      ],
+      [
+        "modo: greedy_search",
+        ""
+      ],
+      [
+        "perguntas: 3",
+        ""
+      ]
+    ]
+  },
+  "tz-medida": {
+    "comando": "uv run python medir.py coleta-cpu.json",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Leitura da coleta: cpu",
+        ""
+      ],
+      [
+        "modelo: Qwen/Qwen3-0.6B",
+        ""
+      ],
+      [
+        "revisão: c1899de289a04d12100db370d81485cdf75e47ca",
+        ""
+      ],
+      [
+        "loja, lote 1: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "loja, lote 4: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "loja, lote 16: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "fato, lote 1: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "fato, lote 4: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "fato, lote 16: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "livre, lote 1: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "livre, lote 4: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "livre, lote 16: 10/10 iguais; 1 sequência(s) única(s)",
+        ""
+      ],
+      [
+        "iguais à referência: 90 de 90 (100%)",
+        ""
+      ],
+      [
+        "Repetição não mede se a resposta está certa.",
+        ""
+      ]
+    ]
+  },
+  "tz-configuracao": {
+    "comando": "uv run python -c \"import json; c=json.load(open('configuracao.json')); print('repetições por condição:',c['repeticoes']); print('lotes:',c['lotes']); print('limite de tokens novos:',c['max_new_tokens'])\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "repetições por condição: 10",
+        ""
+      ],
+      [
+        "lotes: [1, 4, 16]",
+        ""
+      ],
+      [
+        "limite de tokens novos: 48",
+        ""
+      ]
+    ]
+  },
+  "tz-testes": {
+    "comando": "uv run python -m unittest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 9 tests in 0.008s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  }
+}

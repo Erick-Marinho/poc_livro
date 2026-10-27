@@ -1,0 +1,9 @@
+{
+  "modelo": "Qwen/Qwen3-0.6B",
+  "revisao": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "repeticoes": 10,
+  "max_new_tokens": 48,
+  "threads": 4,
+  "lotes": [1, 4, 16],
+  "preenchimento": "Responda em uma frase: o que é um arquivo de texto?"
+}

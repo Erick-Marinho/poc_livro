@@ -5,16 +5,19 @@ uma resposta mesmo com seleção gulosa. Há uma boa hipótese para experimentar
 a medir um LLM, e duas respostas diferentes de uma API não identificam sozinhas a causa. O leitor vai construir o
 medidor na IDE, investigar a diferença e aprender o alcance da prova que obteve.
 
-**Estado.** Etapa 1 preparada para revisão: desenho do experimento, fontes e sondagem numérica. Nenhum LLM foi
-executado nesta etapa. A página ainda não foi criada. O resultado do estudo com modelo real permanece aberto.
+**Estado.** Etapa 1 aprovada pelo Erick em 26/10/2026. Etapa 2 entregue para revisão: projeto, coleta real em CPU,
+construção pela IDE e mapa Remotion. A amostra CPU repetiu 90 de 90 respostas-alvo. O caminho CUDA está preparado;
+a coleta na GPU da outra máquina permanece pendente e não recebe placar nesta versão.
 
 ## Pedido e decisões do Erick
 
 - Criar um experimento sobre o texto fornecido, podendo contestá-lo quando necessário.
 - Seguir o padrão do projeto: o leitor constrói pela IDE; animações e outros artefatos servem ao aprendizado.
-- Há uma NVIDIA RTX 4060 disponível **em outra máquina**. VRAM, sistema e acesso ainda precisam ser conferidos.
-- Erick levantou a escolha CPU ou GPU para quem replica. A proposta abaixo oferece os dois caminhos; ela ainda
-  precisa de revisão. Ter uma GPU disponível não autoriza contratar infraestrutura nem publicar um servidor.
+- Há uma NVIDIA RTX 4060 disponível **em outra máquina**, com limite de **6 GB de VRAM informado pelo Erick**.
+  Sistema, driver e identificação efetiva ainda serão registrados na coleta dessa máquina.
+- (26/10/2026, Erick) “Feito, pode seguir”: a etapa 1 e a proposta CPU/GPU têm o ok; CPU é o caminho padrão e GPU
+  uma extensão, sem exigir placa de vídeo de todo leitor.
+- (26/10/2026, Erick) Pode usar Remotion nas animações. O mapa inicial terá controle do leitor e versão estática.
 
 ## Tese e fonte
 
@@ -152,41 +155,57 @@ medidas. Se aparecer uma explicação de lote → kernel, rotular como esquema d
 | 3 | Árvores de arredondamento, margem e comparação de tokens | Rastros conferidos com o projeto, previsões antes da resposta e capturas nos modos guiado/direto, computador/celular |
 | 4 | Revisão do argumento e do percurso inteiro | Testes, ritmo, coleta reproduzida no ambiente registrado, caso novo e revisão do Erick |
 
-Só a etapa 1 está detalhada nesta entrega. A etapa 2 começa depois da revisão desta proposta e do dimensionamento
-dos ambientes; nenhuma etapa se fecha sem o ok do Erick.
+Só a etapa 2 está detalhada abaixo. As animações numéricas e o comparador visual completo permanecem na etapa 3;
+o mapa inicial já entra nesta versão. Nenhuma etapa se fecha sem o ok do Erick.
 
-## Etapa atual: 1 — hipótese, régua e desenho pedagógico
+## Etapa atual: 2 — primeira versão construída na IDE
 
-**Pergunta.** Que experiência permite ao leitor entender por que escolher o maior valor não garante repetição do
-sistema, sem confundir exemplo numérico, inferência real e evidência de causalidade?
+**Pergunta.** O leitor consegue construir um medidor, executar o modelo localmente e distinguir o mecanismo
+numérico do que sua coleta realmente observou?
 
-**Escopo.** Auditar o texto anexado com fontes primárias, fazer uma sondagem numérica em CPU e registrar a proposta
-de medição e de ensino. Incorporar a GPU disponível em outra máquina e a escolha CPU/GPU levantada pelo Erick.
+**Escopo.** Primeira página completa, com projeto Python, corpus congelado, coleta real em CPU, leitura offline da
+coleta, roteiro desde a pasta vazia, previsões, variantes e mapa inicial em Remotion. A execução real usa seleção
+gulosa; a leitura da coleta no build usa apenas arquivos. O caminho CUDA é opcional e separado das dependências CPU.
 
-**Peças.** Este plano e `docs/relatorios/experimento-temperatura-zero-etapa-1.md`.
+**Peças.** `experimentos/temperatura-zero/` (página, projeto, comandos, roteiro, passos, glossário e saídas);
+componente específico do mapa e sua classificação no ritmo; testes do experimento; relatório da etapa 2.
 
-**Critérios.** A hipótese admite resultado negativo; a régua separa repetição e correção; a parte CPU tem valor
-próprio e modelo real previsto; o GPU compara condições controladas; cada artefato tem ação, fonte e modo direto.
-Todo dado da sondagem é obtido por código executável, com a distinção explícita de que não é inferência de LLM.
+**Critérios.**
 
-**Evidência.** Fontes conferidas no relatório; arredondamento em CPU produz duas somas diferentes; uma ordem fixa
-repetida mil vezes produz uma única soma; valores inteiros escolhidos produzem a mesma soma nas duas ordens.
+- `numeros.py` mostra as somas, o controle com inteiros e a escolha sem sorteio; `comparar.py` trata sequência igual,
+  token diferente e fim antecipado. O leitor encontra um erro de associatividade real e o investiga.
+- `coletar.py` faz inferências novas somente quando chamado explicitamente; `medir.py` lê os registros. Importar ou
+  montar o site não carrega pesos nem chama o modelo. Coleta tem revisão, ambiente, entradas e sequências completas.
+- Corpus com três perguntas e dez repetições por lote, tamanhos 1, 4 e 16, limitado a 48 tokens novos. O padrão CPU
+  usa float32, atenção eager e quatro threads; CUDA usa float16 e precisa registrar memória. Comparações separam os
+  ambientes. Padding depois de EOS não conta como token gerado da resposta.
+- O roteiro chega exatamente ao projeto final e grava cada comando no estado certo. A instalação do modelo e a
+  coleta real são “sua vez”; a gravação mostrada no terminal é identificada e pode ser reanalisada sem os pesos.
+- Modo direto, projeto na própria IDE e comandos digitados na página funcionam. Alterações de margem e ordem usam
+  as variantes existentes. Perguntas de saída pedem interpretação e têm opções plausíveis.
+- O mapa em Remotion explica onde a seleção acontece, sem apresentar uma simulação como medição da GPU. Controle
+  manual, sem áudio ou autoplay; versão estática no modo direto, movimento reduzido e ausência de JavaScript.
 
-**Limite.** Não instalar modelo, chamar API paga, acessar a outra máquina, publicar página, abrir túnel ou alterar
-componentes compartilhados nesta etapa. A implementação aguarda a revisão; não transformar a proposta CPU/GPU em
-decisão atribuída ao Erick.
+**Evidência.** Coleta CPU real e análise, testes do projeto, roteiro aplicado em pasta vazia, saídas regravadas e
+conferidas, `npm test`, `npm run ritmo` e página percorrida no computador e no celular. Relatório registra as falas
+redigidas pelo modelo e as limitações da coleta. O caminho GPU só recebe evidência depois de executado na outra
+máquina; a comparação vLLM comum/invariante depende dela e não recebe números antecipados.
+
+**Limite.** Sem chamada paga, push, túnel ou acesso presumido à outra máquina. Nenhuma coleta GPU inventada, promessa
+de divergência, mudança nos capítulos ou substituição da IDE compartilhada. Sem implementar as árvores animadas,
+controle visual da margem ou comparador interativo de tokens da etapa 3.
 
 ### Para dimensionar a próxima etapa
 
-- Conferir VRAM, sistema, driver e forma de executar a coleta na outra máquina com a RTX 4060.
-- Validar o modelo candidato, versões e tempo aceitável da rodada CPU antes de fixar a matriz final.
-- Revisar a proposta dos dois caminhos e o percurso pedagógico com o Erick.
+- Registrar sistema, driver e GPU efetiva na outra máquina; respeitar o limite informado de 6 GB de VRAM.
+- Executar a extensão GPU e, se o backend suportar, a comparação comum/invariante; até lá, marcar não medido.
 - Preencher a voz dos autores somente quando eles fornecerem seu texto.
 
 ## Registro
 
 | Etapa | Evidência | Estado |
 |---|---|---|
-| 1 (proposta) | [Auditoria e sondagem numérica](../relatorios/experimento-temperatura-zero-etapa-1.md); CPU/GPU propostos, GPU informada em outra máquina; inferência real ainda não executada | aguardando revisão do Erick |
+| 1 — `32143e2` | [Auditoria e sondagem numérica](../relatorios/experimento-temperatura-zero-etapa-1.md); CPU/GPU aprovados, GPU em outra máquina; inferência real ainda não executada nesta etapa | Erick, 26/10/2026 |
+| 2 (entrega) | [Projeto, coleta, perguntas e capturas](../relatorios/experimento-temperatura-zero-etapa-2.md): 90/90 respostas-alvo repetidas em CPU; 15 passos, 26 ações, 15 saídas offline; 9 testes Python, npm test com 168 testes do site e 5 da gravação; sem avisos de ritmo no experimento; mapa Remotion e três modos conferidos no computador e celular; coleta GPU pendente | aguardando revisão do Erick |
 
 (redação: gpt-6.1-sol)
