@@ -1,0 +1,42 @@
+{
+  "sobre": "A escala de quem decide, no 1.1 (docs/capacidades/capitulo-1-dinamicas.md, etapa 3): a mesma mensagem atravessando os quatro pontos da escala. É ilustração: os passos foram escritos para mostrar o padrão. Os nomes dos pontos são os da Aposta (escala.json), e {status}, {transportadora} e {previsao} vêm do pedido no pedidos.json da loja; o teste confere.",
+  "mensagem": "Quando chega o meu pedido BT-1003?",
+  "pedido": "BT-1003",
+  "pontos": [
+    {
+      "nome": "fluxo fixo",
+      "frase": "O código decide a ordem, e o modelo só escreve o texto. Se a mensagem fosse sobre um produto, o caminho não previa.",
+      "passos": [
+        { "quem": "código", "texto": "procura um número de pedido na mensagem: BT-1003" },
+        { "quem": "código", "texto": "consulta o BT-1003: {status}, pela {transportadora}" },
+        { "quem": "código", "texto": "pede ao modelo um texto com a previsão, {previsao}" }
+      ]
+    },
+    {
+      "nome": "roteador",
+      "frase": "O modelo decide uma vez, entre caminhos que você desenhou. O agente do capítulo 2 é assim.",
+      "passos": [
+        { "quem": "modelo", "texto": "é sobre pedido, produto, defeito ou outra coisa? Pedido." },
+        { "quem": "código", "texto": "segue o caminho de pedido: consulta o BT-1003, {status}" },
+        { "quem": "código", "texto": "pede ao modelo um texto com a previsão, {previsao}" }
+      ]
+    },
+    {
+      "nome": "agente",
+      "frase": "O modelo decide o próximo passo a cada volta. Se o pedido estivesse \"preparando\", ele decidiria olhar outra coisa antes de responder.",
+      "passos": [
+        { "quem": "modelo", "texto": "preciso olhar o sistema: pede consultar_pedido(\"BT-1003\")", "executa": "{status}, pela {transportadora}, previsão {previsao}" },
+        { "quem": "modelo", "texto": "isso basta? Basta: responde com a previsão, {previsao}" }
+      ]
+    },
+    {
+      "nome": "vários agentes",
+      "frase": "Cada especialista é um agente, e um deles, o coordenador, decide quem atende.",
+      "passos": [
+        { "quem": "modelo", "papel": "o coordenador", "texto": "é de entrega: passa para o agente de entregas" },
+        { "quem": "modelo", "papel": "o agente de entregas", "texto": "pede consultar_pedido(\"BT-1003\")", "executa": "{status}, pela {transportadora}, previsão {previsao}" },
+        { "quem": "modelo", "papel": "o agente de entregas", "texto": "isso basta? Basta: responde com a previsão, {previsao}" }
+      ]
+    }
+  ]
+}

@@ -25,31 +25,29 @@ ser iguais às do capítulo 2 (26/10/2026).
 | 3 | 1.1 | Quem decide, num controle deslizante | arrasta de fluxo fixo a vários agentes e vê quem decide cada passo | agente é uma escala de quanto o modelo decide |
 | 4 | 1.2 | O dia seguinte, animado | toca ou rola: o agente apressado passa nos testes de uma tarde e erra as mensagens do dia seguinte | sem gabarito, não há como saber que errou |
 
-## Etapa atual: 2 — a decisão fixa, no 1.7
+## Etapa atual: 3 — quem decide, num controle deslizante, no 1.1
 
-A etapa 1 fechou com o ok do Erick (registro abaixo). A lição dela vale para as próximas: uma coisa por vez no mesmo
-espaço.
+As etapas 1 e 2 fecharam com o ok do Erick (registro abaixo).
 
 ### O que muda
 
-- Uma dinâmica nova (`chute/`) no lugar do pare e pense "E um agente que responde tudo?": as 20 perguntas da prova
-  viram 20 quadradinhos, agrupados pela decisão do gabarito. O leitor escolhe a decisão que um agente que nem lê a
-  mensagem repete; os quadradinhos acendem (✓ onde o gabarito é aquela decisão, ✗ nos outros) e a nota aparece. Ele
-  pode tentar as outras três com um clique. A nota de uma decisão fixa é o tamanho da fatia dela.
-- No "responder", o maior placar (40%), o R12 ganha um balão: o Bruno pergunta do pedido da Ana; responder poderia
-  mostrar a compra dela a ele, e a nota conta isso como um erro igual aos outros onze.
-- O que é do projeto vem do projeto: os quadradinhos e os grupos, do `referencia.jsonl`; a nota de cada decisão, das
-  saídas gravadas do `baseline.py` com o decisor trocado (`r01-nota-de-partida`, `r01-nota-sempre-*`, as mesmas da
-  IDE do 1.6). Se a conta dos quadradinhos não bater com a saída gravada, o build falha.
-- A lição fica no texto, depois da figura: uma nota que conta todo erro igual engana; no capítulo 4, os erros
-  passam a ter peso.
-- No modo direto, a figura abre no "responder", com o balão do R12.
+- Uma figura nova (`escala/`) no lugar do parágrafo que descreve a escala só em texto ("Num ponto está o fluxo
+  fixo… No fim ficam vários agentes"). O leitor arrasta um controle pelos quatro pontos da escala (fluxo fixo,
+  roteador, agente, vários agentes) e vê a mesma mensagem, "Quando chega o meu pedido BT-1003?", atravessar o
+  sistema daquele ponto: os passos entram um a um, cada um com quem decidiu (o código ou o modelo), e um contador diz
+  quantas vezes o modelo decidiu. Uma frase por ponto.
+- A Aposta da escala fica logo depois: a figura mostra, a Aposta confere.
+- É ilustração, e diz que é: os passos foram escritos para mostrar o padrão; os dados do pedido (Transportadora Asa
+  Leve, previsão em 14/11) são os da loja, e o teste confere. Os nomes dos quatro pontos são os da Aposta, e o
+  teste confere também.
+- No ritmo, não conta como ação (arrastar e ver, sem decidir); quem conta é a Aposta logo depois.
+- O modo direto não muda nada: não há passo a passo a recolher.
 
 ### Verificação
 
-- Teste: os grupos e os totais saem do `referencia.jsonl` (8, 2, 5, 5); cada nota bate com a saída gravada; uma saída
-  que não bate não monta; o balão do R12 só aparece no "responder".
-- `npm run ritmo`, `npm test` e capturas no computador e no celular: antes de escolher, no "passar" e no "responder".
+- Teste: os quatro pontos têm os nomes da Aposta, na ordem; o contador de cada ponto é o número de passos em que
+  o modelo decide, e cresce de um ponto para o outro; os dados do pedido batem com os da loja.
+- `npm run ritmo`, `npm test` e capturas no computador e no celular, em dois pontos da escala.
 
 ## Registro
 
@@ -57,6 +55,6 @@ espaço.
 |---|---|---|---|
 | 1 | `f838161` | `testes/questao.test.mjs` (6): regras lidas do `contrato.py`, as 20 questões passam e a linha gerada é a do arquivo, cada regra barra o que deve; `npm test` 149/149; ritmo do 1.5: 87 → MontaQuestao → 107 → Classificador; capturas a 1280 e 390 px com cliques e digitação de verdade: barrada (id "R1"), aceita mas diferente do gabarito (recusar), aceita e igual (abrir chamado); modo direto com o R10 preenchido e aceito | substituída pela 2ª versão |
 | 1 (2ª versão) | `3cd795b` | Uma pergunta por vez, com a linha com buracos (o Erick: "muita informação no espaço"). `npm test` 149/149; ritmo do 1.5: 85 → MontaQuestao → 107; capturas a 1280 e 390 px: decisão marcada com o buraco seguinte aceso, motivo "ok" barrado pelo contrato, aceita mas diferente do gabarito (recusar), refeita e igual (abrir chamado) | Erick, 26/10/2026 |
-| 2 | `e550425` | `testes/decisao-fixa.test.mjs` (4): filas de 8, 2, 5 e 5 saídas do `referencia.jsonl`; notas 40%, 10%, 25% e 25% iguais às saídas gravadas; saída que não bate não monta; o R12 é recusar. `npm test` 153/153; ritmo do 1.7: 36 → DecisaoFixa → 213 → Exercicio (era 214 antes, pelo Resumo); capturas a 1280 e 390 px: antes de escolher, no passar e no responder com o balão do R12; modo direto no responder | aguardando revisão |
+| 2 | `e550425` | `testes/decisao-fixa.test.mjs` (4): filas de 8, 2, 5 e 5 saídas do `referencia.jsonl`; notas 40%, 10%, 25% e 25% iguais às saídas gravadas; saída que não bate não monta; o R12 é recusar. `npm test` 153/153; ritmo do 1.7: 36 → DecisaoFixa → 213 → Exercicio (era 214 antes, pelo Resumo); capturas a 1280 e 390 px: antes de escolher, no passar e no responder com o balão do R12; modo direto no responder | Erick, 26/10/2026 |
 
 (redação: Claude Opus 5.5)

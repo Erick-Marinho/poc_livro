@@ -25,6 +25,9 @@ import FiguraLaco from "../../../src/components/livro/FiguraLaco.astro";
 import laco from "../figuras/laco.json";
 import clientesDaLoja from "../projeto/dados/clientes.json";
 import escala from "../figuras/escala.json";
+import quemDecide from "../figuras/quem-decide.json";
+import pedidosDaLoja from "../projeto/dados/pedidos.json";
+import QuemDecide from "../../../src/components/livro/QuemDecide.astro";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
@@ -69,7 +72,9 @@ O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o cami
 
 <Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
 
-Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala. Num ponto está o **fluxo fixo**: o seu código decide a ordem. Um passo adiante, o **roteador**: o modelo toma uma decisão só, entre caminhos desenhados por você. Mais adiante, o **agente** decide o próximo passo a cada volta: usar uma ferramenta, responder ou parar. No fim ficam **vários agentes**, cada um especialista, coordenados por um deles.
+Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala, do **fluxo fixo** aos **vários agentes**. Arraste por ela e acompanhe a mesma mensagem:
+
+<QuemDecide dados={quemDecide} aposta={escala} pedidos={pedidosDaLoja} ilustracao="Ilustração: os passos foram escritos para mostrar o padrão. Os dados do pedido são os da loja." />
 
 <Aposta dados={escala} pergunta="Onde cada um destes sistemas fica na escala?" ilustracao="Ilustração: os quatro sistemas foram escritos para o exemplo; o segundo é o agente do capítulo 2." />
 
