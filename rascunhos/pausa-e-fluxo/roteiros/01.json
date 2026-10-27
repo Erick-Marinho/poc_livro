@@ -1,0 +1,374 @@
+{
+  "experimento": "pausa-e-fluxo",
+  "sobre": "Construção do medidor da pausa e do fluxo. O modelo não roda no build: os comandos leem as coletas reais gravadas numa máquina identificada; na máquina do leitor, coletar.py mede de verdade.",
+  "passos": [
+    {
+      "acao": "rodar",
+      "id": "pf-init",
+      "comando": "uv init --bare pausa-e-fluxo",
+      "nota": "O projeto nasce vazio, sem exemplo pronto.",
+      "onde": "acima"
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "pyproject.toml",
+        "uv.lock",
+        "casos.jsonl",
+        "dados/politica.md",
+        "dados/catalogo.json",
+        "dados/pedidos.json"
+      ],
+      "nota": "As três mensagens da loja (casos.jsonl) e o material que elas levam (dados/). A pergunta é a mesma nas três; só muda quanto o modelo tem de ler antes de responder."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "medidor.py",
+      "partes": [
+        {
+          "linhas": "1-15"
+        },
+        {
+          "texto": "def montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n"
+        }
+      ],
+      "nota": "montar junta o que o modelo vai ler: o material da loja e, no fim, a pergunta.",
+      "blocos": [
+        {
+          "linhas": "1-13",
+          "titulo": "o endereço e o modelo",
+          "texto": "O Ollama atende em localhost:11434. O modelo é o llama3.2:3b, pequeno o bastante para rodar no processador."
+        },
+        {
+          "linhas": "21-21",
+          "titulo": "o que o modelo lê",
+          "texto": "Uma mensagem é o material da loja, um depois do outro, com a pergunta no fim."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-tamanhos",
+      "comando": "uv run python -c \"import json; from medidor import montar; [print(c['id'], len(montar(c).split()), 'palavras') for c in map(json.loads, open('casos.jsonl'))]\"",
+      "nota": "O tamanho de cada mensagem, em palavras: é isso que o modelo vai ler antes da primeira palavra da resposta."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "medidor.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "23-29"
+        },
+        {
+          "texto": "        if pausa is None:\n"
+        },
+        {
+          "linhas": "31-40"
+        }
+      ],
+      "nota": "ler recebe a resposta aos pedaços, um por linha, e marca no relógio quando a pausa acaba. O último pedaço traz as contas do Ollama.",
+      "blocos": [
+        {
+          "linhas": "31-31",
+          "titulo": "a pausa",
+          "texto": "A pausa vai do pedido até o primeiro pedaço que chega. O relógio marca esse instante."
+        },
+        {
+          "linhas": "32-39",
+          "titulo": "as contas do Ollama",
+          "texto": "O último pedaço diz quantos tokens o modelo leu, quantos vieram do cache e quanto tempo levou para escrever. O fluxo é tokens escritos por segundo."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "test_medidor.py",
+      "partes": [
+        {
+          "linhas": "1-48"
+        }
+      ],
+      "nota": "Os testes fingem ser o Ollama: mandam pedaços de mentira, cada um num segundo marcado por um relógio de mentira. Assim dá para testar sem o modelo.",
+      "blocos": [
+        {
+          "linhas": "11-23",
+          "titulo": "o relógio e os pedaços de mentira",
+          "texto": "chegando entrega os pedaços na ordem e acerta o relógio para o segundo de cada um."
+        },
+        {
+          "linhas": "30-33",
+          "titulo": "o primeiro pedaço vem vazio",
+          "texto": "É o que o Ollama faz às vezes: um pedaço sem texto antes da primeira palavra."
+        }
+      ]
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-teste-ler",
+      "comando": "uv run python -m unittest -q test_medidor.LerTest",
+      "nota": "Rode os testes de ler.",
+      "espera": 1,
+      "aposta": {
+        "pergunta": "O primeiro pedaço chega vazio no segundo 1,0; a palavra \"O\" chega no 2,5. O teste espera uma pausa de 2,5. Ele passa?",
+        "opcoes": [
+          "Passa",
+          "Falha"
+        ],
+        "certa": 1
+      },
+      "pergunta_saida": {
+        "texto": "Por que a pausa saiu 1,0?",
+        "opcoes": [
+          "O relógio de mentira está errado",
+          "ler parou a pausa no primeiro pedaço, mesmo vazio",
+          "O Ollama mandou a palavra antes"
+        ],
+        "certa": 1,
+        "evidencia": "1.0 != 2.5",
+        "porque": "A linha do if pergunta só se a pausa já foi marcada. Não pergunta se o pedaço tem texto, e o pedaço vazio chegou no segundo 1,0."
+      }
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "medidor.py",
+      "de": "        if pausa is None:\n",
+      "para": [
+        {
+          "linhas": "30-30"
+        }
+      ],
+      "nota": "A pausa só acaba num pedaço com texto: pedaco.get(\"response\") é vazio no pedaço sem palavra."
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-teste-ler-ok",
+      "comando": "uv run python -m unittest -q test_medidor.LerTest",
+      "nota": "Rode de novo."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "medidor.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "41-50"
+        }
+      ],
+      "nota": "perguntar manda o texto ao Ollama e passa a resposta, aos pedaços, para ler. Ele precisa do Ollama ligado; aqui no experimento ele não roda.",
+      "blocos": [
+        {
+          "linhas": "45-46",
+          "titulo": "o pedido",
+          "texto": "stream: a resposta vem aos pedaços. temperature 0: sem sorteio. num_predict 64: no máximo 64 tokens de resposta."
+        },
+        {
+          "linhas": "48-50",
+          "titulo": "o relógio começa",
+          "texto": "O relógio começa logo antes de mandar o pedido. Tudo até o primeiro pedaço com texto é pausa."
+        }
+      ],
+      "duvidas": [
+        {
+          "pergunta": "O que é num_gpu 0?",
+          "resposta": "Nenhuma parte do modelo vai para a placa de vídeo. Assim todo leitor mede no processador, como nós medimos; numa placa de vídeo, a pausa fica curta demais para ver."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "placar.py",
+      "partes": [
+        {
+          "linhas": "1-21"
+        }
+      ],
+      "nota": "O placar conta, de dez rodadas, em quantas cada parte da afirmação se confirmou.",
+      "blocos": [
+        {
+          "linhas": "5-5",
+          "titulo": "quase não muda",
+          "texto": "O fluxo da longa conta como igual ao da curta se ficar a até 20% dele. A régua foi escolhida antes de medir."
+        },
+        {
+          "linhas": "13-16",
+          "titulo": "as três contas",
+          "texto": "A pausa da longa maior que a da curta; o fluxo dentro dos 20%; e a longa pedida de novo começando mais rápido."
+        }
+      ]
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_medidor.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "63-93"
+        }
+      ],
+      "nota": "Os testes do placar, com rodadas de mentira."
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-testes",
+      "comando": "uv run python -m unittest -q",
+      "nota": "Rode todos os testes."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "maquina.py"
+      ],
+      "nota": "maquina.py anota onde a coleta rodou: a data, as versões, o modelo e o processador. Sem isso, um número de tempo não diz nada. Vem pronto."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "coletar.py",
+      "partes": [
+        {
+          "linhas": "1-7"
+        },
+        {
+          "texto": "\nfrom maquina import ambiente\nfrom medidor import PASTA, montar, perguntar\n"
+        },
+        {
+          "linhas": "12-15"
+        },
+        {
+          "texto": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrodadas = []\nfor n in range(RODADAS):\n    rodada = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    rodada[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n"
+        },
+        {
+          "linhas": "24-27"
+        }
+      ],
+      "nota": "coletar repete o medidor dez vezes: a curta, a média, a longa e a longa de novo, logo em seguida. Grava tudo em coleta.json.",
+      "blocos": [
+        {
+          "linhas": "18-18",
+          "titulo": "o aquecimento",
+          "texto": "A primeira chamada carrega o modelo na memória e demora mais. Ela não entra na conta."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "medir.py",
+      "partes": [
+        {
+          "linhas": "1-22"
+        }
+      ],
+      "nota": "medir lê uma coleta gravada e mostra o meio de cada caso e o placar."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "coleta-sem-numero.json"
+      ],
+      "nota": "Aqui no experimento, a coleta que gravamos com este código, numa máquina com Ryzen 7 5700G, em uns 5 minutos. Na sua máquina, com o Ollama ligado: uv run python coletar.py (ela grava coleta.json)."
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-ingenua",
+      "comando": "uv run python medir.py coleta-sem-numero.json",
+      "nota": "Leia a coleta gravada.",
+      "aposta": {
+        "pergunta": "A longa tem 430 palavras; a curta, 10. Em quantas das 10 rodadas a pausa da longa foi maior que a da curta?",
+        "opcoes": [
+          "Em quase todas",
+          "Em umas cinco",
+          "Em quase nenhuma"
+        ],
+        "certa": 2
+      }
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-rodadas",
+      "comando": "uv run python -c \"import json; r = json.load(open('coleta-sem-numero.json'))['rodadas']; [print('rodada', n + 1, '· longa: pausa', round(x['longa']['pausa'], 2), 's ·', x['longa']['do_cache'], 'de', x['longa']['lidos'], 'tokens vieram do cache') for n, x in enumerate(r[:3])]\"",
+      "nota": "Olhe a longa rodada por rodada.",
+      "pergunta_saida": {
+        "texto": "O que mudou da rodada 1 para a 2?",
+        "opcoes": [
+          "O modelo ficou mais rápido depois de aquecer",
+          "Na rodada 2, o Ollama já tinha lido aquela mensagem e reaproveitou a leitura",
+          "A mensagem longa ficou menor"
+        ],
+        "certa": 1,
+        "evidencia": "tokens vieram do cache",
+        "porque": "Na rodada 1, o modelo leu quase tudo do zero. Da 2 em diante, quase todos os tokens vieram do cache: o Ollama guarda as leituras anteriores, e não só a última."
+      }
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "medidor.py",
+      "de": "def montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n",
+      "para": [
+        {
+          "linhas": "16-22"
+        }
+      ],
+      "nota": "Cada pedido começa com o seu número de atendimento. Um começo diferente obriga o modelo a ler tudo de novo; o resto do texto é o mesmo."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_medidor.py",
+      "depois": "            ler(chegando(relogio, (2.0, {\"response\": \"O\"})), 0.0, relogio)\n",
+      "partes": [
+        {
+          "linhas": "49-62"
+        }
+      ],
+      "nota": "Os testes de montar: o número vem primeiro, e dois atendimentos só diferem no começo."
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-testes-todos",
+      "comando": "uv run python -m unittest -q",
+      "nota": "Rode todos os testes."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "coletar.py",
+      "de": "import json\n\nfrom maquina import ambiente\nfrom medidor import PASTA, montar, perguntar\n",
+      "para": [
+        {
+          "linhas": "7-11"
+        }
+      ],
+      "nota": "coletar passa a falar com o Ollama também para tirar o modelo da memória."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "coletar.py",
+      "de": "perguntar(\"Oi.\")  # o aquecimento não entra na conta\nrodadas = []\nfor n in range(RODADAS):\n    rodada = {cid: perguntar(montar(casos[cid])) for cid in [\"curta\", \"media\", \"longa\"]}\n    rodada[\"de_novo\"] = perguntar(montar(casos[\"longa\"]))  # o mesmo texto da longa\n",
+      "para": [
+        {
+          "linhas": "16-23"
+        }
+      ],
+      "nota": "Antes de começar, o modelo sai da memória e leva junto o cache de uma coleta anterior. Cada pedido ganha o seu número; só a longa de novo repete o da longa, de propósito."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "coleta.json"
+      ],
+      "nota": "A coleta que gravamos com o código corrigido, na mesma máquina. Na sua: uv run python coletar.py."
+    },
+    {
+      "acao": "rodar",
+      "id": "pf-limpa",
+      "comando": "uv run python medir.py",
+      "nota": "Leia a coleta corrigida.",
+      "aposta": {
+        "pergunta": "E a longa pedida de novo, logo em seguida, com o mesmo número de atendimento?",
+        "opcoes": [
+          "Demora o mesmo que a longa",
+          "Começa quase na hora"
+        ],
+        "certa": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "pf-init": {
+    "comando": "uv init --bare pausa-e-fluxo",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Initialized project `pausa-e-fluxo` at `/home/voce/pausa-e-fluxo`",
+        ""
+      ]
+    ]
+  },
+  "pf-tamanhos": {
+    "comando": "uv run python -c \"import json; from medidor import montar; [print(c['id'], len(montar(c).split()), 'palavras') for c in map(json.loads, open('casos.jsonl'))]\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "curta 10 palavras",
+        ""
+      ],
+      [
+        "media 82 palavras",
+        ""
+      ],
+      [
+        "longa 430 palavras",
+        ""
+      ],
+      [
+        "Using CPython 3.13.17",
+        ""
+      ],
+      [
+        "Creating virtual environment at: .venv",
+        ""
+      ]
+    ]
+  },
+  "pf-teste-ler": {
+    "comando": "uv run python -m unittest -q test_medidor.LerTest",
+    "saiu_com": 1,
+    "saida": [
+      [
+        "======================================================================",
+        ""
+      ],
+      [
+        "FAIL: test_a_pausa_acaba_no_primeiro_pedaco_com_texto (test_medidor.LerTest.test_a_pausa_acaba_no_primeiro_pedaco_com_texto)",
+        ""
+      ],
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Traceback (most recent call last):",
+        "err"
+      ],
+      [
+        "  File \"/home/voce/pausa-e-fluxo/test_medidor.py\", line 33, in test_a_pausa_acaba_no_primeiro_pedaco_com_texto",
+        ""
+      ],
+      [
+        "    self.assertEqual(ler(pedacos, 0.0, relogio)[\"pausa\"], 2.5)",
+        ""
+      ],
+      [
+        "    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        ""
+      ],
+      [
+        "AssertionError: 1.0 != 2.5",
+        "err"
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 4 tests in 0.001s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "FAILED (failures=1)",
+        "err"
+      ]
+    ]
+  },
+  "pf-teste-ler-ok": {
+    "comando": "uv run python -m unittest -q test_medidor.LerTest",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 4 tests in 0.000s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "pf-testes": {
+    "comando": "uv run python -m unittest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 6 tests in 0.000s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "pf-ingenua": {
+    "comando": "uv run python medir.py coleta-sem-numero.json",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): AMD Ryzen 7 5700G with Radeon Graphics, 16 GB",
+        ""
+      ],
+      [
+        "curta    lê    45 tokens   pausa  0.16 s   fluxo  15.2 tokens/s   do cache     44",
+        ""
+      ],
+      [
+        "media    lê   367 tokens   pausa  0.09 s   fluxo  14.8 tokens/s   do cache    366",
+        ""
+      ],
+      [
+        "longa    lê  1072 tokens   pausa  0.14 s   fluxo  13.1 tokens/s   do cache   1071",
+        ""
+      ],
+      [
+        "de_novo  lê  1072 tokens   pausa  0.08 s   fluxo  13.2 tokens/s   do cache   1071",
+        ""
+      ],
+      [
+        "a pausa da longa foi maior que a da curta: 1 de 10 (10%)",
+        ""
+      ],
+      [
+        "o fluxo da longa ficou a até 20% do da curta: 10 de 10 (100%)",
+        ""
+      ],
+      [
+        "a longa pedida de novo começou mais rápido, lendo do cache: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  },
+  "pf-rodadas": {
+    "comando": "uv run python -c \"import json; r = json.load(open('coleta-sem-numero.json'))['rodadas']; [print('rodada', n + 1, '· longa: pausa', round(x['longa']['pausa'], 2), 's ·', x['longa']['do_cache'], 'de', x['longa']['lidos'], 'tokens vieram do cache') for n, x in enumerate(r[:3])]\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "rodada 1 · longa: pausa 9.53 s · 20 de 1072 tokens vieram do cache",
+        ""
+      ],
+      [
+        "rodada 2 · longa: pausa 0.14 s · 1071 de 1072 tokens vieram do cache",
+        ""
+      ],
+      [
+        "rodada 3 · longa: pausa 0.14 s · 1071 de 1072 tokens vieram do cache",
+        ""
+      ]
+    ]
+  },
+  "pf-testes-todos": {
+    "comando": "uv run python -m unittest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 8 tests in 0.000s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "pf-limpa": {
+    "comando": "uv run python medir.py",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): AMD Ryzen 7 5700G with Radeon Graphics, 16 GB",
+        ""
+      ],
+      [
+        "curta    lê    50 tokens   pausa  0.38 s   fluxo  15.7 tokens/s   do cache     23",
+        ""
+      ],
+      [
+        "media    lê   372 tokens   pausa  3.10 s   fluxo  15.1 tokens/s   do cache     23",
+        ""
+      ],
+      [
+        "longa    lê  1077 tokens   pausa  9.77 s   fluxo  13.3 tokens/s   do cache     23",
+        ""
+      ],
+      [
+        "de_novo  lê  1077 tokens   pausa  0.08 s   fluxo  13.2 tokens/s   do cache   1076",
+        ""
+      ],
+      [
+        "a pausa da longa foi maior que a da curta: 10 de 10 (100%)",
+        ""
+      ],
+      [
+        "o fluxo da longa ficou a até 20% do da curta: 8 de 10 (80%)",
+        ""
+      ],
+      [
+        "a longa pedida de novo começou mais rápido, lendo do cache: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  }
+}

@@ -61,18 +61,22 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 5 (detalhe)
+## Etapa 6 (detalhe)
 
-- **Arquivos:** `rascunhos/pausa-e-fluxo/figuras/pausa.json` (a ilustração: a pergunta, a resposta em pedaços, as
-  três mensagens com as palavras do corpus); em `src/components/livro/pausa/`: `pausa.ts` (as cenas, os balões e os
-  resumos, puro, para o teste), `PausaAnimada.tsx` (Remotion) e `FiguraPausa.tsx` (com `palco/RolaCena`, como a
-  figura da temperatura zero); `src/components/livro/PausaEFluxo.astro`; `scripts/ritmo.mjs` (a figura não conta como
-  ação); `testes/pausa-e-fluxo.test.mjs`.
-- (5) A figura aparece só no `astro dev`, em `/rascunhos/pausa-e-fluxo/`: no build, a rota não gera página.
-- **Evidência:** o teste (seis cenas em até 45 s, um balão de uma frase por cena, sem número da coleta, sem "token",
-  "prefill", "decode" nem "cache", as palavras das mensagens iguais às do corpus); capturas das seis cenas a 1280 e
-  390 px; o build sem a página de rascunho.
-- **Fica fora:** a página do experimento (etapa 7).
+- (6, 27/10/2026, Erick: "a") O build não chama o Ollama: os comandos da IDE leem coletas reais gravadas nesta
+  máquina; na do leitor, `coletar.py` mede de verdade. Duas coletas: a ingênua (sem o número de atendimento, o código
+  do passo em que o leitor está) e a corrigida, cada uma gravada com o código daquele momento.
+- **Arquivos:** em `rascunhos/pausa-e-fluxo/`: `roteiros/01.json` (26 passos, da pasta vazia ao projeto), `passos/01.json`
+  (nove passos do chat em quatro seções), `comandos.json`, `glossario.json`, `saidas.json` e `roteiros/01.estados.json`
+  (gravados pelo `scripts/saidas.py`); no projeto, `maquina.py` (sai do `coletar.py`), `coleta-sem-numero.json`, e o
+  `medir.py` recebe o nome da coleta. `src/lib/livroDaPagina.ts` reconhece `/rascunhos/<experimento>/`.
+- **O caminho do leitor:** monta o texto (10, 82, 430 palavras); escreve `ler` com a pausa parando no pedaço vazio,
+  aposta, o teste falha (`1.0 != 2.5`) e ele conserta; `perguntar` e o placar; a coleta ingênua, com aposta: a longa
+  quase nunca demora mais; rodada por rodada, o cache; o número de atendimento; a coleta corrigida, com aposta.
+- **Evidência:** `scripts/saidas.py rascunhos/pausa-e-fluxo` monta o roteiro da pasta vazia até ser igual ao
+  `projeto/`, e `--conferir` passa; a IDE em `/rascunhos/pausa-e-fluxo/`, com capturas do erro, da coleta ingênua e
+  da corrigida.
+- **Fica fora:** a página no molde (etapa 7).
 
 ## Registro
 
@@ -82,5 +86,6 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 2 | `790450c` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
 | 3 | `673080f` | `coleta.json`: 10 rodadas na CPU (Ryzen 7 5700G, Ollama 0.40.11, `llama3.2:3b`); `medir.py`: pausa 0,38 → 3,12 → 9,74 s, fluxo 15,4 → 13,2 tokens/s, longa de novo 0,08 s com 1076 de 1077 do cache; placar 10 de 10 nas três partes. A primeira coleta (cache a partir da rodada 2) refeita. `test_medidor.py` 8/8; o critério antigo do cache falha 2 | Erick, 27/10/2026 |
 | 4 | `74b912b` | `figuras/esboco.md`: a cena 2 em ASCII e as seis cenas (ler, a pausa, escrever, o fluxo, o medidor, a pergunta), sem números da coleta e sem o cache | Erick, 27/10/2026 |
+| 5 | `08d6286` | `testes/pausa-e-fluxo.test.mjs` (4): seis cenas em até 45 s, um balão curto por cena, um resumo por cena, sem número da coleta nem "token/prefill/decode/cache", as palavras das mensagens iguais às do corpus, o build sem a página de rascunho; falha com "um token por vez". Testes do livro 191/191. Capturas das seis cenas a 1280 e 390 px, tocando em `/rascunhos/pausa-e-fluxo/`; ajustes: a mensagem cortada, "leu ✓" na pausa, a linha da longa no celular | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

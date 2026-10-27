@@ -1,0 +1,18 @@
+{
+  "sobre": "As palavras do código do experimento que o leitor pode perguntar no chat.",
+  "termos": {
+    "token": {
+      "texto": "Um pedaço de texto: uma palavra ou parte dela. O modelo lê e escreve em tokens; 430 palavras viram uns mil tokens."
+    },
+    "stream": {
+      "texto": "A resposta vem aos pedaços, à medida que o modelo escreve, em vez de chegar inteira no fim. É o que deixa medir a pausa."
+    },
+    "cache": {
+      "rotulo": "prompt_eval_cached_count",
+      "texto": "Quantos tokens do texto o Ollama não precisou ler de novo, porque já tinha lido o mesmo começo antes."
+    },
+    "eval_duration": {
+      "texto": "O tempo que o modelo levou escrevendo a resposta, em nanossegundos (bilionésimos de segundo)."
+    }
+  }
+}

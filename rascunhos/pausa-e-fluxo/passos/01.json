@@ -1,0 +1,118 @@
+{
+  "autores": [
+    "Erick Marinho",
+    "Victor Fontela"
+  ],
+  "passos": [
+    {
+      "id": "pasta",
+      "secao": "1",
+      "titulo": "O projeto nasce",
+      "curta": "o projeto nasce",
+      "de": 1,
+      "ate": 2,
+      "pedido": "Quero medir quanto o modelo demora para começar a responder. Cria o projeto com as mensagens da loja.",
+      "objetivo": "uma pasta com as três mensagens e o material da loja.",
+      "temos": "uma pasta com as três mensagens e o material da loja.",
+      "depois": []
+    },
+    {
+      "id": "mensagens",
+      "secao": "1",
+      "titulo": "O que o modelo lê",
+      "curta": "o que o modelo lê",
+      "de": 3,
+      "ate": 4,
+      "pedido": "Monta o texto que o modelo vai ler em cada mensagem.",
+      "objetivo": "montar, e o tamanho de cada mensagem: 10, 82 e 430 palavras.",
+      "temos": "montar, e o tamanho de cada mensagem: 10, 82 e 430 palavras.",
+      "depois": []
+    },
+    {
+      "id": "pausa",
+      "secao": "2",
+      "titulo": "Medir a pausa",
+      "curta": "medir a pausa",
+      "de": 5,
+      "ate": 9,
+      "pedido": "Agora marca no relógio quando a primeira palavra chega.",
+      "objetivo": "ler, testado sem o modelo: a pausa acaba no primeiro pedaço com texto.",
+      "temos": "ler, testado sem o modelo: a pausa acaba no primeiro pedaço com texto.",
+      "depois": []
+    },
+    {
+      "id": "ollama",
+      "secao": "2",
+      "titulo": "Falar com o Ollama",
+      "curta": "falar com o Ollama",
+      "de": 10,
+      "ate": 10,
+      "pedido": "Liga o medidor no Ollama.",
+      "objetivo": "perguntar: o pedido ao Ollama, aos pedaços, só no processador.",
+      "temos": "perguntar: o pedido ao Ollama, aos pedaços, só no processador.",
+      "depois": []
+    },
+    {
+      "id": "placar",
+      "secao": "2",
+      "titulo": "O placar",
+      "curta": "o placar",
+      "de": 11,
+      "ate": 13,
+      "pedido": "Conta em quantas rodadas a afirmação se confirma.",
+      "objetivo": "o placar das três partes, testado com rodadas de mentira.",
+      "temos": "o placar das três partes, testado com rodadas de mentira.",
+      "depois": []
+    },
+    {
+      "id": "coletar",
+      "secao": "3",
+      "titulo": "Dez rodadas",
+      "curta": "dez rodadas",
+      "de": 14,
+      "ate": 16,
+      "pedido": "Repete o medidor dez vezes e anota a máquina.",
+      "objetivo": "coletar, que grava a coleta, e medir, que lê.",
+      "temos": "coletar, que grava a coleta, e medir, que lê.",
+      "depois": []
+    },
+    {
+      "id": "primeira",
+      "secao": "3",
+      "titulo": "A primeira coleta",
+      "curta": "a primeira coleta",
+      "de": 17,
+      "ate": 19,
+      "pedido": "Lê a coleta e me diz se a pausa cresceu.",
+      "objetivo": "uma coleta em que a longa quase nunca demorou mais, e o motivo: o cache.",
+      "temos": "uma coleta em que a longa quase nunca demorou mais, e o motivo: o cache.",
+      "depois": []
+    },
+    {
+      "id": "conserto",
+      "secao": "4",
+      "titulo": "Cada atendimento começa diferente",
+      "curta": "cada atendimento começa diferente",
+      "de": 20,
+      "ate": 24,
+      "pedido": "Faz o modelo ler cada mensagem do zero.",
+      "objetivo": "montar com o número do atendimento, testado, e a coleta que tira o modelo da memória.",
+      "temos": "montar com o número do atendimento, testado, e a coleta que tira o modelo da memória.",
+      "depois": []
+    },
+    {
+      "id": "corrigida",
+      "secao": "4",
+      "titulo": "A coleta corrigida",
+      "curta": "a coleta corrigida",
+      "de": 25,
+      "ate": 26,
+      "pedido": "Lê a coleta corrigida.",
+      "objetivo": "o placar da afirmação, medido de verdade.",
+      "temos": "o placar da afirmação, medido de verdade.",
+      "depois": [
+        "Bom lugar para parar: você tem o medidor e duas coletas. Na sua máquina, com o Ollama ligado, rode uv run python coletar.py e compare com as nossas."
+      ]
+    }
+  ]
+}

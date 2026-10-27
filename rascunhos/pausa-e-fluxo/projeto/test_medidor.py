@@ -6,7 +6,6 @@ import json
 import unittest
 
 from medidor import ler, montar
-from placar import placar
 
 
 class Relogio:
@@ -27,7 +26,7 @@ def chegando(relogio, *pares):
 FIM = {"done": True, "prompt_eval_count": 600, "prompt_eval_cached_count": 450, "eval_count": 64, "eval_duration": 4_000_000_000}
 
 
-class MedidorTest(unittest.TestCase):
+class LerTest(unittest.TestCase):
     def test_a_pausa_acaba_no_primeiro_pedaco_com_texto(self):
         relogio = Relogio()
         pedacos = chegando(relogio, (1.0, {"response": ""}), (2.5, {"response": "O"}), (2.7, {"response": " pedido"}), (6.5, FIM))
@@ -48,6 +47,8 @@ class MedidorTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             ler(chegando(relogio, (2.0, {"response": "O"})), 0.0, relogio)
 
+
+class MontarTest(unittest.TestCase):
     def test_o_texto_le_o_material_e_termina_na_pergunta(self):
         curta = montar({"material": [], "pergunta": "Já saiu?"}, 1)
         longa = montar({"material": ["politica.md", "pedidos.json"], "pergunta": "Já saiu?"}, 2)
@@ -59,6 +60,9 @@ class MedidorTest(unittest.TestCase):
         primeira, segunda = montar(longa, 3), montar(longa, 4)
         self.assertNotEqual(primeira[:14], segunda[:14], "o começo é o que o cache reaproveita")
         self.assertEqual(primeira[14:], segunda[14:], "o resto é o mesmo texto")
+
+
+from placar import placar  # noqa: E402  (o placar vem depois do medidor)
 
 
 def rodada(curta, longa, de_novo):

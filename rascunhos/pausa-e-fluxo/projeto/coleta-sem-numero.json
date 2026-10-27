@@ -1,0 +1,315 @@
+{
+ "ambiente": {
+  "quando": "2026-10-27T13:49:27+00:00",
+  "ollama": "0.40.11",
+  "modelo": "llama3.2:3b",
+  "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "onde": "CPU (num_gpu 0)",
+  "processador": "AMD Ryzen 7 5700G with Radeon Graphics",
+  "nucleos": 16,
+  "memoria_gb": 16,
+  "sistema": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43"
+ },
+ "rodadas": [
+  {
+   "curta": {
+    "pausa": 0.2629746780003188,
+    "fluxo": 15.540985342179717,
+    "lidos": 45,
+    "do_cache": 20,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 3.0780354190010257,
+    "fluxo": 14.88647319678871,
+    "lidos": 367,
+    "do_cache": 20,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 9.529343092999625,
+    "fluxo": 13.193859577752514,
+    "lidos": 1072,
+    "do_cache": 20,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.08188042800065887,
+    "fluxo": 13.41441602575568,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.1639427229983994,
+    "fluxo": 15.548321267188182,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.0838976780014491,
+    "fluxo": 14.866016541695345,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.1380073660002381,
+    "fluxo": 12.755685049380444,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.0900668059985037,
+    "fluxo": 13.317505231744937,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.1493291959995986,
+    "fluxo": 15.53838187067511,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.08780822200060356,
+    "fluxo": 14.947976374477633,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.14098615600050834,
+    "fluxo": 13.160819363367297,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.08496626200030732,
+    "fluxo": 13.252678513579577,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.15286855699923763,
+    "fluxo": 15.539630671540282,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.08246052200047416,
+    "fluxo": 14.80282863551689,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.1425491959998908,
+    "fluxo": 13.304777339007574,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.08245191800051543,
+    "fluxo": 13.160862665301348,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.15703765700163785,
+    "fluxo": 15.405294029293165,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.08396855300088646,
+    "fluxo": 14.851417370542633,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.1378773859996727,
+    "fluxo": 13.155827117814086,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.08345089999966149,
+    "fluxo": 13.438221137873908,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.1564492630004679,
+    "fluxo": 14.330760215480892,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.08843832999991719,
+    "fluxo": 14.139806006280283,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.1408643269987806,
+    "fluxo": 12.422038767112653,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.09195800899942697,
+    "fluxo": 12.001684236354501,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.17177197999990312,
+    "fluxo": 13.57838931448653,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.11677616000088165,
+    "fluxo": 13.416001054833083,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.13621766500000376,
+    "fluxo": 13.099778832067386,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.0844928019996587,
+    "fluxo": 13.172550161802823,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.15736537399970985,
+    "fluxo": 15.094229263889815,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.0842447720006021,
+    "fluxo": 14.834673360194909,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.13776465199953236,
+    "fluxo": 13.182298370338364,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.08301827200011758,
+    "fluxo": 13.164582883848153,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.16515415899993968,
+    "fluxo": 14.810142077858305,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.09342193299926294,
+    "fluxo": 13.50010177811106,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.14676112000051944,
+    "fluxo": 12.045024300836527,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.09171644800153445,
+    "fluxo": 11.258067108712588,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.16669178400115925,
+    "fluxo": 12.310599503113428,
+    "lidos": 45,
+    "do_cache": 44,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 0.08962503799921251,
+    "fluxo": 13.878747885388432,
+    "lidos": 367,
+    "do_cache": 366,
+    "escritos": 64
+   },
+   "longa": {
+    "pausa": 0.13798940499873424,
+    "fluxo": 12.964213369345037,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   },
+   "de_novo": {
+    "pausa": 0.09346174100028293,
+    "fluxo": 13.183732153438134,
+    "lidos": 1072,
+    "do_cache": 1071,
+    "escritos": 36
+   }
+  }
+ ]
+}
