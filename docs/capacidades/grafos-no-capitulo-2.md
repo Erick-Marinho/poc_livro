@@ -37,5 +37,6 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | aguardando revisão |
 
 (redação: Claude Opus 5.5)
