@@ -6,8 +6,8 @@
   },
   "mensagens": [
     {
-      "texto": "As pontuações e a regra de desempate são idênticas. O modo guloso pode escolher outro token?",
-      "opcoes": ["Sim, porque um LLM é probabilístico", "Não, a escolha fica determinada"],
+      "texto": "As pontuações são idênticas, e a regra é a mesma: escolher a maior (num empate, a primeira). Em temperatura zero, pode sair outro token?",
+      "opcoes": ["Sim, porque um modelo de linguagem é probabilístico", "Não, a escolha fica determinada"],
       "fez": 1,
       "porque": "Com os mesmos valores e a mesma regra de desempate, escolher o maior não sorteia. Ainda falta saber se o cálculo entrega os mesmos valores."
     },

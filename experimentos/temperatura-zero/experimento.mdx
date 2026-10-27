@@ -1,6 +1,6 @@
 ---
 titulo: "Temperatura zero: a mesma pergunta dá a mesma resposta?"
-lide: "Construa um medidor, encontre uma soma que muda com os parênteses e repita um modelo real. Depois separe o que a sua amostra mostrou do que ela não permite prometer."
+lide: "Com a temperatura em zero, o modelo escolhe sempre o pedaço de texto mais pontuado. Isso basta para repetir a resposta? Construa um medidor, veja uma soma mudar com a ordem e repita um modelo real."
 data: "2026-10-26"
 etiqueta: "Inferência local"
 afirmacao:
@@ -10,12 +10,12 @@ afirmacao:
     url: "https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/"
 regua:
   arquivo: "projeto/casos.jsonl"
-  conta: "Três perguntas, dez repetições em cada lote de 1, 4 e 16. Cada sequência de IDs, incluindo o controle, é comparada com a primeira execução de lote 1 da mesma pergunta, no mesmo ambiente. O percentual mede repetição, não acerto."
+  conta: "Três perguntas a um modelo real, cada uma repetida dez vezes: sozinha e em grupos de 4 e de 16 perguntas. Cada resposta é comparada, token por token, com a primeira resposta da mesma pergunta, na mesma máquina. O percentual conta as que repetiram, não as que acertaram."
 resultado:
   - rotulo: "CPU, float32: sequências iguais à referência"
     saida: "tz-medida"
-achado: "Na CPU, as 90 respostas-alvo repetiram suas referências, mesmo mudando o lote. A soma construída inverte a escolha, mas não observamos divergência neste LLM, nesta configuração. Isso não transforma uma amostra estável em garantia universal."
-custo: "Na CPU Intel i7-1355U, com quatro threads, a geração levou 1.002,79 segundos (cerca de 16 minutos e 43 segundos): 90 respostas-alvo e 540 sequências de preenchimento. O carregamento dos pesos já em cache levou 1,49 segundo; o download inicial de cerca de 1,5 GB não foi cronometrado. A leitura da coleta não carrega pesos. GPU ainda não foi medida."
+achado: "Na CPU, as 90 respostas repetiram a primeira resposta da mesma pergunta, inclusive nos grupos de 4 e de 16. A soma construída inverte a escolha, mas este modelo, nesta máquina, não mudou nenhuma resposta. Uma amostra estável não vira garantia para qualquer servidor."
+custo: "Na CPU Intel i7-1355U, com quatro threads, a geração levou 1.002,79 segundos (cerca de 16 minutos e 43 segundos): as 90 respostas medidas e 540 respostas de enchimento, que só servem para formar os grupos. O carregamento dos pesos já em cache levou 1,49 segundo; o download inicial de cerca de 1,5 GB não foi cronometrado. A leitura da coleta não carrega pesos. GPU ainda não foi medida."
 ---
 import Aposta from "../../src/components/livro/Aposta.astro";
 import MapaTemperatura from "../../src/components/livro/MapaTemperatura.astro";
@@ -30,9 +30,9 @@ import passos from "./passos/01.json";
 import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 
-Você desliga o sorteio e manda o modelo escolher sempre o token de maior pontuação. Parece suficiente para repetir a resposta. Mas a escolha é só uma parte do caminho: antes dela, alguém calculou as pontuações.
+Um modelo de linguagem escreve um pedaço de texto por vez, um **token**: uma palavra ou parte dela. A cada passo, ele dá uma pontuação a cada token possível, e um sorteio escolhe um deles. A **temperatura** regula esse sorteio; em temperatura zero, não há sorteio: vence sempre o token de maior pontuação. Parece suficiente para repetir a resposta. Mas a escolha é só a última parte do caminho: antes dela, alguém calculou as pontuações.
 
-O [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) mostrou que mudar o agrupamento de requisições pode afetar esse cálculo. Isso não significa que toda execução vai divergir, nem que duas respostas diferentes revelem sozinhas a causa. Vamos começar separando as duas coisas.
+O [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) mostrou que esse cálculo pode mudar com o **lote**: um servidor costuma juntar perguntas de várias pessoas numa conta só, e o tamanho desse grupo pode mudar a ordem em que as somas são feitas. Isso não significa que toda resposta vai mudar, nem que duas respostas diferentes revelem sozinhas a causa. Vamos começar separando as duas coisas.
 
 <Aposta dados={previsoes} pergunta="Antes de construir: o que uma escolha fixa e uma resposta repetida permitem afirmar?" />
 
@@ -42,15 +42,15 @@ Um instrumento pequeno para comparar respostas. Primeiro, uma soma em que o arre
 
 <MapaTemperatura saidas={saidas} />
 
-A temperatura atua na escolha, depois do cálculo. No modo guloso, a alternativa de maior valor vence sem sorteio. Isso não fixa os valores produzidos antes: bibliotecas podem organizar as contas de formas diferentes. O [PyTorch documenta essa diferença entre cálculo isolado e em lote](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html#batched-computations-or-slice-computations).
+A temperatura atua na escolha, depois do cálculo. Em temperatura zero, a alternativa de maior valor vence sem sorteio. Isso não fixa os valores produzidos antes: bibliotecas podem organizar as contas de formas diferentes. O [PyTorch documenta essa diferença entre cálculo isolado e em lote](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html#batched-computations-or-slice-computations).
 
 No gráfico, você conferiu os dois casos: uma conta diferente pode inverter o vencedor, mas uma alternativa que vence com folga pode continuar vencendo. Na IDE, vamos construir essa comparação e conferir os limites dela.
 
-## Uma prova de cada vez
+## A primeira prova: uma soma
 
-Na primeira parte, cada soma intermediária é arredondada para binary16, um formato de 16 bits. As entradas são as mesmas; os parênteses mudam quando ocorre o arredondamento. Um teste que pressupõe que as duas contas sempre dão o mesmo falha de verdade.
+Na primeira parte, cada soma intermediária é guardada em binary16, um formato de 16 bits que guarda poucos dígitos: perto de 1024, ele só tem números inteiros, e o resto é arredondado. As entradas são as mesmas; os parênteses mudam onde o arredondamento acontece. Um teste que pressupõe que as duas contas sempre dão o mesmo falha de verdade.
 
-Essa prova tem um limite: não executa um LLM e não mede uma GPU. Muitas operações reais acumulam em outra precisão. Para aprender o mecanismo, escolhemos valores que revelam o arredondamento; para medir um modelo, precisamos de outra coleta.
+Essa prova tem um limite: não executa um modelo de linguagem e não mede uma GPU. Muitas operações reais acumulam em outra precisão. Para aprender o mecanismo, escolhemos valores que revelam o arredondamento; para medir um modelo, precisamos de outra coleta.
 
 <PareEPense pergunta="Se você repetir mil vezes a mesma soma, com os mesmos parênteses, o arredondamento precisa produzir mil resultados diferentes?">
 Não. A ordem fixa pode repetir exatamente. Sensibilidade à ordem e variação entre execuções são coisas diferentes; o nosso controle confere isso.
@@ -62,13 +62,13 @@ Comece numa pasta vazia. Você constrói a prova numérica e o comparador; os te
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cálculo", "2": "O instrumento", "3": "A coleta", "4": "Na sua máquina" }} numero="2" legenda="O medidor construído desde a pasta vazia. A soma e os comandos são executados no projeto real; a inferência CPU foi capturada separadamente. As mensagens do chat são um roteiro, não um modelo ao vivo." />
 
-<Nota titulo="o que é inventado">As pontuações A e B da prova numérica foram construídas para revelar o mecanismo. Os IDs 10 e 20 dos testes são exemplos do comparador, não tokens capturados do modelo. A situação da loja é fictícia. A coleta do Qwen é de inferências reais e guarda os IDs de entrada e de saída; não é a continuação ilustrada de uma soma. O mapa em Remotion é um esquema do mecanismo.</Nota>
+<Nota titulo="o que é inventado">As pontuações A e B da prova numérica foram construídas para revelar o mecanismo. Os números 10 e 20 dos testes fazem o papel de tokens no comparador; não foram capturados do modelo. A situação da loja é fictícia. A coleta do Qwen é de inferências reais e guarda os tokens de entrada e de saída; não é a continuação ilustrada de uma soma. O mapa em Remotion é um esquema do mecanismo.</Nota>
 
 ## Repetir na sua máquina
 
-O caminho CPU é o padrão. O extra `modelo` instala o PyTorch sem CUDA; o extra `gpu` instala a versão para NVIDIA. Você escolhe um deles nas instruções do coletor, no último trecho da IDE e no README do projeto. Os dois alimentam o mesmo medidor, mas usam ambientes e precisões distintos. Compare lotes dentro de cada ambiente antes de atribuir uma diferença ao dispositivo.
+O caminho padrão é a CPU, que qualquer computador tem; a GPU é uma extensão, para quem tem uma placa NVIDIA. Os comandos de cada caminho estão no último trecho da IDE e no README do projeto. Os dois alimentam o mesmo medidor, mas fazem as contas com bibliotecas e precisões diferentes: compare os grupos dentro da mesma máquina antes de culpar a placa por uma diferença.
 
-O nosso coletor chama o modelo diretamente. Não manda requisições concorrentes para uma API e adivinha o tamanho do lote: os lotes são os tensores de entrada que ele constrói. Uma API fechada exigiria outras evidências para identificar o mecanismo interno.
+O nosso coletor chama o modelo diretamente, e os lotes são os grupos de perguntas que ele mesmo monta. Numa API fechada, você não vê o lote, e uma resposta diferente não diria sozinha a causa.
 
 <PareEPense pergunta="A sua máquina devolveu uma sequência diferente da gravação, mas repetiu essa nova sequência em todas as tentativas. Isso contradiz a medida?">
 Não. A referência da sua coleta é a primeira execução dela. Compare dentro do mesmo ambiente; mudar biblioteca, precisão ou dispositivo pode mudar a sequência sem causar variação entre repetições dessa coleta.
@@ -76,10 +76,10 @@ Não. A referência da sua coleta é a primeira execução dela. Compare dentro 
 
 ## O que esta medida não resolve
 
-O percentual abaixo conta sequências iguais à referência; não conta respostas certas. Mesmo quando a amostra inteira repete, a conclusão é sobre as condições registradas. Não é uma garantia para qualquer servidor, nem prova de que o conteúdo está correto.
+O percentual abaixo conta respostas iguais à primeira resposta da mesma pergunta; não conta respostas certas. Mesmo quando a amostra inteira repete, a conclusão é sobre as condições registradas. Não é uma garantia para qualquer servidor, nem prova de que o conteúdo está correto.
 
 Uma das respostas de referência termina em “compromet”, porque o limite de 48 tokens cortou a continuação. Ela repetiu assim nas dez tentativas de cada lote. O comparador preserva esse resultado; não confunde uma sequência idêntica com uma resposta completa.
 
-A comparação com kernels invariantes ao lote é uma extensão para a outra máquina com GPU. O [vLLM oferece esse modo com requisitos de hardware e limitações de versão](https://docs.vllm.ai/en/latest/features/batch_invariance/). Ela ainda não foi medida aqui. Não precisamos preencher essa lacuna com um gráfico inventado: a coleta CPU já é uma observação que você consegue conferir.
+A comparação com um modo em que o cálculo não depende do lote é uma extensão para a outra máquina, com GPU. O [vLLM oferece esse modo, com requisitos de placa e de versão](https://docs.vllm.ai/en/latest/features/batch_invariance/). Ela ainda não foi medida aqui. Não precisamos preencher essa lacuna com um gráfico inventado: a coleta CPU já é uma observação que você consegue conferir.
 
 <Pendente o="Opinião dos autores: uma reprodução difícil de um erro de modelo e o que vocês precisaram guardar para investigá-lo" parte="fecho do experimento" />

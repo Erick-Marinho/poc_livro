@@ -18,6 +18,9 @@ a coleta na GPU da outra máquina permanece pendente e não recebe placar nesta 
 - (26/10/2026, Erick) “Feito, pode seguir”: a etapa 1 e a proposta CPU/GPU têm o ok; CPU é o caminho padrão e GPU
   uma extensão, sem exigir placa de vídeo de todo leitor.
 - (26/10/2026, Erick) Pode usar Remotion nas animações. O mapa inicial terá controle do leitor e versão estática.
+- (26/10/2026, Erick) Depois da revisão do experimento, "todas" as melhorias propostas, executadas pela sessão da
+  moldura: o texto, o mapa e o resultado. A etapa 3 deste plano passa a ser feita lá
+  (`temperatura-zero-revisao.md`).
 - (26/10/2026, revisão da etapa 2, Erick) Refazer a figura de “O que vamos construir” para ser mais intuitiva, com
   gráfico animado quando ajudar o aprendizado. A revisão abaixo permanece na etapa 2, ainda sem ok.
 
