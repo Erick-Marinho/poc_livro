@@ -13,13 +13,13 @@ MODELO = "llama3.2:3b"
 PASTA = Path(__file__).parent
 
 
-def montar(caso, atendimento):
-    """O que o modelo lê: o número do atendimento, o material da loja e a pergunta no fim.
+def montar(caso, consulta):
+    """O que o modelo lê: o número da consulta, o material e a pergunta no fim.
 
     O número vem primeiro porque o Ollama guarda as leituras anteriores: um começo diferente obriga a ler do zero.
     """
     material = [(PASTA / "dados" / nome).read_text(encoding="utf-8") for nome in caso["material"]]
-    return "\n\n".join([f"Atendimento {atendimento}."] + material + [f"Pergunta: {caso['pergunta']}"])
+    return "\n\n".join([f"Consulta {consulta}."] + material + [f"Pergunta: {caso['pergunta']}"])
 
 
 def ler(pedacos, inicio, relogio=time.perf_counter):

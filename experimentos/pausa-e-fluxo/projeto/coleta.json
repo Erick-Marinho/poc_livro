@@ -1,314 +1,314 @@
 {
  "ambiente": {
-  "quando": "2026-10-27T14:19:20+00:00",
+  "quando": "2026-10-27T15:48:14+00:00",
   "ollama": "0.40.11",
   "modelo": "llama3.2:3b",
   "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
   "onde": "CPU (num_gpu 0)",
-  "processador": "AMD Ryzen 7 5700G with Radeon Graphics",
-  "nucleos": 16,
-  "memoria_gb": 16,
-  "sistema": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43"
+  "processador": "13th Gen Intel(R) Core(TM) i7-1355U",
+  "nucleos": 12,
+  "memoria_gb": 23,
+  "sistema": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43"
  },
  "repeticoes": [
   {
    "curta": {
-    "pausa": 0.29942239399861137,
-    "fluxo": 15.75761246565025,
-    "lidos": 50,
+    "pausa": 1.4541276529998868,
+    "fluxo": 6.446357692070991,
+    "lidos": 45,
     "do_cache": 20,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.1613627540009475,
-    "fluxo": 14.964319450809477,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 9.214505034999092,
+    "fluxo": 9.663898803333216,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 21
    },
    "longa": {
-    "pausa": 9.783561524000106,
-    "fluxo": 13.270431488079835,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 29.256989383999098,
+    "fluxo": 7.674178368289815,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08288442299999588,
-    "fluxo": 13.243865503579363,
-    "lidos": 1077,
-    "do_cache": 1076,
+    "pausa": 0.1314176750001934,
+    "fluxo": 6.901180274356422,
+    "lidos": 834,
+    "do_cache": 833,
     "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.3903960530005861,
-    "fluxo": 15.702569774614147,
-    "lidos": 50,
-    "do_cache": 23,
+    "pausa": 0.9562360680010897,
+    "fluxo": 8.365062844495181,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.1438654780013167,
-    "fluxo": 14.689124195397484,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 7.194643306000216,
+    "fluxo": 7.347523149946154,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 21
    },
    "longa": {
-    "pausa": 9.739979587000562,
-    "fluxo": 13.42413017229871,
-    "lidos": 1077,
-    "do_cache": 23,
-    "escritos": 36
-   },
-   "de_novo": {
-    "pausa": 0.0812690129987459,
-    "fluxo": 13.409119691292267,
-    "lidos": 1077,
-    "do_cache": 1076,
-    "escritos": 36
-   }
-  },
-  {
-   "curta": {
-    "pausa": 0.3808556040003168,
-    "fluxo": 15.699742426100821,
-    "lidos": 50,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "media": {
-    "pausa": 3.164926188001118,
-    "fluxo": 15.059783812097194,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "longa": {
-    "pausa": 9.782762346998425,
-    "fluxo": 13.23183687460705,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 31.467291974000545,
+    "fluxo": 6.415801477458833,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08031209399996442,
-    "fluxo": 13.035464815141832,
-    "lidos": 1077,
-    "do_cache": 1076,
+    "pausa": 0.12958058599906508,
+    "fluxo": 7.865375253980955,
+    "lidos": 834,
+    "do_cache": 833,
     "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.3889242059995013,
-    "fluxo": 15.734503849298855,
-    "lidos": 50,
-    "do_cache": 23,
+    "pausa": 1.0011986190002062,
+    "fluxo": 8.841430057104587,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.1120668270013994,
-    "fluxo": 14.829513883900661,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 5.6928133239998715,
+    "fluxo": 11.284573110868424,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
    },
    "longa": {
-    "pausa": 9.940557372001422,
-    "fluxo": 13.442064701138094,
-    "lidos": 1077,
-    "do_cache": 23,
-    "escritos": 36
-   },
-   "de_novo": {
-    "pausa": 0.08122970399926999,
-    "fluxo": 13.407941076568283,
-    "lidos": 1077,
-    "do_cache": 1076,
-    "escritos": 36
-   }
-  },
-  {
-   "curta": {
-    "pausa": 0.3697204860000056,
-    "fluxo": 15.765010691879516,
-    "lidos": 50,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "media": {
-    "pausa": 3.143243545000587,
-    "fluxo": 14.366329274920137,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "longa": {
-    "pausa": 9.890358135999122,
-    "fluxo": 13.459372882952806,
-    "lidos": 1077,
-    "do_cache": 23,
-    "escritos": 36
-   },
-   "de_novo": {
-    "pausa": 0.08173698899918236,
-    "fluxo": 13.468693705069281,
-    "lidos": 1077,
-    "do_cache": 1076,
-    "escritos": 36
-   }
-  },
-  {
-   "curta": {
-    "pausa": 0.37836867199985136,
-    "fluxo": 15.275316095284396,
-    "lidos": 50,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "media": {
-    "pausa": 3.1514396149996173,
-    "fluxo": 14.85867887307136,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
-   },
-   "longa": {
-    "pausa": 10.296121594999931,
-    "fluxo": 12.577842597340219,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 31.44333061100042,
+    "fluxo": 7.457397866857949,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08506952300012927,
-    "fluxo": 12.543057966174509,
-    "lidos": 1077,
-    "do_cache": 1076,
+    "pausa": 0.1791957999994338,
+    "fluxo": 7.110039865104769,
+    "lidos": 834,
+    "do_cache": 833,
     "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.391916439999477,
-    "fluxo": 13.985066571102044,
-    "lidos": 50,
-    "do_cache": 23,
+    "pausa": 1.0034454680007912,
+    "fluxo": 9.07152000546559,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.612367980000272,
-    "fluxo": 14.203596572583375,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 6.118931768000039,
+    "fluxo": 11.221077672299646,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
    },
    "longa": {
-    "pausa": 9.607748816000822,
-    "fluxo": 12.665181674115376,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 36.407549564000874,
+    "fluxo": 7.327922349670821,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08182469799976388,
-    "fluxo": 12.82969818535947,
-    "lidos": 1077,
-    "do_cache": 1076,
+    "pausa": 0.1498582410004019,
+    "fluxo": 6.724835089180771,
+    "lidos": 834,
+    "do_cache": 833,
     "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.38971613900139346,
-    "fluxo": 15.616815115649208,
-    "lidos": 50,
-    "do_cache": 23,
-    "escritos": 35
-   },
-   "media": {
-    "pausa": 3.153333049000139,
-    "fluxo": 14.949746660191558,
-    "lidos": 372,
-    "do_cache": 23,
+    "pausa": 0.9879226810007822,
+    "fluxo": 10.193675047619594,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
+   "media": {
+    "pausa": 5.699654615000327,
+    "fluxo": 10.895751867410805,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
+   },
    "longa": {
-    "pausa": 9.615526763000162,
-    "fluxo": 12.66086970283554,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 26.452435282000806,
+    "fluxo": 8.368741390984198,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08314457699998457,
-    "fluxo": 12.872539333653002,
-    "lidos": 1077,
-    "do_cache": 1076,
+    "pausa": 0.11967504499989445,
+    "fluxo": 8.698593858711186,
+    "lidos": 834,
+    "do_cache": 833,
     "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.39058266099891625,
-    "fluxo": 15.159080336493684,
-    "lidos": 50,
-    "do_cache": 23,
+    "pausa": 0.9482856939994235,
+    "fluxo": 10.957313047694443,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.0931285999995453,
-    "fluxo": 13.468795746554303,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 5.418385942000896,
+    "fluxo": 7.151563888098685,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
    },
    "longa": {
-    "pausa": 10.542764023999553,
-    "fluxo": 12.56629950164805,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 25.160737330999837,
+    "fluxo": 8.49696970179752,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.08551336100026674,
-    "fluxo": 11.432502031650882,
-    "lidos": 1077,
-    "do_cache": 1076,
-    "escritos": 36
+    "pausa": 0.125120397999126,
+    "fluxo": 8.861849171604032,
+    "lidos": 834,
+    "do_cache": 833,
+    "escritos": 64
    }
   },
   {
    "curta": {
-    "pausa": 0.5177127219994873,
-    "fluxo": 13.343321365347018,
-    "lidos": 50,
-    "do_cache": 23,
+    "pausa": 0.923269736000293,
+    "fluxo": 10.979603670618753,
+    "lidos": 45,
+    "do_cache": 22,
     "escritos": 64
    },
    "media": {
-    "pausa": 3.4624315979999665,
-    "fluxo": 12.442630239829754,
-    "lidos": 372,
-    "do_cache": 23,
-    "escritos": 64
+    "pausa": 5.174347129001035,
+    "fluxo": 12.501979480084346,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
    },
    "longa": {
-    "pausa": 10.452746122000462,
-    "fluxo": 12.779568026639009,
-    "lidos": 1077,
-    "do_cache": 23,
+    "pausa": 26.494072122000944,
+    "fluxo": 8.71361215984577,
+    "lidos": 834,
+    "do_cache": 22,
     "escritos": 64
    },
    "de_novo": {
-    "pausa": 0.0792626169986761,
-    "fluxo": 13.044839461509028,
-    "lidos": 1077,
-    "do_cache": 1076,
-    "escritos": 36
+    "pausa": 0.11954471200078842,
+    "fluxo": 8.702235604326752,
+    "lidos": 834,
+    "do_cache": 833,
+    "escritos": 64
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.8980243559999508,
+    "fluxo": 11.29779541175345,
+    "lidos": 45,
+    "do_cache": 22,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 5.0855198909994215,
+    "fluxo": 11.665707486273352,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
+   },
+   "longa": {
+    "pausa": 24.069129803001488,
+    "fluxo": 8.794684007761763,
+    "lidos": 834,
+    "do_cache": 22,
+    "escritos": 58
+   },
+   "de_novo": {
+    "pausa": 0.11932292999881611,
+    "fluxo": 8.783198407757563,
+    "lidos": 834,
+    "do_cache": 833,
+    "escritos": 58
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.9131971080005314,
+    "fluxo": 10.978716557156828,
+    "lidos": 45,
+    "do_cache": 22,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 5.7505639669998345,
+    "fluxo": 12.348914461813726,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
+   },
+   "longa": {
+    "pausa": 27.928527259000475,
+    "fluxo": 8.143234403638498,
+    "lidos": 834,
+    "do_cache": 22,
+    "escritos": 64
+   },
+   "de_novo": {
+    "pausa": 0.12213385699942592,
+    "fluxo": 8.663250909269095,
+    "lidos": 834,
+    "do_cache": 833,
+    "escritos": 64
+   }
+  },
+  {
+   "curta": {
+    "pausa": 0.892064361998564,
+    "fluxo": 11.090261035286265,
+    "lidos": 45,
+    "do_cache": 22,
+    "escritos": 64
+   },
+   "media": {
+    "pausa": 5.282922788999713,
+    "fluxo": 12.147027622340813,
+    "lidos": 193,
+    "do_cache": 22,
+    "escritos": 9
+   },
+   "longa": {
+    "pausa": 26.544665073000942,
+    "fluxo": 7.358917760759515,
+    "lidos": 834,
+    "do_cache": 22,
+    "escritos": 64
+   },
+   "de_novo": {
+    "pausa": 0.12604921399906743,
+    "fluxo": 7.485862539211592,
+    "lidos": 834,
+    "do_cache": 833,
+    "escritos": 64
    }
   }
  ]

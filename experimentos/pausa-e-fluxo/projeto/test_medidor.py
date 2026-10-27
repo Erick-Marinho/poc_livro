@@ -50,16 +50,16 @@ class LerTest(unittest.TestCase):
 
 class MontarTest(unittest.TestCase):
     def test_o_texto_le_o_material_e_termina_na_pergunta(self):
-        curta = montar({"material": [], "pergunta": "Já saiu?"}, 1)
-        longa = montar({"material": ["politica.md", "pedidos.json"], "pergunta": "Já saiu?"}, 2)
-        self.assertEqual(curta, "Atendimento 1.\n\nPergunta: Já saiu?")
-        self.assertTrue(longa.startswith("Atendimento 2.\n\n# Política de atendimento") and longa.endswith("\n\nPergunta: Já saiu?"))
+        curta = montar({"material": [], "pergunta": "Posso?"}, 1)
+        longa = montar({"material": ["garagem.md", "mudancas.md"], "pergunta": "Posso?"}, 2)
+        self.assertEqual(curta, "Consulta 1.\n\nPergunta: Posso?")
+        self.assertTrue(longa.startswith("Consulta 2.\n\n## Garagem") and longa.endswith("\n\nPergunta: Posso?"))
 
-    def test_cada_atendimento_comeca_diferente_para_nao_reaproveitar_o_cache(self):
-        longa = {"material": ["politica.md"], "pergunta": "Já saiu?"}
+    def test_cada_consulta_comeca_diferente_para_nao_reaproveitar_o_cache(self):
+        longa = {"material": ["mudancas.md"], "pergunta": "Posso?"}
         primeira, segunda = montar(longa, 3), montar(longa, 4)
-        self.assertNotEqual(primeira[:14], segunda[:14], "o começo é o que o cache reaproveita")
-        self.assertEqual(primeira[14:], segunda[14:], "o resto é o mesmo texto")
+        self.assertNotEqual(primeira[:11], segunda[:11], "o começo é o que o cache reaproveita")
+        self.assertEqual(primeira[11:], segunda[11:], "o resto é o mesmo texto")
 
 
 from placar import placar  # noqa: E402  (o placar vem depois do medidor)

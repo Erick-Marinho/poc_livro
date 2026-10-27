@@ -2,7 +2,7 @@
   "sobre": "As palavras do código do experimento que o leitor pode perguntar no chat.",
   "termos": {
     "token": {
-      "texto": "Um pedaço de texto: uma palavra ou parte dela. O modelo lê e escreve em tokens; 430 palavras viram uns mil tokens."
+      "texto": "Um pedaço de texto: uma palavra ou parte dela. O modelo lê e escreve em tokens; 462 palavras viram uns 800 tokens."
     },
     "stream": {
       "texto": "A resposta vem aos pedaços, à medida que o modelo escreve, em vez de chegar inteira no fim. É o que deixa medir a pausa."

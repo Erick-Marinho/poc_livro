@@ -9,7 +9,7 @@ import { DE_NOVO, EIXO, fimDe, legendas, type Linha, porSegundo, segundos, type 
 
 export type Desenho = "largo" | "estreito";
 export const MEDIDAS = {
-  largo: { w: 780, h: 400, x0: 170, x1: 760, topo: 64, faixa: 26, passo: 62, rotulo: 150, fonte: 13 },
+  largo: { w: 780, h: 400, x0: 186, x1: 760, topo: 64, faixa: 26, passo: 62, rotulo: 168, fonte: 13 },
   estreito: { w: 420, h: 560, x0: 14, x1: 406, topo: 72, faixa: 24, passo: 92, rotulo: 392, fonte: 13 },
 } as const;
 
@@ -29,7 +29,7 @@ export const TemposAnimados: React.FC<{ tempos: Tempos; desenho: Desenho }> = ({
     const op = sombra ? 0.28 : 1;
     const ty = largo ? y : y + 22;
     return <div style={{ position: "absolute", inset: 0, opacity: op }}>
-      <div style={{ position: "absolute", left: largo ? 14 : M.x0, top: largo ? y + 3 : y, width: M.rotulo, font: `600 ${M.fonte + 1}px ${ui}`, color: cor.texto }}>
+      <div style={{ position: "absolute", left: largo ? 14 : M.x0, top: largo ? y + 3 : y, width: M.rotulo, font: `600 ${M.fonte + 1}px ${ui}`, color: cor.texto, whiteSpace: "nowrap" }}>
         {l.rotulo} <span style={{ font: `${M.fonte - 1}px ${mono}`, color: cor.fraco }}>· {l.palavras} palavras</span>
       </div>
       <div style={{ position: "absolute", left: x(0), top: ty, width: x(EIXO) - x(0), height: M.faixa, borderRadius: 6, background: cor.papel, border: `1px solid ${cor.linha}` }} />
@@ -54,7 +54,7 @@ export const TemposAnimados: React.FC<{ tempos: Tempos; desenho: Desenho }> = ({
       </>}
       {/* o eixo e o cursor do relógio */}
       <div style={{ position: "absolute", left: x(0), top: M.topo + 3 * M.passo + (largo ? 2 : 12), width: x(EIXO) - x(0), height: 1, background: cor.linha }} />
-      {[0, 5, 10, 15].map((s) => <div key={s} style={{ position: "absolute", left: x(s) - 20, top: M.topo + 3 * M.passo + (largo ? 6 : 16), width: 40, textAlign: "center", whiteSpace: "nowrap", font: `11px ${mono}`, color: cor.fraco }}>{s} s</div>)}
+      {[0, 10, 20, 30].map((s) => <div key={s} style={{ position: "absolute", left: x(s) - 20, top: M.topo + 3 * M.passo + (largo ? 6 : 16), width: 40, textAlign: "center", whiteSpace: "nowrap", font: `11px ${mono}`, color: cor.fraco }}>{s} s</div>)}
       <div style={{ position: "absolute", left: x(agora) - 1, top: M.topo - 8, width: 2, height: 3 * M.passo + (largo ? 8 : 18), background: cor.acento, opacity: kf(agora, [[0, 0.4], [0.2, 0.9]]) }} />
       <div style={{ position: "absolute", left: 14, right: 14, bottom: 14, font: `${largo ? 17 : 16}px/1.4 ${ui}`, color: cor.texto,
         opacity: kf(t, [[legenda.de, 0], [legenda.de + 0.4, 1]]) }}>{legenda.texto}</div>

@@ -4,7 +4,7 @@
     "saiu_com": 0,
     "saida": [
       [
-        "o fluxo da longa ficou a até 20% do da curta: 10 de 10 (100%)",
+        "o fluxo da longa ficou a até 20% do da curta: 4 de 10 (40%)",
         ""
       ]
     ]
@@ -38,15 +38,15 @@
         ""
       ],
       [
-        "media 82 palavras",
+        "media 97 palavras",
         ""
       ],
       [
-        "longa 430 palavras",
+        "longa 462 palavras",
         ""
       ],
       [
-        "Using CPython 3.13.17",
+        "Using CPython 3.13.13",
         ""
       ],
       [
@@ -100,7 +100,7 @@
         ""
       ],
       [
-        "Ran 4 tests in 0.001s",
+        "Ran 4 tests in 0.000s",
         ""
       ],
       [
@@ -162,35 +162,35 @@
     "saiu_com": 0,
     "saida": [
       [
-        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): AMD Ryzen 7 5700G with Radeon Graphics, 16 GB",
+        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): 13th Gen Intel(R) Core(TM) i7-1355U, 23 GB",
         ""
       ],
       [
-        "curta    lê    45 tokens   pausa  0.16 s   fluxo  15.8 tokens/s   do cache     44",
+        "curta    lê    41 tokens   pausa  0.21 s   fluxo   8.7 tokens/s   do cache     40",
         ""
       ],
       [
-        "media    lê   367 tokens   pausa  0.08 s   fluxo  15.1 tokens/s   do cache    366",
+        "media    lê   189 tokens   pausa  0.14 s   fluxo   8.0 tokens/s   do cache    188",
         ""
       ],
       [
-        "longa    lê  1072 tokens   pausa  0.14 s   fluxo  13.4 tokens/s   do cache   1071",
+        "longa    lê   830 tokens   pausa  0.24 s   fluxo   6.9 tokens/s   do cache    829",
         ""
       ],
       [
-        "de_novo  lê  1072 tokens   pausa  0.08 s   fluxo  13.3 tokens/s   do cache   1071",
+        "de_novo  lê   830 tokens   pausa  0.17 s   fluxo   7.0 tokens/s   do cache    829",
         ""
       ],
       [
-        "a pausa da longa foi maior que a da curta: 1 de 10 (10%)",
+        "a pausa da longa foi maior que a da curta: 5 de 10 (50%)",
         ""
       ],
       [
-        "o fluxo da longa ficou a até 20% do da curta: 10 de 10 (100%)",
+        "o fluxo da longa ficou a até 20% do da curta: 5 de 10 (50%)",
         ""
       ],
       [
-        "a longa pedida de novo começou mais rápido, lendo do cache: 10 de 10 (100%)",
+        "a longa pedida de novo começou mais rápido, lendo do cache: 8 de 10 (80%)",
         ""
       ]
     ]
@@ -200,15 +200,15 @@
     "saiu_com": 0,
     "saida": [
       [
-        "vez 1 · longa: pausa 9.67 s · 20 de 1072 tokens vieram do cache",
+        "vez 1 · longa: pausa 38.85 s · 20 de 830 tokens vieram do cache",
         ""
       ],
       [
-        "vez 2 · longa: pausa 0.14 s · 1071 de 1072 tokens vieram do cache",
+        "vez 2 · longa: pausa 0.17 s · 829 de 830 tokens vieram do cache",
         ""
       ],
       [
-        "vez 3 · longa: pausa 0.14 s · 1071 de 1072 tokens vieram do cache",
+        "vez 3 · longa: pausa 0.25 s · 829 de 830 tokens vieram do cache",
         ""
       ]
     ]
@@ -240,23 +240,23 @@
     "saiu_com": 0,
     "saida": [
       [
-        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): AMD Ryzen 7 5700G with Radeon Graphics, 16 GB",
+        "llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): 13th Gen Intel(R) Core(TM) i7-1355U, 23 GB",
         ""
       ],
       [
-        "curta    lê    50 tokens   pausa  0.39 s   fluxo  15.7 tokens/s   do cache     23",
+        "curta    lê    45 tokens   pausa  0.95 s   fluxo  10.6 tokens/s   do cache     22",
         ""
       ],
       [
-        "media    lê   372 tokens   pausa  3.15 s   fluxo  14.8 tokens/s   do cache     23",
+        "media    lê   193 tokens   pausa  5.70 s   fluxo  11.3 tokens/s   do cache     22",
         ""
       ],
       [
-        "longa    lê  1077 tokens   pausa  9.84 s   fluxo  13.0 tokens/s   do cache     23",
+        "longa    lê   834 tokens   pausa 27.24 s   fluxo   7.9 tokens/s   do cache     22",
         ""
       ],
       [
-        "de_novo  lê  1077 tokens   pausa  0.08 s   fluxo  13.0 tokens/s   do cache   1076",
+        "de_novo  lê   834 tokens   pausa  0.13 s   fluxo   8.3 tokens/s   do cache    833",
         ""
       ],
       [
@@ -264,7 +264,7 @@
         ""
       ],
       [
-        "o fluxo da longa ficou a até 20% do da curta: 10 de 10 (100%)",
+        "o fluxo da longa ficou a até 20% do da curta: 4 de 10 (40%)",
         ""
       ],
       [

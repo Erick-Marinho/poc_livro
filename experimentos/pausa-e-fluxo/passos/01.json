@@ -11,9 +11,9 @@
       "curta": "o projeto nasce",
       "de": 1,
       "ate": 2,
-      "pedido": "Quero medir quanto o modelo demora para começar a responder. Cria o projeto com as mensagens da loja.",
-      "objetivo": "uma pasta com as três mensagens e o material da loja.",
-      "temos": "uma pasta com as três mensagens e o material da loja.",
+      "pedido": "Quero medir quanto o modelo demora para começar a responder. Cria o projeto com as mensagens sobre o regulamento do condomínio.",
+      "objetivo": "uma pasta com as três mensagens e o regulamento do condomínio.",
+      "temos": "uma pasta com as três mensagens e o regulamento do condomínio.",
       "depois": []
     },
     {
@@ -24,8 +24,8 @@
       "de": 3,
       "ate": 4,
       "pedido": "Monta o texto que o modelo vai ler em cada mensagem.",
-      "objetivo": "montar, e o tamanho de cada mensagem: 10, 82 e 430 palavras.",
-      "temos": "montar, e o tamanho de cada mensagem: 10, 82 e 430 palavras.",
+      "objetivo": "montar, e o tamanho de cada mensagem: 10, 97 e 462 palavras.",
+      "temos": "montar, e o tamanho de cada mensagem: 10, 97 e 462 palavras.",
       "depois": []
     },
     {
@@ -91,13 +91,13 @@
     {
       "id": "conserto",
       "secao": "4",
-      "titulo": "Cada atendimento começa diferente",
-      "curta": "cada atendimento começa diferente",
+      "titulo": "Cada consulta começa diferente",
+      "curta": "cada consulta começa diferente",
       "de": 20,
       "ate": 24,
       "pedido": "Faz o modelo ler cada mensagem do zero.",
-      "objetivo": "montar com o número do atendimento, testado, e a coleta que tira o modelo da memória.",
-      "temos": "montar com o número do atendimento, testado, e a coleta que tira o modelo da memória.",
+      "objetivo": "montar com o número da consulta, testado, e a coleta que tira o modelo da memória.",
+      "temos": "montar com o número da consulta, testado, e a coleta que tira o modelo da memória.",
       "depois": []
     },
     {

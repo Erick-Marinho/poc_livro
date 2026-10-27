@@ -11,7 +11,7 @@ afirmacao:
     url: "https://www.analyticsvidhya.com/blog/2026/10/llm-inference-explained-optimization-techniques/"
 regua:
   arquivo: "projeto/casos.jsonl"
-  conta: "A mesma pergunta da loja em três mensagens: só a pergunta (10 palavras), com os pedidos (82) e com a política, o catálogo e os pedidos (430). Dez repetições num modelo real, no processador. Conta em quantas a pausa da longa foi maior que a da curta, e em quantas o ritmo da longa ficou a até 20% do da curta. A régua foi escrita antes de medir; o critério do cache foi ajustado depois da primeira coleta, que mostrou que todo pedido traz uns 20 tokens do cache."
+  conta: "A mesma pergunta sobre o regulamento de um condomínio, em três mensagens: só a pergunta (10 palavras), com o capítulo de mudanças (97) e com o regulamento inteiro (462). Dez repetições num modelo real, no processador. Conta em quantas a pausa da longa foi maior que a da curta, e em quantas o ritmo da longa ficou a até 20% do da curta. A régua foi escrita antes de medir; o critério do cache foi ajustado depois da primeira coleta, que mostrou que todo pedido traz uns 20 tokens do cache."
 resultado:
   - rotulo: "a pausa da longa foi maior que a da curta"
     saida: "pf-limpa"
@@ -19,8 +19,8 @@ resultado:
     saida: "pf-fluxo"
   - rotulo: "a longa pedida de novo começou mais rápido, lendo do cache"
     saida: "pf-cache"
-achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez, porque o Ollama guarda o que já leu. Pedida de novo, a longa começa em 0,08 s. Com cada atendimento começando diferente, a pausa cresceu em todas as repetições: 0,39 s na curta, 3,15 s na média e 9,84 s na longa. O ritmo caiu um pouco, de 15,7 para 13,0 tokens por segundo, e ficou dentro dos 20% em todas: muda pouco. O artigo explica por quê: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar."
-custo: "No processador AMD Ryzen 7 5700G (8 núcleos e 16 threads; 16 GB de memória visíveis no WSL2), com o llama3.2:3b no Ollama 0.40.11, cada coleta de dez repetições levou cerca de 5 minutos; foram quatro: a primeira, que tropeçou no cache, e a corrigida, gravada de novo duas vezes enquanto a saída do medidor mudava; a publicada é a última. O modelo ocupa 2 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
+achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez (38,85 s), porque o Ollama guarda o que já leu. Com cada consulta começando diferente, a pausa cresceu em todas as repetições: 0,95 s na curta, 5,70 s na média e 27,24 s na longa; pedida de novo, a longa começa em 0,13 s. O ritmo não ficou parecido: caiu de 10,6 para 7,9 tokens por segundo, 25%, e só ficou dentro dos 20% em 4 das 10 repetições. Nesta máquina, a afirmação vale para a pausa, e não para o fluxo. O artigo explica a queda: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar."
+custo: "Num notebook com Intel i7-1355U (10 núcleos e 12 threads; 23 GB de memória), com o llama3.2:3b no Ollama 0.40.11, a primeira coleta levou uns 3 minutos de medição, e a corrigida, uns 10; foram duas, uma com cada código. O modelo ocupa 2 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
 ---
 import PausaEFluxo from "../../src/components/livro/PausaEFluxo.astro";
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
@@ -47,7 +47,7 @@ O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/10/llm-
 
 ## O que vamos construir
 
-Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a primeira palavra. O segundo mede o **fluxo**: quantos pedaços saem por segundo depois dela. Vamos usar os dois em três mensagens da loja Casa Bem-te-vi, com a mesma pergunta e cada vez mais coisa para ler.
+Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a primeira palavra. O segundo mede o **fluxo**: quantos pedaços saem por segundo depois dela. Vamos usar os dois em três mensagens sobre o regulamento de um condomínio, com a mesma pergunta e cada vez mais coisa para ler.
 
 <Aposta dados={previsoes} pergunta="Antes de medir: o que muda quando a mensagem cresce?" />
 
@@ -55,8 +55,8 @@ Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a p
 
 O artigo dá nomes técnicos aos dois trabalhos: a leitura se chama **prefill**, e a escrita, **decode**. E o modelo não lê palavras, e sim **tokens**: pedaços de texto, que podem ser uma palavra ou parte dela.
 
-<PareEPense pergunta="A mensagem longa tem 430 palavras. O modelo lê mais ou menos tokens do que isso?">
-Mais: 1072. Muitas palavras viram mais de um token, e o Ollama ainda acrescenta a todo pedido um cabeçalho fixo, de uns 20 tokens. É por isso que a curta, com 10 palavras, vira 45.
+<PareEPense pergunta="A mensagem longa tem 462 palavras. O modelo lê mais ou menos tokens do que isso?">
+Mais: 830. Muitas palavras viram mais de um token, e o Ollama ainda acrescenta a todo pedido um cabeçalho fixo, de uns 20 tokens. É por isso que a curta, com 10 palavras, vira 41.
 </PareEPense>
 
 ## Mão na massa
@@ -65,15 +65,15 @@ Você começa numa pasta vazia e monta o medidor passo a passo, com testes que f
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "As mensagens", "2": "O medidor", "3": "A coleta", "4": "O conserto" }} numero="2" legenda="O medidor construído desde a pasta vazia. Os comandos são executados no projeto real; as duas coletas foram gravadas com o modelo de verdade, cada uma com o código daquele momento. As mensagens do chat são um roteiro, não um modelo ao vivo." />
 
-<TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 50 na longa de novo). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
+<TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 9 na média, que respondeu curto). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
 
-<Nota titulo="o que é inventado">A loja Casa Bem-te-vi e os seus dados são inventados: são os mesmos do livro. Na figura, a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As conversas do chat da IDE são um roteiro. As coletas são reais: o modelo de verdade, no processador de uma máquina identificada.</Nota>
+<Nota titulo="o que é inventado">O Condomínio Edifício Ipê Amarelo e o seu regulamento são inventados. Na figura, a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As conversas do chat da IDE são um roteiro. As coletas são reais: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 
 ## O tropeço: o modelo lembra
 
 Na primeira coleta, a mensagem longa só demorou mais na primeira vez. Da segunda em diante, quase tudo o que o modelo leu veio do **cache**: uma memória do que ele já leu. Quando uma mensagem começa igual a uma que ele já leu, o Ollama reaproveita essa leitura e só lê o que mudou. Ele não lembra só a última mensagem: lembra várias.
 
-Por isso, cada atendimento passou a começar com o seu número. Um começo diferente obriga o modelo a ler tudo de novo, e a pausa volta a ser a de quem lê do zero.
+Por isso, cada consulta passou a começar com o seu número. Um começo diferente obriga o modelo a ler tudo de novo, e a pausa volta a ser a de quem lê do zero.
 
 Aqui a comparação com a atendente quebra. Ela reconheceria a mesma mensagem com outro número no topo, e não leria tudo de novo. O modelo não reconhece: se o começo muda, ele relê do zero.
 

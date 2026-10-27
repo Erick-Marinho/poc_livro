@@ -6,7 +6,7 @@ import { baloes, CENAS, DURACAO, FPS, montarPausa, pedacoEm, FECHO, RESUMOS, SEG
 
 const projeto = new URL("../experimentos/pausa-e-fluxo/projeto/", import.meta.url);
 const casos = readFileSync(new URL("casos.jsonl", projeto), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-/* o que o modelo lê: o material da loja, nesta ordem, e a pergunta no fim */
+/* o que o modelo lê: o material do regulamento, nesta ordem, e a pergunta no fim */
 const texto = (c) => [...c.material.map((m) => readFileSync(new URL(`dados/${m}`, projeto), "utf8")), `Pergunta: ${c.pergunta}`].join("\n\n");
 const palavras = (s) => s.split(/\s+/).filter(Boolean).length;
 
@@ -21,6 +21,13 @@ test("três casos, a mesma pergunta: só muda quanto o modelo tem de ler antes d
 test("nenhum caso começa como outro, para o cache não encurtar a pausa medida", () => {
   const inicios = casos.map((c) => texto(c).slice(0, 40));
   assert.equal(new Set(inicios).size, casos.length, `começos repetidos: ${JSON.stringify(inicios)}`);
+});
+
+test("o regulamento: a resposta (o horário de sábado) só está no que a média e a longa leem, e ele diz que é inventado", () => {
+  const [curta, media, longa] = casos.map(texto);
+  const regra = "aos sábados, das 8h às 12h";
+  assert.ok(!curta.includes(regra) && media.includes(regra) && longa.includes(regra));
+  assert.match(longa, /\(condomínio inventado\)/);
 });
 
 test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar o resultado nem o cache", () => {
@@ -64,10 +71,13 @@ const numero = (linha, nome) => Number(linha.match(new RegExp(`${nome}\\s+([\\d.
 test("as ações do texto dizem o que as coletas gravadas mostram", () => {
   const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
   assert.doesNotMatch(mdx, /<Rascunho\b/);
-  // a primeira: a longa demora muito mais para começar, e escreve quase no mesmo ritmo (dentro dos 20% da régua)
+  // a primeira: a longa demora muito mais para começar; o ritmo, o achado diz como ficou, pelo que a coleta mostrou
   const [curta, longa] = ["curta", "longa"].map((c) => linhaDe("pf-limpa", c));
   assert.ok(numero(longa, "pausa") > 10 * numero(curta, "pausa"));
-  assert.ok(Math.abs(numero(longa, "fluxo") - numero(curta, "fluxo")) <= 0.2 * numero(curta, "fluxo"));
+  const queda = Math.round(100 * (1 - numero(longa, "fluxo") / numero(curta, "fluxo")));
+  const achado = mdx.match(/^achado: "(.*)"$/m)[1];
+  if (queda > 20) assert.match(achado, new RegExp(`${queda}%.*não para o fluxo`), "o achado diz que o fluxo caiu mais que a régua aceita");
+  else assert.doesNotMatch(achado, /não para o fluxo/);
   const p = json("previsoes.json").mensagens[0];
   assert.match(p.opcoes[p.fez], /^Demora mais para começar, e depois escreve quase no mesmo ritmo$/);
   assert.doesNotMatch(p.porque, /\d/, "o retorno não adianta os números de \"O que deu\"");
@@ -94,7 +104,8 @@ test("os tempos de verdade: a linha do tempo usa as medianas gravadas, e a apost
   assert.equal(t.deNovo.pausa, numero(linhaDe("pf-limpa", "de_novo"), "pausa"));
   assert.ok(fimDe(t, t.linhas[2]) <= EIXO && DE_NOVO + fimDe(t, t.deNovo) < SEGUNDOS);
   assert.match(legendas(t)[1].texto, new RegExp(`${t.vezes} vezes`));
-  assert.deepEqual([...t.linhas, t.deNovo].map((l) => l.escritos), [64, 64, 64, 50], "a mediana dos tokens escritos, caso a caso");
+  const mediana = (xs) => { const o = [...xs].sort((x, y) => x - y), m = o.length >> 1; return o.length % 2 ? o[m] : (o[m - 1] + o[m]) / 2; };
+  assert.deepEqual([...t.linhas, t.deNovo].map((l) => l.escritos), ["curta", "media", "longa", "de_novo"].map((c) => mediana(escritos[c])), "a mediana dos tokens escritos, caso a caso");
   assert.throws(() => montarTempos(saida("pf-limpa").map((l) => [l, ""]), json("figuras/pausa.json").mensagens, { curta: [64] }), /não está no coleta/);
   const aposta = json("roteiros/01.json").passos.find((p) => p.id === "pf-limpa").aposta;
   const vezes = (o) => Number(o.match(/\d+/)[0]);

@@ -13,7 +13,7 @@ from medidor import MODELO, PASTA, montar, perguntar
 REPETICOES = 10
 casos = {c["id"]: c for c in map(json.loads, (PASTA / "casos.jsonl").read_text(encoding="utf-8").splitlines())}
 
-# o Ollama guarda as leituras anteriores: tira o modelo da memória, e cada pedido ganha o seu número de atendimento
+# o Ollama guarda as leituras anteriores: tira o modelo da memória, e cada pedido ganha o seu número de consulta
 urllib.request.urlopen(urllib.request.Request("http://localhost:11434/api/generate", data=json.dumps({"model": MODELO, "keep_alive": 0}).encode())).close()
 perguntar("Oi.")  # o aquecimento não entra na conta
 repeticoes = []

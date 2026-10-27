@@ -15,11 +15,12 @@
         "pyproject.toml",
         "uv.lock",
         "casos.jsonl",
-        "dados/politica.md",
-        "dados/catalogo.json",
-        "dados/pedidos.json"
+        "dados/convivencia.md",
+        "dados/areas-comuns.md",
+        "dados/garagem.md",
+        "dados/mudancas.md"
       ],
-      "nota": "As três mensagens da loja (casos.jsonl) e o material que elas levam (dados/). A pergunta é a mesma nas três; só muda quanto o modelo tem de ler antes de responder."
+      "nota": "As três mensagens sobre o regulamento de um condomínio inventado (casos.jsonl) e o material que elas levam (dados/). A pergunta é a mesma nas três; só muda quanto o modelo tem de ler antes de responder."
     },
     {
       "acao": "escrever",
@@ -29,10 +30,10 @@
           "linhas": "1-15"
         },
         {
-          "texto": "def montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n"
+          "texto": "def montar(caso):\n    \"\"\"O que o modelo lê: o material e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n"
         }
       ],
-      "nota": "montar junta o que o modelo vai ler: o material da loja e, no fim, a pergunta.",
+      "nota": "montar junta o que o modelo vai ler: o material do regulamento e, no fim, a pergunta.",
       "blocos": [
         {
           "linhas": "1-13",
@@ -42,7 +43,7 @@
         {
           "linhas": "21-21",
           "titulo": "o que o modelo lê",
-          "texto": "Uma mensagem é o material da loja, um depois do outro, com a pergunta no fim."
+          "texto": "Uma mensagem é o material do regulamento, um depois do outro, com a pergunta no fim."
         }
       ]
     },
@@ -265,7 +266,7 @@
       "arquivos": [
         "coleta-sem-numero.json"
       ],
-      "nota": "Aqui no experimento, a coleta que gravamos com este código, numa máquina com Ryzen 7 5700G, em uns 5 minutos. Na sua máquina, com o Ollama ligado: uv run python coletar.py (ela grava coleta.json)."
+      "nota": "Aqui no experimento, a coleta que gravamos com este código, num notebook com Intel i7-1355U, em uns 3 minutos de medição. Na sua máquina, com o Ollama ligado: uv run python coletar.py (ela grava coleta.json)."
     },
     {
       "acao": "rodar",
@@ -273,13 +274,13 @@
       "comando": "uv run python medir.py coleta-sem-numero.json",
       "nota": "Leia a coleta gravada.",
       "aposta": {
-        "pergunta": "A longa tem 430 palavras; a curta, 10. Em quantas das 10 vezes a pausa da longa foi maior que a da curta?",
+        "pergunta": "A longa tem 462 palavras; a curta, 10. Em quantas das 10 vezes a pausa da longa foi maior que a da curta?",
         "opcoes": [
           "Em quase todas",
           "Em umas cinco",
           "Em quase nenhuma"
         ],
-        "certa": 2
+        "certa": 1
       }
     },
     {
@@ -302,13 +303,13 @@
     {
       "acao": "trocar",
       "arquivo": "medidor.py",
-      "de": "def montar(caso):\n    \"\"\"O que o modelo lê: o material da loja e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n",
+      "de": "def montar(caso):\n    \"\"\"O que o modelo lê: o material e a pergunta no fim.\"\"\"\n    material = [(PASTA / \"dados\" / nome).read_text(encoding=\"utf-8\") for nome in caso[\"material\"]]\n    return \"\\n\\n\".join(material + [f\"Pergunta: {caso['pergunta']}\"])\n",
       "para": [
         {
           "linhas": "16-22"
         }
       ],
-      "nota": "Cada pedido começa com o seu número de atendimento. Um começo diferente obriga o modelo a ler tudo de novo; o resto do texto é o mesmo."
+      "nota": "Cada pedido começa com o seu número de consulta. Um começo diferente obriga o modelo a ler tudo de novo; o resto do texto é o mesmo."
     },
     {
       "acao": "inserir",
@@ -319,7 +320,7 @@
           "linhas": "49-62"
         }
       ],
-      "nota": "Os testes de montar: o número vem primeiro, e dois atendimentos só diferem no começo."
+      "nota": "Os testes de montar: o número vem primeiro, e duas consultas só diferem no começo."
     },
     {
       "acao": "rodar",
@@ -362,11 +363,11 @@
       "comando": "uv run python medir.py",
       "nota": "Leia a coleta corrigida.",
       "aposta": {
-        "pergunta": "Agora cada atendimento começa diferente. A pausa da longa fica quantas vezes a da curta?",
+        "pergunta": "Agora cada consulta começa diferente. A pausa da longa fica quantas vezes a da curta?",
         "opcoes": [
-          "umas 2 vezes",
-          "umas 5 vezes",
-          "umas 25 vezes"
+          "umas 3 vezes",
+          "umas 10 vezes",
+          "umas 30 vezes"
         ],
         "certa": 2
       }

@@ -1,8 +1,0 @@
-llama3.2:3b no Ollama 0.40.11, CPU (num_gpu 0): 13th Gen Intel(R) Core(TM) i7-1355U, 23 GB
-curta    lê    45 tokens   pausa  0.95 s   fluxo  10.6 tokens/s   do cache     22
-media    lê   193 tokens   pausa  5.70 s   fluxo  11.3 tokens/s   do cache     22
-longa    lê   834 tokens   pausa 27.24 s   fluxo   7.9 tokens/s   do cache     22
-de_novo  lê   834 tokens   pausa  0.13 s   fluxo   8.3 tokens/s   do cache    833
-a pausa da longa foi maior que a da curta: 10 de 10 (100%)
-o fluxo da longa ficou a até 20% do da curta: 4 de 10 (40%)
-a longa pedida de novo começou mais rápido, lendo do cache: 10 de 10 (100%)
