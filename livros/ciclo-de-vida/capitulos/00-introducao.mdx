@@ -14,8 +14,7 @@ import Aposta from "../../../src/components/livro/Aposta.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import MapaDoCiclo from "../../../src/components/livro/MapaDoCiclo.astro";
 import Termos from "../../../src/components/livro/Termos.astro";
-import CorrijaAProva from "../../../src/components/livro/CorrijaAProva.astro";
-import provaPequena from "../figuras/prova-pequena.json";
+import NotaDoLivro from "../../../src/components/livro/NotaDoLivro.astro";
 import termos from "../termos.json";
 import ciclo from "../figuras/ciclo.json";
 import ondeSePega from "../figuras/onde-se-pega.json";
@@ -79,16 +78,14 @@ Responder uma que devia passar. O primeiro custa o tempo de uma pessoa da equipe
 
 ## A nota
 
-Um agente não fica pronto: fica melhor ou pior. Para saber qual dos dois, o livro mede o agente sempre do mesmo jeito, e o resultado é a **nota**. Ela vem de uma prova. No capítulo 1, antes de existir agente, você escreve as perguntas que chegam à loja e, para cada uma, a decisão certa: essa lista é o gabarito. O agente faz a prova, e um programa curto, a **régua**, compara cada decisão dele com o gabarito e conta os acertos. Antes de conhecer a régua, faça o trabalho dela:
+Ao longo do livro, um número diz se o agente está ficando melhor ou pior: a nota. Toque o vídeo, ou role a página, para ver de onde ela vem e onde acompanhá-la.
 
-<CorrijaAProva referencia={referenciaAgente} dados={provaPequena} pergunta="Um agente fez esta prova de quatro perguntas. Corrija uma por vez: a decisão dele conta como acerto?" ilustracao="Ilustração: as mensagens e o gabarito são os do arquivo de referência; o que o agente decidiu foi escrito para o exemplo." />
+<NotaDoLivro referencia={referenciaAgente} sumario={sumario} ilustracao="Ilustração: o que o agente acerta e a altura das barras são de exemplo; as notas de verdade aparecem nos capítulos. O número de mensagens é o da prova do livro." />
 
-**Para que serve.** Para comparar. A primeira nota do livro é a de um "agente" que não decide nada, e todo agente que vem depois tem que bater esse número. Cada capítulo muda uma coisa, o modelo, as ferramentas, uma instrução, e a nota diz se a mudança empurrou o número para cima ou para baixo, no lugar de um "parece melhor".
+No livro, cada nota é a do projeto real, gravada. Na sua máquina, com o modelo de verdade, a sua pode sair um pouco diferente. <button type="button" class="link-ide" data-abrir-placar>Abra o placar</button> para ver onde ela fica.
 
-**De onde vem.** Do projeto real, como todo número deste livro: a régua é executada, e a saída fica gravada. Na sua máquina, com o modelo de verdade, a sua nota pode sair um pouco diferente da do livro.
-
-<PareEPense pergunta="A nota do seu agente subiu de um capítulo para o outro. O que você sabe agora, e o que ainda não sabe?">
-Sabe que ele acertou mais decisões da prova. Não sabe se as respostas ao cliente ficaram boas, porque a nota conta decisões, não o texto. E não sabe se ele trocou um erro seguro por um perigoso, porque a nota conta todo erro igual: passar uma pergunta à toa e expor o pedido de outra pessoa pesam o mesmo. É por isso que, no capítulo 4, os erros passam a ter peso.
+<PareEPense pergunta="A nota caiu de um capítulo para o outro. O que isso diz da mudança que o capítulo fez?">
+Que, na mesma prova, o agente passou a errar mais: a mudança piorou alguma coisa, mesmo que pareça melhor. É o sinal para olhar em que mensagens ele começou a errar, antes de seguir.
 </PareEPense>
 
 ## Como ler

@@ -1,0 +1,23 @@
+---
+/**
+ * O vídeo da nota, na introdução (docs/capacidades/a-nota-na-introducao.md, etapa 2): nota/FiguraNota.tsx, que o leitor
+ * toca ou rola. O número de mensagens sai do referencia.jsonl e os capítulos, do sumário (nota/nota.ts); o resto é
+ * ilustração, e a legenda diz. Sem JS, os balões em lista.
+ */
+import FiguraNota from "./nota/FiguraNota";
+import { baloes, montarNota } from "./nota/nota.ts";
+
+interface Props { referencia: string; sumario: { capitulos: { numero: number }[] }; ilustracao: string }
+const { referencia, sumario, ilustracao } = Astro.props;
+const nota = montarNota(referencia, sumario);
+---
+<figure class="nota-do-livro" data-nota-do-livro>
+  <FiguraNota client:visible={{ rootMargin: "400px" }} nota={nota} />
+  <figcaption>{ilustracao}</figcaption>
+  <noscript><ol>{baloes(nota).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+</figure>
+
+<style is:global>
+  .nota-do-livro { margin: 1.8em auto 2em; max-width: 800px }
+  .nota-do-livro figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>
