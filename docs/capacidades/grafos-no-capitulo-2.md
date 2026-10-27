@@ -25,18 +25,20 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 | 1 | A figura do 2.1 com nós de verdade: as peças apresentadas no próprio grafo (nós, arestas fixas e condicionais, START e END, o estado) e as duas mensagens atravessando, com o estado em JSON crescendo a cada nó | toca ou rola e vê o estado ganhar chaves de nó em nó |
 | 2 | O texto curto das peças, a listagem de `montar()` com uma nota por linha, e o aviso do que fica para o outro livro | lê o código da LangGraph sabendo o que cada linha faz |
 
-## Etapa atual: 1 — a figura
+## Etapa atual: 2 — o texto e a listagem
 
-- O roteiro do substituto sai: os nós aparecem com o nome do código (`decidir`, `responder`, `abrir_chamado`,
-  `recusar`, `passar`), START e END como pílulas escuras, as arestas condicionais tracejadas e as fixas cheias.
-- Quatro cenas curtas apresentam as peças; depois, o R10 e o R15 atravessam o grafo, e um cartão JSON mostra o
-  estado: começa com `pergunta`, `decidir` acrescenta `decisao` e `motivo`, o nó do caminho acrescenta `resposta`. A
-  chave nova acende.
+- O parágrafo antes da figura apresenta o grafo (caixas, setas e um pacote de dados viajando), sem balcão nem roteiro.
+- Depois da figura, a listagem das oito linhas do fim de `montar()` (66 a 73), com uma nota por linha: o grafo e o
+  estado, o nó, um nó por decisão, a aresta fixa, a entrada, a aresta condicional e o `compile()`. Um teste confere
+  que cada nota cai na linha que ela explica no `agente.py` real.
+- Uma frase sobre o estado (cada nó devolve só o que mudou) e o `compile()` (não executa; o agente anda no `invoke`).
+- A nota "a definição deste livro" fica, mais curta, com o aviso do que vai para outro livro. Os balcões saem do
+  Pare e pense do 2.1 e da abertura do 2.2.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | aguardando revisão |
+| 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

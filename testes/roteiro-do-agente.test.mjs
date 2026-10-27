@@ -70,3 +70,21 @@ test("o estado em JSON tem as chaves da classe Conversa, a frase fixa do agente.
   assert.equal(r15.resposta, null, "no recusar, o modelo escreve: a figura não inventa a frase");
   assert.throws(() => estados(montarRoteiro(entrada), agente.replace("class Conversa", "class Outra")), /classe Conversa/);
 });
+
+test("o 2.1 mostra o fim de montar(): as linhas da listagem são as do agente.py real, e cada nota cai na linha que ela explica", () => {
+  const cap = ler("livros/ciclo-de-vida/capitulos/02-o-primeiro-agente.mdx");
+  const secao = cap.slice(cap.indexOf("## 2.1"), cap.indexOf("## 2.2"));
+  const tag = secao.match(/<Listagem [^\n]*linhas="(\d+)-(\d+)"[^\n]*\/>/);
+  assert.ok(tag, "o 2.1 tem a listagem de montar()");
+  const linhas = ler("livros/ciclo-de-vida/projeto/agente.py").split("\n");
+  const [de, ate] = [Number(tag[1]), Number(tag[2])];
+  assert.match(linhas[de - 1], /grafo = StateGraph\(Conversa\)/, "o trecho começa no StateGraph");
+  assert.match(linhas[ate - 1], /return grafo\.compile\(\)/, "e termina no compile");
+  const espera = { 66: /StateGraph/, 67: /add_node\("decidir"/, 69: /add_node\(decisao/, 70: /add_edge\(decisao\.value, END\)/, 71: /add_edge\(START/, 72: /add_conditional_edges/, 73: /compile/ };
+  const notas = Object.fromEntries([...tag[0].matchAll(/(\d+): "([^"]+)"/g)].map((m) => [Number(m[1]), m[2]]));
+  assert.deepEqual(Object.keys(notas).map(Number), Object.keys(espera).map(Number));
+  for (const [n, re] of Object.entries(espera)) assert.match(linhas[n - 1], re, `a nota da linha ${n} explica outra linha`);
+  assert.match(notas[72], /aresta condicional/);
+  assert.match(secao, /ficam para outro livro/);
+  assert.doesNotMatch(secao, /balc/, "o 2.1 fala em nós e arestas, não em balcões");
+});
