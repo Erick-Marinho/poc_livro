@@ -28,5 +28,6 @@ intermediário e avançado (27/10/2026).
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `7bdfc21` | `testes/niveis.test.mjs` (2): só os três níveis, cada um dizendo o que pede; o molde exige o nível; cada experimento mostra o nível no cabeçalho (com "Para quem é"), na lista e no `index.json`. `npm test` 183/183. Capturas da lista e do cabeçalho a 1280 e 390 px, no claro e no escuro | aguardando revisão |
 
 (redação: Claude Opus 5.5)
