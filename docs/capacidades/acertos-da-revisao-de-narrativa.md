@@ -37,5 +37,6 @@ escolhas nas figuras do capítulo 2, com o bilhete (c).
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | cdb7ead | `npm test` 190/190; `npm run ritmo`: os mesmos avisos de antes (o trecho do 1.1 antes da Aposta foi a 203 com a ponte longa e ficou em 200 com "uma escala de autonomia"); nenhum teste dependia dos trechos trocados | aguardando revisão |
 
 (redação: Claude Opus 5.5)
