@@ -44,15 +44,7 @@ No capítulo 1, a colega saiu de férias e deixou o gabarito. O substituto que c
 
 <RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} agente={agentePy} numero="2.1" legenda="O grafo do agente deste capítulo. Os nós e as arestas são os do grafo real, montado pelo código do projeto; o formato do estado e as frases fixas são os do agente.py. A decisão e o motivo são os do gabarito: o que o modelo decide de verdade você mede no 2.4." />
 
-Esse desenho é o agente deste capítulo. Na escala do capítulo 1, onde ele fica? No roteador. Decide uma vez, qual caminho seguir, e toda seta termina no END: não tem ferramenta nem laço. As ferramentas, e com elas o laço, chegam no capítulo 3, como nós novos nesse mesmo desenho.
-
-No código, o desenho inteiro são as oito linhas do fim de `montar()`, no `agente.py`. Cada peça da figura é uma linha:
-
-<Listagem codigo={agentePy} nome="agente.py" linhas="66-73" info="o fim de montar(), no arquivo que você escreve na 2.5" notas={{ 66: "o grafo, e o formato do estado que viaja nele", 67: "um nó: um nome e a função que ele executa", 69: "um nó para cada decisão do contrato", 70: "aresta fixa: desse nó, para o fim", 71: "a mensagem entra por decidir", 72: "aresta condicional: lê a decisão no estado e devolve o próximo nó", 73: "confere o desenho e devolve o agente" }} />
-
-Cada nó devolve só o que mudou, e a LangGraph junta no estado: é o JSON da figura ganhando uma chave por vez. E o `compile()` não executa nada; o agente só anda quando alguém chama `invoke({"pergunta": ...})`.
-
-<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), arestas (fixas, ou que escolhem pelo estado) e o estado que passa de um nó para o outro. A teoria dos grafos e as máquinas de estado, finitas e hierárquicas, ficam para outro livro; aqui basta o que o código usa.</Nota>
+<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e executar esse desenho.</Nota>
 
 <PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
 Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.

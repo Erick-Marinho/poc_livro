@@ -64,10 +64,10 @@ test("capítulo 1: a aposta da escala tem um item em cada ponto, e o roteador é
   for (const m of escala.mensagens) assert.ok(html.includes(m.texto), m.texto);
 });
 
-test("capítulo 2: o agente do desenho fica no roteador da escala do capítulo 1", () => {
-  const h2 = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
-  assert.match(h2, /Na escala do capítulo 1/);
-  assert.match(h2, /No roteador\./);
+/* o lugar do agente do capítulo 2 na escala fica no capítulo 1: o 2.1 começa pelo desenho (docs/capacidades/grafos-no-capitulo-2.md) */
+test("capítulo 2: o agente do desenho fica no roteador da escala, dito no capítulo 1", () => {
+  const h1 = ler("dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html");
+  assert.match(h1, /No capítulo 2 ele é um roteador/);
 });
 
 /* ajustes da introdução (etapa 4): o pare e pense com os ícones do Lucide, no lugar do losango de texto */
