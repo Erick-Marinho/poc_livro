@@ -2,7 +2,7 @@
  * A prova do substituto, no 2.4 (docs/capacidades/capitulo-2-em-cenas.md, etapa 4): como a régua mede. As 20 perguntas
  * e o gabarito vêm do referencia.jsonl; o decisor do capítulo 1, que passa tudo para a equipe, é medido nelas, e a conta
  * é conferida contra a saída gravada do baseline.py (saidas.json, nota-de-partida). A nota do agente não aparece: o
- * leitor investe o palpite dele na IDE, logo depois, e o resultado está no fim do capítulo. No 2.6, a mesma grade
+ * leitor dá o palpite dele na IDE, logo depois, e o resultado está no fim do capítulo. No 2.6, a mesma grade
  * mostra a prova corrigida (montarResultado): o que o agente decidiu em cada pergunta, lido da gravação do capítulo, e
  * a conta conferida contra a saída gravada do medir.py. Puro de propósito.
  */
@@ -81,6 +81,6 @@ export function baloes(p: Prova): Balao[] {
     { de: 0.4, ate: 3.4, alvo: "grade", texto: `A prova é a mesma do capítulo 1: as ${p.total} perguntas, cada uma com a resposta do gabarito.` },
     { de: 3.4, ate: 10.2, alvo: "placar", texto: `Primeiro, a prova de quem chuta: o “agente” do capítulo 1, que passa toda mensagem para a equipe. Corrigida pelo gabarito, ela acerta só as ${p.acertos} em que a resposta certa era mesmo passar a vez: ${p.acertos} de ${p.total}, ${p.porcento}%. É a nota de partida.` },
     { de: 10.2, ate: 14.4, alvo: "decisor", texto: "Agora quem faz a prova é o agente deste capítulo, o grafo com o GPT-6 Luna. Mesma prova, mesmo gabarito, mesma correção." },
-    { de: 14.4, ate: SEGUNDOS + 1, alvo: "placar", texto: `Sem acesso aos pedidos, ao catálogo e à política, quantas ele acerta? Passa da nota de quem chuta, os ${p.porcento}%? Guarde o seu palpite: a IDE vai pedir que você invista nele antes de executar.` },
+    { de: 14.4, ate: SEGUNDOS + 1, alvo: "placar", texto: `Sem acesso aos pedidos, ao catálogo e à política, quantas ele acerta? Passa da nota de quem chuta, os ${p.porcento}%? Guarde o seu palpite: a IDE vai pedir por ele antes de executar.` },
   ];
 }

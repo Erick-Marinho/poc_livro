@@ -55,7 +55,7 @@ export function montarCenas({ ciclo, cenas, aposta }: Entrada) {
 }
 export type Montado = ReturnType<typeof montarCenas>;
 
-/** O leitor já sabe onde cada problema é capturado: investiu em ao menos um, ou está no modo direto, em que a caixa
+/** O leitor já sabe onde cada problema é capturado: deu palpite em ao menos um, ou está no modo direto, em que a caixa
  *  mostra as respostas sem pedir. Para ele, o título e a legenda afirmam, em vez de perguntar. */
 export const jaSabe = (apostas: (number | null)[] | undefined, direto: boolean) => direto || !!apostas?.some((a) => a !== null && a !== undefined);
 export const titulo = (m: Montado, sabe: boolean) => (sabe ? m.sabendo : m.pergunta);

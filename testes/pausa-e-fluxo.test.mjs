@@ -40,7 +40,7 @@ test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar 
   bs.forEach((b, i) => { if (i) assert.equal(b.de, bs[i - 1].ate); });
   assert.ok(bs.at(-1).ate >= SEGUNDOS, "o último balão fica até o fim");
   const textos = [...bs.map((b) => b.texto), ...RESUMOS, FECHO];
-  assert.doesNotMatch(FECHO, /\?/, "sem pergunta dentro da figura: a decisão fica no Invista");
+  assert.doesNotMatch(FECHO, /\?/, "sem pergunta dentro da figura: a decisão fica no palpite");
   for (const s of textos) {
     assert.ok(s.split(/\s+/).length <= 14, `curto demais para ler de uma vez? "${s}"`);
     assert.doesNotMatch(s, /\d/, `sem número da coleta: "${s}"`);

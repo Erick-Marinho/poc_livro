@@ -115,7 +115,7 @@ O projeto do capítulo 1 continua aqui: o contrato, as perguntas e a régua. Em 
 
 ## 2.6 O que ficou de pé
 
-No 2.4, a prova parou em "? de 20", e você investiu um palpite na IDE. Agora ela volta corrigida.
+No 2.4, a prova parou em "? de 20", e você deu um palpite na IDE. Agora ela volta corrigida.
 
 <ResultadoDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} medir={saidas["r02-medir"]} gravacao={gravacaoMedir} motivo="R07" seguro="R12" numero="2.6" legenda="A prova corrigida: o que o GPT-6 Luna decidiu em cada pergunta, na gravação deste capítulo, e a nota da régua. A saída completa do medir.py está no terminal da IDE, no passo 10." />
 
@@ -146,7 +146,7 @@ Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e 
 
 1. A mudança é tirar da `INSTRUCAO`, no `agente.py`, a frase "Quando a política não diz, não prometa: passe a vez.", mantendo as três aspas do fim.
 2. Antes de ver o resultado, anote: a nota sobe ou desce? E o que acontece com o R12, o Bruno perguntando do pedido da Ana?
-3. **Sem chave:** volte ao passo 10 da IDE, em 2.5. Depois da medida original, toque em `passe a vez` no editor e escolha **sem a regra**. Invista antes de revelar a saída; no modo direto, use a previsão que anotou. A página repete uma gravação real dessa variante, sem cobrar nem chamar o modelo.
+3. **Sem chave:** volte ao passo 10 da IDE, em 2.5. Depois da medida original, toque em `passe a vez` no editor e escolha **sem a regra**. Dê o seu palpite antes de revelar a saída; no modo direto, use a previsão que anotou. A página repete uma gravação real dessa variante, sem cobrar nem chamar o modelo.
 4. **Se preferir executar na sua máquina:** retire a frase, execute `uv run pytest -q` e depois `uv run python medir.py`, com sua chave no ambiente. Essa alternativa é paga e pode dar outra nota. Depois, restaure a frase.
 5. Compare as duas notas e a decisão do R12. Mostre um caso em que a decisão mudou, ou registre que nenhum mudou, e explique o que os testes do grafo verificam. Na página, volte à opção **o do livro** para restaurar a regra.
 

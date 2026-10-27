@@ -35,11 +35,11 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 | Conta | Não conta |
 |---|---|
-| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do Invista), `TemposReais` (toca ou rola; a aposta de escala fica na IDE, logo antes), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no Invista logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
+| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do palpite), `TemposReais` (toca ou rola; a aposta de escala fica na IDE, logo antes), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no palpite logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
-`MapaTemperatura` não conta: o leitor toca ou rola; a previsão fica no Invista logo antes do vídeo.
+`MapaTemperatura` não conta: o leitor toca ou rola; a previsão fica no palpite (`Aposta`) logo antes do vídeo.
 
 ## Exceções
 

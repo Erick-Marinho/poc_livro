@@ -44,7 +44,7 @@ export function baloes(n: Nota): Balao[] {
     { de: T.gabarito, ate: T.correcao, alvo: "prova", texto: "Antes de existir agente, você escreve a resposta certa de cada uma: é o gabarito da prova." },
     { de: T.correcao, ate: T.grafico, alvo: "conta", texto: "O agente faz a prova, e o livro corrige: compara cada resposta com o gabarito e conta os acertos. Essa conta é a nota." },
     { de: T.grafico, ate: T.placar, alvo: "grafico", texto: "A cada capítulo, o agente muda uma coisa e faz a mesma prova de novo. A nota mostra se a mudança melhorou ou piorou, em vez de um “parece melhor”." },
-    { de: T.placar, ate: SEGUNDOS + 1, alvo: "placar", texto: "No topo de cada capítulo, o botão nota guarda essa história. No capítulo em que uma nota nasce, ela fica em “?” até você investir nela." },
+    { de: T.placar, ate: SEGUNDOS + 1, alvo: "placar", texto: "No topo de cada capítulo, o botão nota guarda essa história. No capítulo em que uma nota nasce, ela fica em “?” até você dar o seu palpite." },
   ];
 }
 

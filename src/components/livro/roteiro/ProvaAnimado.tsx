@@ -2,7 +2,7 @@
  * A animação da prova do substituto (Remotion; docs/capacidades/capitulo-2-em-cenas.md, etapa 4), que o leitor toca ou
  * rola (palco/RolaCena.tsx): as 20 perguntas com o gabarito; o decisor do capítulo 1, que passa tudo para a equipe,
  * responde uma por uma, e a régua marca ✓ ou ✗ e conta a nota de partida (a do baseline.py gravado); depois, o decisor
- * vira o grafo com o GPT-6 Luna, e o placar fica em "? de 20": a nota do agente é o palpite que o leitor investe na
+ * vira o grafo com o GPT-6 Luna, e o placar fica em "? de 20": a nota do agente é o palpite que o leitor dá na
  * IDE, logo depois. No modo "resultado", no 2.6, a mesma grade é a prova corrigida: o agente responde as 20 (a gravação),
  * a régua marca, e os balões apontam o padrão, um motivo e o R12. O que se desenha sai de prova.ts, montado do projeto real.
  */

@@ -29,7 +29,7 @@ test("a aposta usa os problemas do primeiro parágrafo, e cada resposta é uma f
   assert.match(r12, /bruno/); assert.match(r12, /outra cliente/);
 });
 
-test("a página tem o Invista da pesquisa, a figura dos números e o mapa com as oito fases e as referências, sem o Invista das fases", () => {
+test("a página tem o palpite da pesquisa, a figura dos números e o mapa com as oito fases e as referências, sem o palpite das fases", () => {
   const previsao = json("livros/ciclo-de-vida/figuras/agentes-em-producao-previsao.json");
   assert.equal([...html.matchAll(/class="apo-msg"/g)].length, previsao.mensagens.length);
   assert.doesNotMatch(mdx, /Invista em qual/);
@@ -37,7 +37,7 @@ test("a página tem o Invista da pesquisa, a figura dos números e o mapa com as
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
-test("a pesquisa: o Invista e o vídeo usam os mesmos números, com fonte e amostra, e cada fase aponta o capítulo dela", async () => {
+test("a pesquisa: o palpite e o vídeo usam os mesmos números, com fonte e amostra, e cada fase aponta o capítulo dela", async () => {
   const dados = json("livros/ciclo-de-vida/figuras/agentes-em-producao.json");
   const previsao = json("livros/ciclo-de-vida/figuras/agentes-em-producao-previsao.json");
   const pct = (v) => `${v.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;

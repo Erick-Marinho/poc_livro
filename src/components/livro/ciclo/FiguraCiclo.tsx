@@ -1,7 +1,7 @@
 /**
  * A ilha do mapa do ciclo animado (docs/capacidades/ciclo-animado.md): a composição (CicloAnimado.tsx), que o leitor toca
- * ou rola com a página, como as outras figuras (palco/RolaCena.tsx; docs/capacidades/mapa-do-ciclo-rola.md). O investimento em cada problema é lido da
- * caixa da página (Aposta.astro), ao carregar e a cada clique nela: quem já investiu lê o caminho, e não a pergunta. A
+ * ou rola com a página, como as outras figuras (palco/RolaCena.tsx; docs/capacidades/mapa-do-ciclo-rola.md). O palpite em cada problema é lido da
+ * caixa da página (Aposta.astro), ao carregar e a cada clique nela: quem já deu o palpite lê o caminho, e não a pergunta. A
  * fase por onde o problema passa acende o cartão dela, e clicar num nó do vídeo abre o cartão: a ilha só avisa a figura
  * (evento "ciclo:fase"), e o MapaDoCiclo acende. Sem JS, fica o mapa parado.
  */
@@ -37,7 +37,7 @@ export default function FiguraCiclo({ ciclo, cenas, aposta }: Entrada) {
   const sabe = jaSabe(apostas, direto);
   const props = useMemo(() => ({ ciclo, cenas, aposta, desenho, apostas, sabe }), [ciclo, cenas, aposta, desenho, apostas, sabe]);
 
-  /* o investimento do leitor: o que já está marcado quando a ilha carrega, e cada clique na caixa depois */
+  /* o palpite do leitor: o que já está marcado quando a ilha carrega, e cada clique na caixa depois */
   useEffect(() => {
     setApostas(lerApostas(aposta));
     const clique = (e: Event) => { if ((e.target as Element).closest?.("[data-aposta] .apo-opcoes button")) setApostas(lerApostas(aposta)); };

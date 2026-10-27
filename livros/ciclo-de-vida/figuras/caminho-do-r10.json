@@ -1,5 +1,5 @@
 {
-  "sobre": "O Invista do 2.1, logo antes da figura do grafo (docs/capacidades/escolhas-no-capitulo-2.md, etapa 1): para qual nó vai a mensagem do lençol. As opções são os quatro nós de caminho do grafo real (grafo-02), na ordem da figura; a resposta é a decisão do R10 no referencia.jsonl; as glosas dizem o que o grafo-02.json diz de cada nó (o modelo escreve, ou frase fixa). O teste confere.",
+  "sobre": "O palpite do 2.1, logo antes da figura do grafo (docs/capacidades/escolhas-no-capitulo-2.md, etapa 1): para qual nó vai a mensagem do lençol. As opções são os quatro nós de caminho do grafo real (grafo-02), na ordem da figura; a resposta é a decisão do R10 no referencia.jsonl; as glosas dizem o que o grafo-02.json diz de cada nó (o modelo escreve, ou frase fixa). O teste confere.",
   "resultado": "O gabarito manda para",
   "mensagens": [
     { "caso": "R10", "opcoes": ["responder", "abrir_chamado", "recusar", "passar"], "fez": 1,

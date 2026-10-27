@@ -168,5 +168,5 @@ test("temperatura zero: a animação da escolha faz a conta das chances, sorteia
   const fig=html.querySelector("[data-como-escolhe]");
   assert.ok(fig,"a animação está na página");
   assert.match(fig.text,/Ilustração/);
-  assert.ok(!ler("experimento.mdx").includes("previsoesMapa"),"o Invista de antes do mapa saiu");
+  assert.ok(!ler("experimento.mdx").includes("previsoesMapa"),"o palpite de antes do mapa saiu");
 });

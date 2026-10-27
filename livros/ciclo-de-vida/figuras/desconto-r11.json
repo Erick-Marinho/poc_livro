@@ -1,5 +1,5 @@
 {
-  "sobre": "O Invista do 2.4 (docs/capacidades/escolhas-no-capitulo-2.md, etapa 3): o que o substituto faz com o pedido de desconto, o R11, o mesmo que o agente apressado aceitou no 1.2. A resposta e o motivo são os da gravação do capítulo (gravacoes/r02-medir.json, pelo caminhosDaGravacao); o gabarito, o do referencia.jsonl. O teste confere.",
+  "sobre": "O palpite do 2.4 (docs/capacidades/escolhas-no-capitulo-2.md, etapa 3): o que o substituto faz com o pedido de desconto, o R11, o mesmo que o agente apressado aceitou no 1.2. A resposta e o motivo são os da gravação do capítulo (gravacoes/r02-medir.json, pelo caminhosDaGravacao); o gabarito, o do referencia.jsonl. O teste confere.",
   "resultado": "Na gravação, o GPT-6 Luna decidiu",
   "mensagens": [
     {

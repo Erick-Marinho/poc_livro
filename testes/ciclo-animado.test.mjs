@@ -80,8 +80,8 @@ test("cada nó do mapa mostra que abre o cartão, e o mapa tem o modal e a dica;
   assert.equal(mini.querySelectorAll("svg.lucide-info").length, 0, "a miniatura mostra o ícone de abrir");
 });
 
-/* ajustes da introdução (etapa 3): quem já investiu não é perguntado de novo */
-test("quem já investiu, ou está no modo direto, lê o caminho, e não a pergunta; quem não investiu, a pergunta", async () => {
+/* ajustes da introdução (etapa 3): quem já deu o palpite não é perguntado de novo */
+test("quem já deu o palpite, ou está no modo direto, lê o caminho, e não a pergunta; quem não deu, a pergunta", async () => {
   const { jaSabe, titulo, legenda } = await import("../src/components/livro/ciclo/cenas.ts");
   const m = montarCenas({ ciclo, cenas, aposta });
   assert.equal(jaSabe([null, null, null, null], false), false);

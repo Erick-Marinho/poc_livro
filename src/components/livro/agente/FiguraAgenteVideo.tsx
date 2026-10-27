@@ -83,7 +83,7 @@ export default function FiguraAgenteVideo({ cenarios, loja }: Props) {
       style={{ width: "100%", display: "block" }} acknowledgeRemotionLicense />
 
     {perguntando && a ? (
-      <div role="group" aria-label="invista" style={{ ...vidro, background: "var(--palco-fundo)", position: "absolute", left: "50%", bottom: 8,
+      <div role="group" aria-label="palpite" style={{ ...vidro, background: "var(--palco-fundo)", position: "absolute", left: "50%", bottom: 8,
         translate: "-50% 0", width: "min(620px, calc(100% - 16px))", borderRadius: 14, padding: "10px 14px 8px", display: "grid", gap: 8,
         boxShadow: "0 12px 40px rgba(0, 0, 0, .45)" }}>
         {pista ? <span style={{ font: "13px/1.35 var(--f-ui)", color: "var(--palco-fraco)" }}>{pista}</span> : null}
@@ -108,7 +108,7 @@ export default function FiguraAgenteVideo({ cenarios, loja }: Props) {
       {resultado && a ? (
         <span style={{ ...vidro, position: "absolute", left: "50%", top: 58, translate: "-50% 0", borderRadius: 999, padding: "6px 14px",
           font: "13px var(--f-ui)", whiteSpace: "nowrap" }}>
-          {aposta.escolha ? <>Você investiu em <b style={{ color: COR[aposta.escolha] }}>{DECISOES[aposta.escolha]}</b> · </> : null}
+          {aposta.escolha ? <>O seu palpite: <b style={{ color: COR[aposta.escolha] }}>{DECISOES[aposta.escolha]}</b> · </> : null}
           o contrato decidiu <b style={{ color: COR[a.decisao] }}>{DECISOES[a.decisao]}</b>
           {aposta.escolha ? (aposta.escolha === a.decisao ? " ✓" : "") : ""}
         </span>

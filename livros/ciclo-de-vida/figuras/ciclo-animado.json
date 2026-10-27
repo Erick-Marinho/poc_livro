@@ -1,5 +1,5 @@
 {
-  "sobre": "As cenas da animação do mapa do ciclo, na introdução (MapaDoCiclo; docs/capacidades/ciclo-animado.md). Cada cena com problema aponta uma mensagem da aposta (figuras/onde-se-pega.json, pelo número); o caminho são fases do ciclo.json, e a fase que pega o problema na aposta está nele. O problema para na fase que o pega; o resto do caminho é a volta, que um fantasma percorre. Quem já investiu lê o \"sabendo\" no lugar da pergunta (docs/capacidades/ajustes-da-introducao.md). O teste confere isso e os limites do docs/RITMO.md.",
+  "sobre": "As cenas da animação do mapa do ciclo, na introdução (MapaDoCiclo; docs/capacidades/ciclo-animado.md). Cada cena com problema aponta uma mensagem da aposta (figuras/onde-se-pega.json, pelo número); o caminho são fases do ciclo.json, e a fase que pega o problema na aposta está nele. O problema para na fase que o pega; o resto do caminho é a volta, que um fantasma percorre. Quem já deu o palpite lê o \"sabendo\" no lugar da pergunta (docs/capacidades/ajustes-da-introducao.md). O teste confere isso e os limites do docs/RITMO.md.",
   "pergunta": "Onde cada problema é capturado?",
   "sabendo": "O caminho de cada problema até a fase que o captura.",
   "cenas": [

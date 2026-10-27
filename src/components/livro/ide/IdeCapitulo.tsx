@@ -361,8 +361,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
 
   /* o que o leitor digitou antes de acertar o comando da vez fica na tela, logo antes dele, como num terminal */
   const errados = acao?.tipo === "rodar" && tentativas.map((t, j) => <div key={`t${j}`}><div>{prompt(acao.onde)}{t.texto}</div>{t.aviso && <div className="ic-livro">{t.aviso}</div>}</div>);
-  const cartaoAposta = (ap: Aposta, responder: (op: number | "pulou") => void) => <div className="ide-aposta" role="group" aria-label="Invista antes de ver">
-    <b>invista antes de ver</b>
+  const cartaoAposta = (ap: Aposta, responder: (op: number | "pulou") => void) => <div className="ide-aposta" role="group" aria-label="O seu palpite antes de ver">
+    <b>palpite antes de ver</b>
     <p>{ap.pergunta}</p>
     <div className="ide-opcoes">
       {ap.opcoes.map((o, j) => <button key={j} type="button" onClick={() => responder(j)}>{o}</button>)}
@@ -371,7 +371,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
   </div>;
   const veredito = (ap: Aposta, feita: number) => <div className={`ide-veredito ${feita === ap.certa ? "ide-acertou" : "ide-errou"}`}>
     {feita === ap.certa ? <Check size={14} /> : <X size={14} />}
-    {feita === ap.certa ? "Você acertou." : `Você investiu em "${ap.opcoes[feita]}". Saiu: ${ap.opcoes[ap.certa]}.`}
+    {feita === ap.certa ? "Você acertou." : `O seu palpite: "${ap.opcoes[feita]}". Saiu: ${ap.opcoes[ap.certa]}.`}
   </div>;
   /* as trocas que o leitor rodou num comando: cada uma com o comando, a aposta (se tem) e a saída gravada dela */
   const trocasRodadas = (a: Extract<AcaoIde, { tipo: "rodar" }>, k: number) => (tentadas[k] ?? []).map((id) => {
@@ -446,8 +446,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       const vez = doLeitor ? [ia("c", <p>Agora é você: digite no terminal da IDE <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando}</code> e aperte Enter.</p>),
         ...(quem === "pediu" ? [pessoa("rp", <p>Executa pra mim.</p>)] : [])] : [];
       if (doLeitor && quem === undefined) return vez;
-      const pede = comAposta ? [ia("e", doLeitor ? <p>Antes de ver a saída: o que você acha que vai acontecer? Invista comigo no terminal.</p>
-        : <p>Antes de eu executar <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando.split(" ").slice(0, 3).join(" ")}</code>: o que você acha que vai acontecer? Invista comigo no terminal.</p>)] : [];
+      const pede = comAposta ? [ia("e", doLeitor ? <p>Antes de ver a saída: o que você acha que vai acontecer? Dê o seu palpite no terminal.</p>
+        : <p>Antes de eu executar <code>{(a as Extract<AcaoIde, { tipo: "rodar" }>).comando.split(" ").slice(0, 3).join(" ")}</code>: o que você acha que vai acontecer? Dê o seu palpite no terminal.</p>)] : [];
       if (comAposta && aposta === undefined) return [...vez, ...pede];
       const pergunta = a.tipo === "rodar" && !direto ? a.perguntaSaida : undefined, r = respostasSaida[x.k];
       const leitura = !pergunta ? [] : [
@@ -464,7 +464,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       return [
         ...vez,
         ...pede,
-        ...(aposta !== undefined ? [pessoa("ap", <p>{aposta === "pulou" ? "Só me mostra." : `Meu investimento: ${(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.`}</p>)] : []),
+        ...(aposta !== undefined ? [pessoa("ap", <p>{aposta === "pulou" ? "Só me mostra." : `Meu palpite: ${(a as Extract<AcaoIde, { tipo: "rodar" }>).aposta!.opcoes[aposta]}.`}</p>)] : []),
         ia("n", <p><Md t={feito(a, quem === "leitor")} /> <Md t={a.nota} /></p>),
         ...leitura,
         ...(a.tipo === "rodar" && a.variar ? trocasNoChat(a, x.k) : []),
@@ -505,8 +505,8 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
       const o = a.variar!.opcoes.find((x) => x.id === id)!, feita = apostasTroca[id];
       fs.push(pessoa(`vp-${id}`, <p>E com <code>{o.rotulo}</code>?</p>));
       if (o.aposta && !direto) {
-        if (feita === undefined) { fs.push(ia(`ve-${id}`, <p>Antes de ver: invista comigo no terminal.</p>)); break; }
-        fs.push(pessoa(`va-${id}`, <p>{feita === "pulou" ? "Só me mostra." : `Meu investimento: ${o.aposta.opcoes[feita]}.`}</p>));
+        if (feita === undefined) { fs.push(ia(`ve-${id}`, <p>Antes de ver: dê o seu palpite no terminal.</p>)); break; }
+        fs.push(pessoa(`va-${id}`, <p>{feita === "pulou" ? "Só me mostra." : `Meu palpite: ${o.aposta.opcoes[feita]}.`}</p>));
       }
       fs.push(ia(`vn-${id}`, <p><Md t={o.nota} /></p>));
     }
@@ -550,7 +550,7 @@ export default function IdeCapitulo({ acoes, passos, versoes, python, iniciais =
     return (!direto && fazer !== "livro" ? FIZ : SEGUE)[i % 4];
   };
   /* o compositor: a fala sugerida, que o leitor envia; quando o terminal ou o chat pedem outra coisa, a caixa diz o quê */
-  const aguardando = aDigitar ? "Digite o comando no terminal." : esperando || apostandoTroca ? "Invista no terminal antes de ver a saída."
+  const aguardando = aDigitar ? "Digite o comando no terminal." : esperando || apostandoTroca ? "Dê o seu palpite no terminal antes de ver a saída."
     : perguntando ? "Responda a pergunta acima para seguir." : null;
   /* enviar o primeiro pedido: a conversa do começo segue dali, e a abertura emenda na primeira ação */
   const comecar = () => { enviou.current = true; setVisiveis(falasAgora.length); setComecou(true); };

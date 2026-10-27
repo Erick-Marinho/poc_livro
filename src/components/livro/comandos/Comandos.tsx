@@ -194,7 +194,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
               initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: .16 }}>
               <p className="cm-titulo">o placar do agente</p>
               {!atualMarco ? <p className="cm-placar-texto">Ainda não há nota. Ela nasce no capítulo 1, antes de existir agente, e cada capítulo depois tenta empurrar o número.</p>
-                : !revelado ? <p className="cm-placar-texto">A primeira nota deste livro sai neste capítulo. Ela aparece aqui depois que você investir nela, e não antes.</p>
+                : !revelado ? <p className="cm-placar-texto">A primeira nota deste livro sai neste capítulo. Ela aparece aqui depois do seu palpite, e não antes.</p>
                 : <>
                   <ol className="cm-marcos">
                     {placar.marcos.map((m) => (

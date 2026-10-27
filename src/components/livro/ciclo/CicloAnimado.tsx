@@ -104,21 +104,21 @@ export const CicloAnimado: React.FC<Props> = ({ ciclo, cenas, aposta, desenho, a
   );
 };
 
-// a legenda da cena e, depois que o problema é capturado, onde, e se bateu com o investimento do leitor: só o que a
-// caixa do "invista" ainda não disse (quem não investiu não é cobrado)
+// a legenda da cena e, depois que o problema é capturado, onde, e se bateu com o palpite do leitor: só o que a
+// caixa do palpite ainda não disse (quem não deu palpite não é cobrado)
 const Faixa = ({ cena, v, apostas, aposta, sabe, coluna, top }: { cena: Cena; v: number; apostas?: (number | null)[]; aposta: Entrada["aposta"]; sabe: boolean; coluna: boolean; top: number }) => {
   const pegaEm = cena.ida.length ? cena.ida[cena.ida.length - 1].em : Infinity;
   const m = cena.problema !== undefined ? aposta.mensagens[cena.problema] : undefined;
   const escolha = cena.problema !== undefined ? apostas?.[cena.problema] : undefined;
-  const investiu = m && escolha !== undefined && escolha !== null;
+  const palpitou = m && escolha !== undefined && escolha !== null;
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top, padding: coluna ? "6px 16px" : "8px 24px", display: "grid", gap: 8, alignContent: "start" }}>
       <div style={{ font: `${coluna ? 16 : 19}px/1.35 ${ui}`, color: cor.texto, opacity: kf(v, [[0, 0], [0.4, 1]]) }}>{legenda(cena, sabe)}</div>
       {cena.pega && m ? (
         <div style={{ font: `${coluna ? 14 : 16}px/1.4 ${ui}`, color: cor.fraco, opacity: kf(v, [[pegaEm + 0.2, 0], [pegaEm + 0.6, 1]]) }}>
           Capturado em <b style={{ color: cor.ok }}>{cena.pega.nome}</b> <span>· cap. {cena.pega.capitulos.join(" e ")}</span>
-          {!investiu ? null : escolha === m.fez ? <> · <b style={{ color: cor.ok }}>✓ onde você investiu</b></> : (
-            <> · você investiu em <b style={{ color: cor.aviso }}>{m.opcoes[escolha]}</b></>
+          {!palpitou ? null : escolha === m.fez ? <> · <b style={{ color: cor.ok }}>✓ o seu palpite</b></> : (
+            <> · o seu palpite: <b style={{ color: cor.aviso }}>{m.opcoes[escolha]}</b></>
           )}
         </div>
       ) : null}

@@ -2,7 +2,7 @@
  * A pausa e o fluxo (docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5): a animação de "O que vamos construir",
  * em seis cenas que o leitor toca ou rola (palco/RolaCena.tsx): o modelo lê, a pausa até a primeira palavra, a
  * resposta escrita um pedaço por vez, o fluxo, o medidor nas três mensagens e o fecho: dois trabalhos, dois cronômetros. Sem pergunta dentro da figura: a
- * decisão do leitor fica no Invista logo antes (docs/capacidades/pausa-e-fluxo-revisao.md). É
+ * decisão do leitor fica no palpite logo antes (docs/capacidades/pausa-e-fluxo-revisao.md). É
  * ilustração (figuras/pausa.json): sem número medido, para não adiantar o resultado. Puro de propósito: o teste chama
  * isto direto.
  */

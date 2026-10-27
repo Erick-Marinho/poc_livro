@@ -1,4 +1,4 @@
-/** As palavras que o leitor lê (docs/capacidades/ajustes-da-introducao.md): o problema é "capturado", e o leitor "investe", em vez de apostar. Confere as páginas montadas, os textos, os dados das figuras e as frases dos componentes. Rode depois de `astro build`. */
+/** As palavras que o leitor lê (docs/capacidades/ajustes-da-introducao.md): o problema é "capturado", e o leitor dá um "palpite", em vez de apostar ou investir (docs/capacidades/correcoes-introducao-e-capitulo-1.md). Confere as páginas montadas, os textos, os dados das figuras e as frases dos componentes. Rode depois de `astro build`. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -28,17 +28,17 @@ test("o leitor lê \"capturado\", e não \"pego\" nem \"apanhado\", na introduç
   assert.match(texto, /capturado/);
 });
 
-test("o leitor investe, e não aposta, no livro todo: nas páginas, nos textos, nos roteiros, nos dados e nos componentes", () => {
+test("o leitor dá um palpite, e não aposta nem investe, no livro todo: nas páginas, nos textos, nos roteiros, nos dados e nos componentes", () => {
   // "a aposta da parte do modelo local" é a do artigo, no experimento, e não uma ação do leitor; colada a um nome
-  // (`ic-opcao-aposta`, `fontmar:apostou`), é classe ou evento
-  const aposta = /.{0,40}(?<![-.:\w])apost\w*\b(?! da parte do modelo local).{0,20}/i;
+  // (`ic-opcao-aposta`, `fontmar:apostou`), é classe ou evento. "Investigar" é outra palavra.
+  const aposta = /.{0,40}((?<![-.:\w])apost\w*\b(?! da parte do modelo local)|\binvist\w*|\binvest(?!ig)\w*).{0,20}/i;
   const paginas = arquivos("dist", ".html");
   assert.ok(paginas.length > 5, "monte o site antes: astro build");
   for (const p of paginas) nenhuma(visivel(ler(p)), aposta, p);
   for (const p of [...arquivos("livros", ".mdx"), ...arquivos("experimentos", ".mdx")]) nenhuma(ler(p).replace(/^import .*$/gm, "").replace(/<Aposta\b/g, "").replace(/\baposta=\{/g, ""), aposta, p);
   for (const p of [...arquivos("livros", ".json"), ...arquivos("experimentos", ".json")]) for (const s of lido(JSON.parse(ler(p)))) nenhuma(s, aposta, p);
   for (const p of [...arquivos("src/components", ".astro"), ...arquivos("src/components", ".tsx")]) for (const s of frases(ler(p))) nenhuma(s, aposta, p);
-  assert.match(visivel(ler("dist/ciclo-de-vida/00-introducao/index.html")), /\binvista\b/i);
+  assert.match(visivel(ler("dist/ciclo-de-vida/00-introducao/index.html")), /\bpalpite\b/i);
 });
 
 test("o problema do custo diz que é o gasto com o modelo, e não \"a conta\": no texto, na caixa e na animação", () => {
