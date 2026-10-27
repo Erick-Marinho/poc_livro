@@ -1,4 +1,4 @@
-"""Os testes rodam sem o Ollama: as respostas e o relógio são de mentira.
+"""Os testes são executados sem o Ollama: as respostas e o relógio são de mentira.
 
     uv run python -m unittest
 """

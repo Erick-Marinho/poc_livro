@@ -70,8 +70,9 @@ test("as ações do texto dizem o que as coletas gravadas mostram", () => {
   const p = json("previsoes.json").mensagens[0];
   assert.match(p.opcoes[p.fez], /^Demora mais para começar, e depois escreve quase no mesmo ritmo$/);
   assert.doesNotMatch(p.porque, /\d/, "o retorno não adianta os números de \"O que deu\"");
-  // o pare e pense: os tokens que a longa e a curta leem
-  assert.ok(mdx.includes(`Mais: ${numero(longa, "lê")}.`) && mdx.includes(`com 10 palavras, vira ${numero(curta, "lê")}.`));
+  // o pare e pense: os tokens das mesmas mensagens de 10 e 430 palavras, sem o número do atendimento (a coleta ingênua)
+  const [curtaSem, longaSem] = ["curta", "longa"].map((c) => linhaDe("pf-ingenua", c));
+  assert.ok(mdx.includes(`Mais: ${numero(longaSem, "lê")}.`) && mdx.includes(`com 10 palavras, vira ${numero(curtaSem, "lê")}.`));
   // a do artigo: na primeira coleta, da segunda vez em diante a longa veio quase toda do cache
   const vezes = saida("pf-vezes").map((l) => l.match(/(\d+) de (\d+) tokens vieram do cache/).slice(1).map(Number));
   assert.ok(vezes[0][0] < 100 && vezes.slice(1).every(([cache, lidos]) => cache > lidos - 5));

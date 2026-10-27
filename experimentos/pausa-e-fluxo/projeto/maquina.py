@@ -1,4 +1,4 @@
-"""Anota onde a coleta rodou: a data, as versões, o modelo e a máquina. Sem isso, um número de tempo não diz nada."""
+"""Anota onde a coleta foi executada: a data, as versões, o modelo e a máquina. Sem isso, um número de tempo não diz nada."""
 import json
 import os
 import platform

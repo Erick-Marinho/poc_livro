@@ -43,7 +43,7 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 |---|---|---|---|---|
 | `projeto/casos.jsonl` e `projeto/dados/` | o corpus congelado | os dados da loja | três casos | nova (etapa 1) |
 | `projeto/` (Python + `uv`) | mede a pausa e o fluxo no Ollama; testes que rodam sem o modelo | o corpus | um registro por execução | nova |
-| coleta gravada | o placar vem do modelo real, com máquina e versão | os registros | `saidas.json`, `procedencia.json` | reuso |
+| coleta gravada | o placar vem do modelo real, com máquina e versão | os registros | `saidas.json`, e o `ambiente` do `coleta.json` | reuso |
 | figura "O que vamos construir" | a pausa e o fluxo, um trabalho por vez | a coleta | cenas Remotion com play | nova |
 | roteiro da IDE | o leitor monta o medidor, aposta e tropeça no cache | o projeto | os passos | reuso (`IdeCapitulo`) |
 | página | o molde, `nivel: novato` | tudo acima | `/experimentos/<nome>/` | nova |
@@ -72,15 +72,18 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 
 ## Registro
 
+Os commits foram corrigidos em 27/10/2026 (pausa-e-fluxo-revisao.md): o histórico foi reescrito, e os hashes antigos não
+existiam mais.
+
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `ee07fbb` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
-| 2 | `790450c` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
-| 3 | `673080f` | `coleta.json`: 10 rodadas na CPU (Ryzen 7 5700G, Ollama 0.40.11, `llama3.2:3b`); `medir.py`: pausa 0,38 → 3,12 → 9,74 s, fluxo 15,4 → 13,2 tokens/s, longa de novo 0,08 s com 1076 de 1077 do cache; placar 10 de 10 nas três partes. A primeira coleta (cache a partir da rodada 2) refeita. `test_medidor.py` 8/8; o critério antigo do cache falha 2 | Erick, 27/10/2026 |
-| 4 | `74b912b` | `figuras/esboco.md`: a cena 2 em ASCII e as seis cenas (ler, a pausa, escrever, o fluxo, o medidor, a pergunta), sem números da coleta e sem o cache | Erick, 27/10/2026 |
-| 5 | `08d6286` | `testes/pausa-e-fluxo.test.mjs` (4): seis cenas em até 45 s, um balão curto por cena, um resumo por cena, sem número da coleta nem "token/prefill/decode/cache", as palavras das mensagens iguais às do corpus, o build sem a página de rascunho; falha com "um token por vez". Testes do livro 191/191. Capturas das seis cenas a 1280 e 390 px, tocando em `/rascunhos/pausa-e-fluxo/`; ajustes: a mensagem cortada, "leu ✓" na pausa, a linha da longa no celular | Erick, 27/10/2026 |
-| 6 | `3002c01` | `scripts/saidas.py rascunhos/pausa-e-fluxo`: 26 passos da pasta vazia ao `projeto/`, `--conferir` com 9 saídas iguais; o código da coleta ingênua idêntico ao do roteiro naquele passo; o teste de `ler` falha (`1.0 != 2.5`); ingênua 1 de 10, corrigida 10, 8 e 10 de 10. Testes 191/191 e 8/8. A IDE percorrida no navegador, com capturas do erro, da coleta ingênua, do cache e da corrigida | Erick, 27/10/2026 |
-| 7 | `c6b949b` | A página em `/experimentos/pausa-e-fluxo/`, nível novato, no molde; "O que deu" 10, 10 e 10 de 10 (as coletas regravadas com "repetição" no lugar de "rodada", pelo vocabulário do livro). Testes 191/191, medidor 8/8, `--conferir` com 11 saídas iguais; capturas a 1280 e 390 px. O ritmo: 272 e 221 palavras sem ação (avisos) | Erick, 27/10/2026 |
-| 8 | `a17e0b3`, `4ba1241` | Três `Rascunho` (só linhas acrescentadas), preenchidos: a aposta antes da analogia, o pare e pense dos 1077 tokens e a aposta sobre o laboratório do artigo; o inesperado começa pelo cache; o balão final manda conferir o palpite. `npm run ritmo` sem aviso (o maior trecho, 155 palavras); o teste das ações contra as saídas gravadas falha com a resposta trocada. Testes 192/192; capturas das apostas a 1280 e 390 px | Erick, 27/10/2026 |
+| 1 | `b8bd7fe` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
+| 2 | `da243a4` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
+| 3 | `b5c5591` | `coleta.json`: 10 rodadas na CPU (Ryzen 7 5700G, Ollama 0.40.11, `llama3.2:3b`); `medir.py`: pausa 0,38 → 3,12 → 9,74 s, fluxo 15,4 → 13,2 tokens/s, longa de novo 0,08 s com 1076 de 1077 do cache; placar 10 de 10 nas três partes. A primeira coleta (cache a partir da rodada 2) refeita. `test_medidor.py` 8/8; o critério antigo do cache falha 2 | Erick, 27/10/2026 |
+| 4 | `f8bd11a` | `figuras/esboco.md`: a cena 2 em ASCII e as seis cenas (ler, a pausa, escrever, o fluxo, o medidor, a pergunta), sem números da coleta e sem o cache | Erick, 27/10/2026 |
+| 5 | `c6503bf` | `testes/pausa-e-fluxo.test.mjs` (4): seis cenas em até 45 s, um balão curto por cena, um resumo por cena, sem número da coleta nem "token/prefill/decode/cache", as palavras das mensagens iguais às do corpus, o build sem a página de rascunho; falha com "um token por vez". Testes do livro 191/191. Capturas das seis cenas a 1280 e 390 px, tocando em `/rascunhos/pausa-e-fluxo/`; ajustes: a mensagem cortada, "leu ✓" na pausa, a linha da longa no celular | Erick, 27/10/2026 |
+| 6 | `365be3e` | `scripts/saidas.py rascunhos/pausa-e-fluxo`: 26 passos da pasta vazia ao `projeto/`, `--conferir` com 9 saídas iguais; o código da coleta ingênua idêntico ao do roteiro naquele passo; o teste de `ler` falha (`1.0 != 2.5`); ingênua 1 de 10, corrigida 10, 8 e 10 de 10. Testes 191/191 e 8/8. A IDE percorrida no navegador, com capturas do erro, da coleta ingênua, do cache e da corrigida | Erick, 27/10/2026 |
+| 7 | `fcf5826` | A página em `/experimentos/pausa-e-fluxo/`, nível novato, no molde; "O que deu" 10, 10 e 10 de 10 (as coletas regravadas com "repetição" no lugar de "rodada", pelo vocabulário do livro). Testes 191/191, medidor 8/8, `--conferir` com 11 saídas iguais; capturas a 1280 e 390 px. O ritmo: 272 e 221 palavras sem ação (avisos) | Erick, 27/10/2026 |
+| 8 | `ab0aa56`, `8bdb21c` | Três `Rascunho` (só linhas acrescentadas), preenchidos: a aposta antes da analogia, o pare e pense dos 1077 tokens e a aposta sobre o laboratório do artigo; o inesperado começa pelo cache; o balão final manda conferir o palpite. `npm run ritmo` sem aviso (o maior trecho, 155 palavras); o teste das ações contra as saídas gravadas falha com a resposta trocada. Testes 192/192; capturas das apostas a 1280 e 390 px | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

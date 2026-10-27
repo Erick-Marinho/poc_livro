@@ -1,5 +1,5 @@
 {
-  "resultado": "Na medida",
+  "resultado": "O que o artigo diz",
   "fechos": {
     "nenhum": "Vamos cronometrar os dois trabalhos para ver.",
     "alguns": "Você acertou {n} de {total}. Agora vamos medir de verdade."

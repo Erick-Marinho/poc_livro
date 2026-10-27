@@ -5,13 +5,13 @@ data: "2026-10-27"
 etiqueta: "Inferência local"
 nivel: "novato"
 afirmacao:
-  texto: "A pausa antes da primeira palavra cresce com o tamanho do que o modelo lê; depois dela, as palavras saem num ritmo que quase não muda."
+  texto: "A pausa antes da primeira palavra cresce com o tamanho do que o modelo lê; depois dela, as palavras saem num ritmo que muda pouco."
   fonte:
     titulo: "Janvi Kumari, LLM Inference Explained: How Models Generate Responses Faster (Analytics Vidhya)"
     url: "https://www.analyticsvidhya.com/blog/2026/10/llm-inference-explained-optimization-techniques/"
 regua:
   arquivo: "projeto/casos.jsonl"
-  conta: "A mesma pergunta da loja em três mensagens: só a pergunta (10 palavras), com os pedidos (82) e com a política, o catálogo e os pedidos (430). Dez repetições num modelo real, no processador. Conta em quantas a pausa da longa foi maior que a da curta, e em quantas o ritmo da longa ficou a até 20% do da curta. A régua foi escrita antes de medir."
+  conta: "A mesma pergunta da loja em três mensagens: só a pergunta (10 palavras), com os pedidos (82) e com a política, o catálogo e os pedidos (430). Dez repetições num modelo real, no processador. Conta em quantas a pausa da longa foi maior que a da curta, e em quantas o ritmo da longa ficou a até 20% do da curta. A régua foi escrita antes de medir; o critério do cache foi ajustado depois da primeira coleta, que mostrou que todo pedido traz uns 20 tokens do cache."
 resultado:
   - rotulo: "a pausa da longa foi maior que a da curta"
     saida: "pf-limpa"
@@ -19,8 +19,8 @@ resultado:
     saida: "pf-fluxo"
   - rotulo: "a longa pedida de novo começou mais rápido, lendo do cache"
     saida: "pf-cache"
-achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez, porque o Ollama guarda o que já leu. Pedida de novo, a longa começa em 0,08 s. Com cada atendimento começando diferente, a pausa cresceu em todas as repetições: 0,39 s na curta, 3,15 s na média e 9,84 s na longa. O ritmo caiu um pouco, de 15,7 para 13,0 tokens por segundo, e ficou dentro dos 20% em todas: quase não muda, mas muda."
-custo: "No processador AMD Ryzen 7 5700G (16 núcleos, 16 GB), com o llama3.2:3b no Ollama 0.40.11, cada coleta de dez repetições levou cerca de 5 minutos; foram duas, a primeira e a corrigida. O modelo ocupa 2 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
+achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez, porque o Ollama guarda o que já leu. Pedida de novo, a longa começa em 0,08 s. Com cada atendimento começando diferente, a pausa cresceu em todas as repetições: 0,39 s na curta, 3,15 s na média e 9,84 s na longa. O ritmo caiu um pouco, de 15,7 para 13,0 tokens por segundo, e ficou dentro dos 20% em todas: muda pouco. O artigo explica por quê: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar."
+custo: "No processador AMD Ryzen 7 5700G (8 núcleos e 16 threads; 16 GB de memória visíveis no WSL2), com o llama3.2:3b no Ollama 0.40.11, cada coleta de dez repetições levou cerca de 5 minutos; foram quatro: a primeira, que tropeçou no cache, e a corrigida, gravada de novo duas vezes enquanto a saída do medidor mudava; a publicada é a última. O modelo ocupa 2 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
 ---
 import PausaEFluxo from "../../src/components/livro/PausaEFluxo.astro";
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
@@ -52,7 +52,7 @@ Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a p
 <PausaEFluxo dados={pausa} />
 
 <PareEPense pergunta="A mensagem longa tem 430 palavras. O modelo lê mais ou menos pedaços do que isso?">
-Mais: 1077. Muitas palavras viram mais de um pedaço, e o Ollama ainda põe um começo fixo antes da pergunta. É por isso que a curta, com 10 palavras, vira 50.
+Mais: 1072. Muitas palavras viram mais de um pedaço, e o Ollama ainda acrescenta a todo pedido um cabeçalho fixo, de uns 20 pedaços. É por isso que a curta, com 10 palavras, vira 45.
 </PareEPense>
 
 O artigo dá nomes técnicos aos dois trabalhos: a leitura se chama **prefill**, e a escrita, **decode**. E o modelo não lê palavras, e sim **tokens**: pedaços de texto, que podem ser uma palavra ou parte dela. A nossa mensagem longa tem 430 palavras, que viram pouco mais de mil tokens.
@@ -73,7 +73,7 @@ Por isso, cada atendimento passou a começar com o seu número. Um começo difer
 
 <Aposta dados={artigo} pergunta="E o laboratório do artigo?" />
 
-Esse detalhe pega o laboratório do artigo. Ele mede a leitura com três textos que repetem a mesma frase 10, 60 e 150 vezes, ou seja, textos que começam iguais. E o tempo de leitura que o Ollama informa conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade.
+Esse detalhe pega o laboratório do artigo. Ele mede a leitura com três textos que repetem a mesma frase 10, 60 e 150 vezes, ou seja, textos que começam iguais. O nosso medidor marca a pausa no relógio; o do artigo usa o tempo de leitura que o Ollama informa, e esse tempo conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade. O artigo avisa, numa frase, que o cache pode influenciar a medida; não mostra quanto.
 
 <PareEPense pergunta="Num chat, a conversa inteira vai de novo para o modelo a cada mensagem que você manda. O cache ajuda ou atrapalha?">
 Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o modelo pode reaproveitar essa leitura e ler só a mensagem nova. É por isso que a segunda pergunta de uma conversa longa costuma começar mais rápido do que você esperaria.
@@ -83,8 +83,8 @@ Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o model
 
 Instale o Ollama ([ollama.com](https://ollama.com)), baixe o modelo com `ollama pull llama3.2:3b` e, na pasta do projeto, execute `uv run python coletar.py`. A coleta leva alguns minutos e grava `coleta.json`; depois, `uv run python medir.py` mostra o placar. Os seus tempos vão ser outros, porque o processador é outro. O que vale comparar é a forma: a pausa cresce com a mensagem? O ritmo fica parecido?
 
-O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura fica tão rápida que a pausa quase some, e o experimento perde o que tem para mostrar.
+O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura deve ficar tão rápida que a pausa quase some, e o experimento perderia o que tem para mostrar. Essa medida não está gravada: fica como expectativa, não como resultado.
 
-O artigo também sugere mandar várias perguntas ao mesmo tempo. No Ollama, isso não acelera nada por padrão: ele atende [uma pergunta de cada vez](https://docs.ollama.com/faq) (`OLLAMA_NUM_PARALLEL` vale 1), e as outras esperam na fila. Fica para outro experimento.
+O artigo também sugere mandar várias perguntas ao mesmo tempo, e avisa que o resultado depende de como o Ollama está configurado. Por padrão, ele atende [uma pergunta de cada vez](https://docs.ollama.com/faq) (`OLLAMA_NUM_PARALLEL` vale 1), e as outras esperam na fila: assim, não acelera nada. Fica para outro experimento.
 
 <Pendente o="Opinião dos autores: uma vez em que vocês acharam que o modelo estava lento, e o que estava demorando de verdade" parte="fecho do experimento" />
