@@ -116,8 +116,13 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
     setRecolhida(document.documentElement.classList.contains("pilula-recolhida"));
     document.documentElement.classList.remove("pilula-recolhida");
     try { setIdeVisto(localStorage.getItem(CHAVE_IDE) === "visto"); } catch { /* sem armazenamento */ }
-    /* qualquer botão com data-abrir-ide (o da introdução, por exemplo) abre a fundamentação */
-    const abrir = (e: MouseEvent) => { if ((e.target as Element).closest?.("[data-abrir-ide]")) setPorQue(true); };
+    /* qualquer botão com data-abrir-ide (o da introdução, por exemplo) abre a fundamentação; com data-abrir-placar
+       (o da prova pequena da introdução), o placar, no topo */
+    const abrir = (e: MouseEvent) => {
+      const alvo = e.target as Element;
+      if (alvo.closest?.("[data-abrir-ide]")) setPorQue(true);
+      if (alvo.closest?.("[data-abrir-placar]")) { botaoPlacar.current?.scrollIntoView({ block: "nearest" }); setPlacarAberto(true); }
+    };
     document.addEventListener("click", abrir);
     return () => document.removeEventListener("click", abrir);
   }, []);

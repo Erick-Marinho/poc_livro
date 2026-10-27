@@ -1,0 +1,9 @@
+{
+  "sobre": "A prova pequena da introdução (docs/capacidades/a-nota-na-introducao.md): quatro perguntas do referencia.jsonl, com o gabarito dele, e o que um agente decidiu em cada uma. O agente é ilustração: as decisões foram escritas para o exemplo. O leitor corrige, no papel da régua; a nota sai da conta, não daqui.",
+  "mensagens": [
+    { "caso": "R06", "decidiu": "responder" },
+    { "caso": "R15", "decidiu": "recusar" },
+    { "caso": "R10", "decidiu": "responder" },
+    { "caso": "R17", "decidiu": "passar" }
+  ]
+}

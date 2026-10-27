@@ -1,0 +1,112 @@
+---
+/**
+ * A prova pequena da introdução (docs/capacidades/a-nota-na-introducao.md): o leitor corrige, no papel da régua, quatro
+ * perguntas, uma por vez, em cartões (src/lib/cartoes.ts). Cada cartão traz a mensagem e a decisão do gabarito (do
+ * referencia.jsonl) e o que um agente decidiu (ilustração, da figura); o leitor diz se conta como acerto, e a nota se
+ * forma embaixo. No fim, um botão abre o placar de verdade, no topo (Comandos.tsx, data-abrir-placar). Sem números do
+ * livro: a nota de partida e a do capítulo 2 ficam para quando o leitor investir nelas. No modo direto, já corrigida.
+ */
+import { casos, DECISOES } from "../../lib/referencia.ts";
+
+interface Props { referencia: string; dados: { mensagens: { caso: string; decidiu: string }[] }; pergunta: string; ilustracao: string }
+const { referencia, dados, pergunta, ilustracao } = Astro.props;
+const lista = dados.mensagens.map((m) => {
+  if (!DECISOES[m.decidiu]) throw new Error(`CorrijaAProva: "${m.decidiu}" não é uma decisão do contrato`);
+  return { ...casos(referencia, [m.caso], "CorrijaAProva")[0], decidiu: m.decidiu };
+});
+const certos = lista.filter((c) => c.decidiu === c.decisao).length;
+if (certos === 0 || certos === lista.length) throw new Error("CorrijaAProva: a prova pequena precisa de acerto e de erro");
+const nome = (d: string) => DECISOES[d].nome;
+const pct = (n: number, t: number) => `${Math.round((100 * n) / t)}%`;
+---
+<div class="cp" data-corrija data-total={lista.length}>
+  <p class="cp-rotulo">corrija a prova</p>
+  <p class="cp-pergunta">{pergunta}</p>
+  <ol>
+    {lista.map((c) => {
+      const acertou = c.decidiu === c.decisao;
+      return (
+        <li data-caso={c.id} data-acertou={String(acertou)}>
+          <p class="cp-msg">“{c.pergunta}”</p>
+          <dl class="cp-lado">
+            <div><dt>gabarito</dt><dd>{nome(c.decisao)}</dd></div>
+            <div><dt>o agente decidiu</dt><dd>{nome(c.decidiu)}</dd></div>
+          </dl>
+          <div class="cp-botoes">
+            <button type="button" data-v="true">conta como acerto</button>
+            <button type="button" data-v="false">não conta</button>
+          </div>
+          <p class="cp-retorno" hidden>
+            <span class="cp-veredito"></span>
+            {acertou ? `O agente decidiu ${nome(c.decidiu)}, como o gabarito: um acerto.` : `O gabarito pede ${nome(c.decisao)}, e o agente decidiu ${nome(c.decidiu)}: não conta.`}
+          </p>
+        </li>
+      );
+    })}
+  </ol>
+  <p class="cp-nota" aria-live="polite" hidden>nota até aqui: <b data-nota>0 de 0</b></p>
+  <div class="cp-fim" hidden>
+    <p><b>{certos} de {lista.length}, {pct(certos, lista.length)}.</b> É isso que a régua faz: compara cada decisão com o gabarito e conta. No livro, a prova tem as perguntas do capítulo 1, e a régua corrige de novo a cada capítulo.</p>
+    <p>A nota de cada capítulo fica no botão do <b>placar</b>, no topo da página; nos capítulos, ele mostra a nota mais recente. No capítulo em que uma nota nasce, ela aparece como "?" até você investir no comando que a mede, para não estragar a sua previsão. <button type="button" class="cp-placar" data-abrir-placar>Abrir o placar</button></p>
+  </div>
+  <p class="cp-ilustracao">{ilustracao}</p>
+</div>
+
+<script>
+  import { emCartoes } from "../../lib/cartoes";
+
+  document.querySelectorAll<HTMLElement>("[data-corrija]").forEach((fig) => {
+    const itens = [...fig.querySelectorAll<HTMLLIElement>("li[data-caso]")];
+    emCartoes(fig, itens, (li) => li.classList.contains("feito"));
+    const nota = () => {
+      const feitos = itens.filter((li) => li.classList.contains("feito"));
+      fig.querySelector("[data-nota]")!.textContent = `${feitos.filter((li) => li.dataset.acertou === "true").length} de ${feitos.length}`;
+      fig.querySelector<HTMLElement>(".cp-nota")!.hidden = feitos.length === 0;
+      if (feitos.length === itens.length) fig.querySelector<HTMLElement>(".cp-fim")!.hidden = false;
+    };
+    itens.forEach((li) => li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((b) => b.addEventListener("click", () => {
+      if (li.classList.contains("feito")) return;
+      const igual = b.dataset.v === li.dataset.acertou;
+      li.classList.add("feito", igual ? "igual" : "diferente");
+      li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((x) => {
+        x.disabled = true;
+        if (x.dataset.v === li.dataset.acertou) x.classList.add("e-a-regua");
+        if (x === b) x.classList.add("escolhido");
+      });
+      li.querySelector(".cp-veredito")!.textContent = igual ? "Corrigiu como a régua." : "A régua corrige diferente.";
+      li.querySelector<HTMLElement>(".cp-retorno")!.hidden = false;
+      nota();
+    })));
+  });
+</script>
+
+<style is:global>
+  .cp { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px; font: 15.5px/1.55 var(--f-ui) }
+  .cp p { margin: 0 }
+  .cp-rotulo { margin-bottom: 4px !important; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
+  .cp-pergunta { margin-bottom: 12px !important; font: 600 17px/1.4 var(--f-ui) }
+  .cp ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px }
+  .cp li { border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 12px 14px; display: grid; gap: 8px }
+  .cp li.igual { border-color: var(--ok) } .cp li.diferente { border-color: var(--aviso) }
+  .cp-msg { font: italic 16.5px/1.45 var(--f-texto) }
+  .cp-lado { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+  .cp-lado div { border-radius: 8px; background: var(--papel-2); padding: 6px 10px }
+  .cp-lado dt { font: 600 11px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2) }
+  .cp-lado dd { margin: 0; font-weight: 600 }
+  .cp-botoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .cp-botoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: 500 13.5px var(--f-ui) }
+  .cp-botoes button:not(:disabled):hover { border-color: var(--acento) }
+  .cp-botoes button:disabled { cursor: default; opacity: .55 }
+  .cp-botoes button.e-a-regua { opacity: 1; border-color: var(--ok); color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent) }
+  .cp-botoes button.escolhido:not(.e-a-regua) { opacity: 1; border-color: var(--aviso); color: var(--aviso) }
+  .cp-retorno { font-size: 14.5px; color: var(--ink-2) }
+  .cp-veredito { font-weight: 600; color: var(--ink) } .cp-veredito:not(:empty)::after { content: " " }
+  .cp-nota { margin-top: 10px !important; font-size: 14px; color: var(--ink-2) } .cp-nota b { color: var(--ink) }
+  .cp-fim { margin-top: 10px; border-top: 1px solid var(--linha); padding-top: 10px; display: grid; gap: 6px }
+  .cp-fim[hidden] { display: none }
+  .cp-placar { border: 0; background: var(--ink); color: var(--papel); border-radius: 999px; padding: 4px 12px; margin-left: 4px; cursor: pointer; font: 600 13.5px var(--f-ui) }
+  .cp-ilustracao { margin-top: 10px !important; font-size: 13px; color: var(--ink-2) }
+  /* modo direto: corrigida, com a nota e o fim, sem os botões */
+  html[data-direto] .cp-botoes, html[data-direto] .cp-veredito, html[data-direto] .cp-nota { display: none }
+  html[data-direto] .cp-retorno[hidden], html[data-direto] .cp-fim[hidden] { display: block }
+</style>
