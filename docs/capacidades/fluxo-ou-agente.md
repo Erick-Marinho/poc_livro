@@ -25,6 +25,6 @@ pediu a diferença entre fluxo e agente, "acompanhada de um gráfico de grafo em
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `e9c5051` | `testes/fluxo-ou-agente.test.mjs` (3): as mensagens e as ferramentas são as das histórias do 1.1 (uma inventada não monta), seis cenas em 38 s com um balão por cena, o último sobre quem escolhe a próxima seta, e o grafo entre a definição e a escala. `npm test` 186/186. Ritmo do 1.1: 180 → Aposta. Capturas rolando com a página a 1280 e 390 px das seis cenas; ajustes: os nomes cortados nas caixas, a bolinha sobre o texto e o aviso do produto | Erick, 27/10/2026 |
+| 1 | `0627473` | `testes/fluxo-ou-agente.test.mjs` (3): as mensagens e as ferramentas são as das histórias do 1.1 (uma inventada não monta), seis cenas em 38 s com um balão por cena, o último sobre quem escolhe a próxima seta, e o grafo entre a definição e a escala. `npm test` 186/186. Ritmo do 1.1: 180 → Aposta. Capturas rolando com a página a 1280 e 390 px das seis cenas; ajustes: os nomes cortados nas caixas, a bolinha sobre o texto e o aviso do produto | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
