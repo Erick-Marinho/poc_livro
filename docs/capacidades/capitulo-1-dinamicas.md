@@ -29,11 +29,13 @@ ser iguais às do capítulo 2 (26/10/2026).
 | 4 | 1.2 | O dia seguinte, animado | toca ou rola: o agente apressado passa nos testes de uma tarde e erra as mensagens do dia seguinte | sem gabarito, não há como saber que errou |
 | 5 | livro todo | As perguntas em cartões, uma por vez | responde, vê o retorno e passa para a próxima, que entra deslizando | o mesmo de antes, sem a parede de perguntas |
 
-## Etapa atual: 5 — as perguntas em cartões, uma por vez
+## Plano fechado (26/10/2026)
 
-As etapas 1 a 4 fecharam com o ok do Erick (registro abaixo).
+As cinco etapas fecharam com o ok do Erick (registro abaixo). O que segue é o detalhe da última, a 5.
 
-### O que muda
+### Etapa 5 — as perguntas em cartões, uma por vez
+
+#### O que muda
 
 - Uma peça só, `src/lib/cartoes.ts`, que o Classificador, o PrimeiroDia e a Aposta chamam: a lista de perguntas vira
   cartões no mesmo lugar, um visível por vez. O leitor responde, o retorno aparece no cartão (o de cada componente,
@@ -51,7 +53,7 @@ As etapas 1 a 4 fecharam com o ok do Erick (registro abaixo).
   juntas), os pare e pense (cada um é uma pergunta só, e nenhum está colado a outro), o Troca (já é uma variante por
   vez) e as dúvidas da IDE (são conversa, na IDE).
 
-### Verificação
+#### Verificação
 
 - `npm test` (os testes de cada componente seguem valendo; um teste novo confere que os três usam os cartões e que o
   modo direto mostra a lista inteira).
@@ -67,6 +69,6 @@ As etapas 1 a 4 fecharam com o ok do Erick (registro abaixo).
 | 2 | `e550425` | `testes/decisao-fixa.test.mjs` (4): filas de 8, 2, 5 e 5 saídas do `referencia.jsonl`; notas 40%, 10%, 25% e 25% iguais às saídas gravadas; saída que não bate não monta; o R12 é recusar. `npm test` 153/153; ritmo do 1.7: 36 → DecisaoFixa → 213 → Exercicio (era 214 antes, pelo Resumo); capturas a 1280 e 390 px: antes de escolher, no passar e no responder com o balão do R12; modo direto no responder | Erick, 26/10/2026 |
 | 3 | `cab020f` | `testes/quem-decide.test.mjs` (4): os pontos têm os nomes da Aposta, o modelo decide 0, 1, 2 e 3 vezes, os dados do pedido saem do `pedidos.json` (trocar a previsão na loja muda a figura), ponto renomeado, pedido inexistente ou dado inventado não montam. `npm test` 157/157; ritmo do 1.1: 179 → 136 palavras antes da Aposta; capturas a 1280 e 390 px no fluxo fixo, no agente (clique no nome) e em vários agentes (seta do teclado no controle) | Erick, 26/10/2026 |
 | 4 | `d20bc16` | `testes/dia-seguinte.test.mjs` (4): a tarde é de responder, o dia seguinte é o da Aposta, a nota 5 de 8 sai da conta, caso inexistente, tarde com outra decisão ou ordem trocada não montam, os balões cobrem a animação. `npm test` 161/161 numa cópia limpa (HEAD mais esta etapa), porque o experimento temperatura-zero da outra sessão, ainda sem commit, quebra a montagem na pasta de trabalho; ritmo do 1.2: 195 → PrimeiroDia; capturas rolando com a página a 1280 e 390 px, da tarde à nota | Erick, 26/10/2026 |
-| 5 | `d5c818c` | `testes/cartoes.test.mjs` (2): os três componentes usam os cartões com a sua marca de respondido, recomeçar volta ao primeiro, o modo direto mostra a lista inteira. `npm test` 163/163 numa cópia limpa (HEAD mais esta etapa; a pasta de trabalho segue com o experimento temperatura-zero da outra sessão, que quebra a montagem). Capturas a 1280 e 390 px com cliques de verdade: o primeiro cartão do 1.5, o retorno com "próxima →", o segundo entrando, o oitavo com o placar (8 de 8), o PrimeiroDia e a Aposta; no modo direto, 8/8, 6/6 e 4/4 visíveis e sem navegação. Na primeira versão, empilhados, os cartões deixavam um vazio no celular: cada um passou a ter a sua altura | aguardando revisão |
+| 5 | `d5c818c` | `testes/cartoes.test.mjs` (2): os três componentes usam os cartões com a sua marca de respondido, recomeçar volta ao primeiro, o modo direto mostra a lista inteira. `npm test` 163/163 numa cópia limpa (HEAD mais esta etapa; a pasta de trabalho segue com o experimento temperatura-zero da outra sessão, que quebra a montagem). Capturas a 1280 e 390 px com cliques de verdade: o primeiro cartão do 1.5, o retorno com "próxima →", o segundo entrando, o oitavo com o placar (8 de 8), o PrimeiroDia e a Aposta; no modo direto, 8/8, 6/6 e 4/4 visíveis e sem navegação. Na primeira versão, empilhados, os cartões deixavam um vazio no celular: cada um passou a ter a sua altura | Erick, 26/10/2026 |
 
 (redação: Claude Opus 5.5)
