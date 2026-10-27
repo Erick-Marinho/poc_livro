@@ -45,6 +45,11 @@ As etapas 1 a 4 fecharam com o ok do Erick (registro abaixo).
 - Sem JavaScript e no modo direto, a lista continua inteira, como hoje. No Classificador, "recomeçar" volta ao
   primeiro cartão.
 - Vale onde esses componentes estão: introdução, capítulo 1 e os experimentos.
+- (26/10/2026, Erick: "pode usar esse padrão onde tem perguntas e respostas") Conferido no livro e nos experimentos:
+  as listas de perguntas e respostas são só essas três, e as três já usam os cartões (introdução, 1.1, 1.2, 1.3, 1.5,
+  segundo cérebro e temperatura zero). Ficam de fora, de propósito: o Pilhas (separar em grupos pede ver as cartas
+  juntas), os pare e pense (cada um é uma pergunta só, e nenhum está colado a outro), o Troca (já é uma variante por
+  vez) e as dúvidas da IDE (são conversa, na IDE).
 
 ### Verificação
 
