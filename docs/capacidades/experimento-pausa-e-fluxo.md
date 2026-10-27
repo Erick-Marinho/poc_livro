@@ -24,12 +24,18 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 - **Corpus:** a mesma pergunta ("O meu pedido BT-1003 já saiu? Quando ele chega?") em três casos que só mudam o
   quanto o modelo lê antes: nada, os pedidos, ou política + catálogo + pedidos (10, 82 e 430 palavras). Nenhum caso
   começa como outro. Os dados são os da loja do livro (inventada).
-- **Medida:** temperatura 0, resposta limitada a 64 tokens; uma chamada de aquecimento descartada (carrega o
-  modelo). Dez rodadas de curta → média → longa, nunca o mesmo caso em seguida. **Pausa:** tempo até o primeiro
+- **Medida:** temperatura 0, resposta limitada a 64 tokens, só na CPU (`num_gpu: 0`); o modelo sai da memória antes
+  da coleta e uma chamada de aquecimento é descartada. Dez rodadas de curta → média → longa → longa de novo; cada
+  pedido começa com o seu "Atendimento N.", e só a longa de novo repete o texto da longa. **Pausa:** tempo até o primeiro
   pedaço da resposta, por streaming. **Fluxo:** tokens escritos por segundo (`eval_count / eval_duration`). Cada
   execução guarda os tokens lidos do cache.
 - **Placar:** a pausa da longa maior que a da curta, X de 10 rodadas; o fluxo da longa a até 20% do da curta, X de 10.
-  **Achado:** a longa repetida logo em seguida, com a segunda pausa menor e tokens vindos do cache, X de 10.
+  **Achado:** a longa repetida logo em seguida, com a segunda pausa menor e a maior parte do que leu vinda do cache,
+  X de 10.
+- (3, 27/10/2026, Erick) Só na CPU: a pausa vai de 0,3 s a quase 10 s e o leitor sente; na GPU fica abaixo de 0,3 s.
+- (3, 27/10/2026, Erick: "A") O Ollama 0.40 guarda várias leituras, não só a última: a primeira coleta leu do cache
+  da rodada 2 em diante (pausa da longa maior em 1 de 10). Cada pedido passa a começar com o seu número. E todo pedido
+  traz uns 20 tokens do cache (o começo fixo antes da pergunta): o achado conta a maior parte, não "algum".
 
 ## Peças
 
@@ -55,24 +61,24 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 2 (detalhe)
+## Etapa 3 (detalhe)
 
-- **Arquivos:** em `rascunhos/pausa-e-fluxo/projeto/`: `pyproject.toml` (sem dependências: só a biblioteca padrão),
-  `medidor.py`, `placar.py` e `test_medidor.py`.
-- **Muda:** `medidor.py` monta o texto de cada caso (o material da loja e a pergunta no fim), pede ao Ollama por
-  streaming (`/api/generate`, [docs](https://docs.ollama.com/api/generate)) e lê da resposta a pausa (o relógio até o
-  primeiro pedaço com texto), o fluxo (`eval_count / eval_duration`), os tokens lidos e os vindos do cache
-  (`prompt_eval_cached_count`). `placar.py` conta, de uma lista de medidas, os "X de 10" da régua. Código curto e com
-  nomes em português: é o que o leitor vai montar na IDE (etapa 6).
-- **Evidência:** `uv run python -m unittest` passa sem o Ollama, com respostas de mentira e um relógio de mentira: o
-  pedaço vazio não conta como primeira palavra, o cache sai do último pedaço, o placar respeita os 20%; e falha se a
-  pausa for medida no primeiro pedaço vazio.
-- **Fica fora:** chamar o modelo de verdade, a ordem das rodadas e a gravação (etapa 3).
+- **Ollama nesta máquina** (27/10/2026, Erick: "aqui"): o pacote oficial `ollama-linux-amd64.tar.zst`
+  ([docs](https://docs.ollama.com/linux)) extraído em `~/.local/ollama`, sem `sudo`; `ollama serve` em segundo plano;
+  `llama3.2:3b` baixado. A máquina: Ryzen 7 5700G, 16 núcleos, 15 GB de RAM, RTX 4060 de 8 GB visível no WSL.
+- **Arquivos:** `projeto/coletar.py` (o modelo sai da memória, o aquecimento e as dez rodadas: curta → média → longa → longa de
+  novo; grava `coleta.json` com cada medida, a versão do Ollama, o modelo e a máquina) e `projeto/medir.py` (lê o
+  `coleta.json` e imprime o placar: é a saída que o livro grava na etapa 7).
+- **Evidência:** a coleta real rodada aqui; o placar impresso a partir dela; o campo do cache conferido na resposta.
+- **Fica fora:** a gravação no `saidas.json` do livro (etapa 7).
+
+## Registro
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `ee07fbb` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
+| 2 | `790450c` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
 
 (redação: Claude Opus 5.5)

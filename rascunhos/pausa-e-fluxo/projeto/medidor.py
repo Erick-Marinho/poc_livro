@@ -13,10 +13,13 @@ MODELO = "llama3.2:3b"
 PASTA = Path(__file__).parent
 
 
-def montar(caso):
-    """O que o modelo lê: o material da loja, nesta ordem, e a pergunta no fim."""
+def montar(caso, atendimento):
+    """O que o modelo lê: o número do atendimento, o material da loja e a pergunta no fim.
+
+    O número vem primeiro porque o Ollama guarda as leituras anteriores: um começo diferente obriga a ler do zero.
+    """
     material = [(PASTA / "dados" / nome).read_text(encoding="utf-8") for nome in caso["material"]]
-    return "\n\n".join(material + [f"Pergunta: {caso['pergunta']}"])
+    return "\n\n".join([f"Atendimento {atendimento}."] + material + [f"Pergunta: {caso['pergunta']}"])
 
 
 def ler(pedacos, inicio, relogio=time.perf_counter):
@@ -39,7 +42,8 @@ def ler(pedacos, inicio, relogio=time.perf_counter):
 
 def perguntar(texto):
     """Manda o texto e recebe a resposta aos pedaços (stream), um por linha."""
-    pedido = {"model": MODELO, "prompt": texto, "stream": True, "options": {"temperature": 0, "num_predict": 64}}
+    # num_gpu 0: nenhuma parte do modelo na placa de vídeo, para todo leitor medir no processador, como o livro
+    pedido = {"model": MODELO, "prompt": texto, "stream": True, "options": {"temperature": 0, "num_predict": 64, "num_gpu": 0}}
     requisicao = urllib.request.Request(OLLAMA, data=json.dumps(pedido).encode(), headers={"Content-Type": "application/json"})
     inicio = time.perf_counter()
     with urllib.request.urlopen(requisicao) as resposta:

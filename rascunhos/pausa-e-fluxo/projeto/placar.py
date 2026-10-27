@@ -12,7 +12,8 @@ def contar(acertos, total):
 def placar(rodadas):
     pausa = sum(r["longa"]["pausa"] > r["curta"]["pausa"] for r in rodadas)
     fluxo = sum(abs(r["longa"]["fluxo"] - r["curta"]["fluxo"]) <= FOLGA * r["curta"]["fluxo"] for r in rodadas)
-    cache = sum(r["de_novo"]["pausa"] < r["longa"]["pausa"] and r["de_novo"]["do_cache"] > 0 for r in rodadas)
+    # todo pedido traz uns tokens do cache (o começo fixo que o Ollama põe antes da pergunta): conta a maior parte
+    cache = sum(r["de_novo"]["pausa"] < r["longa"]["pausa"] and r["de_novo"]["do_cache"] > r["de_novo"]["lidos"] / 2 for r in rodadas)
     return [
         f"a pausa da longa foi maior que a da curta: {contar(pausa, len(rodadas))}",
         f"o fluxo da longa ficou a até 20% do da curta: {contar(fluxo, len(rodadas))}",

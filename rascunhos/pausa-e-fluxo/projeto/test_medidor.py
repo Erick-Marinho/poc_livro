@@ -49,30 +49,40 @@ class MedidorTest(unittest.TestCase):
             ler(chegando(relogio, (2.0, {"response": "O"})), 0.0, relogio)
 
     def test_o_texto_le_o_material_e_termina_na_pergunta(self):
-        curta = montar({"material": [], "pergunta": "Já saiu?"})
-        longa = montar({"material": ["politica.md", "pedidos.json"], "pergunta": "Já saiu?"})
-        self.assertEqual(curta, "Pergunta: Já saiu?")
-        self.assertTrue(longa.startswith("# Política de atendimento") and longa.endswith("\n\nPergunta: Já saiu?"))
+        curta = montar({"material": [], "pergunta": "Já saiu?"}, 1)
+        longa = montar({"material": ["politica.md", "pedidos.json"], "pergunta": "Já saiu?"}, 2)
+        self.assertEqual(curta, "Atendimento 1.\n\nPergunta: Já saiu?")
+        self.assertTrue(longa.startswith("Atendimento 2.\n\n# Política de atendimento") and longa.endswith("\n\nPergunta: Já saiu?"))
+
+    def test_cada_atendimento_comeca_diferente_para_nao_reaproveitar_o_cache(self):
+        longa = {"material": ["politica.md"], "pergunta": "Já saiu?"}
+        primeira, segunda = montar(longa, 3), montar(longa, 4)
+        self.assertNotEqual(primeira[:14], segunda[:14], "o começo é o que o cache reaproveita")
+        self.assertEqual(primeira[14:], segunda[14:], "o resto é o mesmo texto")
 
 
 def rodada(curta, longa, de_novo):
-    """Cada medida como (pausa, fluxo, tokens do cache)."""
-    medida = lambda p, f, c: {"pausa": p, "fluxo": f, "do_cache": c}  # noqa: E731
+    """Cada medida como (pausa, fluxo, tokens do cache); o modelo leu 1000 tokens em cada uma."""
+    medida = lambda p, f, c: {"pausa": p, "fluxo": f, "do_cache": c, "lidos": 1000}  # noqa: E731
     return {"curta": medida(*curta), "longa": medida(*longa), "de_novo": medida(*de_novo)}
 
 
 class PlacarTest(unittest.TestCase):
     def test_conta_cada_parte_da_afirmacao(self):
         rodadas = [
-            rodada((0.5, 10.0, 0), (6.0, 8.0, 0), (1.0, 8.0, 450)),   # tudo se confirma; o fluxo cai 20%, no limite
-            rodada((0.5, 10.0, 0), (6.0, 7.9, 0), (6.1, 7.9, 0)),     # o fluxo cai mais que 20%; sem cache
-            rodada((0.5, 10.0, 0), (0.4, 10.0, 0), (0.3, 10.0, 0)),   # a longa não demorou mais; mais rápida, mas sem cache
+            rodada((0.5, 10.0, 20), (6.0, 8.0, 20), (1.0, 8.0, 999)),  # tudo se confirma; o fluxo cai 20%, no limite
+            rodada((0.5, 10.0, 20), (6.0, 7.9, 20), (6.1, 7.9, 20)),   # o fluxo cai mais que 20%; só o começo fixo do cache
+            rodada((0.5, 10.0, 20), (0.4, 10.0, 20), (0.3, 10.0, 20)), # a longa não demorou mais; mais rápida, mas sem cache
         ]
         self.assertEqual(placar(rodadas), [
             "a pausa da longa foi maior que a da curta: 2 de 3 (67%)",
             "o fluxo da longa ficou a até 20% do da curta: 2 de 3 (67%)",
             "a longa pedida de novo começou mais rápido, lendo do cache: 1 de 3 (33%)",
         ])
+
+    def test_o_comeco_fixo_do_cache_nao_conta_como_cache(self):
+        mais_rapida_com_20_do_cache = rodada((0.5, 10.0, 20), (6.0, 9.0, 20), (5.0, 9.0, 20))
+        self.assertIn("lendo do cache: 0 de 1 (0%)", placar([mais_rapida_com_20_do_cache])[2])
 
 
 if __name__ == "__main__":
