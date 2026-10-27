@@ -1,0 +1,25 @@
+---
+/**
+ * O vídeo da pesquisa sobre agentes em produção, na introdução (docs/capacidades/agentes-no-mundo.md, etapa 3):
+ * pesquisa/FiguraPesquisa.tsx, que o leitor toca ou rola. Os números vêm do JSON da pesquisa, conferidos na fonte, e a
+ * fase e o capítulo de cada problema, do ciclo.json (pesquisa/pesquisa.ts). A legenda diz a fonte, a amostra e o que
+ * ela não permite. Sem JS, os balões em lista.
+ */
+import FiguraPesquisa from "./pesquisa/FiguraPesquisa";
+import { baloes, montarPesquisa } from "./pesquisa/pesquisa.ts";
+
+interface Props { dados: any; ciclo: any }
+const { dados, ciclo } = Astro.props;
+const pesquisa = montarPesquisa(dados, ciclo);
+---
+<figure class="agentes-em-producao" data-agentes-em-producao>
+  <FiguraPesquisa client:visible={{ rootMargin: "400px" }} pesquisa={pesquisa} />
+  <noscript><ol>{baloes(pesquisa).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption>Fonte: <a href={pesquisa.fonte.url}>{pesquisa.fonte.nome}</a>. Amostra: {pesquisa.fonte.amostra}.{pesquisa.fonte.aviso && <> {pesquisa.fonte.aviso}</>}</figcaption>
+</figure>
+
+<style is:global>
+  .agentes-em-producao { margin: 1.8em auto 2em; max-width: 800px }
+  .agentes-em-producao figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+  .agentes-em-producao figcaption a { color: inherit }
+</style>

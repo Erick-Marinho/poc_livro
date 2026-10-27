@@ -37,7 +37,7 @@ test("a página tem o Invista da pesquisa, a figura dos números e o mapa com as
   for (const r of ciclo.fontes) assert.ok(html.includes(r.url), r.nome);
 });
 
-test("a pesquisa: o Invista e a figura usam os mesmos números, com fonte e amostra, e cada fase aponta o capítulo dela", () => {
+test("a pesquisa: o Invista e o vídeo usam os mesmos números, com fonte e amostra, e cada fase aponta o capítulo dela", async () => {
   const dados = json("livros/ciclo-de-vida/figuras/agentes-em-producao.json");
   const previsao = json("livros/ciclo-de-vida/figuras/agentes-em-producao-previsao.json");
   const pct = (v) => `${v.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
@@ -51,13 +51,23 @@ test("a pesquisa: o Invista e a figura usam os mesmos números, com fonte e amos
     assert.ok(b.valor >= de && b.valor <= ate, `${pct(b.valor)} não cai em "${m.opcoes[m.fez]}"`);
     m.opcoes.forEach((o, k) => { if (k !== m.fez) { const [x, y] = faixa[o]; assert.ok(b.valor < x || b.valor > y, `"${o}" também estaria certa`); } });
   }
-  for (const b of dados.barras) {
-    assert.match(html, new RegExp(`data-barra="${b.id}"`));
-    assert.ok(html.includes(pct(b.valor)), `a figura não mostra ${pct(b.valor)}`);
+  /* o vídeo: cada problema com o número da pesquisa e a fase que trata dele, no capítulo dela */
+  const { montarPesquisa, baloes, acesos, QUADROS, CENAS, SEGUNDOS, FPS, DURACAO } = await import("../src/components/livro/pesquisa/pesquisa.ts");
+  const p = montarPesquisa(dados, ciclo);
+  const bs = baloes(p);
+  assert.ok(CENAS.length <= 6 && DURACAO / FPS <= 45);
+  bs.forEach((b, i) => { if (i) assert.equal(b.de, bs[i - 1].ate); });
+  assert.ok(bs.at(-1).ate >= SEGUNDOS);
+  assert.ok(bs[0].texto.includes(pct(86.4)) && bs[0].texto.includes(pct(59.5)), "o contexto: 86,4% operam, 59,5% mais de dez");
+  for (const [k, b] of p.problemas.entries()) {
     const fase = ciclo.fases.find((f) => f.nome === b.fase);
     assert.ok(fase, `${b.fase} não é uma fase do ciclo`);
-    assert.ok(html.includes(`<b>${fase.nome}</b>, cap. ${fase.capitulos[0]}`), `${b.id}: a fase não leva ao capítulo dela`);
+    assert.equal(b.capitulo, fase.capitulos[0]);
+    assert.ok(bs[k + 1].texto.includes(pct(b.valor)), `o balão ${k + 2} não traz ${pct(b.valor)}`);
+    assert.ok(bs[k + 1].texto.includes(`${fase.nome}, no capítulo ${fase.capitulos[0]}`), `${b.id}: a fase não leva ao capítulo dela`);
+    assert.equal(b.acesos, Math.round(b.valor * QUADROS / 100));
   }
+  assert.match(html, /data-agentes-em-producao/);
   assert.ok(html.includes(dados.fonte.url) && html.includes("mais de 380 profissionais"));
   assert.match(mdx, /o \[Gartner previu\]\(https:\/\/www\.gartner\.com\/[^)]+\) que mais de 40% [^.]+\. É uma previsão/);
 });

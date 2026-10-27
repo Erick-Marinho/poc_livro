@@ -1,5 +1,5 @@
 {
-  "sobre": "A pesquisa da Salt Security de outubro de 2026, na introdução (docs/capacidades/agentes-no-mundo.md): números conferidos na reportagem da Campus Technology. O Invista (a previsão) e a figura usam os mesmos números; o teste confere.",
+  "sobre": "A pesquisa da Salt Security de outubro de 2026, na introdução (docs/capacidades/agentes-no-mundo.md): números conferidos na reportagem da Campus Technology. O Invista (a previsão) e o vídeo usam os mesmos números; o teste confere.",
   "titulo": "Agentes em produção, segundo quem cuida deles",
   "fonte": {
     "nome": "Salt Security, State of Agentic AI and API Security 2H 2026, na reportagem de Sean Parker (Campus Technology, 21/10/2026)",
@@ -8,8 +8,42 @@
     "aviso": "\"Confirmou ou suspeitou\" não é incidente comprovado."
   },
   "barras": [
-    { "id": "inesperado", "valor": 49.8, "rotulo": "viram, ou suspeitam, que um agente fez algo inesperado ou não autorizado no último ano", "fase": "Avaliar", "como": "saber antes do que ele é capaz" },
-    { "id": "rastrear", "valor": 12.5, "rotulo": "conseguem rastrear tudo o que o agente fez, do pedido ao resultado", "fase": "Observar", "como": "ver o que ele fez" },
-    { "id": "parar", "valor": 17.5, "rotulo": "conseguem parar sozinhos um agente que começa a agir de forma inesperada", "fase": "Governar", "como": "parar a tempo" }
-  ]
+    {
+      "id": "inesperado",
+      "valor": 49.8,
+      "rotulo": "viram, ou suspeitam, que um agente fez algo inesperado ou não autorizado no último ano",
+      "fase": "Avaliar",
+      "como": "saber antes do que ele é capaz"
+    },
+    {
+      "id": "rastrear",
+      "valor": 12.5,
+      "rotulo": "conseguem rastrear tudo o que o agente fez, do pedido ao resultado",
+      "fase": "Observar",
+      "como": "ver o que ele fez"
+    },
+    {
+      "id": "parar",
+      "valor": 17.5,
+      "rotulo": "conseguem parar sozinhos um agente que começa a agir de forma inesperada",
+      "fase": "Governar",
+      "como": "parar a tempo"
+    }
+  ],
+  "contexto": [
+    {
+      "id": "operam",
+      "valor": 86.4,
+      "rotulo": "operam ao menos um agente"
+    },
+    {
+      "id": "dez",
+      "valor": 59.5,
+      "rotulo": "operam mais de dez"
+    }
+  ],
+  "detalhes": {
+    "inesperado": "Mais da metade desses casos foram chamadas a sistemas de fora sem autorização; mais de 40%, dados alterados ou apagados.",
+    "rastrear": "Mais de 60% levariam horas ou dias de trabalho manual para reconstruir o que um agente fez no dia anterior."
+  }
 }

@@ -14,7 +14,7 @@ import Aposta from "../../../src/components/livro/Aposta.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
 import MapaDoCiclo from "../../../src/components/livro/MapaDoCiclo.astro";
 import Termos from "../../../src/components/livro/Termos.astro";
-import NumerosDaPesquisa from "../../../src/components/livro/NumerosDaPesquisa.astro";
+import AgentesEmProducao from "../../../src/components/livro/AgentesEmProducao.astro";
 import agentesEmProducao from "../figuras/agentes-em-producao.json";
 import agentesPrevisao from "../figuras/agentes-em-producao-previsao.json";
 import NotaDoLivro from "../../../src/components/livro/NotaDoLivro.astro";
@@ -39,7 +39,7 @@ Não é impressão de quem escreve. Em junho de 2025, o [Gartner previu](https:/
 
 <Aposta dados={agentesPrevisao} pergunta="O que acontece com os agentes que já estão em produção?" />
 
-<NumerosDaPesquisa dados={agentesEmProducao} ciclo={ciclo} />
+<AgentesEmProducao dados={agentesEmProducao} ciclo={ciclo} />
 
 Nós dois trabalhamos com isso no dia a dia, e sentíamos falta de um livro em português que acompanhasse um agente antes, durante e depois de ir para o ar, com código real. Como não achamos, resolvemos escrever.
 
