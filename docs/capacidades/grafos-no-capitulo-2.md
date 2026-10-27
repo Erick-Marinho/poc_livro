@@ -29,7 +29,7 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 | 1 | A figura do 2.1 com nós de verdade: as peças apresentadas no próprio grafo (nós, arestas fixas e condicionais, START e END, o estado) e as duas mensagens atravessando, com o estado em JSON crescendo a cada nó | toca ou rola e vê o estado ganhar chaves de nó em nó |
 | 2 | O 2.1 enxuto em volta da figura: uma abertura curta, a figura, a definição e o Pare e pense; sem código e sem balcões | aprende as peças pelo desenho, e o código fica para a 2.5 |
 
-## Etapa atual: 2 — o 2.1 enxuto
+## Última etapa: 2 — o 2.1 enxuto (concluída)
 
 - A abertura apresenta o grafo em uma frase concreta (caixas, setas e um pacote de dados viajando), sem balcão nem
   roteiro. A figura ensina as peças; a definição de uma frase vem logo depois, e o Pare e pense fala em caminhos.
@@ -43,6 +43,6 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 |---|---|---|---|
 | 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | Erick, 27/10/2026 |
 | 2 | d09c708 | `npm test` 190/190; ritmo 166 palavras; capturas da listagem | recusada pelo Erick, 27/10/2026: código e texto abstrato no início |
-| 2 | 819b564 | `npm test` 190/190; `npm run ritmo`: 56 palavras até a figura e 44 entre a figura e o Pare e pense; o 2.1 sem `Listagem` e sem balcão (teste) | aguardando revisão |
+| 2 | 819b564 | `npm test` 190/190; `npm run ritmo`: 56 palavras até a figura e 44 entre a figura e o Pare e pense; o 2.1 sem `Listagem` e sem balcão (teste) | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
