@@ -22,6 +22,7 @@ import Aposta from "../../src/components/livro/Aposta.astro";
 import MapaTemperatura from "../../src/components/livro/MapaTemperatura.astro";
 import ComoOModeloEscolhe from "../../src/components/livro/ComoOModeloEscolhe.astro";
 import RespostasDaColeta from "../../src/components/livro/RespostasDaColeta.astro";
+import Exercicio from "../../src/components/livro/Exercicio.astro";
 import avaliacao from "./figuras/avaliacao.json";
 import PareEPense from "../../src/components/livro/PareEPense.astro";
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
@@ -36,9 +37,9 @@ import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 import coleta from "./projeto/coleta-cpu.json";
 
-Um modelo de linguagem escreve um pedaço de texto por vez, um **token**: uma palavra ou parte dela. A cada passo, ele dá uma pontuação a cada token possível, e um sorteio escolhe um deles. A **temperatura** regula esse sorteio; em temperatura zero, não há sorteio: vence sempre o token de maior pontuação. Parece suficiente para repetir a resposta. Mas a escolha é só a última parte do caminho: antes dela, alguém calculou as pontuações.
+Mande a mesma pergunta duas vezes a um modelo de linguagem, com a temperatura em zero. A resposta sai igual? Parece óbvio que sim: em temperatura zero, o modelo não sorteia; escolhe sempre o pedaço de texto mais pontuado.
 
-O [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) mostrou que esse cálculo pode mudar com o **lote**: um servidor costuma juntar perguntas de várias pessoas numa conta só, e o tamanho desse grupo pode mudar a ordem em que as somas são feitas. Isso não significa que toda resposta vai mudar, nem que duas respostas diferentes revelem sozinhas a causa. Vamos começar separando as duas coisas.
+Mas o [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/) mostrou que a resposta pode mudar com o **lote**: o servidor junta perguntas de várias pessoas numa conta só, e o tamanho desse grupo muda a ordem das somas. Isso não quer dizer que toda resposta muda, nem que repetir prove que ela está certa. Vamos separar as duas coisas.
 
 <Aposta dados={previsoes} pergunta="Antes de construir: o que uma escolha fixa e uma resposta repetida permitem afirmar?" />
 
@@ -68,11 +69,20 @@ Comece numa pasta vazia. Você constrói a prova numérica e o comparador; os te
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O cálculo", "2": "O instrumento", "3": "A coleta", "4": "Na sua máquina" }} numero="2" legenda="O medidor construído desde a pasta vazia. A soma e os comandos são executados no projeto real; a inferência CPU foi capturada separadamente. As mensagens do chat são um roteiro, não um modelo ao vivo." />
 
-<Nota titulo="o que é inventado">As pontuações A e B da prova numérica foram construídas para revelar o mecanismo. Os números 10 e 20 dos testes fazem o papel de tokens no comparador; não foram capturados do modelo. A situação da loja é fictícia. A coleta do Qwen é de inferências reais e guarda os tokens de entrada e de saída; não é a continuação ilustrada de uma soma. O mapa em Remotion é um esquema do mecanismo.</Nota>
+<Nota titulo="o que é inventado">As pontuações A e B da prova numérica foram construídas para revelar o mecanismo. Os números 10 e 20 dos testes fazem o papel de tokens no comparador; não foram capturados do modelo. A situação da loja é fictícia. A coleta do Qwen é de inferências reais e guarda os tokens de entrada e de saída; não é a continuação ilustrada de uma soma. O mapa é um esquema animado do mecanismo.</Nota>
 
 ## Repetir na sua máquina
 
-O caminho padrão é a CPU, que qualquer computador tem; a GPU é uma extensão, para quem tem uma placa NVIDIA. Os comandos de cada caminho estão no último trecho da IDE e no README do projeto. Os dois alimentam o mesmo medidor, mas fazem as contas com bibliotecas e precisões diferentes: compare os grupos dentro da mesma máquina antes de culpar a placa por uma diferença.
+<Exercicio titulo="Colete na sua máquina">
+
+1. Escolha o caminho: a CPU, que qualquer computador tem, ou a GPU, para quem tem uma placa NVIDIA. Os comandos de cada um estão no último trecho da IDE e no README do projeto.
+2. Antes de coletar, anote: na sua máquina, as respostas vão repetir entre si, nos três tamanhos de grupo? E vão ser as mesmas da gravação daqui?
+3. Faça a coleta e execute o medidor sobre ela.
+4. Compare com o que você anotou. Os dois caminhos alimentam o mesmo medidor, mas fazem as contas com bibliotecas e precisões diferentes: compare os grupos dentro da mesma máquina antes de culpar a placa por uma diferença.
+
+Você concluiu quando confrontou as duas anotações com a medida da sua coleta.
+
+</Exercicio>
 
 O nosso coletor chama o modelo diretamente, e os lotes são os grupos de perguntas que ele mesmo monta. Numa API fechada, você não vê o lote, e uma resposta diferente não diria sozinha a causa.
 

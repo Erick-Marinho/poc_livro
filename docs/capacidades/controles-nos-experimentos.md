@@ -26,17 +26,22 @@ conteúdo.
 | 2 | Os experimentos com o topo, o sumário, a pílula e as configurações do livro | navega entre experimentos, liga o foco e abre a IDE como no livro |
 | 3 | A revisão dos experimentos: storytelling, padrão de caixas e conteúdo | lê experimentos no mesmo padrão dos capítulos |
 
-## Etapa atual: 3b — nenhuma caixa entrega a resposta antes
+## Etapa atual: 3c — o storytelling
 
-- Segundo cérebro: os porquês do palpite das promessas saem sem as notas da régua e sem as datas do prazo; o meio da
-  página diz que as frases empatam e que qual delas vale o leitor vê na IDE; o vídeo da figura 1 para nas frases que
-  empatam (as cenas da escolha e da régua ficam no desenho, mas não tocam). O porquê da primeira promessa deixa a
-  separação do que é local para o Pilhas, no fim.
-- Temperatura zero: a caixa das 90 respostas deixa de perguntar se alguma muda (a IDE já disse que não) e pergunta se
-  repetir é acertar; no fim, o que falta em cada resposta, com o trecho da coleta (`figuras/avaliacao.json`). O
-  palpite da IDE sobre as duas ordens, que o mapa já responde, passa ao controle: com inteiros, as ordens dão o mesmo?
-- Pausa e fluxo: o parágrafo depois do palpite do artigo não repete mais o laboratório que o palpite acabou de
-  descrever.
+- "A régua passou, a resposta não", nos três: no Temperatura zero, a caixa das 90 respostas (3b); no Segundo cérebro,
+  a nota da régua do modelo na IDE lê a resposta da cliente (passou por conter "Clínica Aurora", mas diz que a cliente
+  é a gerente); no Pausa e fluxo, um Pare e pense depois dos tempos de verdade conta a metade que a medida refutou (o
+  ritmo caiu 25%, dentro dos 20% em só 4 de 10), com a razão do artigo, e um teste amarra os números à coleta.
+- O Temperatura zero abre com a situação concreta (a mesma pergunta duas vezes, em temperatura zero) e deixa token,
+  pontuação e sorteio para a animação. Não volta o palpite antes do mapa: o Erick o trocou pela animação na revisão do
+  experimento.
+- O fim de cada experimento vira um `Exercicio` que pede para anotar a previsão antes de executar: medir na sua
+  máquina (Pausa e fluxo), coletar na sua máquina (Temperatura zero), medir o cérebro que você usa (Segundo cérebro,
+  com a fonte conferida, como a da cliente).
+- O teste do padrão de caixas vale também para os experimentos. A figura do Segundo cérebro toca ou rola, como as
+  outras; e volta a desenhar: o corte da 3b tirava da lista as etapas que o desenho ainda procurava (o vídeo dava erro),
+  e agora só a legenda e a contagem param nas frases que empatam. O Rowboat ganha nome no começo; a legenda dos tempos
+  diz "demora 29 vezes mais para começar".
 
 ## Registro
 
@@ -45,6 +50,6 @@ conteúdo.
 | 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | Erick, 27/10/2026 |
 | 2 | f88b321 | `testes/controles-experimentos.test.mjs` (2): em cada experimento, o sumário com os três, o atual marcado, o topo com a seção e os comandos, a pílula, as seções do molde; e a pílula que se recolhe ao rolar sem guardar. `npm test` 200/200. Num navegador, no Pausa e fluxo a 1280 e 390 px: o sumário, o topo, a pílula e o recolhimento ao rolar e ao tocar | Erick, 27/10/2026 |
 | 3a | 325c753 | Conferido nas gravações (sc-nota-modelo: 3,7 a 16,1 s, média 10,8), no cofre (dois e-mails com 21/11, um sobre a entrega) e no PyTorch (2.8 responde). `npm test` 200/200; a página do Pausa e fluxo tem a Figura 1 | Erick, 27/10/2026 |
-| 3b | 40dfedf | Testes (+3): os porquês sem as notas da régua nem as datas; o vídeo do caminho termina antes da escolha e da régua; a avaliação cita trechos da coleta e a resposta da água não diz 100 °C; o palpite da IDE no controle. `npm test` 202/202; ritmo dos experimentos sem aviso novo (o do Segundo cérebro caiu de 244 para 210). Captura da caixa da temperatura respondida até o fim | aguardando revisão |
+| 3b | 40dfedf | Testes (+3): os porquês sem as notas da régua nem as datas; o vídeo do caminho termina antes da escolha e da régua; a avaliação cita trechos da coleta e a resposta da água não diz 100 °C; o palpite da IDE no controle. `npm test` 202/202; ritmo dos experimentos sem aviso novo (o do Segundo cérebro caiu de 244 para 210). Captura da caixa da temperatura respondida até o fim | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

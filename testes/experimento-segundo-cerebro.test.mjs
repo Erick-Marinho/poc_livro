@@ -62,8 +62,9 @@ test("as pilhas do fim: três peças ficam na máquina, três saem dela, e a exp
 });
 
 test("o vídeo do caminho para nas frases que empatam: a escolha e a régua ficam para a IDE", async () => {
-  const { T, QUADRO, montar } = await import("../src/components/livro/cerebro/caminho.ts");
+  const { T, QUADRO, montar, visiveis } = await import("../src/components/livro/cerebro/caminho.ts");
   assert.equal(QUADRO.duracao, T.sem * QUADRO.fps);
   const p = { bruto: saidas["rastro-prazo"].saida[0][0], comando: saidas["rastro-prazo"].comando, regua: { sem: "nota: 7 de 10", com: "nota: 9 de 10" } };
-  assert.ok(montar(p).passos.every((x) => x.em < T.sem && !/régua|vale a/i.test(x.texto)));
+  assert.ok(visiveis(montar(p)).every((x) => x.em < T.sem && !/régua|vale a/i.test(x.texto)));
+  assert.equal(montar(p).passos.length, 6, "o desenho guarda todas as etapas, para saber onde cada uma começa");
 });

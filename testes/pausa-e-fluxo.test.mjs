@@ -114,3 +114,15 @@ test("os tempos de verdade: a linha do tempo usa as medianas gravadas, e a apost
   const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
   assert.ok(mdx.indexOf("<IdeCapitulo") < mdx.indexOf("<TemposReais") && mdx.indexOf("<TemposReais") < mdx.indexOf("## O tropeço"));
 });
+
+test("a metade que a medida refutou está no corpo: o Pare e pense do ritmo usa os números da coleta corrigida", () => {
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  const pep = mdx.match(/<PareEPense pergunta="O artigo diz que, depois da primeira palavra, o ritmo quase não muda\.[^"]*">([\s\S]*?)<\/PareEPense>/);
+  assert.ok(pep, "o Pare e pense do ritmo");
+  const [curta, longa] = ["curta", "longa"].map((c) => numero(linhaDe("pf-limpa", c), "fluxo"));
+  const virg = (n) => n.toFixed(1).replace(".", ",");
+  assert.ok(pep[0].includes(`a ${virg(longa)} tokens por segundo`) && pep[0].includes(`a ${virg(curta)}`));
+  assert.ok(pep[1].includes(`caiu ${Math.round(100 * (1 - longa / curta))}%`));
+  const dentro = saida("pf-fluxo")[0].match(/(\d+) de (\d+)/);
+  assert.ok(pep[1].includes(`${dentro[1]} das ${dentro[2]} repetições`));
+});

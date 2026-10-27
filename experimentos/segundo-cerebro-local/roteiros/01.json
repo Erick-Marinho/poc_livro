@@ -520,7 +520,7 @@
       "id": "sc-nota-modelo",
       "comando": "uv run python medir.py --modelo",
       "espera": 0,
-      "nota": "10 de 10, com a fonte certa em todas. Mais um que a regra da data, e a que faltava era a do canal. O preço está no relógio: uns 11 segundos por pergunta (de 4 a 16), nesta máquina, sem placa de vídeo, com o modelo já carregado, e 2 GB de modelo. A busca com a data acerta 9 na hora, em qualquer máquina.",
+      "nota": "10 de 10, com a fonte certa em todas. Mais um que a regra da data, e a que faltava era a do canal. O preço está no relógio: uns 11 segundos por pergunta (de 4 a 16), nesta máquina, sem placa de vídeo, com o modelo já carregado, e 2 GB de modelo. A busca com a data acerta 9 na hora, em qualquer máquina. Mas leia a da cliente: passou porque a régua confere se a resposta contém “Clínica Aurora”, e a resposta diz que a cliente é a gerente. A régua passou; a resposta, não.",
       "aposta": {
         "pergunta": "A régua agora confere a fonte também. O modelo, nas dez perguntas:",
         "opcoes": [

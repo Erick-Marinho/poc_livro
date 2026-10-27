@@ -21,8 +21,7 @@ import {
   montar,
   type Props,
   T,
-  titulo,
-} from "./caminho";
+  titulo, visiveis } from "./caminho";
 
 // As fontes que a página já carrega (o Studio carrega as mesmas).
 const ui = '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif';
@@ -712,7 +711,7 @@ const Narra: React.FC<{ m: Montado }> = ({ m }) => {
       }}
     >
       <span style={{ fontFamily: mono, fontSize: 20, color: c.fraco }}>
-        {i + 1}/{m.passos.length}
+        {i + 1}/{visiveis(m).length}
       </span>
       <span style={{ fontSize: 21, lineHeight: 1.3, opacity: kf(t, [[p.em, 0], [p.em + 0.3, 1]]) }}>
         {p.texto}

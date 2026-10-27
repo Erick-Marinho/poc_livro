@@ -79,7 +79,7 @@ export const montar = ({ bruto, comando, regua }: Props) => {
     { em: T.sem, no: 3, texto: `Sem a data, vale a frase da nota mais parecida: ${prazoDe(r.sem_data.frase)}, de uma nota de ${r.sem_data.data}.` },
     { em: T.com, no: 3, texto: `Com a data, entre as que empatam, vale a mais nova: ${novo}, de ${r.com_data.data}, com a velha ao lado.` },
     { em: T.regua, no: 4, texto: `A régua: sem a data, ${semA} de ${total}; com ela, ${comA} de ${total}${modA !== null ? `; com um modelo local, ${modA} de ${total}` : ""}.` },
-  ].filter((p) => p.em < T.sem);
+  ];
   const nos = [
     { nome: "a pergunta", valor: `${r.palavras.length} palavras` },
     { nome: "a busca", valor: `${achadas.length} de ${r.notas.length} notas` },
@@ -97,3 +97,5 @@ export const montar = ({ bruto, comando, regua }: Props) => {
 };
 
 export type Montado = ReturnType<typeof montar>;
+/** os passos que o vídeo mostra: até as frases que empatam (o desenho usa todos, para saber onde cada etapa começa) */
+export const visiveis = (m: Pick<Montado, "passos">) => m.passos.filter((p) => p.em < T.sem);

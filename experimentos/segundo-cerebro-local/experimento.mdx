@@ -28,6 +28,7 @@ import FiguraCofre from "../../src/components/livro/FiguraCofre.astro";
 import Nota from "../../src/components/livro/Nota.astro";
 import Aposta from "../../src/components/livro/Aposta.astro";
 import PareEPense from "../../src/components/livro/PareEPense.astro";
+import Exercicio from "../../src/components/livro/Exercicio.astro";
 import Pilhas from "../../src/components/livro/Pilhas.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import promessas from "./promessas.json";
@@ -37,7 +38,7 @@ import passos from "./passos/01.json";
 import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 
-Circula por aí um tutorial de "segundo cérebro 100% local": você instala um app, liga o seu e-mail, a sua agenda e as gravações das suas reuniões, e ele monta um grafo das suas notas que responde perguntas sobre o seu trabalho ([o artigo do Daily Dose of Data Science](https://www.dailydoseofds.com/p/build-your-own-100-local-ai-second-brain/)). A promessa é boa. Três coisas nela não fecham.
+Circula por aí um tutorial de "segundo cérebro 100% local": você instala um app, o Rowboat, liga o seu e-mail, a sua agenda e as gravações das suas reuniões, e ele monta um grafo das suas notas que responde perguntas sobre o seu trabalho ([o artigo do Daily Dose of Data Science](https://www.dailydoseofds.com/p/build-your-own-100-local-ai-second-brain/)). A promessa é boa. Três coisas nela não fecham.
 
 <Aposta dados={promessas} pergunta="O artigo promete três coisas. Antes de ler, dê o seu palpite: cada uma vale inteira, vale só em parte, ou o artigo não mostra?" />
 
@@ -105,6 +106,17 @@ Neste experimento, nada do que você escreveu sai da sua máquina: o cofre é um
 Ligar o e-mail, a agenda e as reuniões muda isso. As notas continuam no seu disco, mas a fonte delas fica nos servidores do Google e dos serviços de reunião, com uma autorização para ler a sua caixa de entrada. E o cofre passa a guardar e-mail em texto puro: proteja a pasta como você protege a caixa de entrada.
 </Pilhas>
 
-Um app como o Rowboat vale quando você quer o que este experimento não faz: trazer e-mail e agenda sozinho, todo dia, e manter as notas das pessoas em dia sem escrever código. Antes de confiar nele, faça o que você fez aqui: escreva dez perguntas cuja resposta você sabe, e veja quantas ele acerta, e se a nota que ele cita diz mesmo aquilo.
+Um app como o Rowboat vale quando você quer o que este experimento não faz: trazer e-mail e agenda sozinho, todo dia, e manter as notas das pessoas em dia sem escrever código. Antes de confiar nele, faça o que você fez aqui.
+
+<Exercicio titulo="Meça o cérebro que você usa">
+
+1. Escreva dez perguntas sobre o seu trabalho cuja resposta você sabe, e a resposta certa de cada uma.
+2. Antes de perguntar, anote: quantas das dez você espera que ele acerte?
+3. Faça as dez perguntas ao cérebro que você usa (este, com o seu cofre, ou um app como o Rowboat).
+4. Para cada uma, confira duas coisas: se a resposta bate com a sua, e se a nota que ele cita diz mesmo aquilo. Uma resposta pode conter a palavra certa e dizer outra coisa, como a da cliente na régua do modelo.
+
+Você concluiu quando comparou o que anotou com o que ele acertou, e achou ao menos uma resposta em que a fonte citada não dizia o que ele respondeu, ou registrou que não achou nenhuma.
+
+</Exercicio>
 
 <Pendente o="Opinião dos autores: o segundo cérebro que vocês usam, e o que aprenderam medindo" parte="fecho do experimento" />

@@ -38,6 +38,7 @@ import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 import coleta from "./projeto/coleta.json";
 import TemposReais from "../../src/components/livro/TemposReais.astro";
+import Exercicio from "../../src/components/livro/Exercicio.astro";
 
 Você pergunta algo a um chat de IA. Por um instante, nada acontece. Depois, a resposta aparece, palavra por palavra. Parece um trabalho só, mas são dois.
 
@@ -67,6 +68,10 @@ Você começa numa pasta vazia e monta o medidor passo a passo, com testes que f
 
 <TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 9 na média, que respondeu curto). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
 
+<PareEPense pergunta="O artigo diz que, depois da primeira palavra, o ritmo quase não muda. Aqui, a longa escreveu a 7,9 tokens por segundo, e a curta, a 10,6. O artigo errou?">
+Nesta máquina, nessa metade, sim: o ritmo caiu 25%, e ficou dentro dos 20% da régua em só 4 das 10 repetições. O próprio artigo dá a razão: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar. Num processador de notebook, essa consulta pesa. Numa placa de vídeo, pode pesar menos, mas isso não medimos.
+</PareEPense>
+
 <Nota titulo="o que é inventado">O Condomínio Edifício Ipê Amarelo e o seu regulamento são inventados. Na figura, a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As conversas do chat da IDE são um roteiro. As coletas são reais: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 
 ## O tropeço: o modelo lembra
@@ -87,7 +92,16 @@ Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o model
 
 ## Repetir na sua máquina
 
-Instale o Ollama ([ollama.com](https://ollama.com)) e o uv, que cuida do Python do projeto ([docs.astral.sh/uv](https://docs.astral.sh/uv/)); baixe o modelo com `ollama pull llama3.2:3b` e, na pasta do projeto, execute `uv run python coletar.py`. A coleta leva alguns minutos e grava `coleta.json`; depois, `uv run python medir.py` mostra o placar. Os seus tempos vão ser outros, porque o processador é outro. O que vale comparar é a forma: a pausa cresce com a mensagem? O ritmo fica parecido?
+<Exercicio titulo="Meça na sua máquina">
+
+1. Instale o Ollama ([ollama.com](https://ollama.com)) e o uv, que cuida do Python do projeto ([docs.astral.sh/uv](https://docs.astral.sh/uv/)), e baixe o modelo com `ollama pull llama3.2:3b`.
+2. Antes de medir, anote: na sua máquina, a longa vai demorar quantas vezes mais que a curta para começar? E o ritmo da longa vai cair mais ou menos que os 25% daqui?
+3. Na pasta do projeto, execute `uv run python coletar.py` (alguns minutos; ele grava `coleta.json`) e depois `uv run python medir.py`.
+4. Compare com o que você anotou. Os seus tempos vão ser outros, porque o processador é outro; o que vale comparar é a forma: a pausa cresce com a mensagem? O ritmo cai quanto?
+
+Você concluiu quando confrontou as duas anotações com o placar da sua máquina.
+
+</Exercicio>
 
 O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura deve ficar tão rápida que a pausa quase some, e o experimento perderia o que tem para mostrar. Essa medida não está gravada: fica como expectativa, não como resultado.
 

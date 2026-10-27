@@ -1,28 +1,21 @@
 /**
- * A ilha da figura "o que vamos construir": a composição no Player do Remotion, com controles. Não toca sozinha (o
- * leitor aperta o play); no modo direto e para quem pede menos movimento, abre no último quadro.
+ * A ilha da figura "o que vamos construir": a composição, que o leitor toca ou rola com a página, como as outras
+ * figuras do livro (palco/RolaCena.tsx; docs/capacidades/controles-nos-experimentos.md, 3c). No modo direto, o último
+ * quadro. Para quem não vê o vídeo, as legendas de cada passo vão como texto.
  */
-import { Player, type PlayerRef } from "@remotion/player";
-import { useEffect, useMemo, useRef } from "react";
-import { useDireto } from "../palco/direto";
+import { useMemo } from "react";
+import RolaCena from "../palco/RolaCena";
 import { CaminhoDaPergunta } from "./CaminhoDaPergunta";
-import { type Props, QUADRO } from "./caminho";
-import "../palco/palco.css";
+import { montar, type Props, QUADRO, visiveis } from "./caminho";
 import "./cerebro.css";
 
 export default function FiguraCaminhoVideo({ bruto, comando, regua }: Props) {
-  const ref = useRef<PlayerRef>(null);
-  const direto = useDireto();
   const props = useMemo(() => ({ bruto, comando, regua }), [bruto, comando, regua]);
-  useEffect(() => {
-    if (direto || matchMedia("(prefers-reduced-motion: reduce)").matches) { ref.current?.pause(); ref.current?.seekTo(QUADRO.duracao - 1); }
-  }, [direto]);
-
-  return <div className="palco cdp">
-    <Player ref={ref} component={CaminhoDaPergunta} inputProps={props} durationInFrames={QUADRO.duracao} fps={QUADRO.fps}
-      compositionWidth={QUADRO.largura} compositionHeight={QUADRO.altura} controls style={{ width: "100%" }}
-      acknowledgeRemotionLicense />
-    {/* de onde vêm os números: o comando que gravou o rastro, rodado no projeto do experimento */}
+  const passos = useMemo(() => visiveis(montar(props)), [props]);
+  return <div className="cdp">
+    <RolaCena component={CaminhoDaPergunta} inputProps={props} duracao={QUADRO.duracao} fps={QUADRO.fps} largura={QUADRO.largura} altura={QUADRO.altura}
+      telas={6} reserva={110} descricao={<ol>{passos.map((p) => <li key={p.em}>{p.texto}</li>)}</ol>} />
+    {/* de onde vêm os números: o comando que gravou o rastro, executado no projeto do experimento */}
     <p className="cdp-fonte">os números vêm de <code>{comando}</code></p>
   </div>;
 }

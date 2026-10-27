@@ -56,7 +56,7 @@ export function legendas(t: Tempos) {
   const [curta, , longa] = t.linhas;
   return [
     { de: 0, ate: fimDe(t, longa) + 0.3, texto: "As três saem juntas, no relógio da coleta. Cinza é ler; azul é escrever." },
-    { de: fimDe(t, longa) + 0.3, ate: DE_NOVO, texto: `A longa começa ${t.vezes} vezes depois da curta (${segundos(longa.pausa)} contra ${segundos(curta.pausa)}). ${ritmo(curta, longa)}` },
+    { de: fimDe(t, longa) + 0.3, ate: DE_NOVO, texto: `A longa demora ${t.vezes} vezes mais que a curta para começar (${segundos(longa.pausa)} contra ${segundos(curta.pausa)}). ${ritmo(curta, longa)}` },
     { de: DE_NOVO, ate: SEGUNDOS + 1, texto: `A longa, pedida de novo: ${t.deNovo.cache} de ${t.deNovo.le} tokens vieram do cache, e ela começa em ${segundos(t.deNovo.pausa)}.` },
   ];
 }
