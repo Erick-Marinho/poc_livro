@@ -24,11 +24,11 @@ import {
   titulo, visiveis } from "./caminho";
 
 // As fontes que a página já carrega (o Studio carrega as mesmas).
-const ui = '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif';
-const mono = '"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace';
+export const ui = '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif';
+export const mono = '"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace';
 
 // As cores do palco (palco/palco.css).
-const c = {
+export const c = {
   fundo: "#111318",
   chao: "#15181e",
   cartao: "#1c2028",
@@ -47,7 +47,7 @@ const c = {
 const suave = Easing.bezier(0.16, 1, 0.3, 1);
 
 // Um valor que passa pelos pontos [segundo, valor], parado antes do primeiro e depois do último.
-const kf = (t: number, pontos: [number, number][], easing = suave) =>
+export const kf = (t: number, pontos: [number, number][], easing = suave) =>
   interpolate(
     t,
     pontos.map((p) => p[0]),
@@ -55,14 +55,14 @@ const kf = (t: number, pontos: [number, number][], easing = suave) =>
     { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing },
   );
 
-const useT = () => {
+export const useT = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   return frame / fps;
 };
 
 // A data dentro da frase, marcada: a nova numa cor, a velha noutra.
-const ComData: React.FC<{ frase: string; novo: string }> = ({ frase, novo }) => (
+export const ComData: React.FC<{ frase: string; novo: string }> = ({ frase, novo }) => (
   <>
     {frase.split(/(\d{2}\/\d{2})/).map((p, i) =>
       i % 2 ? (

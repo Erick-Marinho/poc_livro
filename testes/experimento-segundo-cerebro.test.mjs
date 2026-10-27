@@ -78,3 +78,12 @@ test("o inesperado diz só o que está gravado: o modelo tirou 10 de 10, e a res
   assert.ok(achado.includes(`tirou ${nota}`));
   assert.ok(linhas.some((l) => l.startsWith("✓ Quem é a cliente do piloto?") && /a Gerente/.test(l)), "a resposta da cliente que passou é a gravada");
 });
+
+test("no celular, o caminho tem um desenho em pé, com as mesmas três cenas", () => {
+  const ilha = readFileSync(new URL("../src/components/livro/cerebro/FiguraCaminhoVideo.tsx", import.meta.url), "utf8");
+  assert.match(ilha, /matchMedia\("\(max-width: 640px\)"\)/);
+  assert.match(ilha, /component=\{estreito \? CaminhoEstreito : CaminhoDaPergunta\}/);
+  const est = readFileSync(new URL("../src/components/livro/cerebro/CaminhoEstreito.tsx", import.meta.url), "utf8");
+  assert.match(est, /export const ESTREITO = \{ largura: 540, altura: 960 \}/);
+  assert.match(est, /visiveis\(m\)/, "o estreito usa os mesmos passos visíveis do largo");
+});
