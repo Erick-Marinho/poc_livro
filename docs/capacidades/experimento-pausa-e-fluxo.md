@@ -61,18 +61,12 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 3 (detalhe)
+## Etapa 4 (detalhe)
 
-- **Ollama nesta máquina** (27/10/2026, Erick: "aqui"): o pacote oficial `ollama-linux-amd64.tar.zst`
-  ([docs](https://docs.ollama.com/linux)) extraído em `~/.local/ollama`, sem `sudo`; `ollama serve` em segundo plano;
-  `llama3.2:3b` baixado. A máquina: Ryzen 7 5700G, 16 núcleos, 15 GB de RAM, RTX 4060 de 8 GB visível no WSL.
-- **Arquivos:** `projeto/coletar.py` (o modelo sai da memória, o aquecimento e as dez rodadas: curta → média → longa → longa de
-  novo; grava `coleta.json` com cada medida, a versão do Ollama, o modelo e a máquina) e `projeto/medir.py` (lê o
-  `coleta.json` e imprime o placar: é a saída que o livro grava na etapa 7).
-- **Evidência:** a coleta real rodada aqui; o placar impresso a partir dela; o campo do cache conferido na resposta.
-- **Fica fora:** a gravação no `saidas.json` do livro (etapa 7).
-
-## Registro
+- **Arquivo:** `rascunhos/pausa-e-fluxo/figuras/esboco.md`: a figura em ASCII, as seis cenas (ler, a pausa,
+  escrever, o fluxo, o medidor, a pergunta), o celular, o modo direto e o que fica de fora.
+- **Evidência:** o esboço lido e aprovado pelo Erick, antes de qualquer código de animação.
+- **Fica fora:** o Remotion (etapa 5).
 
 ## Registro
 
@@ -80,5 +74,6 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 |---|---|---|---|
 | 1 | `ee07fbb` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
 | 2 | `790450c` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
+| 3 | `673080f` | `coleta.json`: 10 rodadas na CPU (Ryzen 7 5700G, Ollama 0.40.11, `llama3.2:3b`); `medir.py`: pausa 0,38 → 3,12 → 9,74 s, fluxo 15,4 → 13,2 tokens/s, longa de novo 0,08 s com 1076 de 1077 do cache; placar 10 de 10 nas três partes. A primeira coleta (cache a partir da rodada 2) refeita. `test_medidor.py` 8/8; o critério antigo do cache falha 2 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
