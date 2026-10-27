@@ -103,3 +103,31 @@ Esta correção se concentra no mapa inicial. A etapa 3 completa, com árvores d
 tokens, não foi iniciada; a etapa 2 permanece aguardando revisão.
 
 (redação: gpt-6.1-sol)
+## Correção do servidor de desenvolvimento — 26/10/2026
+
+(redação: gpt-6.1-sol)
+
+O Erick encontrou `Cannot read properties of undefined (reading 'tz-mapa')`. Reproduzido em
+`http://localhost:4321/experimentos/temperatura-zero/`: a resposta começava com status 200, mas terminava antes
+do corpo do experimento. Conferir só o status HTTP não detectava a quebra.
+
+O log do servidor (`/tmp/poc_livro-dev.log`) registrou `ENOSPC: System limit for number of file watchers reached`
+ao acompanhar `experimentos/temperatura-zero/projeto/.venv/lib/python3.13/site-packages/functorch/`. O servidor
+continuava usando o MDX antigo, com a chamada do mapa sem `saidas`, enquanto o componente já exigia esse argumento.
+Servidores iniciados depois e o build montavam a página completa.
+
+A configuração do Vite agora exclui da monitoração `.venv`, `__pycache__`, `.leitor` e `.tunel`, em qualquer nível.
+O conteúdo, os componentes e as gravações continuam acompanhados. O proxy da landing foi preservado. O teste novo
+usa o monitor de arquivos real: verifica que as pastas geradas ficam de fora e que alterações em `experimento.mdx`
+e `saidas.json` produzem eventos. Nenhum valor substituto ou saída inventada foi acrescentado ao mapa.
+
+Evidência depois da atualização e do reinício automático do servidor:
+
+- A mesma rota em 4321 entrega o gráfico, os dados atuais e o documento até `</html>`.
+- Uma marca temporária no MDX apareceu na página sem reiniciar; sua remoção também foi detectada. Arquivo restaurado.
+- Chrome no servidor de desenvolvimento: previsão antes da escolha, duas condições, reprodução, pausa, reinício e
+  retorno do modo direto funcionam no computador e no celular; sem transbordamento horizontal. Modo direto e
+  movimento reduzido mostram os dois casos estáticos.
+- `npm test`: **177 testes do site e 5 da gravação passaram**; as **30 + 16 + 16 saídas** continuam conferindo.
+
+A correção mantém a etapa 2 aguardando revisão.
