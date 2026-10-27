@@ -7,8 +7,9 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion, useMotionValue, useTransform } from "motion/react";
-import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Menu, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
+import { BookOpen, Check, ChevronLeft, ChevronRight, GraduationCap, Laptop, Maximize2, Menu, Minimize2, Moon, ScrollText, Settings, Sun, Target, X } from "lucide-react";
 import { definirDireto, useDireto } from "../palco/direto";
+import { definirFoco, useFoco } from "../palco/foco";
 import { definirRolar, useRolar } from "../palco/rolar";
 import { definirOnde, useOnde } from "../palco/onde";
 import type { Onde } from "../palco/onde";
@@ -67,6 +68,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   const [fonte, setFonte] = useState<Fonte>("serifada");
   const [tamanho, setTamanho] = useState<Tamanho>("medio");
   const direto = useDireto();
+  const foco = useFoco();
   const rolar = useRolar();
   const fazer = useOnde();
   const x = useMotionValue(0);
@@ -136,6 +138,14 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   }, [porQue]);
   const fechar = () => { setPorQue(false); setIdeVisto(true); guardar(CHAVE_IDE, "visto"); lembrete.current?.focus(); };
 
+  /* o modo foco sai também pelo Esc, quando nada está aberto por cima (o painel, o placar, a fundamentação da IDE) */
+  useEffect(() => {
+    if (!foco) return;
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape" && !e.defaultPrevented && !document.querySelector(".cm-painel, .cm-painel-placar, .cm-porque")) definirFoco(false); };
+    addEventListener("keydown", esc);
+    return () => removeEventListener("keydown", esc);
+  }, [foco]);
+
   /* o painel fecha com Esc ou com um clique fora dele */
   useEffect(() => {
     if (!aberto) return;
@@ -164,6 +174,10 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   /* o lembrete da IDE e o placar moram na barra do topo da página (um portal para #topo-comandos, no layout):
      fixos por cima do texto, eles cobriam a trilha da IDE e o próprio texto */
   const topo = <>
+    <button type="button" className="cm-foco" aria-pressed={foco} onClick={() => definirFoco(!foco)}
+      aria-label={foco ? "Sair do modo foco" : "Modo foco: só o texto"} title={foco ? "Sair do modo foco (Esc)" : "Modo foco: só o texto"}>
+      {foco ? <Minimize2 size={15} /> : <Maximize2 size={15} />}<span>{foco ? "sair do foco" : "foco"}</span>
+    </button>
     <button ref={lembrete} type="button" className={`cm-ide${ideVisto ? " cm-ide-visto" : ""}`} onClick={() => setPorQue(true)}
       aria-haspopup="dialog" aria-label="Este livro rende mais com uma IDE aberta: por quê" title="Leia com a IDE aberta">
       <Laptop size={16} /><span>Leia com a IDE aberta</span>
@@ -293,6 +307,9 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
             <p className="cm-titulo cm-titulo-2">Leitura</p>
             <button type="button" role="switch" aria-checked={direto} className="cm-chave cm-chave-2" onClick={() => definirDireto(!direto)}>
               <span>Modo direto<small>sem passo a passo: código, saídas e respostas já abertos</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
+            </button>
+            <button type="button" role="switch" aria-checked={foco} className="cm-chave cm-chave-2" onClick={() => definirFoco(!foco)}>
+              <span>Modo foco<small>só o texto: sem o sumário, a pílula e os botões do topo; sai pelo Esc</small></span><span className="cm-trilho-chave" aria-hidden="true"><i /></span>
             </button>
             {/* a mesma chave das animações (palco/rolar.ts): presa na tela, a rolagem anda a figura; solta, o play */}
             <button type="button" role="switch" aria-checked={rolar} className="cm-chave cm-chave-2" onClick={() => definirRolar(!rolar)}>

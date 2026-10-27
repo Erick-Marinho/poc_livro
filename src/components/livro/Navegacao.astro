@@ -4,7 +4,9 @@ import Comandos from "./comandos/Comandos";
 /**
  * A navegação do livro: o sumário à esquerda e, embaixo, os comandos fixos (ilha React: comandos/Comandos.tsx).
  * O sumário mostra o livro inteiro, inclusive o que ainda não foi escrito, para o leitor ver onde está no caminho.
- * A partir de 1280 px ele fica aberto ao lado do texto; abaixo disso vira gaveta, aberta pelo botão da pílula.
+ * A partir de 1280 px ele fica aberto ao lado do texto, e o leitor o fecha pelo ✕ e reabre pelo ☰ do topo ou da pílula
+ * (docs/capacidades/modo-foco.md; a escolha fica guardada); abaixo disso vira gaveta, aberta pelo botão da pílula. No
+ * modo foco (palco/foco.ts), ele some.
  */
 export type ItemSumario = { numero?: number; titulo: string; href?: string; atual: boolean };
 export type Marco = { capitulo: number; rotulo: string; quem: string; acertos: number; total: number; nota: string; comando: string; revelaCom?: string };
@@ -56,6 +58,13 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro
   const botoes = () => document.querySelectorAll<HTMLButtonElement>("[data-abrir]");
   const focarBotao = () => botoes()[0]?.focus();
   const gaveta = matchMedia("(max-width: 1279px)");
+  /* no computador, o ✕ e o ☰ fecham e reabrem o sumário ao lado do texto, e a escolha fica guardada */
+  const fixar = (fechado: boolean) => {
+    document.documentElement.classList.toggle("sumario-fechado", fechado);
+    try { fechado ? localStorage.setItem("fontmar:sumario", "fechado") : localStorage.removeItem("fontmar:sumario"); } catch { /* sem armazenamento */ }
+    botoes().forEach((b) => b.setAttribute("aria-expanded", String(!fechado)));
+    if (!fechado) (aside.querySelector<HTMLElement>("[aria-current]") ?? aside.querySelector<HTMLElement>("a"))?.focus();
+  };
   const definir = (aberto: boolean) => {
     document.documentElement.classList.toggle("sumario-aberto", aberto);
     botoes().forEach((b) => b.setAttribute("aria-expanded", String(aberto)));
@@ -63,9 +72,11 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro
     if (aberto) (aside.querySelector<HTMLElement>("[aria-current]") ?? aside.querySelector<HTMLElement>("a"))?.focus();
   };
   document.addEventListener("click", (e) => {
-    if ((e.target as Element).closest?.("[data-abrir]")) definir(!document.documentElement.classList.contains("sumario-aberto"));
+    if (!(e.target as Element).closest?.("[data-abrir]")) return;
+    if (!gaveta.matches) return fixar(!document.documentElement.classList.contains("sumario-fechado"));
+    definir(!document.documentElement.classList.contains("sumario-aberto"));
   });
-  aside.querySelector("[data-fechar]")!.addEventListener("click", () => { definir(false); focarBotao(); });
+  aside.querySelector("[data-fechar]")!.addEventListener("click", () => { gaveta.matches ? definir(false) : fixar(true); focarBotao(); });
   veu.addEventListener("click", () => definir(false));
   addEventListener("keydown", (e) => { if (e.key === "Escape" && document.documentElement.classList.contains("sumario-aberto")) { definir(false); focarBotao(); } });
   /* na gaveta, escolher uma seção fecha o sumário */
@@ -94,7 +105,14 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro
 
 <style is:global>
   :root { --sumario: 0px }
-  @media (min-width: 1280px) { :root { --sumario: 280px } body { padding-left: var(--sumario) } }
+  @media (min-width: 1280px) {
+    :root { --sumario: 280px } body { padding-left: var(--sumario); transition: padding-left .25s ease }
+    /* fechado pelo ✕, ou no modo foco: o texto volta ao centro, e o ☰ do topo e o da pílula reabrem */
+    html.sumario-fechado, html[data-foco] { --sumario: 0px }
+    .sumario { transition: transform .25s ease, visibility .25s }
+    html.sumario-fechado .sumario, html[data-foco] .sumario { transform: translateX(-100%); visibility: hidden }
+    .sumario .sm-fechar { display: block }
+  }
 
   .sumario { position: fixed; inset: 0 auto 0 0; width: 280px; z-index: 30; display: flex; flex-direction: column; gap: 4px;
     background: var(--papel); border-right: 1px solid var(--linha); padding: 14px 14px 110px; overflow-y: auto; font: 14px/1.4 var(--f-ui); box-sizing: border-box }
@@ -123,8 +141,14 @@ const { livro, onde, itens, secoes, anterior, proximo, emBreve, placar } = Astro
     .sm-fechar { display: block }
   }
   /* com o sumário aberto ao lado, a pílula não precisa do botão dele, e a marca fica só no sumário */
-  @media (min-width: 1280px) { .sm-veu { display: none } .topo .marca { display: none } .topo .nome { padding-left: 0; border-left: 0 } }
-  @media (prefers-reduced-motion: reduce) { .sumario { transition: none } }
+  @media (min-width: 1280px) { .sm-veu { display: none } html:not(.sumario-fechado) .topo .marca { display: none } html:not(.sumario-fechado) .topo .nome { padding-left: 0; border-left: 0 } }
+  /* o ☰ do topo: só no computador, com o sumário fechado, e fora do foco */
+  .topo-sumario { display: none; flex: none; border: 0; background: none; color: var(--ink-2); cursor: pointer; padding: 6px; margin-left: -6px; border-radius: 8px }
+  .topo-sumario:hover { color: var(--ink); background: var(--papel-2) }
+  @media (min-width: 1280px) { html.sumario-fechado:not([data-foco]) .topo-sumario { display: inline-flex } }
+  @media (prefers-reduced-motion: reduce) { .sumario, body { transition: none !important } }
+  /* no modo foco, o sumário some também como gaveta */
+  html[data-foco] .sumario, html[data-foco] .sm-veu { display: none }
 
   /* modo direto: o classificador mostra o que o contrato diz, sem pedir a escolha */
   html[data-direto] .cls-resposta { display: block !important }
