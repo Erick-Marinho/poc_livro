@@ -1,0 +1,13 @@
+{
+  "sobre": "O Invista do 2.2, logo antes da figura do formulário (docs/capacidades/escolhas-no-capitulo-2.md, etapa 2): o modelo devolve texto solto, e o leitor diz para qual caixa do grafo o código seguiria. O texto é o mesmo que a figura mostra (SOLTO, em roteiro/formulario.ts), e é ilustração; as opções são três nós do grafo real e a resposta que a figura dá: nenhuma, porque “encaminhar” não é uma das quatro decisões. O teste confere.",
+  "resultado": "Sem formulário, o código fica com",
+  "mensagens": [
+    { "texto": "Acho melhor encaminhar para um atendente, porque é um dado pessoal.",
+      "opcoes": ["abrir_chamado", "recusar", "passar", "nenhuma, teria de adivinhar"], "fez": 3,
+      "porque": "“Encaminhar” pode ser abrir chamado, se alguém resolve depois, ou passar a vez, se alguém assume agora. Bom para uma pessoa ler; o código não tem como saber." }
+  ],
+  "fechos": {
+    "nenhum": "O texto parece claro para quem lê, mas não diz a caixa. A figura mostra a saída.",
+    "alguns": "Isso: texto solto não diz a caixa. A figura mostra a saída."
+  }
+}

@@ -27,7 +27,6 @@ import estados01 from "../roteiros/01.estados.json";
 import passos02 from "../passos/02.json";
 import glossario from "../glossario.json";
 import RoteiroDoAgente from "../../../src/components/livro/RoteiroDoAgente.astro";
-import Listagem from "../../../src/components/livro/Listagem.astro";
 import FormularioDoAgente from "../../../src/components/livro/FormularioDoAgente.astro";
 import agentePy from "../projeto/agente.py?raw";
 import EnsaioDoAgente from "../../../src/components/livro/EnsaioDoAgente.astro";
@@ -42,6 +41,7 @@ import quemDecide from "../figuras/quem-decide.json";
 import AndarDaTorre from "../../../src/components/livro/AndarDaTorre.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import caminhoDoR10 from "../figuras/caminho-do-r10.json";
+import textoSolto from "../figuras/texto-solto.json";
 
 ## 2.1 Um agente desenhado
 
@@ -61,15 +61,13 @@ Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. 
 
 ## 2.2 O modelo decide, o contrato dá a forma
 
-No 2.1, a decisão vinha do gabarito. Mas, quando quem decide é um modelo, como a decisão chega ao código? Se o pedido for só "decida o que fazer", o modelo responde com texto, e o código teria de adivinhar a seta.
+No 2.1, a decisão vinha do gabarito. Mas, quando quem decide é um modelo, como a decisão chega ao código? Peça a ele só "decida o que fazer" com o CPF da prima, e ele devolve texto.
+
+<Aposta dados={textoSolto} pergunta="O modelo respondeu isto. Para qual caixa do grafo o código segue?" ilustracao="Ilustração: o texto foi escrito para mostrar o padrão, e é o mesmo da figura abaixo." />
 
 <FormularioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} gravacao={gravacaoMedir} agente={agentePy} mensagem="R15" numero="2.2" legenda="O formulário do substituto: a saída estruturada. O grafo é o real; a decisão, o motivo e a resposta são os que o GPT-6 Luna deu ao CPF da prima, na gravação deste capítulo. Só o texto solto do começo é ilustração." />
 
-No código, o formulário é uma classe do pydantic no `agente.py`, e a decisão dela é a `Decisao` do contrato do capítulo 1, a mesma lista fechada:
-
-<Listagem codigo={agentePy} nome="agente.py" linhas="22-26" info="um trecho do arquivo que você escreve na 2.5" notas={{ 25: "uma das quatro decisões do contrato, e só elas", 26: "o porquê, numa frase" }} />
-
-O modelo responde preenchendo esse molde, e o grafo lê a caixa marcada para escolher a seta.
+No código, o formulário é a `Escolha`, uma classe do pydantic que você escreve na 2.5, com a mesma lista fechada do contrato do capítulo 1. O modelo responde preenchendo esse molde, e o grafo lê a caixa marcada para escolher a seta.
 
 <Pendente o="Opinião dos autores: uma vez em que texto solto de um modelo quebrou o código que vinha depois" parte="dos autores" />
 

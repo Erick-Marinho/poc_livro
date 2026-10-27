@@ -29,3 +29,25 @@ test("no 2.1, o Invista vem logo antes do grafo, e as figuras do capítulo 2 nã
   for (const f of ["RoteiroDoAgente", "FormularioDoAgente", "EnsaioDoAgente", "ProvaDoAgente", "ResultadoDoAgente"]) assert.equal(eAcao(f), false, f);
   assert.match(ler("docs/RITMO.md"), /`ResultadoDoAgente` \(tocam ou rolam/);
 });
+
+test("o Invista do 2.2: o texto solto é o da figura, as opções são caixas do grafo real e a resposta é que nenhuma serve", async () => {
+  const { SOLTO, QUINTA } = await import("../src/components/livro/roteiro/formulario.ts");
+  const d = json("livros/ciclo-de-vida/figuras/texto-solto.json");
+  const [m] = d.mensagens;
+  assert.equal(m.texto, SOLTO);
+  assert.match(m.texto.toLowerCase(), new RegExp(QUINTA));
+  const nos = Object.keys(json("livros/ciclo-de-vida/figuras/grafo-02.json").nos);
+  assert.ok(m.opcoes.slice(0, -1).every((o) => nos.includes(o)), "as caixas são nós do grafo");
+  assert.equal(m.fez, m.opcoes.length - 1);
+  assert.match(m.opcoes[m.fez], /^nenhuma/);
+});
+
+test("no 2.2, a abertura não entrega a resposta, o Invista vem logo antes do formulário, e o código fica para a 2.5", () => {
+  const cap = ler("livros/ciclo-de-vida/capitulos/02-o-primeiro-agente.mdx");
+  const s22 = cap.slice(cap.indexOf("## 2.2"), cap.indexOf("## 2.3"));
+  const aposta = s22.indexOf("<Aposta dados={textoSolto}"), fig = s22.indexOf("<FormularioDoAgente");
+  assert.ok(aposta > 0 && aposta < fig && !/<[A-Z]/.test(s22.slice(aposta + 10, fig)));
+  assert.doesNotMatch(s22.slice(0, aposta), /adivinh/, "a abertura não diz que o código teria de adivinhar");
+  assert.doesNotMatch(s22, /<Listagem/);
+  assert.match(s22, /<Aposta [^>]*ilustracao="Ilustração:/);
+});
