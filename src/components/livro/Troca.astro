@@ -1,46 +1,62 @@
 ---
 /**
- * Ação do leitor: trocar o jeito de pedir ao modelo e ver o que muda (a frase) e o que fica (a decisão do contrato)
- * (docs/RITMO.md: "depende de" pede um explorável). A mensagem e a decisão do contrato vêm do referencia.jsonl; as
- * variantes vêm de um JSON do livro e são ilustração, e a figura diz. O veredito sai da comparação, não do JSON.
- * No modo direto, as variantes aparecem todas, uma embaixo da outra.
+ * Ação do leitor: ser o gabarito (docs/capacidades/voce-e-o-gabarito.md). A mesma mensagem, três tentativas (o bilhete
+ * muda, ou o modelo muda), uma por vez em cartões; o leitor corrige cada resposta: cumpriu o gabarito, ou o gabarito
+ * pega. A frase muda a cada tentativa; o gabarito só olha o que foi feito. A mensagem e a decisão do gabarito vêm do
+ * referencia.jsonl; os bilhetes e as respostas são ilustração, e a caixa diz. O veredito sai da comparação, não do JSON.
+ * No modo direto, os vereditos aparecem todos, sem pedir a correção.
  */
 import { casos, DECISOES } from "../../lib/referencia.ts";
 
-type Variante = { aba: string; resposta: string; decisao: string; como?: string };
+type Variante = { bilhete: string; modelo: string; resposta: string; decisao: string; como?: string };
 interface Props { referencia: string; dados: { caso: string; variantes: Variante[] }; pergunta: string; ilustracao: string }
 const { referencia, dados, pergunta, ilustracao } = Astro.props;
 const [caso] = casos(referencia, [dados.caso], "Troca");
 dados.variantes.forEach((v) => { if (!DECISOES[v.decisao]) throw new Error(`Troca: a decisão "${v.decisao}" não é do contrato`); });
-if (!dados.variantes.some((v) => v.decisao !== caso.decisao)) throw new Error("Troca: precisa de ao menos uma variante que o contrato pega");
+if (!dados.variantes.some((v) => v.decisao !== caso.decisao)) throw new Error("Troca: precisa de ao menos uma tentativa que o gabarito pega");
+const certo = DECISOES[caso.decisao].nome;
 ---
 <div class="tro" data-troca>
-  <p class="tro-rotulo">troque</p>
+  <p class="tro-rotulo">palpite · você é o gabarito</p>
   <p class="tro-pergunta">{pergunta}</p>
   <q class="tro-msg">{caso.pergunta}</q>
-  <div class="tro-abas" role="tablist">{dados.variantes.map((v, i) => <button type="button" role="tab" aria-selected={i === 0 ? "true" : "false"} data-i={i}>{v.aba}</button>)}</div>
-  <div class="tro-variantes">
-    {dados.variantes.map((v, i) => {
-      const ok = v.decisao === caso.decisao;
-      return (
-        <div class="tro-duas" data-v={i} hidden={i !== 0}>
-          <div class="tro-col"><h4>o que muda: a resposta <span class="tro-qual">({v.aba})</span></h4><p class="tro-resposta">{v.resposta}</p></div>
-          <div class="tro-col"><h4>o que fica: o contrato</h4><p class="tro-fica">{DECISOES[caso.decisao].nome}</p><p class="tro-motivo">{caso.motivo}</p>
-            <p class={ok ? "tro-ok" : "tro-nao"}>{ok ? `✓ decidiu ${DECISOES[v.decisao].nome}: cumpriu, com outra frase` : `✗ ${v.como ?? `decidiu ${DECISOES[v.decisao].nome}`}: o contrato pega`}</p></div>
-        </div>
-      );
-    })}
-  </div>
+  <p class="tro-gabarito">O gabarito diz: <b>{certo}</b>, porque {caso.motivo}.</p>
+  {dados.variantes.map((v) => {
+    const ok = v.decisao === caso.decisao;
+    return (
+      <div class="tro-cartao" data-certa={ok ? "0" : "1"}>
+        <div class="tro-bilhete"><span>o bilhete</span>{v.bilhete}</div>
+        <p class="tro-modelo">{v.modelo} responde:</p>
+        <p class="tro-resposta">“{v.resposta}”</p>
+        <div class="tro-opcoes"><button type="button" data-j="0" aria-pressed="false">cumpriu o gabarito</button><button type="button" data-j="1" aria-pressed="false">o gabarito pega</button></div>
+        <p class:list={["tro-fez", ok ? "tro-ok" : "tro-nao"]} hidden>{ok ? `✓ Cumpriu: decidiu ${certo}, como o gabarito manda. Outra frase, a mesma decisão.` : `✗ O gabarito pega: ${v.como ?? `decidiu ${DECISOES[v.decisao].nome}`}, e ele manda ${certo}.`}</p>
+      </div>
+    );
+  })}
+  <p class="tro-placar" hidden></p>
   <p class="tro-ilustracao">{ilustracao}</p>
 </div>
 
 <script>
+  import { emCartoes } from "../../lib/cartoes";
+
   document.querySelectorAll<HTMLElement>("[data-troca]").forEach((fig) => {
-    const abas = [...fig.querySelectorAll<HTMLButtonElement>("[role=tab]")], vs = [...fig.querySelectorAll<HTMLElement>("[data-v]")];
-    abas.forEach((a) => a.addEventListener("click", () => {
-      abas.forEach((x) => x.setAttribute("aria-selected", String(x === a)));
-      vs.forEach((v) => { v.hidden = v.dataset.v !== a.dataset.i; });
-    }));
+    const cartoes = [...fig.querySelectorAll<HTMLElement>(".tro-cartao")];
+    emCartoes(fig, cartoes, (c) => c.classList.contains("feita"));
+    const placar = fig.querySelector<HTMLElement>(".tro-placar")!;
+    let feitas = 0, iguais = 0;
+    cartoes.forEach((c) => c.querySelectorAll<HTMLButtonElement>(".tro-opcoes button").forEach((b) => b.addEventListener("click", () => {
+      if (c.classList.contains("feita")) return;
+      c.classList.add("feita");
+      c.querySelectorAll<HTMLButtonElement>(".tro-opcoes button").forEach((x) => { x.disabled = true; });
+      b.setAttribute("aria-pressed", "true");
+      c.querySelector<HTMLElement>(".tro-fez")!.hidden = false;
+      feitas++; if (b.dataset.j === c.dataset.certa) iguais++;
+      if (feitas === cartoes.length) {
+        placar.hidden = false;
+        placar.textContent = `Você corrigiu como o gabarito em ${iguais} de ${cartoes.length}. As frases mudaram a cada tentativa; o gabarito só olhou o que foi feito.`;
+      }
+    })));
   });
 </script>
 
@@ -48,22 +64,26 @@ if (!dados.variantes.some((v) => v.decisao !== caso.decisao)) throw new Error("T
   .tro { margin: 1.6em auto 1.8em; border: 1px solid var(--linha); border-radius: 12px; background: var(--nota); padding: 16px; font: 15.5px/1.55 var(--f-ui) }
   .tro-rotulo { margin: 0 0 4px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
   .tro-pergunta { margin: 0 0 10px; font: 600 17px/1.4 var(--f-ui) }
-  .tro-msg { display: block; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 10px 13px; margin-bottom: 12px; font: italic 16px/1.45 var(--f-texto) }
-  .tro-abas { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px }
-  .tro-abas button { border: 1px solid var(--linha); background: var(--papel); border-radius: 999px; padding: 4px 12px; font: 500 14px var(--f-ui); cursor: pointer }
-  .tro-abas button[aria-selected="true"] { background: var(--ink); color: var(--papel); border-color: var(--ink) }
-  .tro-duas[hidden] { display: none }
-  .tro-duas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px }
-  .tro-col { border: 1px solid var(--linha); border-radius: 10px; padding: 10px 12px; background: var(--papel); min-width: 0 }
-  .tro-col h4 { margin: 0 0 6px; font: 600 12px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2) }
-  .tro-qual { display: none; text-transform: none; letter-spacing: 0 }
-  .tro-resposta { margin: 0; font: italic 15.5px/1.45 var(--f-texto) }
-  .tro-fica { margin: 0; font: 600 16px var(--f-ui) } .tro-motivo { margin: 0; font-size: 14px; color: var(--ink-2) }
-  .tro-ok, .tro-nao { margin: 8px 0 0; font-weight: 600 } .tro-ok { color: var(--ok) } .tro-nao { color: var(--aviso) }
+  .tro-msg { display: block; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 10px 13px; margin-bottom: 8px; font: italic 16px/1.45 var(--f-texto) }
+  .tro-gabarito { margin: 0 0 12px; font-size: 14.5px; color: var(--ink-2) } .tro-gabarito b { color: var(--ok) }
+  .tro-cartao { border: 1px solid var(--linha); border-radius: 10px; background: var(--papel); padding: 12px 13px }
+  /* o bilhete como papel, como os do 2.4 */
+  .tro-bilhete { display: grid; gap: 4px; padding: 10px 13px; border-radius: 4px; transform: rotate(-.6deg); font: italic 16px/1.45 var(--f-texto);
+    background: color-mix(in srgb, var(--aviso) 7%, var(--papel)); border: 1px solid color-mix(in srgb, var(--aviso) 18%, var(--linha)); box-shadow: 0 3px 10px rgb(40 30 10 / .08) }
+  .tro-bilhete span { font: 600 11px var(--f-ui); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2) }
+  @media (prefers-reduced-motion: reduce) { .tro-bilhete { transform: none } }
+  .tro-modelo { margin: 12px 0 2px; font: 600 13px var(--f-ui); color: var(--ink-2) }
+  .tro-resposta { margin: 0 0 10px; font: italic 16px/1.45 var(--f-texto) }
+  .tro-opcoes { display: flex; flex-wrap: wrap; gap: 6px }
+  .tro-opcoes button { border: 1px solid var(--linha); background: var(--papel-2); border-radius: 999px; padding: 5px 13px; cursor: pointer; font: 500 14px var(--f-ui) }
+  .tro-opcoes button:not(:disabled):hover { border-color: var(--acento) }
+  .tro-opcoes button:disabled { cursor: default; opacity: .6 }
+  .tro-opcoes button[aria-pressed="true"] { opacity: 1; border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .tro-fez { margin: 10px 0 0; padding: 7px 10px; border-radius: 0 8px 8px 0; background: var(--papel-2); font-weight: 600; font-size: 14.5px }
+  .tro-ok { color: var(--ok); border-left: 3px solid var(--ok) } .tro-nao { color: var(--aviso); border-left: 3px solid var(--aviso) }
+  .tro-placar { margin: 6px 0 0; font-weight: 500 }
   .tro-ilustracao { margin: 10px 0 0; font-size: 13px; color: var(--ink-2) }
-  @media (max-width: 560px) { .tro-duas { grid-template-columns: 1fr } }
-  /* modo direto: as três variantes de uma vez, sem abas */
-  html[data-direto] .tro-duas { display: grid !important; margin-bottom: 8px }
-  html[data-direto] .tro-abas { display: none }
-  html[data-direto] .tro-qual { display: inline }
+  /* modo direto: os vereditos de uma vez, sem pedir a correção */
+  html[data-direto] .tro-fez { display: block !important }
+  html[data-direto] .tro-opcoes { display: none }
 </style>

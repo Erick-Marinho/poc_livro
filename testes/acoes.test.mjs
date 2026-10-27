@@ -37,10 +37,15 @@ test("o primeiro dia do 1.3 fala como quem atende: escolhas em frases, sem o nom
   assert.equal(itens.filter((li) => /pd-resposta" hidden/.test(li)).length, 5, "as outras esperam o leitor");
 });
 
-test("a troca tem uma variante que o contrato pega, e o veredito sai da comparação", () => {
-  assert.equal([...html.matchAll(/class="tro-ok"/g)].length, 2);
-  assert.equal([...html.matchAll(/class="tro-nao"/g)].length, 1);
+test("você é o gabarito: três tentativas, uma que o gabarito pega, o veredito pela comparação, e o primeiro bilhete é o da colega", () => {
+  assert.equal([...html.matchAll(/class="tro-fez tro-ok"/g)].length, 2);
+  assert.equal([...html.matchAll(/class="tro-fez tro-nao"/g)].length, 1);
+  assert.equal([...html.matchAll(/class="tro-cartao"/g)].length, 3);
   assert.ok(html.includes(caso("R11").motivo));
+  const cap1 = ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx");
+  const palavras = (t) => t.toLowerCase().replace(/[.;:,]/g, "").replace(/\s+/g, " ").trim();
+  const daColega = cap1.match(/A primeira é um bilhete explicando o trabalho: "([^"]+)"/)[1];
+  assert.equal(palavras(JSON.parse(ler("livros/ciclo-de-vida/figuras/troca-de-prompt.json")).variantes[0].bilhete), palavras(daColega));
 });
 
 test("caso que não existe não monta", () => {

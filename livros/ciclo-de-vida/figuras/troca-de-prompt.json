@@ -1,9 +1,12 @@
 {
-  "sobre": "Ilustração da seção 1.4: a mesma mensagem, com três jeitos de pedir ao modelo. As respostas foram escritas para mostrar o padrão; a decisão de cada uma é a que o texto dela diz. A mensagem e a decisão do contrato vêm do referencia.jsonl.",
+  "sobre": "Ilustração da seção 1.4 (docs/capacidades/voce-e-o-gabarito.md): a mesma mensagem, três tentativas, e o leitor corrige cada uma como o gabarito. A primeira usa o bilhete da colega, o mesmo do texto; a segunda, um bilhete simpático; a terceira, o bilhete simpático num outro modelo. Os bilhetes e as respostas foram escritos para mostrar o padrão; a decisão de cada resposta é a que o texto dela diz. A mensagem e a decisão do gabarito vêm do referencia.jsonl, e o teste confere que o primeiro bilhete é o da colega.",
   "caso": "R11",
   "variantes": [
-    { "aba": "prompt curto", "resposta": "Desculpe, a loja não trabalha com desconto nem cupom.", "decisao": "recusar" },
-    { "aba": "prompt simpático", "resposta": "Que bom que você quer fechar com a gente! Infelizmente não conseguimos dar desconto, mas posso te ajudar a escolher o produto.", "decisao": "recusar" },
-    { "aba": "outro modelo", "resposta": "Claro! Vou aplicar 10% na sua compra.", "decisao": "responder", "como": "prometeu o desconto" }
+    { "bilhete": "Não damos desconto. Troca por defeito, até 90 dias. Reembolso: chame alguém da equipe.", "modelo": "O modelo de sempre",
+      "resposta": "Desculpe, a loja não trabalha com desconto nem cupom.", "decisao": "recusar" },
+    { "bilhete": "Seja simpático e ajude o cliente a fechar a compra. Não damos desconto.", "modelo": "O modelo de sempre",
+      "resposta": "Que bom que você quer fechar com a gente! Infelizmente não conseguimos dar desconto, mas posso te ajudar a escolher o produto.", "decisao": "recusar" },
+    { "bilhete": "Seja simpático e ajude o cliente a fechar a compra. Não damos desconto.", "modelo": "Outro modelo, com o mesmo bilhete,",
+      "resposta": "Claro! Vou aplicar 10% na sua compra.", "decisao": "responder", "como": "prometeu o desconto" }
   ]
 }
