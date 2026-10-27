@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "fontemar-livro",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
