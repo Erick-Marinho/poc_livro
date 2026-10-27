@@ -55,17 +55,24 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 1 (detalhe)
+## Etapa 2 (detalhe)
 
-- **Arquivos:** este plano; `rascunhos/pausa-e-fluxo/projeto/casos.jsonl`; `projeto/dados/` (cópia de `politica.md`,
-  `catalogo.json` e `pedidos.json` do livro); `testes/pausa-e-fluxo.test.mjs`.
-- **Evidência:** o teste passa (mesma pergunta, cada caso lê ao menos 4 vezes o anterior, começos diferentes) e
-  falha quando a longa começa como a média.
-- **Fica fora:** o medidor, o Ollama e a página.
+- **Arquivos:** em `rascunhos/pausa-e-fluxo/projeto/`: `pyproject.toml` (sem dependências: só a biblioteca padrão),
+  `medidor.py`, `placar.py` e `test_medidor.py`.
+- **Muda:** `medidor.py` monta o texto de cada caso (o material da loja e a pergunta no fim), pede ao Ollama por
+  streaming (`/api/generate`, [docs](https://docs.ollama.com/api/generate)) e lê da resposta a pausa (o relógio até o
+  primeiro pedaço com texto), o fluxo (`eval_count / eval_duration`), os tokens lidos e os vindos do cache
+  (`prompt_eval_cached_count`). `placar.py` conta, de uma lista de medidas, os "X de 10" da régua. Código curto e com
+  nomes em português: é o que o leitor vai montar na IDE (etapa 6).
+- **Evidência:** `uv run python -m unittest` passa sem o Ollama, com respostas de mentira e um relógio de mentira: o
+  pedaço vazio não conta como primeira palavra, o cache sai do último pedaço, o placar respeita os 20%; e falha se a
+  pausa for medida no primeiro pedaço vazio.
+- **Fica fora:** chamar o modelo de verdade, a ordem das rodadas e a gravação (etapa 3).
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `ee07fbb` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
