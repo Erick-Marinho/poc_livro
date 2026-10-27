@@ -27,6 +27,7 @@ ligado aos agentes e à indústria (27/10/2026), com referências: a previsão d
 |---|---|---|
 | 1 | Introdução: o Invista da pesquisa da Salt Security, a figura com os três números e a fase que trata de cada um, e a frase do Gartner; sai o Invista das fases | prevê quantos viram um agente agir de forma inesperada e quantos conseguem rastrear, e vê onde o livro trata de cada problema |
 | 2 | 1.1: os números do Banco da Inglaterra, logo depois da escala de quem decide | compara a escala que arrastou com o que as instituições fazem |
+| 3 | Introdução: a figura da pesquisa vira vídeo de tocar ou rolar, em cinco cenas (pedido do Erick, 27/10/2026) | toca ou rola: a grade acende cada número, e o fim liga cada problema ao seu capítulo |
 
 ## Registro
 
@@ -34,5 +35,6 @@ ligado aos agentes e à indústria (27/10/2026), com referências: a previsão d
 |---|---|---|---|
 | 1 | `eeb0452` | `testes/introducao.test.mjs` reescrito: o Invista e a figura usam os mesmos números, a resposta certa é a faixa em que o número cai (e só ela), cada fase leva ao capítulo dela, fonte e amostra na página, o Gartner dito como previsão; sem o Invista das fases. `npm test` 178/178. Ritmo da introdução: 164 → Invista, os mesmos avisos de antes (303 onde eram 308). Capturas a 1280 e 390 px: o Invista em cartões, o retorno e a figura | aguardando revisão |
 | 2 | `424bf6e` | `testes/agentes-no-mundo.test.mjs` (2): os números do Banco da Inglaterra vêm depois da escala, com fonte, amostra e o aviso de não somar; os não conferidos (46%, 22%, 450 bilhões, McKinsey) ficaram de fora. `npm test` 180/180. Ritmo do 1.1: 169 → PareEPense. Capturas a 1280 e 390 px | aguardando revisão |
+| 3 | `c98ad3a` | `testes/introducao.test.mjs`: os balões trazem os números da pesquisa e a fase com o capítulo dela, a grade acende a parte de cada número, até seis cenas e 45 s, o contexto (86,4%, 59,5%) conferido. `npm test` 180/180. Capturas rolando com a página a 1280 e 390 px das cinco cenas; ajuste: o balão longo e a grade | aguardando revisão |
 
 (redação: Claude Opus 5.5)
