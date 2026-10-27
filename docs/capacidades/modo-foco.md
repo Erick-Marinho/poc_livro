@@ -42,5 +42,6 @@ sumário e voltar quando quiser" (26/10/2026).
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `8c0ee96` | `testes/modo-foco.test.mjs` (3): o `<head>` aplica as duas escolhas; o ✕, o ☰ do topo e o da pílula fecham e reabrem; o foco esconde o sumário, os botões do topo e a pílula, e sai pelo Esc. `npm test` 177/177. Capturas com cliques de verdade a 1440 px: aberto, fechado pelo ✕ (texto de x=520 para x=380), mantido ao recarregar, reaberto pelo ☰ do topo, o foco ligado, mantido ao recarregar e desligado pelo Esc; e o foco a 390 px. Na primeira captura, o ✕ não aparecia no computador (a regra perdia para a que o esconde) | aguardando revisão |
 
 (redação: Claude Opus 5.5)
