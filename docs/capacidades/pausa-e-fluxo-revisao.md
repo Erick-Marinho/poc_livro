@@ -24,7 +24,7 @@ atual do Ollama: o `prompt_eval_duration` conta "uncached prompt tokens" (api/ge
 | 2 | O padrão: a figura sem pergunta, os rótulos e as opções dos Invistas, a analogia do começo ao fim | decide com resposta incerta, e a figura ou a gravação responde |
 | 3 | A cena com os tempos reais, com um Invista de escala antes | sente a pausa de cada mensagem, na proporção gravada |
 
-## Etapa atual: 3 — os tempos de verdade
+## Última etapa: 3 — os tempos de verdade (concluída)
 
 - Uma cena nova depois da IDE (`TemposReais`, sobre a `RolaCena`): uma faixa por mensagem, cinza enquanto o modelo lê
   e azul enquanto escreve, e um cursor no relógio da coleta. Tocando, corre em tempo real (a `RolaCena` ganha a
@@ -40,6 +40,6 @@ atual do Ollama: o `prompt_eval_duration` conta "uncached prompt tokens" (api/ge
 |---|---|---|---|
 | 1 | a7e8b98 | Conferido na documentação do Ollama: `prompt_eval_duration` "uncached prompt tokens", `OLLAMA_NUM_PARALLEL` "default 1". O teste do Pare e pense passa a comparar com a `pf-ingenua` (45 e 1072 tokens, sem o número do atendimento). `npm test` 204/204; ritmo do experimento sem aviso (maior trecho, 164). Os nove hashes do plano do experimento trocados pelos que existem. A página mostra os acertos | Erick, 27/10/2026 |
 | 2 | 2801629 | `testes/pausa-e-fluxo.test.mjs`: o fecho da figura sem "?" e sem número; as opções do Invista do artigo sem o porquê, e a resposta é "pode crescer menos". `npm test` 204/204; ritmo sem aviso (maior trecho, 190). Capturas: a cena 6 rolando com a página a 1280 e 390 px, e o Invista do artigo antes e depois do clique | Erick, 27/10/2026 |
-| 3 | f55843a | `testes/pausa-e-fluxo.test.mjs` (+1): as pausas e os fluxos são os da `pf-limpa`, os tokens escritos são as medianas (64, 64, 64, 50), a longa cabe no eixo, a legenda diz "25 vezes" e a certa da aposta é a mais perto da conta; a cena fica entre a IDE e o tropeço. A primeira versão supunha 64 tokens em todas, e a montagem barrou (35 e 36 em algumas). `npm test` 205/205; ritmo sem aviso. Capturas rolando a 1280 e 390 px; ajustes: o eixo quebrava "10 s", e o rótulo da longa era cortado na borda | aguardando revisão |
+| 3 | f55843a | `testes/pausa-e-fluxo.test.mjs` (+1): as pausas e os fluxos são os da `pf-limpa`, os tokens escritos são as medianas (64, 64, 64, 50), a longa cabe no eixo, a legenda diz "25 vezes" e a certa da aposta é a mais perto da conta; a cena fica entre a IDE e o tropeço. A primeira versão supunha 64 tokens em todas, e a montagem barrou (35 e 36 em algumas). `npm test` 205/205; ritmo sem aviso. Capturas rolando a 1280 e 390 px; ajustes: o eixo quebrava "10 s", e o rótulo da longa era cortado na borda | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
