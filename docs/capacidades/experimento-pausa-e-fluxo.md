@@ -61,19 +61,14 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 7 (detalhe)
+## Etapa 8 (detalhe)
 
-- (7) O endereço é `/experimentos/pausa-e-fluxo/`: a pasta sai de `rascunhos/` inteira; a página de rascunho e o
-  reconhecimento de `/rascunhos/` na IDE saem junto (sem uso).
-- **Arquivos:** `experimentos/pausa-e-fluxo/experimento.mdx` (o molde, `nivel: novato`: a afirmação com a fonte, a
-  régua, "O que vamos construir" com a figura, a IDE, a nota do inventado, o tropeço no cache, repetir na sua máquina
-  e o `Pendente` da opinião dos autores); `comandos.json` ganha duas saídas, uma por número do placar (o molde lê o
-  primeiro "X de Y" de cada uma); `testes/pausa-e-fluxo.test.mjs` com os caminhos novos.
-- **Texto para novato:** frases curtas, uma analogia só (a atendente), "prefill", "decode" e "token" ditos uma vez,
-  depois da figura. Os números do texto saem das saídas gravadas.
-- **Evidência:** `npm test` (com o experimento novo na conferência das saídas e no molde); `npm run ritmo` no
-  experimento; capturas da página a 1280 e 390 px.
-- **Fica fora:** a revisão do ritmo e os ajustes finais (etapa 8).
+- **Primeiro, os rascunhos** (skill `revisar-ritmo`, pelo `docs/RITMO.md`): três `Rascunho` no texto, só acrescentando
+  linhas, onde o relógio passou de 200: uma aposta antes da analogia, um pare e pense sobre quantos tokens, e uma aposta
+  sobre o laboratório do artigo. O Erick ajusta no arquivo ou pede "preenche".
+- **Depois, os ajustes finais:** preencher (ou tirar) os rascunhos, com teste do dado contra a fonte; o quadro do
+  inesperado começa pela surpresa do cache; o balão final da figura combina com a aposta que ficar.
+- **Evidência:** `npm run ritmo` sem aviso no experimento; `npm test` (que falha enquanto houver rascunho).
 
 ## Registro
 
@@ -85,5 +80,6 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 4 | `74b912b` | `figuras/esboco.md`: a cena 2 em ASCII e as seis cenas (ler, a pausa, escrever, o fluxo, o medidor, a pergunta), sem números da coleta e sem o cache | Erick, 27/10/2026 |
 | 5 | `08d6286` | `testes/pausa-e-fluxo.test.mjs` (4): seis cenas em até 45 s, um balão curto por cena, um resumo por cena, sem número da coleta nem "token/prefill/decode/cache", as palavras das mensagens iguais às do corpus, o build sem a página de rascunho; falha com "um token por vez". Testes do livro 191/191. Capturas das seis cenas a 1280 e 390 px, tocando em `/rascunhos/pausa-e-fluxo/`; ajustes: a mensagem cortada, "leu ✓" na pausa, a linha da longa no celular | Erick, 27/10/2026 |
 | 6 | `3002c01` | `scripts/saidas.py rascunhos/pausa-e-fluxo`: 26 passos da pasta vazia ao `projeto/`, `--conferir` com 9 saídas iguais; o código da coleta ingênua idêntico ao do roteiro naquele passo; o teste de `ler` falha (`1.0 != 2.5`); ingênua 1 de 10, corrigida 10, 8 e 10 de 10. Testes 191/191 e 8/8. A IDE percorrida no navegador, com capturas do erro, da coleta ingênua, do cache e da corrigida | Erick, 27/10/2026 |
+| 7 | `c6b949b` | A página em `/experimentos/pausa-e-fluxo/`, nível novato, no molde; "O que deu" 10, 10 e 10 de 10 (as coletas regravadas com "repetição" no lugar de "rodada", pelo vocabulário do livro). Testes 191/191, medidor 8/8, `--conferir` com 11 saídas iguais; capturas a 1280 e 390 px. O ritmo: 272 e 221 palavras sem ação (avisos) | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

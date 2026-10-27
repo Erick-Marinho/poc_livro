@@ -27,6 +27,7 @@ import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import PareEPense from "../../src/components/livro/PareEPense.astro";
 import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
+import Rascunho from "../../src/components/livro/Rascunho.astro";
 import pausa from "./figuras/pausa.json";
 import roteiro from "./roteiros/01.json";
 import estados from "./roteiros/01.estados.json";
@@ -35,6 +36,10 @@ import glossario from "./glossario.json";
 import saidas from "./saidas.json";
 
 Você pergunta algo a um chat de IA. Por um instante, nada acontece. Depois, a resposta aparece, palavra por palavra. Parece um trabalho só, mas são dois.
+
+<Rascunho acao="Aposta" frase="Parece um trabalho só, mas são dois." verbo="parece, mas não é" dado="real: experimentos/pausa-e-fluxo/saidas.json, pf-limpa (pausa 0,39 s → 9,84 s; fluxo 15,7 → 13,0 tokens/s)">
+Antes da analogia: "Você manda ao chat uma mensagem com 40 vezes mais palavras. O que acontece?" Opções: "Demora mais para começar, e depois escreve quase no mesmo ritmo"; "Começa na mesma hora, e escreve mais devagar"; "Demora mais para começar e escreve mais devagar"; "Nada muda". Certa: a primeira. O retorno não dá os números (ficam para "O que deu"): diz que são dois trabalhos, ler e escrever, e que o medidor vai cronometrar os dois. (redação: Claude Opus 5.5)
+</Rascunho>
 
 Pense numa atendente que responde mensagens por escrito. Antes de responder, ela **lê** a mensagem inteira. Depois, **escreve** a resposta, uma palavra de cada vez. Se a mensagem for longa, ela demora mais para ler. Mas, quando começa a escrever, escreve no ritmo de sempre.
 
@@ -45,6 +50,10 @@ O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/10/llm-
 Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a primeira palavra. O segundo mede o **fluxo**: quantos pedaços saem por segundo depois dela. Vamos usar os dois em três mensagens da loja Casa Bem-te-vi, com a mesma pergunta e cada vez mais coisa para ler.
 
 <PausaEFluxo dados={pausa} />
+
+<Rascunho acao="PareEPense" frase="A nossa mensagem longa tem 430 palavras, que viram pouco mais de mil tokens." verbo="quantos" dado="real: experimentos/pausa-e-fluxo/saidas.json, pf-limpa (a longa lê 1077 tokens; a curta, 50, para 10 palavras)">
+Antes de dar o nome token: "A mensagem longa tem 430 palavras. O modelo lê mais ou menos pedaços do que isso?" Resposta: mais, 1077, porque muitas palavras viram mais de um pedaço, e o Ollama ainda põe um começo fixo antes da pergunta (é por isso que a curta, com 10 palavras, vira 50). (redação: Claude Opus 5.5)
+</Rascunho>
 
 O artigo dá nomes técnicos aos dois trabalhos: a leitura se chama **prefill**, e a escrita, **decode**. E o modelo não lê palavras, e sim **tokens**: pedaços de texto, que podem ser uma palavra ou parte dela. A nossa mensagem longa tem 430 palavras, que viram pouco mais de mil tokens.
 
@@ -61,6 +70,10 @@ Você começa numa pasta vazia e monta o medidor passo a passo, com testes que f
 Na primeira coleta, a mensagem longa só demorou mais na primeira vez. Da segunda em diante, quase tudo o que o modelo leu veio do **cache**: uma memória do que ele já leu. Quando uma mensagem começa igual a uma que ele já leu, o Ollama reaproveita essa leitura e só lê o que mudou. Ele não lembra só a última mensagem: lembra várias.
 
 Por isso, cada atendimento passou a começar com o seu número. Um começo diferente obriga o modelo a ler tudo de novo, e a pausa volta a ser a de quem lê do zero.
+
+<Rascunho acao="Aposta" frase="Assim, a leitura medida pode sair bem menor do que a de verdade." verbo="parece, mas não é" dado="real: docs.ollama.com/api/generate (prompt_eval_duration conta só os tokens fora do cache) e experimentos/pausa-e-fluxo/saidas.json, pf-vezes (1071 de 1072 tokens do cache da segunda vez em diante)">
+"O laboratório do artigo mede a leitura com a mesma frase repetida 10, 60 e 150 vezes, um texto depois do outro. O tempo de leitura que o Ollama informa vai crescer como a nossa pausa cresceu?" Opções: "Sim, 15 vezes mais frase, 15 vezes mais tempo"; "Não necessariamente: os textos começam iguais, e o Ollama só conta o que não estava no cache". Certa: a segunda. Não medimos o laboratório do artigo: o retorno diz que é o que a documentação e a nossa primeira coleta indicam, sem número dele. (redação: Claude Opus 5.5)
+</Rascunho>
 
 Esse detalhe pega o laboratório do artigo. Ele mede a leitura com três textos que repetem a mesma frase 10, 60 e 150 vezes, ou seja, textos que começam iguais. E o tempo de leitura que o Ollama informa conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade.
 
