@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
+import { baloes, CENAS, DURACAO, FPS, montarPausa, pedacoEm, PERGUNTA, RESUMOS, SEGUNDOS } from "../src/components/livro/pausa/pausa.ts";
 
 const projeto = new URL("../rascunhos/pausa-e-fluxo/projeto/", import.meta.url);
 const casos = readFileSync(new URL("casos.jsonl", projeto), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -20,4 +21,30 @@ test("três casos, a mesma pergunta: só muda quanto o modelo tem de ler antes d
 test("nenhum caso começa como outro, para o cache não encurtar a pausa medida", () => {
   const inicios = casos.map((c) => texto(c).slice(0, 40));
   assert.equal(new Set(inicios).size, casos.length, `começos repetidos: ${JSON.stringify(inicios)}`);
+});
+
+test("a figura: seis cenas em até 45 s, um balão curto por cena, sem adiantar o resultado nem o cache", () => {
+  const pausa = montarPausa(JSON.parse(readFileSync(new URL("../rascunhos/pausa-e-fluxo/figuras/pausa.json", import.meta.url), "utf8")));
+  assert.equal(CENAS.length, 6);
+  assert.ok(DURACAO / FPS <= 45);
+  CENAS.forEach((c, i) => { if (i) assert.ok(c.de > CENAS[i - 1].de); });
+  const bs = baloes();
+  assert.equal(bs.length, CENAS.length, "um balão por cena");
+  bs.forEach((b, i) => { if (i) assert.equal(b.de, bs[i - 1].ate); });
+  assert.ok(bs.at(-1).ate >= SEGUNDOS, "o último balão fica até o fim");
+  const textos = [...bs.map((b) => b.texto), ...RESUMOS, PERGUNTA];
+  for (const s of textos) {
+    assert.ok(s.split(/\s+/).length <= 14, `curto demais para ler de uma vez? "${s}"`);
+    assert.doesNotMatch(s, /\d/, `sem número da coleta: "${s}"`);
+    assert.doesNotMatch(s, /token|prefill|decode|cache/i, `a figura fala em ler, escrever, pausa e fluxo: "${s}"`);
+  }
+  assert.equal(RESUMOS.length, CENAS.length - 1, "um resumo por cena, menos a última");
+  assert.deepEqual(pausa.mensagens.map((m) => m.palavras), casos.map((c) => palavras(texto(c))), "as palavras de cada mensagem são as do corpus");
+  for (let i = 1; i < pausa.resposta.length; i++) assert.ok(pedacoEm(i) - pedacoEm(i - 1) > 0 && pedacoEm(i) < CENAS[3].de, "os pedaços saem na cena de escrever");
+  assert.match(pausa.sobre, /ilustração/);
+});
+
+test("a figura só aparece no astro dev: o build não gera a página de rascunho", () => {
+  assert.ok(existsSync(new URL("../dist/experimentos/index.html", import.meta.url)), "rode depois de astro build");
+  assert.ok(!existsSync(new URL("../dist/rascunhos/", import.meta.url)));
 });

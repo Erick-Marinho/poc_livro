@@ -1,0 +1,10 @@
+{
+  "sobre": "A animação de \"O que vamos construir\" (docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5). É ilustração: a resposta foi escrita para o exemplo e o tamanho das barras de tempo não é medida. As palavras de cada mensagem são as do corpus (projeto/casos.jsonl), conferidas pelo teste.",
+  "pergunta": "O meu pedido BT-1003 já saiu? Quando ele chega?",
+  "resposta": ["Sim,", "o", "seu", "pedido", "já", "saiu"],
+  "mensagens": [
+    { "nome": "curta", "leva": "só a pergunta", "palavras": 10 },
+    { "nome": "média", "leva": "os pedidos e a pergunta", "palavras": 82 },
+    { "nome": "longa", "leva": "a política, o catálogo, os pedidos e a pergunta", "palavras": 430 }
+  ]
+}

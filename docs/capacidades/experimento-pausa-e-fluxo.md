@@ -61,12 +61,18 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 4 (detalhe)
+## Etapa 5 (detalhe)
 
-- **Arquivo:** `rascunhos/pausa-e-fluxo/figuras/esboco.md`: a figura em ASCII, as seis cenas (ler, a pausa,
-  escrever, o fluxo, o medidor, a pergunta), o celular, o modo direto e o que fica de fora.
-- **Evidência:** o esboço lido e aprovado pelo Erick, antes de qualquer código de animação.
-- **Fica fora:** o Remotion (etapa 5).
+- **Arquivos:** `rascunhos/pausa-e-fluxo/figuras/pausa.json` (a ilustração: a pergunta, a resposta em pedaços, as
+  três mensagens com as palavras do corpus); em `src/components/livro/pausa/`: `pausa.ts` (as cenas, os balões e os
+  resumos, puro, para o teste), `PausaAnimada.tsx` (Remotion) e `FiguraPausa.tsx` (com `palco/RolaCena`, como a
+  figura da temperatura zero); `src/components/livro/PausaEFluxo.astro`; `scripts/ritmo.mjs` (a figura não conta como
+  ação); `testes/pausa-e-fluxo.test.mjs`.
+- (5) A figura aparece só no `astro dev`, em `/rascunhos/pausa-e-fluxo/`: no build, a rota não gera página.
+- **Evidência:** o teste (seis cenas em até 45 s, um balão de uma frase por cena, sem número da coleta, sem "token",
+  "prefill", "decode" nem "cache", as palavras das mensagens iguais às do corpus); capturas das seis cenas a 1280 e
+  390 px; o build sem a página de rascunho.
+- **Fica fora:** a página do experimento (etapa 7).
 
 ## Registro
 
@@ -75,5 +81,6 @@ mede os dois trabalhos na própria máquina, com o Ollama, e descobre o cache ao
 | 1 | `ee07fbb` | `testes/pausa-e-fluxo.test.mjs` (2): a mesma pergunta, cada caso lê ao menos 4 vezes o anterior (10, 82 e 430 palavras), começos diferentes; falha com a longa começando como a média. Testes do livro 189/189 | Erick, 27/10/2026 |
 | 2 | `790450c` | `test_medidor.py` (6), sem o Ollama: a pausa acaba no primeiro pedaço com texto, as contas e o cache vêm do último pedaço, resposta cortada é erro, o placar respeita os 20% (8,0 conta, 7,9 não); falha (`1.0 != 2.5`) com a pausa medida no pedaço vazio | Erick, 27/10/2026 (seguiu para a etapa 3) |
 | 3 | `673080f` | `coleta.json`: 10 rodadas na CPU (Ryzen 7 5700G, Ollama 0.40.11, `llama3.2:3b`); `medir.py`: pausa 0,38 → 3,12 → 9,74 s, fluxo 15,4 → 13,2 tokens/s, longa de novo 0,08 s com 1076 de 1077 do cache; placar 10 de 10 nas três partes. A primeira coleta (cache a partir da rodada 2) refeita. `test_medidor.py` 8/8; o critério antigo do cache falha 2 | Erick, 27/10/2026 |
+| 4 | `74b912b` | `figuras/esboco.md`: a cena 2 em ASCII e as seis cenas (ler, a pausa, escrever, o fluxo, o medidor, a pergunta), sem números da coleta e sem o cache | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

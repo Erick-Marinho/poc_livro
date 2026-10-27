@@ -1,0 +1,22 @@
+---
+/**
+ * A pausa e o fluxo, em "O que vamos construir" (docs/capacidades/experimento-pausa-e-fluxo.md, etapa 5): a animação
+ * pausa/FiguraPausa.tsx, que o leitor toca ou rola. É ilustração (figuras/pausa.json): sem número medido. Sem JS, os
+ * balões em lista.
+ */
+import FiguraPausa from "./pausa/FiguraPausa";
+import { baloes, montarPausa } from "./pausa/pausa.ts";
+
+interface Props { dados: any }
+const pausa = montarPausa(Astro.props.dados);
+---
+<figure class="pausa-e-fluxo" data-pausa-e-fluxo>
+  <FiguraPausa client:visible={{ rootMargin: "400px" }} pausa={pausa} />
+  <noscript><ol>{baloes().map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption>Ilustração: a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As três mensagens, com as palavras de cada uma, são as que o medidor vai cronometrar.</figcaption>
+</figure>
+
+<style is:global>
+  .pausa-e-fluxo { margin: 1.8em auto 2em; max-width: 800px }
+  .pausa-e-fluxo figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>

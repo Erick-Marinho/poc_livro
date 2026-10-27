@@ -1,0 +1,29 @@
+---
+/**
+ * O que ainda mora em rascunhos/, para ver no `astro dev` antes de virar página (docs/capacidades/experimento-pausa-e-fluxo.md,
+ * etapa 5). Só existe no desenvolvimento: no build, a rota não gera página nenhuma.
+ */
+import "../../styles/livro.css";
+import "../../styles/experimentos.css";
+import PausaEFluxo from "../../components/livro/PausaEFluxo.astro";
+import pausa from "../../../rascunhos/pausa-e-fluxo/figuras/pausa.json";
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { rascunho: "pausa-e-fluxo" } }] : [];
+}
+---
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>try{var t=localStorage.getItem("fontmar:tema");if(t)document.documentElement.dataset.theme=t;if(localStorage.getItem("fontmar:direto")==="sim")document.documentElement.setAttribute("data-direto","")}catch(e){}</script>
+    <title>Rascunho · a pausa e o fluxo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+  </head>
+  <body>
+    <main class="livro">
+      <h2>O que vamos construir (rascunho)</h2>
+      <PausaEFluxo dados={pausa} />
+    </main>
+  </body>
+</html>
