@@ -13,7 +13,7 @@ export type Caminho = { ordem: string; passos: Passo[] };
 export type DadosMapa = { tipo: string; guardaveis: number[]; caminhos: Caminho[]; casos: Caso[] };
 
 export const FPS = 30;
-/** as seis cenas, com o começo de cada uma em segundos; a última vai até o fim */
+/** as cinco cenas, com o começo de cada uma em segundos; a última vai até o fim */
 export const CENAS = [
   { nome: "Sozinha ou em grupo", de: 0 },
   { nome: "A régua de 16 bits", de: 5.5 },

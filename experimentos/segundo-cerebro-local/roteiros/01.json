@@ -196,7 +196,7 @@
       "espera": 0,
       "nota": "Respondeu a data velha, e com cara de certeza. A nota mais parecida com a pergunta é o status de 03/11, que estava certo no dia em que foi escrito. Essa é a tese do artigo do Rowboat, agora em execução: o mais parecido não é o que vale hoje.",
       "aposta": {
-        "pergunta": "Três notas dizem 14/11; o e-mail que você escreveu diz 21/11. O que o cérebro responde?",
+        "pergunta": "Três notas dão a entrega em 14/11; o e-mail que você escreveu a muda para 21/11. O que o cérebro responde?",
         "opcoes": [
           "21/11, do e-mail mais novo",
           "14/11, de uma nota mais velha"
@@ -520,7 +520,7 @@
       "id": "sc-nota-modelo",
       "comando": "uv run python medir.py --modelo",
       "espera": 0,
-      "nota": "10 de 10, com a fonte certa em todas. Mais um que a regra da data, e a que faltava era a do canal. O preço está no relógio: uns 7 segundos por pergunta, nesta máquina, sem placa de vídeo, com o modelo já carregado, e 2 GB de modelo. A busca com a data acerta 9 na hora, em qualquer máquina.",
+      "nota": "10 de 10, com a fonte certa em todas. Mais um que a regra da data, e a que faltava era a do canal. O preço está no relógio: uns 11 segundos por pergunta (de 4 a 16), nesta máquina, sem placa de vídeo, com o modelo já carregado, e 2 GB de modelo. A busca com a data acerta 9 na hora, em qualquer máquina.",
       "aposta": {
         "pergunta": "A régua agora confere a fonte também. O modelo, nas dez perguntas:",
         "opcoes": [
@@ -533,7 +533,7 @@
       "duvidas": [
         {
           "pergunta": "Então é só usar o modelo?",
-          "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 7 segundos por pergunta na CPU; e, montando o experimento, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
+          "resposta": "Depende do que você pode pagar. Aqui ele acertou uma a mais, custando 2 GB e uns 11 segundos por pergunta na CPU; e, montando o experimento, a mesma pergunta já saiu diferente quando o pedido mudou. A régua é o que deixa você decidir com número, e não com promessa."
         }
       ]
     },

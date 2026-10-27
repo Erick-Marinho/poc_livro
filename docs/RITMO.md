@@ -39,7 +39,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
-`MapaTemperatura` não conta: o leitor toca ou rola; a previsão fica no palpite (`Aposta`) logo antes do vídeo.
+`MapaTemperatura` não conta: o leitor toca ou rola, e não há palpite logo antes dele (saiu na revisão do experimento; docs/capacidades/temperatura-zero-revisao.md).
 
 ## Quantas caixas por capítulo
 

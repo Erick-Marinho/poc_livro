@@ -1,4 +1,4 @@
-"""O cérebro com um modelo local: a busca do cerebro.py acha as notas, e um modelo rodando no Ollama escreve a resposta.
+"""O cérebro com um modelo local: a busca do cerebro.py acha as notas, e um modelo executado no Ollama escreve a resposta.
 
     uv run python modelo.py "Por qual canal vai o lembrete?"
 """

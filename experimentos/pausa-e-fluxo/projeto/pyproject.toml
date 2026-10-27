@@ -1,6 +1,6 @@
 [project]
 name = "pausa-e-fluxo"
 version = "0.1.0"
-description = "Mede a pausa antes da primeira palavra e o fluxo depois dela, num modelo rodando no Ollama"
+description = "Mede a pausa antes da primeira palavra e o fluxo depois dela, num modelo executado no Ollama"
 requires-python = ">=3.11"
 dependencies = []

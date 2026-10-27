@@ -19,8 +19,8 @@ resultado:
     saida: "sc-nota"
   - rotulo: "modelo local (llama3.2:3b, no Ollama)"
     saida: "sc-nota-modelo"
-achado: "A busca devolve a data velha com toda a segurança: três notas dizem 14/11, e só o e-mail diz 21/11. E o modelo pequeno estropiou nomes de arquivo com acento ao citar a fonte; com as notas numeradas, acertou as dez."
-custo: "A busca com a data é executada na hora, em qualquer máquina, sem nada para instalar. O modelo pede 2 GB e uns 7 segundos por pergunta numa CPU sem placa de vídeo."
+achado: "A busca devolve a data velha com toda a segurança: três notas dão a entrega em 14/11, e só um e-mail diz que ela mudou para 21/11. E o modelo pequeno estropiou nomes de arquivo com acento ao citar a fonte; com as notas numeradas, acertou as dez."
+custo: "A busca com a data é executada na hora, em qualquer máquina, sem nada para instalar. O modelo pede 2 GB e uns 11 segundos por pergunta (de 4 a 16, nas respostas gravadas) numa CPU sem placa de vídeo."
 ---
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import FiguraCaminho from "../../src/components/livro/FiguraCaminho.astro";
@@ -60,7 +60,7 @@ Repare no meio do caminho: quatro frases respondem igualmente bem, e três delas
 O problema não está na busca, está no cofre. As notas foram escritas ao longo de três semanas, e cada uma estava certa no dia em que foi escrita. Veja o cofre crescer.
 
 <PareEPense pergunta="Se cada nota estava certa no dia em que foi escrita, o que o cérebro precisa saber para responder 21/11, e não 14/11?">
-De quando é cada nota. As três que dizem 14/11 são de 20/10 a 03/11; o e-mail que diz 21/11 é de 06/11. A mais parecida com a pergunta não é a mais nova.
+De quando é cada nota. As três que dão a entrega em 14/11 são de 20/10 a 03/11; o e-mail que a muda para 21/11 é de 06/11. A mais parecida com a pergunta não é a mais nova.
 </PareEPense>
 
 <FiguraCofre experimento="segundo-cerebro-local" numero="2" legenda="O cofre no tempo, desenhado a partir das notas: a data das propriedades, os [[links]] e a data de entrega que cada nota diz. No Obsidian, os mesmos links aparecem no grafo e no painel de backlinks."
@@ -72,7 +72,7 @@ De quando é cada nota. As três que dizem 14/11 são de 20/10 a 03/11; o e-mail
     "2026-11-03": "Status semanal: a entrega continua em 14/11. São três notas dizendo 14/11.",
     "2026-11-06": "O e-mail: a integração atrasou e a entrega vai para 21/11. Só esta nota diz isso; o resumo continua em 14/11.",
     "2026-11-07": "A clínica confirma 21/11, sem repetir a palavra entrega.",
-    "2026-11-10": "Hoje: três notas dizem 14/11 e uma diz 21/11. Quem procura o mais parecido acha mais 14/11 do que 21/11.",
+    "2026-11-10": "Hoje: três notas dão a entrega em 14/11 e uma a muda para 21/11. Quem procura o mais parecido acha mais 14/11 do que 21/11.",
   }} />
 
 É a tese do artigo, agora com as notas na mão: um resumo escrito uma vez não acompanha o que mudou depois. A saída não é escrever menos notas, é o cérebro saber de quando é cada uma.

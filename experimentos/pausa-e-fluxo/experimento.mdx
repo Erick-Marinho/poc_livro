@@ -63,7 +63,7 @@ Mais: 830. Muitas palavras viram mais de um token, e o Ollama ainda acrescenta a
 
 Você começa numa pasta vazia e monta o medidor passo a passo, com testes que fingem ser o modelo. Aqui na página, o modelo não é executado. As duas coletas que você vai ler foram gravadas com o código de cada momento, numa máquina identificada no resultado. Na sua máquina, o mesmo código mede de verdade.
 
-<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "As mensagens", "2": "O medidor", "3": "A coleta", "4": "O conserto" }} numero="2" legenda="O medidor construído desde a pasta vazia. Os comandos são executados no projeto real; as duas coletas foram gravadas com o modelo de verdade, cada uma com o código daquele momento. As mensagens do chat são um roteiro, não um modelo ao vivo." />
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "As mensagens", "2": "O medidor", "3": "A coleta", "4": "O conserto" }} numero="1" legenda="O medidor construído desde a pasta vazia. Os comandos são executados no projeto real; as duas coletas foram gravadas com o modelo de verdade, cada uma com o código daquele momento. As mensagens do chat são um roteiro, não um modelo ao vivo." />
 
 <TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 9 na média, que respondeu curto). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
 
@@ -87,7 +87,7 @@ Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o model
 
 ## Repetir na sua máquina
 
-Instale o Ollama ([ollama.com](https://ollama.com)), baixe o modelo com `ollama pull llama3.2:3b` e, na pasta do projeto, execute `uv run python coletar.py`. A coleta leva alguns minutos e grava `coleta.json`; depois, `uv run python medir.py` mostra o placar. Os seus tempos vão ser outros, porque o processador é outro. O que vale comparar é a forma: a pausa cresce com a mensagem? O ritmo fica parecido?
+Instale o Ollama ([ollama.com](https://ollama.com)) e o uv, que cuida do Python do projeto ([docs.astral.sh/uv](https://docs.astral.sh/uv/)); baixe o modelo com `ollama pull llama3.2:3b` e, na pasta do projeto, execute `uv run python coletar.py`. A coleta leva alguns minutos e grava `coleta.json`; depois, `uv run python medir.py` mostra o placar. Os seus tempos vão ser outros, porque o processador é outro. O que vale comparar é a forma: a pausa cresce com a mensagem? O ritmo fica parecido?
 
 O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura deve ficar tão rápida que a pausa quase some, e o experimento perderia o que tem para mostrar. Essa medida não está gravada: fica como expectativa, não como resultado.
 

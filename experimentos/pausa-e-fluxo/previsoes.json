@@ -1,8 +1,8 @@
 {
   "resultado": "O que o artigo diz",
   "fechos": {
-    "nenhum": "Vamos cronometrar os dois trabalhos para ver.",
-    "alguns": "Você acertou {n} de {total}. Agora vamos medir de verdade."
+    "nenhum": "Você pensou diferente do artigo. Vamos cronometrar para ver.",
+    "alguns": "Você concordou com o artigo. Agora vamos cronometrar para ver se ele tem razão."
   },
   "mensagens": [
     {
@@ -14,7 +14,7 @@
         "Nada muda"
       ],
       "fez": 0,
-      "porque": "São dois trabalhos. Antes da primeira palavra, o modelo lê tudo o que recebeu; depois, escreve um pedaço por vez. A leitura cresce com a mensagem; a escrita muda pouco. O medidor vai cronometrar os dois."
+      "porque": "São dois trabalhos. Antes da primeira palavra, o modelo lê tudo o que recebeu; depois, escreve um pedaço por vez. O artigo diz que a leitura cresce com a mensagem e a escrita muda pouco. O medidor vai conferir as duas metades."
     }
   ]
 }

@@ -49,7 +49,7 @@ Um instrumento pequeno para comparar respostas. Primeiro, uma soma em que o arre
 
 <MapaTemperatura saidas={saidas} />
 
-Uma conta diferente pode inverter o vencedor, mas quem vence com folga continua vencendo. Não é só o exemplo: o [PyTorch documenta que o cálculo isolado e o em lote podem dar valores diferentes](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html#batched-computations-or-slice-computations). Na IDE, vamos construir essa comparação e conferir os limites dela.
+Uma conta diferente pode inverter o vencedor, mas quem vence com folga continua vencendo. Não é só o exemplo: o [PyTorch documenta que o cálculo isolado e o em lote podem dar valores diferentes](https://docs.pytorch.org/docs/2.8/notes/numerical_accuracy.html#batched-computations-or-slice-computations). Na IDE, vamos construir essa comparação e conferir os limites dela.
 
 ## A primeira prova: uma soma
 
@@ -89,7 +89,7 @@ Na IDE, o medidor contou as respostas iguais. Aqui, veja cada uma: três pergunt
 
 O percentual abaixo conta respostas iguais à primeira resposta da mesma pergunta; não conta respostas certas. Mesmo quando a amostra inteira repete, a conclusão é sobre as condições registradas. Não é uma garantia para qualquer servidor, nem prova de que o conteúdo está correto.
 
-Uma das respostas de referência termina em “compromet”, porque o limite de 48 tokens cortou a continuação. Ela repetiu assim nas dez tentativas de cada lote. O comparador preserva esse resultado; não confunde uma sequência idêntica com uma resposta completa.
+Uma das respostas de referência termina em “compromet”, porque o limite de 48 tokens cortou a continuação. Ela repetiu assim nas dez tentativas de cada lote. O comparador conta essa resposta como igual, e está certo: ele mede repetição, não se a resposta está completa. Quem avisa que ela foi cortada é a figura acima, pelo limite de 48 tokens.
 
 A comparação com um modo em que o cálculo não depende do lote é uma extensão para a outra máquina, com GPU. O [vLLM oferece esse modo, com requisitos de placa e de versão](https://docs.vllm.ai/en/latest/features/batch_invariance/). Ela ainda não foi medida aqui. Não precisamos preencher essa lacuna com um gráfico inventado: a coleta CPU já é uma observação que você consegue conferir.
 
