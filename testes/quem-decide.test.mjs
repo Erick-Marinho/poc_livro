@@ -41,3 +41,14 @@ test("no 1.1, a figura toma o lugar do parágrafo da escala, antes da Aposta, e 
   assert.match(secao, /<QuemDecide [^>]*ilustracao="Ilustração:/);
   assert.doesNotMatch(secao, /Um passo adiante, o \*\*roteador\*\*/);
 });
+
+test("a torre: um andar por ponto, do térreo ao topo, cada um com uma frase curta, e a página traz os quatro andares", () => {
+  const e = montarEscala(dados, aposta, pedidos);
+  assert.deepEqual(e.pontos.map((p) => p.resumo), ["o código decide tudo", "o modelo decide uma vez", "o modelo decide a cada passo", "vários modelos dividem o trabalho"]);
+  const longo = structuredClone(dados); longo.pontos[0].resumo = "o código decide absolutamente tudo o tempo todo";
+  assert.throws(() => montarEscala(longo, aposta, pedidos), /resumo de até seis palavras/);
+  const pagina = readFileSync(new URL("../dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html", import.meta.url), "utf8");
+  assert.equal([...pagina.matchAll(/class="qd-andar"/g)].length, 4);
+  assert.ok(pagina.indexOf("vários agentes</span>") < pagina.indexOf("fluxo fixo</span>"), "o topo vem primeiro");
+  assert.match(ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx"), /Pense numa torre/);
+});

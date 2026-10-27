@@ -1,6 +1,6 @@
 ---
 /**
- * Quem decide, num controle deslizante, no 1.1 (docs/capacidades/capitulo-1-dinamicas.md, etapa 3): a ilha
+ * Quanto o modelo decide, na torre de autonomia do 1.1 (docs/capacidades/torre-de-autonomia.md): a ilha
  * escala/QuemDecide.tsx. Os pontos têm os nomes da Aposta da escala, e os dados do pedido vêm da loja (escala/escala.ts).
  * Sem JS, os quatro pontos em lista.
  */
@@ -13,7 +13,7 @@ const escala = montarEscala(dados, aposta, pedidos);
 ---
 <figure class="quem-decide" data-quem-decide>
   <QuemDecide client:visible={{ rootMargin: "400px" }} {...escala} />
-  <noscript><ol>{escala.pontos.map((p) => <li><b>{p.nome}</b>: o modelo decide {p.decide} vez(es). {p.frase}</li>)}</ol></noscript>
+  <noscript><ol>{escala.pontos.map((p) => <li><b>{p.nome}</b>: {p.resumo}. {p.frase}</li>)}</ol></noscript>
   <figcaption>{ilustracao}</figcaption>
 </figure>
 
@@ -23,13 +23,23 @@ const escala = montarEscala(dados, aposta, pedidos);
   .qd { border: 1px solid var(--linha); border-radius: 14px; background: var(--nota); padding: 14px 16px; display: grid; gap: 12px; font: 15px/1.5 var(--f-ui) }
   .qd p { margin: 0 }
   .qd-rotulo { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--acento) }
-  .qd-escala { display: grid; gap: 4px }
-  .qd-escala input[type="range"] { width: 100%; margin: 0; accent-color: var(--acento); height: 28px; cursor: pointer }
-  .qd-nomes { position: relative; height: 2.6em; margin: 0 10px }
-  .qd-nomes button { position: absolute; top: 0; transform: translateX(-50%); max-width: 6.5em; line-height: 1.2; border: 0; background: none; padding: 2px 0; cursor: pointer; font: 500 13.5px var(--f-ui); color: var(--ink-2) }
-  .qd-nomes button:first-child { transform: translateX(-10px); text-align: left } .qd-nomes button:last-child { transform: translateX(calc(-100% + 10px)); text-align: right }
-  .qd-nomes button[aria-pressed="true"] { color: var(--ink); font-weight: 700 }
-  .qd-palco { display: grid; gap: 8px; border-top: 1px solid var(--linha); padding-top: 12px }
+  .qd-corpo { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); gap: 16px; align-items: start }
+  @media (max-width: 640px) { .qd-corpo { grid-template-columns: 1fr } }
+  /* a torre: do topo (mais o modelo decide) ao térreo; quanto mais alto, mais forte a cor */
+  .qd-torre { display: grid; gap: 4px }
+  .qd-topo { font: 600 11.5px var(--f-ui); color: var(--acento); text-align: center }
+  .qd-andar { display: grid; grid-template-columns: 1.6em 1fr auto; grid-template-rows: auto auto; column-gap: 8px; align-items: center; text-align: left; cursor: pointer;
+    border: 1.5px solid var(--linha); border-radius: 10px; padding: 8px 10px; color: var(--ink);
+    background: color-mix(in srgb, var(--acento) calc(4% + var(--n) * 9%), var(--papel)); transition: transform .2s, border-color .2s }
+  .qd-andar:hover { border-color: var(--acento) }
+  .qd-andar[aria-pressed="true"] { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento); transform: translateX(4px) }
+  .qd-num { grid-row: span 2; font: 700 15px var(--f-mono); color: var(--acento); text-align: center }
+  .qd-andar-nome { font: 700 14.5px var(--f-ui) }
+  .qd-resumo { grid-column: 2; font: 13px/1.35 var(--f-ui); color: var(--ink-2) }
+  .qd-pontos { grid-row: span 2; grid-column: 3; display: flex; gap: 3px }
+  .qd-pontos i { width: 8px; height: 8px; border-radius: 50%; background: var(--acento) }
+  .qd-convite { font: italic 15px/1.5 var(--f-texto); color: var(--ink-2); padding: 18px 4px }
+  .qd-palco { display: grid; gap: 8px; align-content: start }
   .qd-msg { font: italic 16.5px/1.45 var(--f-texto) } .qd-msg span { font: 600 11px var(--f-mono); font-style: normal; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em }
   .qd-passos { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; min-height: 9.5em }
   .qd-passos li { display: grid; grid-template-columns: 11.5em 1fr; gap: 2px 10px; align-items: baseline; padding: 6px 10px; border-radius: 9px; border: 1.5px solid var(--linha); background: var(--papel);
@@ -41,7 +51,6 @@ const escala = montarEscala(dados, aposta, pedidos);
   .qd-executa { grid-column: 2; font: 13px var(--f-ui); color: var(--ink-2) }
   @media (max-width: 560px) {
     .qd-passos li { grid-template-columns: 1fr } .qd-executa { grid-column: 1 }
-    .qd-nomes button { font-size: 12.5px }
   }
   .qd-conta b { color: var(--acento) }
   @keyframes qd-entra { from { opacity: 0; transform: translateY(6px) } }
