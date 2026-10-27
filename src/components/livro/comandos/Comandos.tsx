@@ -1,6 +1,8 @@
 /**
  * Os comandos fixos da página: a pílula de navegação e o botão de configurações.
- * Arrastar a pílula para a direita a recolhe num círculo ao lado da engrenagem; tocar no círculo a abre de novo.
+ * Arrastar a pílula para a direita a recolhe num círculo ao lado da engrenagem; tocar no círculo a abre de novo. Ao
+ * rolar o texto, ela também se recolhe sozinha, com o mesmo movimento, e só volta quando o leitor toca no círculo
+ * (docs/capacidades/controles-nos-experimentos.md).
  * A escolha (tema e pílula recolhida) fica guardada no navegador; o script no <head> do layout aplica antes de pintar.
  * O sumário (Navegacao.astro) ouve o botão de menu por delegação: aqui o botão só carrega data-abrir.
  */
@@ -43,6 +45,17 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
   /* a pílula dá licença: enquanto os controles de uma figura (a barra da IDE do capítulo) estão à vista, ela vira o
      círculo, para não ficar por cima deles; quando eles saem da tela, ela volta. Não fica guardado. */
   const [licenca, setLicenca] = useState(false);
+  /* e sai da frente de quem lê: rolar o texto recolhe a pílula no círculo, sem guardar nada; o toque no círculo a traz de
+     volta, e ela fica até o leitor rolar de novo (uma folga de ROLAGEM px, para dar tempo de navegar) */
+  const [lendo, setLendo] = useState(false);
+  const desde = useRef(0);
+  useEffect(() => {
+    const ROLAGEM = 120;
+    desde.current = scrollY;
+    const rolou = () => { if (Math.abs(scrollY - desde.current) > ROLAGEM) setLendo(true); };
+    addEventListener("scroll", rolou, { passive: true });
+    return () => removeEventListener("scroll", rolou);
+  }, []);
   /* e o canto (círculo e engrenagem) sobe quando a barra passa por baixo dele, como um botão flutuante que abre espaço
      para um aviso: o botão de seguir da IDE nunca fica coberto */
   const canto = useRef<HTMLDivElement>(null);
@@ -242,7 +255,7 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
     </AnimatePresence>
     <div className="cm-trilho">
       <AnimatePresence initial={false}>
-        {!recolhida && !licenca && (
+        {!recolhida && !licenca && !lendo && (
           <motion.nav key="pilula" layoutId="cm-pilula" className="cm-pilula" aria-label="Navegação entre capítulos"
             drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={{ left: 0, right: 0.8 }} dragSnapToOrigin style={{ x, opacity: sumindo }}
             onDragEnd={(_, info) => { if (info.offset.x > 90 || info.velocity.x > 600) recolher(true); }}
@@ -263,8 +276,8 @@ export default function Comandos({ livro, onde, anterior, proximo, emBreve, plac
 
     <div className="cm-canto" ref={canto} style={sobe ? { transform: `translateY(${-sobe}px)` } : undefined}>
       <AnimatePresence initial={false}>
-        {(recolhida || licenca) && (
-          <motion.button key="circulo" layoutId="cm-pilula" type="button" className="cm-circulo" onClick={() => { setLicenca(false); recolher(false); }}
+        {(recolhida || licenca || lendo) && (
+          <motion.button key="circulo" layoutId="cm-pilula" type="button" className="cm-circulo" onClick={() => { setLicenca(false); setLendo(false); desde.current = scrollY; recolher(false); }}
             aria-label={`Mostrar a navegação (${curto})`} title={curto} transition={{ type: "spring", stiffness: 420, damping: 34 }}>
             <svg className="cm-anel" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" /><circle className="cm-anel-lido" cx="22" cy="22" r="19" /></svg>
             {numero ? <b>{numero}</b> : <BookOpen size={18} />}
