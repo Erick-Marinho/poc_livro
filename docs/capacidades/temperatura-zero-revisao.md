@@ -37,7 +37,12 @@ nem por que o lote muda a ordem da conta; e o resultado é uma barra só, "90 de
 
 ## Etapa 2 — o mapa
 
-Detalhada quando a etapa 1 fechar.
+- O player de botões sai; o mapa usa a base de tocar ou rolar (`palco/RolaCena.tsx`), clara, com balões, em seis cenas
+  (33 s): a escolha, sozinha ou em grupo (esquema), a régua de 16 bits, as pontuações, o token que volta, a folga.
+- `figuras/mapa.py` calcula também cada soma parcial (antes e depois do binary16) e os valores guardáveis entre 1023
+  e 1026; a figura não monta se a soma, as barras e a escolha não conferem. A régua mostrou um detalhe real: abaixo de
+  1024 ainda cabem meios (1023,5); de 1024 para cima, só inteiros. O texto da etapa 1 foi acertado ("a partir de 1024").
+- A previsão sai de dentro do vídeo e vira um Invista antes dele; o mapa deixa de contar como ação no ritmo.
 
 ## Etapa 3 — o resultado
 
@@ -48,5 +53,6 @@ Detalhada quando a etapa 2 fechar.
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `ae5e776` | textos reescritos (abertura, Invista, régua, achado, custo, prova, máquina, limites, nota); `npm test` 177/177; ritmo do experimento sem aviso (142 → Invista, maior trecho 184) | aguardando revisão |
+| 2 | `2c051ea` | `testes/temperatura-zero.test.mjs` (7, três reescritos): as somas parciais, as barras e as escolhas saem do `mapa.py` executado; abaixo de 1024 cabem meios, acima só inteiros; até seis cenas e 45 s; a previsão vem antes; o esquema diz que é esquema. `npm test` 177/177. Capturas rolando com a página a 1280 e 390 px das seis cenas; ajustes: a pista da régua, a cor dos tokens e a altura | aguardando revisão |
 
 (redação: Claude Opus 5.5)
