@@ -1,0 +1,15 @@
+{
+  "sobre": "O dia seguinte, no 1.2 (docs/capacidades/capitulo-1-dinamicas.md, etapa 4): o agente apressado numa tarde de testes e no dia seguinte. É ilustração: o agente não existe, e o que ele fez foi escrito para mostrar o padrão. As mensagens e o gabarito são os do referencia.jsonl; as do dia seguinte são as da Aposta do 1.2 (agente-apressado.json), na mesma ordem; o teste confere.",
+  "tarde": [
+    { "caso": "R01", "fez": "diz que o BT-1002 está em preparação" },
+    { "caso": "R04", "fez": "diz que dá para devolver em até 7 dias" },
+    { "caso": "R06", "fez": "diz que a loja entrega em todo o Brasil" },
+    { "caso": "R07", "fez": "diz que vai ao forno até 180 °C" },
+    { "caso": "R08", "fez": "diz as medidas do organizador" }
+  ],
+  "seguinte": [
+    { "caso": "R12", "fez": "mostra o status do BT-1001", "certo": "diz que o pedido é de outra pessoa" },
+    { "caso": "R11", "fez": "promete os 10% de desconto", "certo": "diz que a loja não dá desconto" },
+    { "caso": "R02", "fez": "responde com uma data", "certo": "com a previsão que está nos dados" }
+  ]
+}

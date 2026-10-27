@@ -47,6 +47,8 @@ import DecisaoFixa from "../../../src/components/livro/DecisaoFixa.astro";
 import contratoPy from "../marcos/cap-01/contrato.py?raw";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
+import diaSeguinte from "../figuras/dia-seguinte.json";
+import DiaSeguinte from "../../../src/components/livro/DiaSeguinte.astro";
 import trocaDePrompt from "../figuras/troca-de-prompt.json";
 
 
@@ -92,7 +94,11 @@ Existe um jeito rápido de fazer um agente de atendimento: abrir o editor, ligar
 
 <Aposta referencia={referencia} dados={agenteApressado} pergunta="Aí chegam estas três mensagens. O que esse agente, a quem ninguém disse o que é certo, faz com cada uma?" ilustracao="Ilustração: o agente apressado não existe. As mensagens são do arquivo de referência; o que ele fez foi escrito para mostrar o padrão, e não gravado de um modelo." />
 
-Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que faltou foi alguém dizer, antes, o que é certo. Sem essa definição, não existe erro: existe só "o agente fez isso". E sem erro definido, não dá para medir, comparar uma versão com outra, nem saber se a mudança de ontem melhorou ou piorou.
+Nenhum desses erros é culpa do modelo. Ele fez o que parecia razoável. O que faltou foi alguém dizer, antes, o que é certo. Veja a diferença que isso faz:
+
+<DiaSeguinte referencia={referencia} dados={diaSeguinte} aposta={agenteApressado} ilustracao="Ilustração: o agente apressado não existe, e o que ele fez foi escrito para mostrar o padrão. As mensagens e o gabarito são os do arquivo de referência." />
+
+Sem essa definição, não existe erro: existe só "o agente fez isso". E sem erro definido, não dá para medir, comparar uma versão com outra, nem saber se a mudança de ontem melhorou ou piorou.
 
 É o que diz a frase que abre este capítulo. Quem se apaixona pela solução começa pelo agente, abrindo o editor. Quem se apaixona pelo problema começa pelas perguntas que chegam, e pelo que seria uma boa resposta para cada uma.
 

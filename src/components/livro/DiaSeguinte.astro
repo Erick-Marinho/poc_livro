@@ -1,0 +1,25 @@
+---
+/**
+ * O dia seguinte, no 1.2 (docs/capacidades/capitulo-1-dinamicas.md, etapa 4): a animação dia/FiguraDia.tsx, que o leitor
+ * toca ou rola. As mensagens e o gabarito vêm do referencia.jsonl, e as do dia seguinte têm que ser as da Aposta do 1.2
+ * (dia/dia.ts); o que o agente fez é ilustração, e a legenda diz. Sem JS, os balões em lista.
+ */
+import FiguraDia from "./dia/FiguraDia";
+import { baloes, montarDia } from "./dia/dia.ts";
+import { DECISOES } from "../../lib/referencia.ts";
+
+interface Props { referencia: string; dados: any; aposta: any; ilustracao: string }
+const { referencia, dados, aposta, ilustracao } = Astro.props;
+const nomes = Object.fromEntries(Object.entries(DECISOES).map(([k, v]) => [k, v.nome]));
+const dia = montarDia(referencia, dados, aposta, nomes);
+---
+<figure class="dia-seguinte" data-dia-seguinte>
+  <FiguraDia client:visible={{ rootMargin: "400px" }} dia={dia} />
+  <figcaption>{ilustracao}</figcaption>
+  <noscript><ol>{baloes(dia).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+</figure>
+
+<style is:global>
+  .dia-seguinte { margin: 1.8em auto 2em; max-width: 800px }
+  .dia-seguinte figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>
