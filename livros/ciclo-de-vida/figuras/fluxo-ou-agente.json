@@ -1,0 +1,8 @@
+{
+  "sobre": "Fluxo ou agente, no 1.1 (docs/capacidades/fluxo-ou-agente.md): o grafo em cenas. É ilustração; as mensagens e as ferramentas são as das histórias do 1.1 (tres-jeitos.json), e o teste confere.",
+  "mensagens": { "pedido": "Quando chega o BT-1003?", "produto": "A frigideira de 24 cm vai ao forno?" },
+  "fluxo": ["a mensagem chega", "acha o número do pedido", "consultar_pedido", "escreve a resposta", "fim"],
+  "modelo_no_fluxo": [3],
+  "modelo_em_toda_caixa": [1, 3],
+  "ferramentas": ["consultar_pedido", "buscar_produto"]
+}

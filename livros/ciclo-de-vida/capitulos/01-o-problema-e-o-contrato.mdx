@@ -28,6 +28,8 @@ import escala from "../figuras/escala.json";
 import quemDecide from "../figuras/quem-decide.json";
 import pedidosDaLoja from "../projeto/dados/pedidos.json";
 import QuemDecide from "../../../src/components/livro/QuemDecide.astro";
+import FluxoOuAgente from "../../../src/components/livro/FluxoOuAgente.astro";
+import fluxoOuAgente from "../figuras/fluxo-ou-agente.json";
 import NumerosDaPesquisa from "../../../src/components/livro/NumerosDaPesquisa.astro";
 import autonomiaNoMundo from "../figuras/autonomia-no-mundo.json";
 import Autores from "../../../src/components/livro/Autores.astro";
@@ -76,6 +78,10 @@ Acompanhe três atendentes diante das mesmas perguntas (na última história, qu
 O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
 
 <Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
+
+Uma confusão comum: achar que um modelo de linguagem dentro de um fluxo já faz dele um agente. Não faz. Um fluxo pode ter um modelo em cada caixa e continuar sendo fluxo, porque a diferença não está nas caixas, e sim nas setas:
+
+<FluxoOuAgente dados={fluxoOuAgente} tresJeitos={tresJeitos} laco={laco} />
 
 Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Dá para pensar numa escala, do **fluxo fixo** aos **vários agentes**. Arraste por ela e acompanhe a mesma mensagem:
 

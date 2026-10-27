@@ -1,0 +1,24 @@
+---
+/**
+ * Fluxo ou agente, no 1.1 (docs/capacidades/fluxo-ou-agente.md): o grafo grafo/FiguraFluxo.tsx, que o leitor toca ou
+ * rola. É ilustração (figuras/fluxo-ou-agente.json); as mensagens e as ferramentas têm que ser as das histórias do 1.1
+ * (grafo/fluxo.ts). Sem JS, os balões em lista.
+ */
+import FiguraFluxo from "./grafo/FiguraFluxo";
+import { baloes, montarFluxo } from "./grafo/fluxo.ts";
+
+interface Props { dados: any; tresJeitos: any; laco: any }
+const { dados, tresJeitos, laco } = Astro.props;
+const ferramentas = [...new Set(JSON.stringify(laco).match(/consultar_\w+|buscar_\w+/g) ?? [])];
+const fluxo = montarFluxo(dados, tresJeitos, ferramentas);
+---
+<figure class="fluxo-ou-agente" data-fluxo-ou-agente>
+  <FiguraFluxo client:visible={{ rootMargin: "400px" }} fluxo={fluxo} />
+  <noscript><ol>{baloes(fluxo).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption>Ilustração: um fluxo e um agente diante das mesmas duas mensagens das histórias acima, com as mesmas ferramentas.</figcaption>
+</figure>
+
+<style is:global>
+  .fluxo-ou-agente { margin: 1.8em auto 2em; max-width: 800px }
+  .fluxo-ou-agente figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>
