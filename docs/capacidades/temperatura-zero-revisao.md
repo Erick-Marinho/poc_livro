@@ -47,5 +47,6 @@ Detalhada quando a etapa 2 fechar.
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `ae5e776` | textos reescritos (abertura, Invista, régua, achado, custo, prova, máquina, limites, nota); `npm test` 177/177; ritmo do experimento sem aviso (142 → Invista, maior trecho 184) | aguardando revisão |
 
 (redação: Claude Opus 5.5)
