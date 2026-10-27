@@ -56,8 +56,8 @@ nem por que o lote muda a ordem da conta; e o resultado é uma barra só, "90 de
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | `ae5e776` | textos reescritos (abertura, Invista, régua, achado, custo, prova, máquina, limites, nota); `npm test` 177/177; ritmo do experimento sem aviso (142 → Invista, maior trecho 184) | aguardando revisão |
-| 2 | `2c051ea` | `testes/temperatura-zero.test.mjs` (7, três reescritos): as somas parciais, as barras e as escolhas saem do `mapa.py` executado; abaixo de 1024 cabem meios, acima só inteiros; até seis cenas e 45 s; a previsão vem antes; o esquema diz que é esquema. `npm test` 177/177. Capturas rolando com a página a 1280 e 390 px das seis cenas; ajustes: a pista da régua, a cor dos tokens e a altura | aguardando revisão |
-| 3 | `5b98faa` | teste novo em `testes/temperatura-zero.test.mjs`: a grade sai da coleta, bate com o `medir.py` gravado (uma repetição trocada não monta), 90 quadradinhos na página, só a "livre" cortada. `npm test` 178/178. Capturas a 1280 e 390 px: antes, o primeiro grupo e o fim | aguardando revisão |
+| 1 | `ae5e776` | textos reescritos (abertura, Invista, régua, achado, custo, prova, máquina, limites, nota); `npm test` 177/177; ritmo do experimento sem aviso (142 → Invista, maior trecho 184) | Erick, 26/10/2026 |
+| 2 | `2c051ea` | `testes/temperatura-zero.test.mjs` (7, três reescritos): as somas parciais, as barras e as escolhas saem do `mapa.py` executado; abaixo de 1024 cabem meios, acima só inteiros; até seis cenas e 45 s; a previsão vem antes; o esquema diz que é esquema. `npm test` 177/177. Capturas rolando com a página a 1280 e 390 px das seis cenas; ajustes: a pista da régua, a cor dos tokens e a altura | Erick, 26/10/2026 |
+| 3 | `5b98faa` | teste novo em `testes/temperatura-zero.test.mjs`: a grade sai da coleta, bate com o `medir.py` gravado (uma repetição trocada não monta), 90 quadradinhos na página, só a "livre" cortada. `npm test` 178/178. Capturas a 1280 e 390 px: antes, o primeiro grupo e o fim | Erick, 26/10/2026 |
 
 (redação: Claude Opus 5.5)
