@@ -43,7 +43,7 @@ const rotulo = capitulo_ ? `Capítulo ${c.numero} · ${c.titulo}` : c.titulo;
         {c.epigrafe && (
           <figure class="epigrafe">
             <blockquote>{c.epigrafe.texto}</blockquote>
-            <figcaption>{c.epigrafe.autor}, em <cite>{c.epigrafe.obra}</cite> ({c.epigrafe.ano})</figcaption>
+            <figcaption>{c.epigrafe.autor}, em <cite>{c.epigrafe.obra}</cite> ({c.epigrafe.ano}){c.epigrafe.onde && <>, {c.epigrafe.onde}</>}.{c.epigrafe.nota && <> {c.epigrafe.nota}</>}</figcaption>
           </figure>
         )}
       </section>
