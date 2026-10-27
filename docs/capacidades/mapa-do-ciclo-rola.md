@@ -33,5 +33,6 @@ visual um pouco melhor (27/10/2026).
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | 9946916 | `npm test` 190/190 (o teste do laço exige a `RolaCena`, o `aoQuadro` e que a `AvancaCena` saiu). Capturas rolando com a página a 1280 px (o começo, o gasto em Observar, o modelo novo em Evoluir, Governar aceso no fim) e a 390 px (Evoluir deitado, sem encostar no ícone); ajustes: a curva de Evoluir passava rente a Pôr no ar, e o cap. 9 encostava no ícone | aguardando revisão |
 
 (redação: Claude Opus 5.5)
