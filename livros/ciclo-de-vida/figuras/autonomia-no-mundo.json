@@ -1,0 +1,16 @@
+{
+  "sobre": "O relatório do Banco da Inglaterra e da FCA de outubro de 2026, no 1.1 (docs/capacidades/agentes-no-mundo.md): números conferidos no resumo executivo e na seção sobre agentes do relatório. As categorias podem se sobrepor; o teste confere que a figura não as soma.",
+  "titulo": "Quanto os agentes decidem, nas instituições financeiras do Reino Unido",
+  "fonte": {
+    "nome": "Banco da Inglaterra e FCA, Artificial intelligence in UK financial services — 2026 (26/10/2026)",
+    "url": "https://www.bankofengland.co.uk/report/2026/artificial-intelligence-in-uk-financial-services-2026",
+    "amostra": "105 instituições financeiras do Reino Unido que responderam ao questionário completo, e não o setor inteiro",
+    "aviso": "Uma instituição pode estar em mais de uma linha: não some as porcentagens."
+  },
+  "barras": [
+    { "id": "implantados", "valor": 80, "rotulo": "têm agentes de IA implantados" },
+    { "id": "apoio", "valor": 80, "rotulo": "usam agentes para apoio à decisão: o agente recomenda, uma pessoa decide e executa" },
+    { "id": "clientes", "valor": 16, "rotulo": "usam agentes para falar com clientes de forma automática" },
+    { "id": "ampla", "valor": 2, "rotulo": "deram autonomia ampla a algum agente" }
+  ]
+}

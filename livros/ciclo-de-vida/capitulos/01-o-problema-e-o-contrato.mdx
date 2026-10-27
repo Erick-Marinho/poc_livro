@@ -28,6 +28,8 @@ import escala from "../figuras/escala.json";
 import quemDecide from "../figuras/quem-decide.json";
 import pedidosDaLoja from "../projeto/dados/pedidos.json";
 import QuemDecide from "../../../src/components/livro/QuemDecide.astro";
+import NumerosDaPesquisa from "../../../src/components/livro/NumerosDaPesquisa.astro";
+import autonomiaNoMundo from "../figuras/autonomia-no-mundo.json";
 import tresJeitos from "../figuras/tres-jeitos.json";
 import Resumo from "../../../src/components/livro/Resumo.astro";
 import PontoDeVolta from "../../../src/components/livro/PontoDeVolta.astro";
@@ -79,6 +81,10 @@ Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "
 <QuemDecide dados={quemDecide} aposta={escala} pedidos={pedidosDaLoja} ilustracao="Ilustração: os passos foram escritos para mostrar o padrão. Os dados do pedido são os da loja." />
 
 <Aposta dados={escala} pergunta="Onde cada um destes sistemas fica na escala?" ilustracao="Ilustração: os quatro sistemas foram escritos para o exemplo; o segundo é o agente do capítulo 2." />
+
+Fora do livro, a escala também aparece. No relatório do Banco da Inglaterra de outubro de 2026, quase todas as instituições financeiras que responderam já usam agentes, e quase nenhuma deixa o agente decidir sozinho:
+
+<NumerosDaPesquisa dados={autonomiaNoMundo} />
 
 O agente deste livro anda por essa escala. No capítulo 2 ele é um roteador, que escolhe uma de quatro decisões; no capítulo 3, com as ferramentas, passa a ser agente. A escala, o laço e a liberdade dentro de um desenho seguem Nicole Koenigstein, em *AI Agents: The Definitive Guide* (O'Reilly, 2026).
 
