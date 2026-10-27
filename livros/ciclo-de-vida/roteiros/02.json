@@ -33,7 +33,7 @@
         {
           "linhas": "13-19",
           "titulo": "a instrução",
-          "texto": "O texto que vai para o modelo em toda conversa. É o contrato do capítulo 1 dito em palavras: as quatro decisões e quando usar cada uma. A última linha é a regra que vai pesar na nota.",
+          "texto": "O texto que vai para o modelo em toda conversa: o bilhete do substituto, o prompt. Diz as quatro decisões e quando usar cada uma, mas não traz a política da loja. A última linha é a regra que vai pesar na nota.",
           "termos": [
             "\"\"\"…\"\"\" (texto longo)"
           ]

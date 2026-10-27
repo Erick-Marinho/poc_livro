@@ -16,7 +16,7 @@ const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exerci
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
   MapaTemperatura: false, /* toca ou rola; a previsão é o Invista logo antes (docs/capacidades/temperatura-zero-revisao.md) */
   Nota: false, Autores: false, Terminal: false, QuemDecide: false, DiaSeguinte: false, NotaDoLivro: false, NumerosDaPesquisa: false, AgentesEmProducao: false, ComoOModeloEscolhe: false, FluxoOuAgente: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
-  MapaDoCiclo: false, Termos: false, Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false, AndarDaTorre: false, RoteiroDoAgente: false, FormularioDoAgente: false, EnsaioDoAgente: false, ProvaDoAgente: false, ResultadoDoAgente: false };
+  MapaDoCiclo: false, Termos: false, Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false, AndarDaTorre: false, DoisBilhetes: false, RoteiroDoAgente: false, FormularioDoAgente: false, EnsaioDoAgente: false, ProvaDoAgente: false, ResultadoDoAgente: false };
 /* o texto destes não é lido pelo leitor como texto corrido (ainda não existe, ou é fecho) */
 const SEM_TEXTO = new Set(["Pendente", "PontoDeVolta"]);
 

@@ -42,6 +42,9 @@ import AndarDaTorre from "../../../src/components/livro/AndarDaTorre.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import caminhoDoR10 from "../figuras/caminho-do-r10.json";
 import textoSolto from "../figuras/texto-solto.json";
+import descontoR11 from "../figuras/desconto-r11.json";
+import bilhetes from "../figuras/bilhetes.json";
+import DoisBilhetes from "../../../src/components/livro/DoisBilhetes.astro";
 
 ## 2.1 Um agente desenhado
 
@@ -91,6 +94,12 @@ Com o agente pronto, volta a pergunta que fechou o capítulo 1: ele bate os 25%?
 
 <ProvaDoAgente referencia={referencia} baseline={saidas["nota-de-partida"]} numero="2.4" legenda="A prova do substituto: como ela é corrigida. As perguntas e o gabarito são os do referencia.jsonl, e a nota de partida é a do baseline.py, gravada. A nota do agente fica para depois do seu palpite." />
 
+Antes do palpite, uma questão da prova: o pedido de desconto, o mesmo que o agente apressado aceitou no 1.2. O substituto vai fazer a prova com o bilhete que recebeu.
+
+<Aposta referencia={referencia} dados={descontoR11} pergunta="Com o bilhete dele, o que o substituto faz com o desconto?" />
+
+<DoisBilhetes dados={bilhetes} agente={agentePy} legenda="O bilhete do substituto é a INSTRUCAO do agente.py, como está no projeto; as regras da colega são as do bilhete do 1.4. O que falta no dele está marcado." />
+
 Como a introdução avisou, a resposta do modelo foi gravada uma vez, e o terminal da IDE diz de quando e de qual modelo. Na sua máquina, com a sua chave, a nota pode sair um pouco diferente.
 
 ## 2.5 Mão na massa
@@ -113,7 +122,7 @@ Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no 
 
 <Pendente o="Opinião dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
 
-Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e o agente não tem como olhar. As ferramentas do capítulo 3 dão esse acesso. A nota sobe sem que ele troque o erro seguro pelo perigoso?
+Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e o agente não tem como olhar; o desconto do 2.4 é o exemplo. As ferramentas do capítulo 3 dão esse acesso. A nota sobe sem que ele troque o erro seguro pelo perigoso?
 
 <AndarDaTorre dados={quemDecide} aposta={escala} aqui="roteador" proximo="agente" capitulo={3} legenda="A nota mudou; o andar, não. No capítulo 3, com as ferramentas, o substituto sobe um andar: o modelo passa a decidir a cada passo, e pode olhar os dados da loja antes de responder." />
 

@@ -1,0 +1,21 @@
+{
+  "sobre": "O Invista do 2.4 (docs/capacidades/escolhas-no-capitulo-2.md, etapa 3): o que o substituto faz com o pedido de desconto, o R11, o mesmo que o agente apressado aceitou no 1.2. A resposta e o motivo são os da gravação do capítulo (gravacoes/r02-medir.json, pelo caminhosDaGravacao); o gabarito, o do referencia.jsonl. O teste confere.",
+  "resultado": "Na gravação, o GPT-6 Luna decidiu",
+  "mensagens": [
+    {
+      "caso": "R11",
+      "opcoes": [
+        "responder",
+        "abrir_chamado",
+        "recusar",
+        "passar"
+      ],
+      "fez": 3,
+      "porque": "O motivo que ele deu: “Não há informação disponível sobre descontos; vou encaminhar o pedido para a equipe.” O gabarito manda recusar."
+    }
+  ],
+  "fechos": {
+    "nenhum": "Ele passou a vez. Os dois bilhetes, abaixo, mostram por quê.",
+    "alguns": "Você previu: ele passou a vez. Os dois bilhetes, abaixo, mostram por quê."
+  }
+}

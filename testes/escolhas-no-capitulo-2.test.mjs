@@ -51,3 +51,39 @@ test("no 2.2, a abertura não entrega a resposta, o Invista vem logo antes do fo
   assert.doesNotMatch(s22, /<Listagem/);
   assert.match(s22, /<Aposta [^>]*ilustracao="Ilustração:/);
 });
+
+test("o Invista do 2.4: a decisão e o motivo do desconto são os da gravação, e o gabarito é outro", async () => {
+  const { caminhosDaGravacao } = await import("../src/lib/grafoAgente.ts");
+  const d = json("livros/ciclo-de-vida/figuras/desconto-r11.json");
+  const [m] = d.mensagens;
+  const r11 = caminhosDaGravacao(json("livros/ciclo-de-vida/gravacoes/r02-medir.json"), referencia).find((c) => c.id === m.caso);
+  assert.equal(m.opcoes[m.fez], r11.decidiu);
+  assert.ok(m.porque.includes(`“${r11.motivo}”`), "o motivo, palavra por palavra");
+  assert.notEqual(r11.decidiu, gabarito[m.caso]);
+  assert.match(m.porque, new RegExp(`O gabarito manda ${gabarito[m.caso]}`));
+});
+
+test("os dois bilhetes: as regras da colega são as do 1.4, e o que falta é o que a INSTRUCAO não traz", () => {
+  const d = json("livros/ciclo-de-vida/figuras/bilhetes.json");
+  const cap1 = ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx");
+  const bilhete = cap1.match(/A primeira é um bilhete explicando o trabalho: "([^"]+)"/)[1];
+  assert.deepEqual(d.colega.map((r) => r.regra), bilhete.split("; "));
+  const instrucao = ler("livros/ciclo-de-vida/projeto/agente.py").match(/^INSTRUCAO = """([\s\S]*?)"""/m)[1].toLowerCase();
+  const html = ler("dist/ciclo-de-vida/02-o-primeiro-agente/index.html");
+  const fig = html.slice(html.indexOf("data-bilhetes"), html.indexOf("</figure>", html.indexOf("data-bilhetes")));
+  for (const r of d.colega) {
+    assert.ok(r.regra.includes(r.chave) || r.falta.includes(r.chave), r.chave);
+    assert.equal(fig.includes(r.falta), !instrucao.includes(r.chave.toLowerCase()), r.chave);
+  }
+  assert.ok(fig.includes("Quando a política não diz, não prometa: passe a vez."), "o bilhete do substituto é o do agente.py");
+});
+
+test("no 2.4, o Invista do desconto vem antes dos bilhetes; a IDE chama a instrução de bilhete, e o 2.6 liga o desconto", () => {
+  const cap = ler("livros/ciclo-de-vida/capitulos/02-o-primeiro-agente.mdx");
+  const s24 = cap.slice(cap.indexOf("## 2.4"), cap.indexOf("## 2.5")), s26 = cap.slice(cap.indexOf("## 2.6"));
+  assert.ok(s24.indexOf("<ProvaDoAgente") < s24.indexOf("dados={descontoR11}") && s24.indexOf("dados={descontoR11}") < s24.indexOf("<DoisBilhetes"));
+  assert.match(s26, /o desconto do 2\.4/);
+  const ide = ler("livros/ciclo-de-vida/roteiros/02.json");
+  assert.doesNotMatch(ide, /dito em palavras/);
+  assert.match(ide, /o bilhete do substituto/);
+});

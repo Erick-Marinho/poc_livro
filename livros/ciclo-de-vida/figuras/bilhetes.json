@@ -1,0 +1,20 @@
+{
+  "sobre": "Os dois bilhetes do 2.4 (docs/capacidades/escolhas-no-capitulo-2.md, etapa 3). As regras da colega são as do bilhete do 1.4, ditas no texto do capítulo 1; o bilhete do substituto é a INSTRUCAO do agente.py, lida do arquivo. Cada regra tem uma chave: se a chave não está na INSTRUCAO, a regra aparece como a que faltou, e o bilhete do substituto diz o que não traz (`falta`), sem exagerar: ele fala em defeito dentro do prazo, mas não diz qual é o prazo. O teste confere as regras contra o capítulo 1.",
+  "colega": [
+    {
+      "regra": "não damos desconto",
+      "chave": "desconto",
+      "falta": "que a loja não dá desconto"
+    },
+    {
+      "regra": "troca por defeito, até 90 dias",
+      "chave": "90 dias",
+      "falta": "o prazo de 90 dias"
+    },
+    {
+      "regra": "reembolso, chame alguém da equipe",
+      "chave": "reembolso",
+      "falta": "o que fazer com reembolso"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+---
+/**
+ * Os dois bilhetes, no 2.4 (docs/capacidades/escolhas-no-capitulo-2.md, etapa 3): o da colega, do 1.4, e o do
+ * substituto, que é a INSTRUCAO do agente.py, lida do arquivo. A regra da colega que não está no bilhete do substituto
+ * aparece marcada, e o do substituto diz o que não traz. Parado, sem JS: o leitor compara os dois, logo depois de
+ * investir no que o agente fez com o desconto. Não conta como ação (docs/RITMO.md).
+ */
+interface Props { dados: { colega: { regra: string; chave: string; falta: string }[] }; agente: string; legenda: string }
+const { dados, agente, legenda } = Astro.props;
+const instrucao = agente.match(/^INSTRUCAO = """([\s\S]*?)"""/m)?.[1];
+if (!instrucao) throw new Error("DoisBilhetes: a INSTRUCAO não está no agente.py");
+const regras = dados.colega.map((r) => ({ ...r, faltou: !instrucao.toLowerCase().includes(r.chave.toLowerCase()) }));
+const faltam = regras.filter((r) => r.faltou);
+---
+<figure class="bilhetes" data-bilhetes>
+  <div class="bl-par">
+    <div class="bl-papel bl-colega">
+      <p class="bl-de">o bilhete da colega <small>1.4</small></p>
+      <ul>{regras.map((r) => <li class:list={{ "bl-falta": r.faltou }} data-falta={r.faltou ? "" : undefined}>{r.regra}</li>)}</ul>
+    </div>
+    <div class="bl-papel bl-substituto">
+      <p class="bl-de">o bilhete do substituto <small>agente.py</small></p>
+      <pre>{instrucao}</pre>
+      {faltam.length > 0 && <p class="bl-nao">não diz {faltam.map((r) => r.falta).join(", nem ")}</p>}
+    </div>
+  </div>
+  <figcaption>{legenda}</figcaption>
+</figure>
+
+<style is:global>
+  .bilhetes { margin: 1.6em auto 1.8em }
+  .bl-par { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 18px; align-items: start }
+  @media (max-width: 640px) { .bl-par { grid-template-columns: 1fr } }
+  .bl-papel { position: relative; padding: 14px 16px 16px; border-radius: 4px; color: var(--ink);
+    background: color-mix(in srgb, var(--aviso) 7%, var(--papel)); border: 1px solid color-mix(in srgb, var(--aviso) 18%, var(--linha));
+    box-shadow: 0 1px 1px rgb(40 30 10 / .08), 0 6px 16px rgb(40 30 10 / .08) }
+  .bl-colega { transform: rotate(-1.2deg) }
+  .bl-substituto { transform: rotate(.6deg) }
+  @media (prefers-reduced-motion: reduce) { .bl-papel { transform: none } }
+  .bl-de { margin: 0 0 8px; font: 600 11.5px var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2) }
+  .bl-de small { font: 11px var(--f-mono); text-transform: none; letter-spacing: 0; margin-left: 4px }
+  .bl-colega ul { margin: 0; padding-left: 1.1em; font: italic 17px/1.5 var(--f-texto) }
+  .bl-colega li { margin: 2px 0 }
+  .bl-falta { color: var(--aviso); font-weight: 600 }
+  .bl-substituto pre { margin: 0; white-space: pre-wrap; font: 12.5px/1.5 var(--f-mono); color: var(--ink) }
+  .bl-nao { margin: 10px 0 0; padding: 6px 10px; border: 1.5px dashed var(--aviso); border-radius: 8px; color: var(--aviso); font: 600 13px/1.4 var(--f-ui) }
+  .bilhetes figcaption { margin-top: 12px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>
