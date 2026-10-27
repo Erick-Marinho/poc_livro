@@ -51,5 +51,6 @@ introdução explique "detalhadamente o que é a nota no livro, o que é, para q
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | `bcefcd8` | `testes/corrija-a-prova.test.mjs` (3): a prova pequena usa perguntas e gabarito do `referencia.jsonl`, com acerto e erro; a nota da figura é a conta (3 de 4, 75%); a introdução não mostra a nota de partida nem a do capítulo 2; o botão abre o placar. `npm test` 171/171 numa cópia limpa (HEAD mais esta etapa; na pasta de trabalho, o experimento temperatura-zero da outra sessão quebra a montagem). Ritmo da seção: 92 → CorrijaAProva → 101 → PareEPense. Capturas a 1280 e 390 px: o primeiro cartão, uma correção diferente da régua, o fim com a nota e o placar aberto pelo botão | aguardando revisão |
 
 (redação: Claude Opus 5.5)
