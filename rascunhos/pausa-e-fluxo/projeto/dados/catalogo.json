@@ -1,0 +1,8 @@
+[
+  {"id": "P01", "nome": "Frigideira antiaderente 24 cm", "preco": 129.90, "detalhes": "Alumínio com antiaderente. Vai ao forno até 180 °C, sem o cabo de silicone. Não vai à lava-louças."},
+  {"id": "P02", "nome": "Panela de ferro fundido 3 L", "preco": 289.00, "detalhes": "Tampa de ferro. Vai ao forno e serve para fogão de indução. Pesa 3,8 kg."},
+  {"id": "P03", "nome": "Organizador de gaveta, 6 divisórias", "preco": 59.90, "detalhes": "Bambu. 40 × 30 × 5 cm. As divisórias saem para lavar."},
+  {"id": "P04", "nome": "Jogo de lençol casal, 3 peças", "preco": 199.00, "detalhes": "Algodão 200 fios. Lençol de baixo com elástico, para colchão de até 30 cm de altura."},
+  {"id": "P05", "nome": "Pote hermético de vidro 1 L", "preco": 39.90, "detalhes": "Tampa com trava e vedação de silicone. Vai ao micro-ondas sem a tampa."},
+  {"id": "P06", "nome": "Toalha de mesa 1,60 × 2,20 m", "preco": 89.90, "detalhes": "Algodão e poliéster. Lavar à mão ou na máquina, sem alvejante."}
+]

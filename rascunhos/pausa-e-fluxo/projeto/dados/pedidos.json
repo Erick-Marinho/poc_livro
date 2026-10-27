@@ -1,0 +1,8 @@
+[
+  {"id": "BT-1001", "cliente": "C01", "itens": ["P03"], "status": "entregue", "entregue_em": "2026-11-03"},
+  {"id": "BT-1002", "cliente": "C02", "itens": ["P01", "P05"], "status": "preparando", "previsao_envio": "2026-11-11"},
+  {"id": "BT-1003", "cliente": "C03", "itens": ["P02"], "status": "enviado", "transportadora": "Transportadora Asa Leve", "rastreio": "AL000000003BR", "previsao_entrega": "2026-11-14"},
+  {"id": "BT-1004", "cliente": "C01", "itens": ["P02"], "status": "entregue", "entregue_em": "2026-11-07"},
+  {"id": "BT-1005", "cliente": "C04", "itens": ["P04", "P06"], "status": "entregue", "entregue_em": "2026-10-20"},
+  {"id": "BT-1006", "cliente": "C02", "itens": ["P05"], "status": "cancelado", "cancelado_em": "2026-11-08", "pago": true}
+]

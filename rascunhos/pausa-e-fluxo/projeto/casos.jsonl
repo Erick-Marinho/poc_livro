@@ -1,0 +1,3 @@
+{"id":"curta","material":[],"pergunta":"O meu pedido BT-1003 já saiu? Quando ele chega?"}
+{"id":"media","material":["pedidos.json"],"pergunta":"O meu pedido BT-1003 já saiu? Quando ele chega?"}
+{"id":"longa","material":["politica.md","catalogo.json","pedidos.json"],"pergunta":"O meu pedido BT-1003 já saiu? Quando ele chega?"}
