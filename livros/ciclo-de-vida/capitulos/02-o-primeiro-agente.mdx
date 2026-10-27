@@ -37,6 +37,9 @@ import testeAgente from "../projeto/test_agente.py?raw";
 import nosDoGrafo from "../figuras/grafo-02.json";
 import gravacaoMedir from "../gravacoes/r02-medir.json";
 import referencia from "../projeto/referencia.jsonl?raw";
+import escala from "../figuras/escala.json";
+import quemDecide from "../figuras/quem-decide.json";
+import AndarDaTorre from "../../../src/components/livro/AndarDaTorre.astro";
 
 ## 2.1 Um agente desenhado
 
@@ -49,6 +52,8 @@ No capítulo 1, a colega saiu de férias e deixou o gabarito. O substituto que c
 <PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
 Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
 </PareEPense>
+
+<AndarDaTorre dados={quemDecide} aposta={escala} aqui="roteador" legenda="A torre do 1.1. Pela definição do livro, este ainda não é o agente completo: é um roteador, porque o modelo decide uma vez, qual caminho seguir. Decidir a cada passo fica para o capítulo 3." />
 
 ## 2.2 O modelo decide, o contrato dá a forma
 
@@ -107,6 +112,8 @@ Pela nota, sim. Pelo tipo de erro, não. O decisor de 40% escolheu responder no 
 <Pendente o="Opinião dos autores: o que vocês esperavam desta primeira nota, e o que acharam dela" parte="dos autores" />
 
 Falta informação: os pedidos, o catálogo e a política estão em `dados/`, e o agente não tem como olhar. As ferramentas do capítulo 3 dão esse acesso. A nota sobe sem que ele troque o erro seguro pelo perigoso?
+
+<AndarDaTorre dados={quemDecide} aposta={escala} aqui="roteador" proximo="agente" capitulo={3} legenda="A nota mudou; o andar, não. No capítulo 3, com as ferramentas, o substituto sobe um andar: o modelo passa a decidir a cada passo, e pode olhar os dados da loja antes de responder." />
 
 <PontoDeVolta tag="cap-02/fim" />
 

@@ -1,0 +1,45 @@
+---
+/**
+ * Em que andar da torre de autonomia o agente do livro está (docs/capacidades/torre-como-marcador.md): a torre do 1.1,
+ * pequena e parada, com o andar de agora aceso e, quando há, o próximo tracejado, com o capítulo em que chega. É um
+ * marcador, como a nota: o leitor vê onde está, não decide nada. Os andares vêm de escala/escala.ts.
+ */
+import { andaresDaTorre } from "./escala/escala.ts";
+
+interface Props { dados: any; aposta: any; aqui: string; proximo?: string; capitulo?: number; legenda: string }
+const { dados, aposta, aqui, proximo, capitulo, legenda } = Astro.props;
+/* do topo ao térreo: o andar mais alto é o que mais decide */
+const andares = andaresDaTorre(dados, aposta, aqui, proximo).map((a, k) => ({ ...a, k })).reverse();
+---
+<figure class="andar-torre" data-andar-torre>
+  <ol class="at-torre" aria-label="A torre de autonomia, do topo ao térreo">
+    {andares.map((a) => (
+      <li class:list={["at-andar", { "at-aqui": a.aqui, "at-proximo": a.proximo }]} style={`--n: ${a.k}`} data-andar={a.nome}>
+        <span class="at-linha">
+          <span class="at-nome">{a.nome}</span>
+          {a.aqui && <span class="at-selo">o agente está aqui</span>}
+          {a.proximo && <span class="at-selo at-selo-proximo">↑ capítulo {capitulo}</span>}
+        </span>
+        <span class="at-resumo">{a.resumo}</span>
+      </li>
+    ))}
+  </ol>
+  <figcaption>{legenda}</figcaption>
+</figure>
+
+<style is:global>
+  .andar-torre { margin: 1.6em auto 1.8em; display: grid; grid-template-columns: minmax(0, 17em) minmax(0, 1fr); gap: 18px; align-items: center }
+  @media (max-width: 640px) { .andar-torre { grid-template-columns: 1fr } }
+  .at-torre { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px }
+  .at-andar { display: grid; gap: 1px; padding: 7px 12px; border: 1.5px solid var(--linha); border-radius: 10px; color: var(--ink-2);
+    background: color-mix(in srgb, var(--acento) calc(3% + var(--n) * 6%), var(--papel)) }
+  .at-nome { font: 700 14px var(--f-ui) }
+  .at-resumo { font: 12.5px/1.3 var(--f-ui) }
+  .at-aqui { color: var(--ink); border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento) }
+  .at-proximo { color: var(--ink); border-style: dashed; border-color: var(--acento) }
+  .at-linha { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px }
+  .at-selo { padding: 1px 9px; border-radius: 999px;
+    background: var(--acento); color: var(--papel); font: 600 11.5px var(--f-ui); white-space: nowrap }
+  .at-selo-proximo { background: none; color: var(--acento); border: 1.5px dashed var(--acento) }
+  .andar-torre figcaption { font: 15px/1.55 var(--f-ui); color: var(--ink-2) }
+</style>

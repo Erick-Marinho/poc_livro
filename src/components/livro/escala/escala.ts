@@ -32,3 +32,14 @@ export function montarEscala(dados: Dados, aposta: { mensagens: { opcoes: string
     })),
   };
 }
+
+/** Os andares da torre, só o nome e o resumo, para o marcador do capítulo 2 (AndarDaTorre.astro). Os nomes são os da
+ *  Aposta, como na torre do 1.1; `aqui` e `proximo` têm que ser andares dela, e o próximo, acima de onde está. */
+export function andaresDaTorre(dados: Dados, aposta: { mensagens: { opcoes: string[] }[] }, aqui: string, proximo?: string) {
+  const nomes = aposta.mensagens[0].opcoes;
+  if (dados.pontos.map((p) => p.nome).join() !== nomes.join()) throw new Error("torre: os andares não são os da Aposta da escala");
+  const i = nomes.indexOf(aqui), j = proximo === undefined ? -1 : nomes.indexOf(proximo);
+  if (i < 0) throw new Error(`torre: "${aqui}" não é um andar da torre`);
+  if (proximo !== undefined && j <= i) throw new Error(`torre: o próximo andar ("${proximo}") tem que estar acima de "${aqui}"`);
+  return dados.pontos.map((p, k) => ({ nome: p.nome, resumo: p.resumo, aqui: k === i, proximo: k === j }));
+}
