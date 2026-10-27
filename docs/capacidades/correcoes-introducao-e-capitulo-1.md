@@ -22,19 +22,20 @@ fazer nada; e "fluxo fixo" vira "fluxo (flow)".
 | 2 | Introdução: o mapa do ciclo mais baixo; "A nota" dita como o jeito de avaliar o agente e de achar onde melhorar | entende a nota antes de vê-la |
 | 3 | Capítulo 1: o primeiro Pare e pense sobre o que acabou de ler; a vez do leitor mostra o resultado no painel; "fluxo (flow)" | vê o que o clique fez |
 
-## Etapa atual: 2 — a introdução
+## Etapa atual: 3 — o capítulo 1
 
-- O mapa do ciclo mais baixo: o anel de raio 180 para 160, o halo de Governar de 300 para 250 de altura, Evoluir dentro
-  dele, e a faixa da legenda mais curta (de 124 para 104 no anel; de 156 para 128 na coluna). O desenho do anel passa de
-  660 para 560. O rótulo "a falha vira caso da régua" vai em duas linhas, porque numa só passava do tamanho da seta.
-- "A nota" abre dizendo o que ela é: como o livro avalia o agente, a mesma prova a cada capítulo, e o que o agente erra
-  mostra onde mexer.
+- O primeiro Pare e pense do 1.1 deixa de perguntar por quem executa a ferramenta (conceito do parágrafo seguinte) e
+  pergunta pelo que o leitor acabou de ler: o que falta para o modelo acertar a data, um modelo maior ou acesso ao
+  sistema.
+- A vez do leitor na figura 1.1: o resultado de cada clique aparece dentro do painel, com destaque, e o que ele já olhou
+  ganha ✓; enquanto ele escolhe, o histórico de cima mostra só os passos anteriores.
+- "Fluxo fixo" vira "fluxo (flow)" na torre, na escala, nas histórias e no fim da figura 1.1; no texto, "o fluxo".
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | b376ba5 | `testes/vocabulario.test.mjs`: "aposta", "invista" e "investe" barrados nas páginas montadas, nos textos, nos dados e nas frases dos componentes; "palpite" na introdução. `npm test` 208/208. Captura da caixa da introdução depois do clique | Erick, 27/10/2026 |
-| 2 | 2474f82 | `npm test` 208/208; ritmo de "A nota": 99 palavras até o Pare e pense (os avisos da introdução são os de antes). Capturas do mapa rolando a 1280 e 390 px; ajuste: o rótulo da volta do erro encostava em "Quando dá errado" | aguardando revisão |
+| 2 | 2474f82 | `npm test` 208/208; ritmo de "A nota": 99 palavras até o Pare e pense (os avisos da introdução são os de antes). Capturas do mapa rolando a 1280 e 390 px; ajuste: o rótulo da volta do erro encostava em "Quando dá errado" | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

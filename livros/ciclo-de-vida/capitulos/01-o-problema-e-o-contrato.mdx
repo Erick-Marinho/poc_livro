@@ -65,8 +65,8 @@ Um modelo de linguagem, sozinho, faz uma coisa só: recebe um texto e devolve ou
 
 Um atendente da loja, diante da mesma pergunta, faz outra coisa. Lê a mensagem e decide que precisa olhar o sistema. Abre o pedido BT-1003: enviado pela Transportadora Asa Leve, com previsão de entrega em 14/11. Observa o que viu e decide de novo: isso basta para responder? Basta, e ele responde. Se o pedido estivesse "preparando", ele olharia outra coisa antes. Decidir, agir, observar o resultado e decidir de novo: é esse laço que o modelo sozinho não faz.
 
-<PareEPense pergunta="Você dá ao modelo uma função que consulta o pedido BT-1003. Quem executa a consulta: o modelo ou o seu código?">
-O seu código. O modelo só pede, e lê o que volta.
+<PareEPense pergunta="O que falta para o modelo acertar a data do BT-1003: um modelo maior, ou acesso ao sistema da loja?">
+Acesso ao sistema. Um modelo maior escreveria uma data ainda mais convincente, e tão inventada quanto: o pedido continua fora dele.
 </PareEPense>
 
 A primeira etapa é deixar o modelo olhar o sistema. Isso se faz com uma **ferramenta**: uma função do seu código, como `consultar_pedido`, que o modelo pode pedir para executar. Repare no verbo: o modelo não executa nada. Ele pede, o seu código executa, e o resultado volta para ele ler.
@@ -75,7 +75,7 @@ Acompanhe três atendentes diante das mesmas perguntas (na última história, qu
 
 <FiguraLaco laco={laco} tresJeitos={tresJeitos} clientes={clientesDaLoja} numero="1.1" legenda="Quem decide o próximo passo, em três jeitos de usar um modelo. É uma ilustração: as respostas foram escritas para mostrar o padrão, e não gravadas de um modelo. Os dados do pedido, do produto e da cliente são os da loja." />
 
-O fluxo fixo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
+O fluxo acerta a pergunta do pedido e se perde na do produto, porque o caminho dele não previa produto. O agente acerta as duas sem que ninguém tenha escrito um caminho para cada uma. Daí a definição que vale daqui em diante:
 
 <Nota titulo="a definição deste livro">Um **agente** é um modelo que decide os próprios passos, num ciclo, usando as ferramentas que o seu código oferece. É a mesma linha que a Anthropic traça em *Building effective agents* (Erik Schluntz e Barry Zhang, 2024): nos fluxos, o caminho está no código; nos agentes, o modelo dirige o próprio caminho.</Nota>
 
@@ -83,7 +83,7 @@ Uma confusão comum: achar que um modelo de linguagem dentro de um fluxo já faz
 
 <FluxoOuAgente dados={fluxoOuAgente} tresJeitos={tresJeitos} laco={laco} />
 
-Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Pense numa torre, uma escala de autonomia: no térreo, o **fluxo fixo**, em que o código decide tudo; no topo, **vários agentes**. Quanto mais alto o andar, mais o modelo decide. Toque num andar e acompanhe a mesma mensagem:
+Com ferramentas na mesa, a pergunta deixa de ser "é agente ou não é" e vira "quanto o modelo decide". Pense numa torre, uma escala de autonomia: no térreo, o **fluxo** (*flow*), em que o código decide tudo; no topo, **vários agentes**. Quanto mais alto o andar, mais o modelo decide. Toque num andar e acompanhe a mesma mensagem:
 
 <QuemDecide dados={quemDecide} aposta={escala} pedidos={pedidosDaLoja} ilustracao="Ilustração: os passos foram escritos para mostrar o padrão. Os dados do pedido são os da loja." />
 
@@ -97,8 +97,8 @@ O agente deste livro anda por essa escala. No capítulo 2 ele é um roteador, qu
 
 Mesmo no ponto mais livre da escala, o agente não fica solto. Ele escolhe entre as ferramentas que recebeu, dentro do caminho que alguém desenhou, e não reescreve esse caminho. O atendente também é assim: decide muita coisa sozinho, mas dentro da política da loja, e não inventa um desconto. Esse limite não é um defeito: é o que deixa o agente útil sem ser perigoso. Ele resolve perguntas que você não previu, mas só com as escolhas que você deu.
 
-<PareEPense pergunta="Se o fluxo fixo é mais previsível, por que não fazer o atendimento inteiro assim?">
-Dá para começar assim, e muita coisa deveria ficar assim. Se o caminho é sempre o mesmo, como "recebeu a nota fiscal, extrai os campos, grava", um fluxo fixo é mais barato, mais rápido e mais fácil de testar. Agente é para quando o próximo passo depende do que aparece no meio do caminho. O atendimento é assim: a mesma caixa de mensagens recebe pedido, produto, defeito, desconto e cliente irritado, e cada um pede um caminho diferente. Escrever um ramo de código para cada tipo funciona até a primeira pergunta que ninguém previu.
+<PareEPense pergunta="Se o fluxo é mais previsível, por que não fazer o atendimento inteiro assim?">
+Dá para começar assim, e muita coisa deveria ficar assim. Se o caminho é sempre o mesmo, como "recebeu a nota fiscal, extrai os campos, grava", um fluxo é mais barato, mais rápido e mais fácil de testar. Agente é para quando o próximo passo depende do que aparece no meio do caminho. O atendimento é assim: a mesma caixa de mensagens recebe pedido, produto, defeito, desconto e cliente irritado, e cada um pede um caminho diferente. Escrever um ramo de código para cada tipo funciona até a primeira pergunta que ninguém previu.
 </PareEPense>
 
 ## 1.2 Um agente começa antes do código
@@ -229,7 +229,7 @@ Com o contrato escrito, as perguntas de referência no lugar e a nota de partida
 <PontoDeVolta tag="cap-01/fim" />
 
 <Resumo>
-- Um agente é um modelo que decide os próprios passos, num ciclo, usando ferramentas. Se o caminho é sempre o mesmo, um fluxo fixo resolve melhor.
+- Um agente é um modelo que decide os próprios passos, num ciclo, usando ferramentas. Se o caminho é sempre o mesmo, um fluxo resolve melhor.
 - Sem uma definição de certo, não existe erro, e sem erro não dá para medir.
 - O contrato tem quatro decisões: responder, abrir chamado, recusar e passar a vez.
 - Passar a vez é uma decisão com regra própria, não uma falha.

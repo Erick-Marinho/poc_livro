@@ -1,5 +1,5 @@
 /**
- * Figura 1.1: o caminho de uma pergunta em três jeitos de montar o sistema (só o modelo, fluxo fixo, agente).
+ * Figura 1.1: o caminho de uma pergunta em três jeitos de montar o sistema (só o modelo, fluxo, agente).
  * O que importa é quem decide o próximo passo: o grafo mostra quem age, e o selo "decide" mostra quem escolheu.
  * Os passos chegam conferidos pelo Rastro.astro; aqui o leitor avança no próprio ritmo.
  */

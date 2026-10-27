@@ -49,7 +49,7 @@ export function montarHistorias({ laco, tresJeitos, clientes }: Entrada) {
   const seguir = (pergunta: string): Seguiu => {
     const p = caminho("fluxo", pergunta);
     const meio = p.slice(1, -1);
-    if (meio.length > h.fluxo.ficha.length) falhar(`com "${pergunta}", o fluxo fixo tem mais passos que a ficha.`);
+    if (meio.length > h.fluxo.ficha.length) falhar(`com "${pergunta}", o fluxo tem mais passos que a ficha.`);
     return { mensagem: p[0].texto, cliente: quem(pergunta), resposta: resposta(p),
       // o que ele achou em cada passo: o que vem depois de ":", "→" ou "…" na frase curta ("BT-1003", "previsão 14/11", "não acha")
       passos: meio.map((x, i) => {

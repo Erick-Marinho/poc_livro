@@ -56,12 +56,12 @@ test("os quadros falam como para quem começa do zero: sem jargão; o nome técn
     historias.fluxo.ficha_diz, ...historias.fluxo.ficha, historias.fluxo.outra, historias.fluxo.prever.pergunta, ...historias.fluxo.prever.opcoes, historias.fluxo.nao_preve, historias.fluxo.conclusao,
     historias.agente.diz, ...historias.agente.acoes.map((a) => a.rotulo), historias.agente.de_novo, historias.agente.conclusao];
   for (const q of quadros) assert.doesNotMatch(q, jargao, `"${q}" usa jargão antes da hora`);
-  assert.deepEqual([historias.modelo.nome, historias.fluxo.nome, historias.agente.nome], ["Isto é um modelo sozinho", "Isto é um fluxo fixo", "Isto é um agente"]);
+  assert.deepEqual([historias.modelo.nome, historias.fluxo.nome, historias.agente.nome], ["Isto é um modelo sozinho", "Isto é um fluxo (flow)", "Isto é um agente"]);
   assert.match(laco.fim.quebra, /^Onde a comparação quebra/, "o fim diz onde a analogia quebra (docs/RITMO.md)");
 });
 
 test("o fim diz quem decide em cada história, e o que cada jeito acertou, nos três jeitos", () => {
-  assert.deepEqual(h.fim.linhas.map((f) => [f.nome, f.acertos]), [["só o modelo", [false, false]], ["fluxo fixo", [true, false]], ["agente", [true, true]]]);
+  assert.deepEqual(h.fim.linhas.map((f) => [f.nome, f.acertos]), [["só o modelo", [false, false]], ["fluxo (flow)", [true, false]], ["agente", [true, true]]]);
 });
 
 test("o 1.1 tem a figura das histórias, no lugar dos três jeitos e do Pendente, sem a figura em texto", () => {

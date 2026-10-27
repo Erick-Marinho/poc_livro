@@ -1,6 +1,6 @@
 /**
  * Quanto o modelo decide, no 1.1 (docs/capacidades/capitulo-1-dinamicas.md, etapa 3; docs/capacidades/torre-de-autonomia.md):
- * uma torre de quatro andares, do fluxo fixo (o código decide tudo) aos vários agentes. Primeiro, a torre inteira, com
+ * uma torre de quatro andares, do fluxo (o código decide tudo) aos vários agentes. Primeiro, a torre inteira, com
  * uma frase curta por andar: é a introdução. O leitor toca num andar, e a mesma mensagem atravessa o sistema daquele
  * andar, ao lado: os passos entram um a um, cada um com quem o decidiu, e o contador diz quantas vezes o modelo
  * decidiu. Os dados vêm de escala.ts.

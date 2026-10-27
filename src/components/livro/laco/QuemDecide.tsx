@@ -178,22 +178,28 @@ export default function QuemDecide(props: Entrada) {
       {historia === 2 ? (
         <section className="qd-historia" key="agente">
           <Cliente nome={a.cliente} texto={a.mensagem} />
-          {/* o que o leitor já fez: onde olhou e o que viu */}
-          {trilha.passos.map((p, i) => (
+          {/* o que o leitor já fez: onde olhou e o que viu (enquanto ele escolhe, o último passo fica no painel, e não aqui) */}
+          {(trilha.resposta ? trilha.passos : trilha.passos.slice(0, -1)).map((p, i) => (
             <Quadro key={i} icone={p.id === "buscar_produto" ? <BookOpen size={20} /> : <Monitor size={20} />} quem={p.fez}>{p.resultado}</Quadro>
           ))}
           {trilha.resposta ? <Responde quem="Você responde" r={trilha.resposta} icone={<Hand size={20} />} /> : (
-            <div className="qd-prever qd-entra" role="group" aria-label="o que você faz">
+            /* a chave muda a cada passo: o painel entra de novo, e o resultado do clique aparece dentro dele, e não só
+               no quadro de cima, para o leitor ver que o clique fez alguma coisa */
+            <div className="qd-prever qd-entra" key={trilha.passos.length} role="group" aria-label="o que você faz">
+              {trilha.passos.length ? (() => { const u = trilha.passos[trilha.passos.length - 1]; return (
+                <p className="qd-resultado">{u.id === "buscar_produto" ? <BookOpen size={16} /> : <Monitor size={16} />}<span><b>{u.fez}:</b> {u.resultado}</span></p>
+              ); })() : null}
               <b><Hand size={16} /> {trilha.passos.length ? a.de_novo : a.diz}</b>
               <div className="qd-acoes">
                 {a.acoes.map((x) => (
-                  <button key={x.id} type="button" onClick={() => {
+                  <button key={x.id} type="button" className={trilha.passos.some((p) => p.id === x.id) ? "qd-feito" : undefined} onClick={() => {
                     const t = agir(a, trilha, x.id);
                     setTrilha(t);
                     const u = t.passos[t.passos.length - 1];
                     setAnuncio(t.resposta ? `Você respondeu: ${t.resposta.texto} ${t.resposta.certo ? "Certo." : `Errado: ${t.resposta.erro}.`}` : `${u.fez}: ${u.resultado}`);
                   }}>
                     {x.id === "consultar_pedido" ? <Monitor size={18} /> : x.id === "buscar_produto" ? <BookOpen size={18} /> : <MessageCircle size={18} />}{x.rotulo}
+                    {trilha.passos.some((p) => p.id === x.id) ? <Check size={14} strokeWidth={3} aria-label="já olhou" /> : null}
                   </button>
                 ))}
               </div>

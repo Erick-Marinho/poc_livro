@@ -56,6 +56,11 @@ montarHistorias({ laco, tresJeitos, clientes });
   .qd-opcoes button, .qd-acoes button { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 999px; border: 1.5px solid var(--linha); background: var(--nota); color: var(--ink); font: 500 15px var(--f-ui); cursor: pointer }
   .qd-acoes button { border-radius: 12px; padding: 10px 14px }
   .qd-acoes button svg { color: var(--acento) }
+  /* o que o último clique mostrou, dentro do painel; e o que o leitor já olhou, marcado */
+  .qd-resultado { display: flex; gap: 8px; align-items: flex-start; margin: 0; padding: 8px 10px; border-radius: 10px; background: color-mix(in srgb, var(--acento) 9%, var(--papel)); font-size: 15px }
+  .qd-resultado svg { color: var(--acento); flex: none; margin-top: 3px }
+  .qd-acoes button.qd-feito { opacity: .7 }
+  .qd-acoes button.qd-feito svg:last-child { color: var(--ok) }
   .qd-opcoes button:not(:disabled):hover, .qd-acoes button:hover, .qd-opcoes button:focus-visible, .qd-acoes button:focus-visible { border-color: var(--acento) }
   .qd-opcoes button:disabled { cursor: default }
   .qd-opcoes button.qd-certo { border-color: var(--ok); color: var(--ok); font-weight: 600 }

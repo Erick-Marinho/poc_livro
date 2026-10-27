@@ -51,7 +51,7 @@
     },
     {
       "id": "fluxo",
-      "nome": "fluxo fixo",
+      "nome": "fluxo (flow)",
       "quem_decide": "o seu código, sempre na mesma ordem",
       "passos": {
         "pedido": [

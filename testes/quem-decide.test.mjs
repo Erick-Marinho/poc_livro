@@ -49,6 +49,6 @@ test("a torre: um andar por ponto, do térreo ao topo, cada um com uma frase cur
   assert.throws(() => montarEscala(longo, aposta, pedidos), /resumo de até seis palavras/);
   const pagina = readFileSync(new URL("../dist/ciclo-de-vida/01-o-problema-e-o-contrato/index.html", import.meta.url), "utf8");
   assert.equal([...pagina.matchAll(/class="qd-andar"/g)].length, 4);
-  assert.ok(pagina.indexOf("vários agentes</span>") < pagina.indexOf("fluxo fixo</span>"), "o topo vem primeiro");
+  assert.ok(pagina.indexOf("vários agentes</span>") < pagina.indexOf("fluxo (flow)</span>"), "o topo vem primeiro");
   assert.match(ler("livros/ciclo-de-vida/capitulos/01-o-problema-e-o-contrato.mdx"), /Pense numa torre/);
 });

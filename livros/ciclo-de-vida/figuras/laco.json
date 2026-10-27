@@ -1,5 +1,5 @@
 {
-  "sobre": "A figura 1.1 (QuemDecide; docs/capacidades/laco-do-agente.md): três histórias de atendentes da loja, em quadrinhos, para quem começa do zero. O atendente sem acesso ao sistema é o modelo sozinho; o atendente com a ficha é o fluxo fixo (a ficha é o código); a atendente é o leitor, no papel do agente. As mensagens, o que o sistema e o catálogo devolvem e as respostas vêm de tres-jeitos.json; aqui ficam as falas, em linguagem simples, e o nome técnico de cada história, que só aparece no fim dela. O teste confere as previsões, os passos da ficha e o caminho da atendente contra os três jeitos.",
+  "sobre": "A figura 1.1 (QuemDecide; docs/capacidades/laco-do-agente.md): três histórias de atendentes da loja, em quadrinhos, para quem começa do zero. O atendente sem acesso ao sistema é o modelo sozinho; o atendente com a ficha é o fluxo (a ficha é o código); a atendente é o leitor, no papel do agente. As mensagens, o que o sistema e o catálogo devolvem e as respostas vêm de tres-jeitos.json; aqui ficam as falas, em linguagem simples, e o nome técnico de cada história, que só aparece no fim dela. O teste confere as previsões, os passos da ficha e o caminho da atendente contra os três jeitos.",
   "pergunta": "Quem decide o próximo passo?",
   "historias": {
     "modelo": {
@@ -39,7 +39,7 @@
       },
       "nao_preve": "A ficha não prevê pergunta de produto. Não tem um passo para isso.",
       "conclusao": "Com o pedido, deu certo. Com a frigideira, a ficha não serviu.",
-      "nome": "Isto é um fluxo fixo",
+      "nome": "Isto é um fluxo (flow)",
       "explica": "quem decide os passos é a ficha, que no livro é o seu código. Funciona no que alguém previu, e só nisso."
     },
     "agente": {

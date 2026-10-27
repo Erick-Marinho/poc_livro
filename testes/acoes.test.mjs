@@ -47,9 +47,9 @@ test("caso que não existe não monta", () => {
   assert.throws(() => casos(referencia, ["R99"], "Pilhas"), /Pilhas: o caso R99 não está no referencia.jsonl/);
 });
 
-test("capítulo 1: os pare e pense da ferramenta e dos nomes das pilhas falam de dado que existe", () => {
+test("capítulo 1: os pare e pense da data do pedido e dos nomes das pilhas falam de dado que existe", () => {
   const pedidos = ler("livros/ciclo-de-vida/projeto/dados/pedidos.json");
-  assert.match(html, /consulta o pedido BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
+  assert.match(html, /acertar a data do BT-1003/); assert.ok(pedidos.includes('"BT-1003"'), "o BT-1003 não está nos pedidos da loja");
   const resposta = html.match(/escolheu entre quatro coisas para fazer com cada mensagem[\s\S]*?<div class="r">([\s\S]*?)<\/div>/)?.[1] ?? "";
   for (const { nome } of Object.values(DECISOES)) assert.ok(resposta.includes(nome), `a resposta não nomeia "${nome}"`);
 });

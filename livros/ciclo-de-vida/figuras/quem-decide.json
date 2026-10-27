@@ -4,7 +4,7 @@
   "pedido": "BT-1003",
   "pontos": [
     {
-      "nome": "fluxo fixo",
+      "nome": "fluxo (flow)",
       "frase": "O código decide a ordem, e o modelo só escreve o texto. Se a mensagem fosse sobre um produto, o caminho não previa.",
       "passos": [
         {
