@@ -44,5 +44,6 @@ não tem: pedido, catálogo, política de troca.
 |---|---|---|---|
 | 1 | 19749fb | `testes/pausa-e-fluxo-condominio.test.mjs` (2): a mesma pergunta, 10 → 97 → 462 palavras (cada uma ao menos 4 vezes a anterior), começos diferentes, a regra de sábado só na média e na longa, o aviso de inventado. `npm test` 207/207; o experimento publicado não muda | Erick, 27/10/2026 |
 | 2 | c16cb81 | `coletas/medir.txt`: pausa 0,95 → 5,70 → 27,24 s (10 de 10); longa de novo 0,13 s, 833 de 834 do cache (10 de 10); fluxo 10,6 → 7,9 tokens/s (4 de 10). `coletas/medir-sem-numero.txt`: a longa em 38,85 s na primeira vez e uns 0,2 s depois (5 de 10). Mesmo Ollama e mesmo digest do modelo; a máquina, um i7-1355U | Erick, 27/10/2026 ("publicar o que deu") |
+| 3 | 62fe7c9 | `scripts/saidas.py experimentos/pausa-e-fluxo`: 11 saídas e o roteiro regravados (pf-tamanhos 10/97/462; pf-vezes 38,85 → 0,17 s; pf-limpa 10, 4 e 10 de 10). `testes/pausa-e-fluxo.test.mjs`: o corpus do regulamento, o Pare e pense com 830 e 41 tokens, o achado que diz a queda de 25% quando passa dos 20%, as medianas de tokens escritos calculadas da coleta, a certa de escala (umas 30). `npm test` 206/206; ritmo sem aviso. Capturas da figura e da cena dos tempos a 1280 e 390 px; ajuste: o rótulo da longa de novo quebrava | aguardando revisão |
 
 (redação: Claude Opus 5.5)
