@@ -28,12 +28,12 @@ o máximo por padrões; muitos também fica chata a leitura" (27/10/2026).
 |---|---|---|
 | 1 | O padrão no `RITMO.md` e no teste; os cortes no capítulo 1 e no 2, com o texto em volta | lê com menos interrupções, e as que ficam carregam a história |
 
-## Etapa atual: 1
+## Última etapa: 1 (concluída)
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | c67981c | `testes/padrao-de-caixas.test.mjs`: introdução 4, capítulo 1 9 (3 Pare e pense, 2 palpites, 3 dinâmicas, 1 exercício), capítulo 2 6. `npm test` 198/198 (saem os testes das peças removidas). Ritmo: 1.4 192, 1.5 199 e 1.7 200 palavras, depois de enxugar o texto; os avisos que sobram são os de antes. Captura do 1.5 | aguardando revisão |
+| 1 | c67981c | `testes/padrao-de-caixas.test.mjs`: introdução 4, capítulo 1 9 (3 Pare e pense, 2 palpites, 3 dinâmicas, 1 exercício), capítulo 2 6. `npm test` 198/198 (saem os testes das peças removidas). Ritmo: 1.4 192, 1.5 199 e 1.7 200 palavras, depois de enxugar o texto; os avisos que sobram são os de antes. Captura do 1.5 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
