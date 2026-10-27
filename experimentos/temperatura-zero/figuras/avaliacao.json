@@ -1,0 +1,8 @@
+{
+  "sobre": "O que falta em cada resposta de referência da coleta, no fim da caixa das 90 respostas (docs/capacidades/controles-nos-experimentos.md, 3b): a repetição é perfeita, e nenhuma das três está certa e completa. Cada item cita o trecho da resposta que mostra o problema; o testes/temperatura-zero.test.mjs confere que o trecho está na resposta gravada (coleta-cpu.json) e, na da água, que ela não diz 100 °C.",
+  "respostas": [
+    { "id": "fato", "trecho": "a uma temperatura constante", "falta": "a da água para em “uma temperatura constante”, sem dizer 100 °C" },
+    { "id": "livre", "trecho": "compromet", "falta": "a do arquivo foi cortada em “compromet”, no limite de tokens" },
+    { "id": "loja", "trecho": "ao dono do local", "falta": "a da loja passa para a equipe pelo motivo errado: “o dono do local”, e não o dono do pedido" }
+  ]
+}

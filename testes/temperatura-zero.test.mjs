@@ -170,3 +170,16 @@ test("temperatura zero: a animação da escolha faz a conta das chances, sorteia
   assert.match(fig.text,/Ilustração/);
   assert.ok(!ler("experimento.mdx").includes("previsoesMapa"),"o palpite de antes do mapa saiu");
 });
+
+test("temperatura zero: a caixa pergunta o que a IDE não respondeu, e o que falta em cada resposta está na coleta", () => {
+  const coleta = JSON.parse(ler("projeto/coleta-cpu.json"));
+  const av = JSON.parse(ler("figuras/avaliacao.json")).respostas;
+  assert.deepEqual(av.map((a) => a.id).toSorted(), coleta.casos.map((c) => c.id).toSorted(), "uma avaliação por resposta");
+  for (const a of av) assert.ok(coleta.casos.find((c) => c.id === a.id).texto_referencia.includes(a.trecho), a.id);
+  assert.doesNotMatch(coleta.casos.find((c) => c.id === "fato").texto_referencia, /100/, "a da água não diz 100 °C");
+  const mdx = ler("experimento.mdx");
+  assert.doesNotMatch(mdx, /alguma resposta vai sair diferente/, "a pergunta antiga, que a IDE já respondia, saiu");
+  const r = JSON.parse(ler("roteiros/01.json")).passos;
+  assert.equal(r.find((p) => p.id === "tz-somas").aposta, undefined, "o palpite das duas ordens, que o mapa já responde, saiu");
+  assert.equal(r.find((p) => p.id === "tz-controle").aposta.certa, 0);
+});

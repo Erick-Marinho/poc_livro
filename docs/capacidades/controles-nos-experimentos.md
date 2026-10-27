@@ -26,17 +26,17 @@ conteúdo.
 | 2 | Os experimentos com o topo, o sumário, a pílula e as configurações do livro | navega entre experimentos, liga o foco e abre a IDE como no livro |
 | 3 | A revisão dos experimentos: storytelling, padrão de caixas e conteúdo | lê experimentos no mesmo padrão dos capítulos |
 
-## Etapa atual: 3a — os erros de fato
+## Etapa atual: 3b — nenhuma caixa entrega a resposta antes
 
-- Segundo cérebro: "uns 7 segundos" vira "uns 11 (de 4 a 16), nas respostas gravadas" (a média das gravadas é 10,8 s; o 7
-  vinha de rodadas não gravadas), no custo e na IDE. "Só o e-mail diz 21/11" vira "só um e-mail diz que a entrega mudou
-  para 21/11": o da clínica também diz 21/11, mas não fala de entrega, e a figura do cofre conta só as frases da entrega.
-- Pausa e fluxo: o primeiro palpite diz o que o artigo afirma, e não como fato, e o fecho diz "você concordou com o
-  artigo", porque a medida desmentiu metade dele. A IDE vira a figura 1 (não havia figura 1). O "Repetir" diz como
-  instalar o uv.
-- Temperatura zero: o comparador conta a resposta cortada como igual (ele mede repetição); quem avisa do corte é a
-  figura. O link do PyTorch aponta a versão 2.8, a da coleta. As cinco cenas do mapa, e não seis.
-- Nos dois projetos, "rodando" vira "executado"; no `RITMO.md` e no `ritmo.mjs`, o mapa não tem palpite antes.
+- Segundo cérebro: os porquês do palpite das promessas saem sem as notas da régua e sem as datas do prazo; o meio da
+  página diz que as frases empatam e que qual delas vale o leitor vê na IDE; o vídeo da figura 1 para nas frases que
+  empatam (as cenas da escolha e da régua ficam no desenho, mas não tocam). O porquê da primeira promessa deixa a
+  separação do que é local para o Pilhas, no fim.
+- Temperatura zero: a caixa das 90 respostas deixa de perguntar se alguma muda (a IDE já disse que não) e pergunta se
+  repetir é acertar; no fim, o que falta em cada resposta, com o trecho da coleta (`figuras/avaliacao.json`). O
+  palpite da IDE sobre as duas ordens, que o mapa já responde, passa ao controle: com inteiros, as ordens dão o mesmo?
+- Pausa e fluxo: o parágrafo depois do palpite do artigo não repete mais o laboratório que o palpite acabou de
+  descrever.
 
 ## Registro
 
@@ -44,6 +44,6 @@ conteúdo.
 |---|---|---|---|
 | 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | Erick, 27/10/2026 |
 | 2 | f88b321 | `testes/controles-experimentos.test.mjs` (2): em cada experimento, o sumário com os três, o atual marcado, o topo com a seção e os comandos, a pílula, as seções do molde; e a pílula que se recolhe ao rolar sem guardar. `npm test` 200/200. Num navegador, no Pausa e fluxo a 1280 e 390 px: o sumário, o topo, a pílula e o recolhimento ao rolar e ao tocar | Erick, 27/10/2026 |
-| 3a | 325c753 | Conferido nas gravações (sc-nota-modelo: 3,7 a 16,1 s, média 10,8), no cofre (dois e-mails com 21/11, um sobre a entrega) e no PyTorch (2.8 responde). `npm test` 200/200; a página do Pausa e fluxo tem a Figura 1 | aguardando revisão |
+| 3a | 325c753 | Conferido nas gravações (sc-nota-modelo: 3,7 a 16,1 s, média 10,8), no cofre (dois e-mails com 21/11, um sobre a entrega) e no PyTorch (2.8 responde). `npm test` 200/200; a página do Pausa e fluxo tem a Figura 1 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)

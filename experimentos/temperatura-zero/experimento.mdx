@@ -22,6 +22,7 @@ import Aposta from "../../src/components/livro/Aposta.astro";
 import MapaTemperatura from "../../src/components/livro/MapaTemperatura.astro";
 import ComoOModeloEscolhe from "../../src/components/livro/ComoOModeloEscolhe.astro";
 import RespostasDaColeta from "../../src/components/livro/RespostasDaColeta.astro";
+import avaliacao from "./figuras/avaliacao.json";
 import PareEPense from "../../src/components/livro/PareEPense.astro";
 import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import Nota from "../../src/components/livro/Nota.astro";
@@ -83,7 +84,7 @@ Não. A referência da sua coleta é a primeira execução dela. Compare dentro 
 
 Na IDE, o medidor contou as respostas iguais. Aqui, veja cada uma: três perguntas, dez repetições, sozinha e em grupos de 4 e de 16 perguntas, cada repetição comparada com a primeira resposta da mesma pergunta.
 
-<RespostasDaColeta coleta={coleta} medida={saidas["tz-medida"]} pergunta="Antes de comparar: em algum grupo, alguma resposta vai sair diferente da primeira?" />
+<RespostasDaColeta coleta={coleta} medida={saidas["tz-medida"]} avaliacao={avaliacao} pergunta="A IDE já contou: as 90 repetem a primeira resposta. Mas repetir é acertar? Leia as três respostas de referência." />
 
 ## O que esta medida não resolve
 

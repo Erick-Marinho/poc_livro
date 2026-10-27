@@ -38,11 +38,12 @@ test("o caminho da pergunta: sem a data, 14/11 de uma nota velha; com ela, 21/11
   assert.equal(r.frases.filter((f) => f.palavras === r.topo).length, 4);
 });
 
-test("a aposta da abertura: as três promessas, e os números do que o experimento mostrou são os da régua gravada", () => {
+test("o palpite da abertura: as três promessas, sem adiantar as notas da régua nem as datas do prazo", () => {
   const promessas = JSON.parse(readFileSync(new URL("../experimentos/segundo-cerebro-local/promessas.json", import.meta.url), "utf8"));
   const nota = (id) => saidas[id].saida.map(([l]) => l).find((l) => l.startsWith("nota:")).match(/(\d+) de (\d+)/)[0];
-  const medida = promessas.mensagens[2].porque;
-  for (const id of ["sc-nota-ingenua", "sc-nota", "sc-nota-modelo"]) assert.ok(medida.includes(nota(id)), `a aposta não diz ${nota(id)} (${id})`);
+  const porques = promessas.mensagens.map((m) => m.porque).join(" ");
+  for (const id of ["sc-nota-ingenua", "sc-nota", "sc-nota-modelo"]) assert.ok(!porques.includes(nota(id)), `o palpite adianta ${nota(id)} (${id})`);
+  assert.doesNotMatch(porques, /\d{2}\/\d{2}/, "o palpite adianta uma data do prazo");
   const r = JSON.parse(saidas["rastro-prazo"].saida[0][0]);
   assert.match(r.sem_data.frase, /14\/11/); assert.match(r.com_data.frase, /21\/11/);
   const apo = html.querySelector("[data-aposta]");
@@ -58,4 +59,11 @@ test("as pilhas do fim: três peças ficam na máquina, três saem dela, e a exp
   assert.deepEqual(pil.querySelectorAll(".pil-grupo b").map((b) => b.text), ["fica na sua máquina", "sai dela"]);
   assert.ok(pil.querySelector("[data-revelado]").hasAttribute("hidden"));
   assert.match(pil.querySelector(".pil-explica").text, /localhost/);
+});
+
+test("o vídeo do caminho para nas frases que empatam: a escolha e a régua ficam para a IDE", async () => {
+  const { T, QUADRO, montar } = await import("../src/components/livro/cerebro/caminho.ts");
+  assert.equal(QUADRO.duracao, T.sem * QUADRO.fps);
+  const p = { bruto: saidas["rastro-prazo"].saida[0][0], comando: saidas["rastro-prazo"].comando, regua: { sem: "nota: 7 de 10", com: "nota: 9 de 10" } };
+  assert.ok(montar(p).passos.every((x) => x.em < T.sem && !/régua|vale a/i.test(x.texto)));
 });

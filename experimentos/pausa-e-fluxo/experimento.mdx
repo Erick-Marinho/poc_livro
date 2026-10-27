@@ -79,7 +79,7 @@ Aqui a comparação com a atendente quebra. Ela reconheceria a mesma mensagem co
 
 <Aposta dados={artigo} pergunta="E o laboratório do artigo?" />
 
-Esse detalhe pega o laboratório do artigo. Ele mede a leitura com três textos que repetem a mesma frase 10, 60 e 150 vezes, ou seja, textos que começam iguais. O nosso medidor marca a pausa no relógio; o do artigo usa o tempo de leitura que o Ollama informa, e esse tempo conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade. O artigo avisa, numa frase, que o cache pode influenciar a medida; não mostra quanto.
+O nosso medidor marca a pausa no relógio; o do artigo usa o tempo de leitura que o Ollama informa, e esse tempo conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade. O artigo avisa, numa frase, que o cache pode influenciar a medida; não mostra quanto.
 
 <PareEPense pergunta="Num chat, a conversa inteira vai de novo para o modelo a cada mensagem que você manda. O cache ajuda ou atrapalha?">
 Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o modelo pode reaproveitar essa leitura e ler só a mensagem nova. É por isso que a segunda pergunta de uma conversa longa costuma começar mais rápido do que você esperaria.

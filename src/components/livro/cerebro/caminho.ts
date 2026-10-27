@@ -13,7 +13,9 @@ export type Props = { bruto: string; comando: string; regua: { sem: string; com:
 
 // Os momentos do passeio, em segundos. Cada um acende uma etapa do fluxo.
 export const T = { pergunta: 0, busca: 4, frases: 10.5, sem: 17, com: 23, regua: 30, fim: 36 };
-export const QUADRO = { fps: 30, largura: 1280, altura: 720, duracao: T.fim * 30 };
+/* o vídeo para nas frases que empatam: qual delas vale, e quantas perguntas o cérebro acerta, o leitor descobre na IDE
+   (docs/capacidades/controles-nos-experimentos.md, 3b); as cenas de depois ficam no desenho, mas não tocam */
+export const QUADRO = { fps: 30, largura: 1280, altura: 720, duracao: T.sem * 30 };
 export const CARTAO = { largura: 580, altura: 56 };
 export const EIXO = { y: 548, de: 120, ate: 1160 };
 
@@ -77,7 +79,7 @@ export const montar = ({ bruto, comando, regua }: Props) => {
     { em: T.sem, no: 3, texto: `Sem a data, vale a frase da nota mais parecida: ${prazoDe(r.sem_data.frase)}, de uma nota de ${r.sem_data.data}.` },
     { em: T.com, no: 3, texto: `Com a data, entre as que empatam, vale a mais nova: ${novo}, de ${r.com_data.data}, com a velha ao lado.` },
     { em: T.regua, no: 4, texto: `A régua: sem a data, ${semA} de ${total}; com ela, ${comA} de ${total}${modA !== null ? `; com um modelo local, ${modA} de ${total}` : ""}.` },
-  ];
+  ].filter((p) => p.em < T.sem);
   const nos = [
     { nome: "a pergunta", valor: `${r.palavras.length} palavras` },
     { nome: "a busca", valor: `${achadas.length} de ${r.notas.length} notas` },

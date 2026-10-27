@@ -1,26 +1,33 @@
 ---
 /**
- * As 90 respostas da coleta, na temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 3). O leitor
- * prevê se algum grupo muda alguma resposta; depois escolhe o tamanho do grupo (sozinha, 4, 16) e vê as dez repetições
- * de cada pergunta acenderem: igual à referência ou diferente. A resposta cortada pelo limite de tokens fica marcada.
+ * As 90 respostas da coleta, na temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 3). A IDE já
+ * contou que todas repetem; o leitor dá o palpite sobre o que ela não respondeu (docs/capacidades/controles-nos-
+ * experimentos.md, 3b): repetir é acertar? Depois escolhe o tamanho do grupo (sozinha, 4, 16), vê as dez repetições de
+ * cada pergunta acenderem e, no fim, o que falta em cada resposta (avaliacao.json, conferido contra a coleta). A resposta cortada pelo limite de tokens fica marcada.
  * Os dados são os da coleta real, conferidos com a saída gravada do medir.py (temperatura/respostas.ts). Sem JS e no
  * modo direto, a grade aparece inteira, comparada.
  */
 import { montarRespostas, type Coleta } from "./temperatura/respostas.ts";
 
-interface Props { coleta: Coleta; medida: { comando: string; saida: [string, string][] }; pergunta: string }
-const { coleta, medida, pergunta } = Astro.props;
+interface Props { coleta: Coleta; medida: { comando: string; saida: [string, string][] }; pergunta: string; avaliacao: { respostas: { id: string; trecho: string; falta: string }[] } }
+const { coleta, medida, pergunta, avaliacao } = Astro.props;
 const r = montarRespostas(coleta, medida.saida);
+/* o que falta em cada resposta: o trecho citado tem que estar na resposta gravada, ou a caixa não monta */
+for (const a of avaliacao.respostas) {
+  const l = r.linhas.find((x) => x.id === a.id);
+  if (!l || !l.texto.includes(a.trecho)) throw new Error(`respostas da coleta: a avaliação de ${a.id} cita "${a.trecho}", que não está na resposta gravada`);
+}
+const faltas = avaliacao.respostas.map((a) => a.falta);
 const nomeDoLote = (n: number) => (n === 1 ? "sozinha" : `grupo de ${n}`);
 const curta = (s: string) => (s.length > 64 ? `${s.slice(0, 62).trimEnd()}…` : s);
 ---
-<figure class="tz-respostas" data-tz-respostas data-iguais={r.iguais} data-total={r.total}>
+<figure class="tz-respostas" data-tz-respostas data-iguais={r.iguais} data-total={r.total} data-faltas={JSON.stringify(faltas)}>
   <div class="tzr">
     <p class="tzr-rotulo">as {r.total} respostas</p>
     <p class="tzr-pergunta">{pergunta}</p>
     <div class="tzr-previsao" role="group" aria-label="Sua previsão">
-      <button type="button" data-preve="muda">Sim: em algum grupo, alguma muda</button>
-      <button type="button" data-preve="repete">Não: todas repetem</button>
+      <button type="button" data-preve="certas">As três estão certas e completas</button>
+      <button type="button" data-preve="falta">Alguma está errada ou incompleta</button>
     </div>
     <div class="tzr-lotes" role="group" aria-label="Compare um tamanho de grupo" hidden>
       <span>Compare:</span>
@@ -49,7 +56,7 @@ const curta = (s: string) => (s.length > 64 ? `${s.slice(0, 62).trimEnd()}…` :
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-tz-respostas]").forEach((fig) => {
-    const iguais = Number(fig.dataset.iguais), total = Number(fig.dataset.total);
+    const iguais = Number(fig.dataset.iguais), total = Number(fig.dataset.total), faltas: string[] = JSON.parse(fig.dataset.faltas!);
     const lotes = fig.querySelector<HTMLElement>(".tzr-lotes")!, fim = fig.querySelector<HTMLElement>("[data-fim]")!;
     let previsao = "";
     const vistos = new Set<string>();
@@ -65,10 +72,9 @@ const curta = (s: string) => (s.length > 64 ? `${s.slice(0, 62).trimEnd()}…` :
       b.setAttribute("aria-pressed", "true");
       fig.querySelectorAll<HTMLElement>(`.tzr-bloco[data-lote="${t}"]`).forEach((x) => x.classList.add("tzr-aceso"));
       if (vistos.size === lotes.querySelectorAll("[data-lote]").length) {
-        const mudou = iguais < total;
-        const acertou = (previsao === "muda") === mudou;
+        const acertou = (previsao === "falta") === faltas.length > 0;
         fim.hidden = false;
-        fim.textContent = `${iguais} de ${total} iguais à referência. ${mudou ? "Algum grupo mudou alguma resposta." : "Nenhum grupo mudou nenhuma resposta: neste modelo, nesta máquina, a ordem das contas não chegou a trocar um token."} ${acertou ? "Sua previsão confere." : "Sua previsão era outra, e é por isso que se mede."}`;
+        fim.textContent = `${iguais} de ${total} iguais à referência: a repetição ${iguais === total ? "é perfeita" : "falhou em algum grupo"}. E ${faltas.length === 3 ? "nenhuma das três está certa e completa" : `${faltas.length} das três têm problema`}: ${faltas.join("; ")}. Repetir não é acertar. ${acertou ? "O seu palpite confere." : "O seu palpite era outro, e é por isso que se lê a resposta, e não só se conta."}`;
       }
     }));
   });

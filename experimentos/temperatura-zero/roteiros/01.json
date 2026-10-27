@@ -70,15 +70,7 @@
       "acao": "rodar",
       "id": "tz-somas",
       "comando": "uv run python -c \"from numeros import somas; print(somas())\"",
-      "nota": "Confira as duas ordens.",
-      "aposta": {
-        "pergunta": "As duas ordens guardam o mesmo total?",
-        "opcoes": [
-          "Sim, as entradas são as mesmas",
-          "Não, o arredondamento intermediário pode mudar"
-        ],
-        "certa": 1
-      }
+      "nota": "Confira as duas ordens."
     },
     {
       "acao": "rodar",
@@ -112,6 +104,14 @@
         "certa": 1,
         "evidencia": "resultados únicos: 1",
         "porque": "Mil chamadas de somas deram o mesmo par; com 1, os dois lados deram 1026. O código usa ordens fixas e nenhum sorteio."
+      },
+      "aposta": {
+        "pergunta": "E com números inteiros, as duas ordens dão o mesmo total?",
+        "opcoes": [
+          "Sim, inteiros não arredondam aqui",
+          "Não, a ordem muda o total do mesmo jeito"
+        ],
+        "certa": 0
       }
     },
     {
