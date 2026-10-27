@@ -24,6 +24,7 @@ import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
 import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import previsoes from "./previsoes.json";
+import previsoesMapa from "./previsoes-mapa.json";
 import roteiro from "./roteiros/01.json";
 import estados from "./roteiros/01.estados.json";
 import passos from "./passos/01.json";
@@ -40,15 +41,17 @@ O [estudo da Thinking Machines](https://thinkingmachines.ai/blog/defeating-nonde
 
 Um instrumento pequeno para comparar respostas. Primeiro, uma soma em que o arredondamento aparece. Depois, um seletor que escolhe sempre o maior valor. Por fim, um medidor aplicado a um modelo real: ele guarda os tokens, encontra o primeiro ponto diferente e conta quantas execuções coincidem.
 
+<Aposta dados={previsoesMapa} pergunta="Antes de ver o mecanismo: o que a ordem de uma soma pode mudar?" />
+
 <MapaTemperatura saidas={saidas} />
 
 A temperatura atua na escolha, depois do cálculo. Em temperatura zero, a alternativa de maior valor vence sem sorteio. Isso não fixa os valores produzidos antes: bibliotecas podem organizar as contas de formas diferentes. O [PyTorch documenta essa diferença entre cálculo isolado e em lote](https://docs.pytorch.org/docs/2.14/notes/numerical_accuracy.html#batched-computations-or-slice-computations).
 
-No gráfico, você conferiu os dois casos: uma conta diferente pode inverter o vencedor, mas uma alternativa que vence com folga pode continuar vencendo. Na IDE, vamos construir essa comparação e conferir os limites dela.
+No vídeo, os dois casos: uma conta diferente pode inverter o vencedor, mas uma alternativa que vence com folga continua vencendo. Na IDE, vamos construir essa comparação e conferir os limites dela.
 
 ## A primeira prova: uma soma
 
-Na primeira parte, cada soma intermediária é guardada em binary16, um formato de 16 bits que guarda poucos dígitos: perto de 1024, ele só tem números inteiros, e o resto é arredondado. As entradas são as mesmas; os parênteses mudam onde o arredondamento acontece. Um teste que pressupõe que as duas contas sempre dão o mesmo falha de verdade.
+Na primeira parte, cada soma intermediária é guardada em binary16, um formato de 16 bits que guarda poucos dígitos: a partir de 1024, ele só guarda números inteiros, e o resto é arredondado. As entradas são as mesmas; os parênteses mudam onde o arredondamento acontece. Um teste que pressupõe que as duas contas sempre dão o mesmo falha de verdade.
 
 Essa prova tem um limite: não executa um modelo de linguagem e não mede uma GPU. Muitas operações reais acumulam em outra precisão. Para aprender o mecanismo, escolhemos valores que revelam o arredondamento; para medir um modelo, precisamos de outra coleta.
 

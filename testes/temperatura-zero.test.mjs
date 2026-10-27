@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { parse } from "node-html-parser";
 import { montarIde, perguntaSustentada, respostaEntregue } from "../src/lib/ideCapitulo.ts";
-import { montarMapa, muda, limitarQuadro, PERGUNTA, DURACAO, CENAS, FPS } from "../src/components/livro/temperatura/mapa.ts";
+import { montarMapa, muda, baloes, DURACAO, CENAS, FPS, SEGUNDOS } from "../src/components/livro/temperatura/mapa.ts";
 import { eAcao } from "../scripts/ritmo.mjs";
 
 const base = new URL("../experimentos/temperatura-zero/", import.meta.url);
@@ -85,25 +85,24 @@ test("temperatura zero: as perguntas interpretam comandos reais e a variante é 
   assert.ok(!roteiro.passos.some(a=>a.comando?.includes("coletar.py")),"o build executaria inferências novas");
 });
 
-test("temperatura zero: o mapa tem Remotion e alternativa legível sem JS; GPU ainda não recebe placar", () => {
-  const mapa=html.querySelector(".tz-mapa");
-  assert.equal(mapa.querySelectorAll("[data-tz-estatico] .tz-resumo-caso").length,2);
-  assert.equal(mapa.querySelectorAll(".tz-barra-estatica").length,8);
+test("temperatura zero: o mapa é um vídeo de tocar ou rolar, com os balões em texto sem JS; GPU ainda não recebe placar", () => {
+  const mapa=html.querySelector("[data-tz-mapa]");
+  assert.ok(mapa,"a figura do mapa está na página");
   assert.match(mapa.text,/Ilustração numérica/);
+  assert.match(mapa.text,/a biblioteca pode repartir a soma de outro jeito/,"os balões vão como texto");
   assert.match(html.text,/GPU.*ainda não foi medida/);
   assert.equal(html.querySelectorAll(".resultados li").length,1);
   assert.match(html.text,/CPU ou GPU/);
   assert.match(html.text,/90|Três perguntas/);
 });
 
-test("temperatura zero: as barras e os vencedores saem do código executado, com um controle que não troca", () => {
+test("temperatura zero: as somas, as barras e os vencedores saem do código executado, com um controle que não troca", () => {
   const bruto=saidas["tz-mapa"].saida[0][0];
   const d=montarMapa(bruto);
   assert.deepEqual(d.casos.map(muda),[true,false]);
-  const valores=d.casos.flatMap(c=>c.execucoes.flatMap(e=>e.pontuacoes));
-  const teto=Math.max(...valores);
-  const larguras=html.querySelectorAll(".tz-trilho > span").map(b=>parseFloat(b.getAttribute("style").match(/width:([\d.]+)%/)[1]));
-  assert.deepEqual(larguras,valores.map(v=>100*v/teto),"as barras precisam da mesma escala nas duas condições");
+  assert.deepEqual(d.caminhos.map(c=>c.passos.at(-1).guardado),[1024,1025]);
+  assert.ok(d.guardaveis.filter(g=>g>=1024).every(Number.isInteger),"a partir de 1024, o binary16 só guarda inteiros");
+  assert.ok(d.guardaveis.some(g=>g<1024&&!Number.isInteger(g)),"abaixo de 1024, ainda guarda meios");
   const real=spawnSync("python3",["figuras/mapa.py"],{cwd:base,encoding:"utf8"});
   assert.equal(real.status,0,real.stderr);
   assert.deepEqual(montarMapa(real.stdout),d);
@@ -113,14 +112,20 @@ test("temperatura zero: as barras e os vencedores saem do código executado, com
   const desalinhado=structuredClone(d);
   desalinhado.casos[1].execucoes[1].pontuacoes[1]=0.5;
   assert.throws(()=>montarMapa(JSON.stringify(desalinhado)),/barras e escolha/);
+  const fora=structuredClone(d);
+  fora.caminhos[1].passos[1].guardado=1024.5;
+  assert.throws(()=>montarMapa(JSON.stringify(fora)));
 });
 
-test("temperatura zero: o mapa segura a revelação antes da previsão e permanece dentro do ritmo", () => {
-  assert.equal(limitarQuadro(PERGUNTA+1,false),PERGUNTA);
-  assert.equal(limitarQuadro(DURACAO-1,false),PERGUNTA);
-  assert.equal(limitarQuadro(DURACAO-1,true),DURACAO-1);
-  assert.equal(limitarQuadro(-10,true),0);
+test("temperatura zero: o vídeo cabe no limite do experimento, a previsão vem antes, e o esquema do lote diz que é esquema", () => {
   assert.ok(CENAS.length<=6);
   assert.ok(DURACAO/FPS<=45);
-  assert.equal(eAcao("MapaTemperatura"),true);
+  const d=montarMapa(saidas["tz-mapa"].saida[0][0]);
+  const bs=baloes(d);
+  bs.forEach((b,i)=>{ if(i) assert.equal(b.de,bs[i-1].ate); });
+  assert.ok(bs.at(-1).ate>=SEGUNDOS);
+  assert.match(bs[1].texto,/esquema do que o estudo descreve/);
+  assert.equal(eAcao("MapaTemperatura"),false);
+  const mdx=ler("experimento.mdx");
+  assert.ok(mdx.indexOf("<Aposta dados={previsoesMapa}")<mdx.indexOf("<MapaTemperatura"),"a previsão vem antes do vídeo");
 });

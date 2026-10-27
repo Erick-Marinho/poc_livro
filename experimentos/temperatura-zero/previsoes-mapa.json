@@ -1,0 +1,21 @@
+{
+  "resultado": "O que acontece",
+  "fechos": {
+    "nenhum": "O vídeo abaixo mostra onde a soma muda e quando a escolha troca.",
+    "alguns": "Você acertou {n} de {total}. O vídeo abaixo mostra onde a soma muda e quando a escolha troca."
+  },
+  "mensagens": [
+    {
+      "texto": "Duas execuções somam os mesmos números, em ordens diferentes, num formato que guarda poucos dígitos. O total pode sair diferente?",
+      "opcoes": ["Não: a ordem da soma não muda o total", "Sim: cada soma parcial é arredondada"],
+      "fez": 1,
+      "porque": "No papel, a ordem não importa. Guardando poucos dígitos, cada soma parcial é arredondada, e a fração que some num caminho pode sobreviver no outro."
+    },
+    {
+      "texto": "Se o total muda um pouco, a escolha do token muda também?",
+      "opcoes": ["Sempre", "Só se a diferença passar a vantagem do vencedor", "Nunca, porque não há sorteio"],
+      "fez": 1,
+      "porque": "Sem sorteio, a escolha segue as pontuações: uma diferença pequena só troca o vencedor quando a disputa está apertada."
+    }
+  ]
+}

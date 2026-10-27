@@ -39,7 +39,7 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
-`MapaTemperatura` conta como ação: o leitor prevê se as duas execuções escolhem o mesmo token antes de ver o vencedor.
+`MapaTemperatura` não conta: o leitor toca ou rola; a previsão fica no Invista logo antes do vídeo.
 
 ## Exceções
 

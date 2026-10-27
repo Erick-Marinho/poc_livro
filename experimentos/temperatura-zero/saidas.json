@@ -4,7 +4,7 @@
     "saiu_com": 0,
     "saida": [
       [
-        "{\"tipo\": \"ilustração numérica, não logits de LLM\", \"casos\": [{\"id\": \"disputa\", \"nome\": \"Disputa apertada\", \"b\": 0.5, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 0.5], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 0.5], \"escolha\": 0}]}, {\"id\": \"folga\", \"nome\": \"B com folga\", \"b\": 2.0, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 2.0], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 2.0], \"escolha\": 1}]}]}",
+        "{\"tipo\": \"ilustração numérica, não pontuações de um modelo de linguagem\", \"guardaveis\": [1023.0, 1023.5, 1024.0, 1025.0, 1026.0], \"caminhos\": [{\"ordem\": \"esquerda\", \"passos\": [{\"parcelas\": [1024.0, 0.39990234375], \"exato\": 1024.39990234375, \"guardado\": 1024.0}, {\"parcelas\": [1024.0, 0.39990234375], \"exato\": 1024.39990234375, \"guardado\": 1024.0}]}, {\"ordem\": \"direita\", \"passos\": [{\"parcelas\": [0.39990234375, 0.39990234375], \"exato\": 0.7998046875, \"guardado\": 0.7998046875}, {\"parcelas\": [1024.0, 0.7998046875], \"exato\": 1024.7998046875, \"guardado\": 1025.0}]}], \"casos\": [{\"id\": \"disputa\", \"nome\": \"Disputa apertada\", \"b\": 0.5, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 0.5], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 0.5], \"escolha\": 0}]}, {\"id\": \"folga\", \"nome\": \"B com folga\", \"b\": 2.0, \"execucoes\": [{\"ordem\": \"esquerda\", \"soma\": 1024.0, \"pontuacoes\": [0.0, 2.0], \"escolha\": 1}, {\"ordem\": \"direita\", \"soma\": 1025.0, \"pontuacoes\": [1.0, 2.0], \"escolha\": 1}]}]}",
         ""
       ]
     ]
@@ -262,7 +262,7 @@
         ""
       ],
       [
-        "Ran 9 tests in 0.007s",
+        "Ran 9 tests in 0.003s",
         ""
       ],
       [

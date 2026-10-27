@@ -1,19 +1,25 @@
 ---
+/**
+ * O mapa da temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 2): o vídeo temperatura/MapaTemperatura.tsx,
+ * que o leitor toca ou rola. Os números são a saída gravada de figuras/mapa.py (tz-mapa), conferida no build
+ * (temperatura/mapa.ts). Sem JS, os balões em lista, com o comando que calculou os valores.
+ */
 import MapaTemperatura from "./temperatura/MapaTemperatura";
-import { montarMapa } from "./temperatura/mapa";
-type Saida = { comando: string; saida: [string,string][] };
-const { saidas } = Astro.props as { saidas: Record<string,Saida> };
+import { baloes, montarMapa } from "./temperatura/mapa";
+type Saida = { comando: string; saida: [string, string][] };
+const { saidas } = Astro.props as { saidas: Record<string, Saida> };
 const fonte = saidas["tz-mapa"];
 if (!fonte) throw new Error("MapaTemperatura: falta a saída tz-mapa");
-const bruto = fonte.saida.find(([l])=>l.startsWith("{"))?.[0];
+const bruto = fonte.saida.find(([l]) => l.startsWith("{"))?.[0];
 if (!bruto) throw new Error("MapaTemperatura: falta o rastro JSON do exemplo");
-montarMapa(bruto);
+const dados = montarMapa(bruto);
 ---
-<figure class="tz-figura" aria-label="Duas execuções, as pontuações e a escolha do próximo token">
-  <MapaTemperatura client:visible bruto={bruto} comando={fonte.comando}/>
-  <figcaption><b>Figura 1</b> · Mesma entrada e mesma regra de escolha. Compare as contas, preveja o vencedor e confira o caso em que B vence com folga. Os valores vêm do exemplo numérico; não são logits medidos de um LLM.</figcaption>
+<figure class="tz-figura" data-tz-mapa aria-label="A mesma pergunta, duas ordens de soma, as pontuações e a escolha do próximo token">
+  <MapaTemperatura client:visible={{ rootMargin: "400px" }} bruto={bruto} />
+  <noscript><ol>{baloes(dados).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption><b>Figura 1</b> · A mesma pergunta, sozinha ou num grupo, e o que muda até a escolha. Ilustração numérica, não pontuações de um modelo de linguagem: os valores são calculados por <code>{fonte.comando}</code>, a partir de <code>numeros.py</code>.</figcaption>
 </figure>
 <style>
-  .tz-figura { width: min(1040px, 100vw - 32px); max-width: none; margin-left: calc(50% - min(520px, 50vw - 16px)); }
-  figcaption { font: 14px/1.5 var(--f-ui); color: var(--ink-2); margin-top: 10px; }
+  .tz-figura { margin: 1.8em auto 2em; max-width: 800px }
+  figcaption { font: 14px/1.5 var(--f-ui); color: var(--ink-2); margin-top: 10px }
 </style>

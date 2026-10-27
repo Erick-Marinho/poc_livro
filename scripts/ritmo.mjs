@@ -14,7 +14,7 @@ export const AVISO = 200, FALHA = 400;
 const CONTA = { IdeCapitulo: true, Classificador: true, PareEPense: true, Exercicio: true, Rastro: true, FiguraLaco: true, Aposta: true, Pilhas: true, PrimeiroDia: true, MontaQuestao: true, DecisaoFixa: true, RoteiroDoAgente: true, FormularioDoAgente: true, EnsaioDoAgente: true, ProvaDoAgente: true, ResultadoDoAgente: true, Troca: true,
   Rascunho: true, /* a ação sugerida pela skill: conta como se aceita, para o relógio mostrar o ritmo da proposta */
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
-  MapaTemperatura: true, /* prevê se as duas execuções escolhem o mesmo token, antes de revelar */
+  MapaTemperatura: false, /* toca ou rola; a previsão é o Invista logo antes (docs/capacidades/temperatura-zero-revisao.md) */
   Nota: false, Terminal: false, QuemDecide: false, DiaSeguinte: false, NotaDoLivro: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
   MapaDoCiclo: false, Termos: false, Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false };
 /* o texto destes não é lido pelo leitor como texto corrido (ainda não existe, ou é fecho) */
