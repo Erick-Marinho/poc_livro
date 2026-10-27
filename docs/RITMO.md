@@ -35,11 +35,18 @@ texto escondido, passar o mouse, rolar, assistir a uma animação sem nada a dec
 
 | Conta | Não conta |
 |---|---|
-| `IdeCapitulo`, `Classificador`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `MontaQuestao` (monta e o contrato confere), `RespostasDaColeta` (prevê e compara grupo a grupo), `DecisaoFixa` (escolhe a decisão e compara as notas), `Troca`, `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do palpite), `TemposReais` (toca ou rola; a aposta de escala fica na IDE, logo antes), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no palpite logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
+| `IdeCapitulo`, `PareEPense`, `Exercicio`, `Aposta`, `Pilhas`, `PrimeiroDia`, `RespostasDaColeta` (prevê e compara grupo a grupo), `Troca` (no lugar da colega, julga cada resposta), `Rastro` (escolhe o jeito e compara), `GrafoAgente` no modo `caminhos` | `Nota`, `Terminal`, `QuemDecide` (arrasta e vê, sem decidir), `DiaSeguinte` (toca ou rola), `NotaDoLivro` (toca ou rola), `NumerosDaPesquisa` (lê os números), `AgentesEmProducao` (toca ou rola), `ComoOModeloEscolhe` (toca ou rola), `FluxoOuAgente` (toca ou rola), `AndarDaTorre` (vê o andar, sem decidir), `DoisBilhetes` (compara os bilhetes, depois do palpite), `TemposReais` (toca ou rola; a aposta de escala fica na IDE, logo antes), `RoteiroDoAgente`, `FormularioDoAgente`, `EnsaioDoAgente`, `ProvaDoAgente` e `ResultadoDoAgente` (tocam ou rolam; a decisão fica no palpite logo antes), `FiguraAgente`, `FiguraCaminho`, `FiguraCofre`, `GrafoAgente` no modo `desenho` |
 
 O texto de `Pendente` não entra na conta (ainda não existe); o de `Nota` e o das tabelas entram.
 
 `MapaTemperatura` não conta: o leitor toca ou rola; a previsão fica no palpite (`Aposta`) logo antes do vídeo.
+
+## Quantas caixas por capítulo
+
+Muitas perguntas também cansam (decisão do Erick, 27/10/2026; docs/capacidades/padrao-de-caixas.md). Na página de cada
+capítulo, sem contar a IDE: até **3 Pare e pense**, **2 palpites** (`Aposta`), **3 dinâmicas próprias** (figura em que
+o leitor age: as histórias da 1.1, o Primeiro dia, a caixa da colega…) e **1 exercício**, no fim. No máximo 9 caixas.
+A introdução segue o mesmo teto, sem exercício. O `testes/padrao-de-caixas.test.mjs` confere.
 
 ## Exceções
 

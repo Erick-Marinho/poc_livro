@@ -19,7 +19,6 @@ partida:
 import Terminal from "../../../src/components/livro/Terminal.astro";
 import Nota from "../../../src/components/livro/Nota.astro";
 import PareEPense from "../../../src/components/livro/PareEPense.astro";
-import Classificador from "../../../src/components/livro/Classificador.astro";
 import Exercicio from "../../../src/components/livro/Exercicio.astro";
 import FiguraLaco from "../../../src/components/livro/FiguraLaco.astro";
 import laco from "../figuras/laco.json";
@@ -46,10 +45,6 @@ import IdeCapitulo from "../../../src/components/livro/IdeCapitulo.astro";
 import Aposta from "../../../src/components/livro/Aposta.astro";
 import PrimeiroDia from "../../../src/components/livro/PrimeiroDia.astro";
 import Pendente from "../../../src/components/livro/Pendente.astro";
-import Listagem from "../../../src/components/livro/Listagem.astro";
-import MontaQuestao from "../../../src/components/livro/MontaQuestao.astro";
-import DecisaoFixa from "../../../src/components/livro/DecisaoFixa.astro";
-import contratoPy from "../marcos/cap-01/contrato.py?raw";
 import Troca from "../../../src/components/livro/Troca.astro";
 import agenteApressado from "../figuras/agente-apressado.json";
 import diaSeguinte from "../figuras/dia-seguinte.json";
@@ -157,15 +152,9 @@ Se o bilhete já explica tudo, para que o gabarito? Porque bilhete bom não gara
 
 Para conferir, você não comparou palavras: olhou o que ele fez com o pedido. O gabarito é isso, escrito antes, mensagem por mensagem, para conferir mesmo sem a colega. Você vai reescrever o bilhete, e trocar de modelo, muitas vezes ao longo do livro. O gabarito fica, e é por ficar que ele serve de medida: a mesma prova, corrigida pelo mesmo gabarito, diz se a versão nova do agente foi melhor ou pior que a anterior.
 
-<PareEPense pergunta="Amanhã você reescreve o prompt, o bilhete, num tom mais seco. O que muda no contrato, o gabarito?">
-Nada. O gabarito diz o que fazer com cada mensagem; o bilhete só muda o jeito de o modelo escrever. Se o bilhete novo fizer o agente prometer desconto, é o gabarito que avisa.
-</PareEPense>
-
 Com um agente, o gabarito pesa mais do que num programa comum: no programa, o caminho está no código; no agente, o modelo escolhe o caminho a cada mensagem. A ideia tem até autor em software: Bertrand Meyer propôs que cada rotina declarasse o que promete, para a promessa poder ser conferida.
 
 <Nota titulo="a definição deste livro">Um **contrato** é o gabarito do agente, escrito antes dele, num formato que uma máquina consegue conferir. Ele tem três partes: as **saídas** possíveis, uma lista fechada (as quatro coisas que a colega fazia); as **regras** que escolhem entre elas, tiradas dos dados e da política da loja; e os **casos de referência**, mensagens de verdade com a saída certa de cada uma.</Nota>
-
-Este gabarito confere o que o agente decide. Outras conferências chegam depois, cada uma quando for precisa: o formato da resposta (capítulo 2), o que as ferramentas recebem (capítulo 3) e que regra valia numa conversa (capítulo 5).
 
 ## 1.5 As quatro decisões
 
@@ -175,62 +164,37 @@ O contrato chama as quatro de responder, abrir chamado, recusar e passar a vez.
 
 <Pendente o="Opinião dos autores: por que quatro decisões, e não três ou cinco" parte="dos autores" />
 
-Como esse gabarito fica em código? Em duas partes, que você escreve na 1.6. A primeira, as quatro coisas da colega, vira um `Enum` em Python: uma lista fechada, de onde o agente escolhe uma, sem inventar uma quinta, como "encaminhar".
+Na 1.6, as quatro viram uma lista fechada em Python, de onde o agente escolhe uma, sem inventar uma quinta, como "encaminhar"; e cada mensagem da prova vira uma linha do `referencia.jsonl`, com a decisão esperada e o porquê.
 
-<Listagem codigo={contratoPy} nome="contrato.py" linhas="12-18" info="um trecho do arquivo que você escreve na 1.6" notas={{ 12: "as quatro saídas do contrato, e só elas", 15: "o que a colega fazia com a frigideira" }} />
+As regras de cada uma, tiradas da política e dos dados da loja:
 
-A segunda são as questões da prova. Cada linha do `referencia.jsonl` é uma mensagem, a decisão que o contrato espera e o porquê. Escreva uma você, com uma mensagem do seu primeiro dia: cada resposta preenche um buraco da linha, e o contrato confere.
+| Decisão | Quando |
+|---|---|
+| **responder** | a resposta está nos dados ou na política |
+| **abrir chamado** | um produto chegou com defeito, dentro do prazo |
+| **recusar** | a loja não permite, e o agente diz por quê |
+| **passar a vez** | o caso é de uma pessoa da equipe |
 
-<MontaQuestao contrato={contratoPy} referencia={referencia} casos={["R10", "R15", "R03", "R07", "R06", "R17"]}
-  pergunta="Escreva a questão desta mensagem para a prova, como a colega faria."
-  nota="As regras são as do contrato.py que você escreve na 1.6; as mensagens e o gabarito, os do referencia.jsonl." />
-
-Os porquês, tirados da política e dos dados da loja, viram estas regras:
-
-| Decisão | Quando | No seu primeiro dia |
-|---|---|---|
-| **responder** | a resposta está nos dados ou na política | "a frigideira vai ao forno?" |
-| **abrir chamado** | um produto chegou com defeito, dentro do prazo | "o lençol descosturou" |
-| **recusar** | a loja não permite, e o agente diz por quê | "me passa o CPF da Ana" |
-| **passar a vez** | o caso é de uma pessoa da equipe | "quero o meu dinheiro de volta" |
-
-Parece simples até você tentar aplicar. Agora, mensagens que a colega não mostrou: escolha o que o agente deveria fazer, e veja o que o contrato diz.
-
-<Classificador referencia={referencia} casos={["R01", "R04", "R09", "R11", "R12", "R13", "R16", "R19"]} numero="1.2" legenda="O contrato na prática. As perguntas e as respostas vêm do arquivo de referência que você vai escrever na parte 1.6c, dentro da IDE." />
-
-Duas perguntas pegam todo mundo. A do pedido BT-1001 parece responder, mas o e-mail é do Bruno e o pedido é da Ana: responder seria mostrar a compra de uma pessoa a outra. A do boleto em 12 vezes parece recusar, mas a política não fala de pagamento, e quando a política não diz, o agente não promete: passa a vez.
-
-<Nota titulo="passar a vez não é falhar">Saber a hora de chamar uma pessoa vale mais que tentar responder tudo. Passar a vez é uma decisão do contrato, com regra própria. O erro é passar quando devia responder, ou responder quando devia passar.</Nota>
+Uma regra pega todo mundo. O boleto em 12 vezes parece recusar, mas a política não fala de pagamento, e quando a política não diz, o agente não promete: passa a vez.
 
 ## 1.6 Mão na massa
 
-O projeto nasce numa pasta vazia e termina com a primeira prova corrigida. Corrigir é o que um professor faz: compara cada resposta com o gabarito e conta os acertos. O livro chama esse jeito de corrigir de **régua**, e a conta de acertos de **nota**. A primeira prova é de quem chuta: um "agente" que passa toda mensagem para a equipe, sem ler, como o aluno que marca C em todas as questões. A nota dele é a **nota de partida**, e todo agente do livro tem que passar dela. Siga pela IDE, um passo por vez.
+O projeto nasce numa pasta vazia e termina com a primeira prova corrigida: cada resposta comparada com o gabarito, e os acertos contados. O livro chama esse jeito de corrigir de **régua**, e a conta, de **nota**. A primeira prova é de quem chuta: um "agente" que passa toda mensagem para a equipe sem ler. A nota dele é a **nota de partida**, e todo agente do livro tem que passar dela.
 
-<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.6a": "O projeto", "1.6b": "O contrato", "1.6c": "As perguntas", "1.6d": "A nota de partida" }} numero="1.3" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
+<IdeCapitulo roteiro={roteiro01} estados={estados01} saidas={saidas} capitulo={passos01} glossario={glossario} secoes={{ "1.6a": "O projeto", "1.6b": "O contrato", "1.6c": "As perguntas", "1.6d": "A nota de partida" }} numero="1.2" legenda="O capítulo construído numa IDE só, da pasta vazia à nota de partida. Os arquivos, o código, os comandos e os erros são os do projeto real, gravados ao montar o livro." />
 
 ## 1.7 O que ficou de pé
 
-<PareEPense pergunta="Por que a regra &quot;pedido e e-mail andam juntos&quot; fica no contrato, e não no agente?">
-Porque ela é uma regra dos casos, não do agente. Todo agente que vier depois, deste capítulo ou do oitavo, vai ser medido contra os mesmos casos. Se um caso estiver mal escrito, o erro aparece quando você escreve o caso, e não semanas depois, quando o agente "errar" uma pergunta que nunca teve resposta certa.
-</PareEPense>
-
 <Pendente o="Opinião dos autores: um caso mal escrito que já chegou à régua de um projeto de vocês" parte="dos autores" />
 
-Agora, o agente mais preguiçoso possível: ele nem lê a mensagem e devolve sempre a mesma decisão. A nota de partida é a dele quando a decisão é passar a vez. E se ele repetisse outra?
+Na IDE, o agente que nem lê a mensagem tirou 40% respondendo sempre, e bateu a nota de partida. Mas no meio dos acertos está o R12: pela nota, um erro entre doze; num atendimento real, os dados de outra pessoa. Uma nota que conta todo erro igual engana; no capítulo 4, os erros passam a ter peso.
 
-<DecisaoFixa referencia={referencia} saidas={saidas} destaque="R12"
-  pergunta="Qual decisão, repetida nas 20 perguntas, tira a maior nota?"
-  nota="As perguntas e o gabarito são os do referencia.jsonl; as notas, as saídas do baseline.py gravadas ao montar o livro, com o decisor trocado." />
-
-Sempre responder tira 40% e bate a nota de partida, mas no meio dos acertos está o R12: pela nota, um erro entre doze; num atendimento real, os dados de outra pessoa. A lição: uma nota que conta todo erro igual engana. No capítulo 4, os erros passam a ter peso.
-
-Com o contrato escrito, as perguntas de referência no lugar e a nota de partida medida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
+Com o contrato, as perguntas de referência e a nota de partida, você tem o que quase todo projeto de agente pula: um jeito de saber se o próximo passo foi para a frente. No capítulo 2 entra o modelo, e a primeira pergunta vai ser a mais honesta possível: ele bate os 25%?
 
 <PontoDeVolta tag="cap-01/fim" />
 
 <Resumo>
 - Um agente é um modelo que decide os próprios passos, num ciclo, usando ferramentas. Se o caminho é sempre o mesmo, um fluxo resolve melhor.
-- Sem uma definição de certo, não existe erro, e sem erro não dá para medir.
 - O contrato tem quatro decisões: responder, abrir chamado, recusar e passar a vez.
 - Passar a vez é uma decisão com regra própria, não uma falha.
 - As perguntas de referência são o contrato em casos; um teste confere se elas batem com os dados da loja.

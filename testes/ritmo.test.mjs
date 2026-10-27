@@ -17,7 +17,7 @@ test("abrir, assistir ou rodar não desliga o relógio; escolher e comparar desl
 });
 
 test("o texto de uma nota conta; o de um Pendente, não", () => {
-  const [a] = medir(texto(`<Nota titulo="t">${vinte}</Nota>\n<Pendente o="${vinte}" parte="x" />\n<Classificador referencia={r} />`));
+  const [a] = medir(texto(`<Nota titulo="t">${vinte}</Nota>\n<Pendente o="${vinte}" parte="x" />\n<Aposta dados={d} />`));
   assert.equal(a.palavras, 20);
 });
 

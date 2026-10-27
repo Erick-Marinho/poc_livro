@@ -1,6 +1,6 @@
 /**
  * As perguntas em cartões, uma por vez (docs/capacidades/capitulo-1-dinamicas.md, etapa 5): uma lista de perguntas de
- * um componente (Classificador, PrimeiroDia, Aposta) vira cartões, um visível por vez, cada um com a sua altura. O
+ * um componente (PrimeiroDia, Aposta, Troca) vira cartões, um visível por vez, cada um com a sua altura. O
  * leitor responde, o retorno aparece no cartão (o do componente) e surge "próxima →"; o próximo entra deslizando da
  * direita. Embaixo, a conta e um ponto por cartão, para voltar. Quem diz se um cartão foi respondido é o componente;
  * os cartões só olham a classe dele. Sem JavaScript e no modo direto (só CSS), a lista fica inteira.

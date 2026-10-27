@@ -76,7 +76,7 @@ test("o formato pega o capítulo que sai dele", () => {
   assert.deepEqual(conferir(certo.replace("## 1.6 Mão na massa", "## 1.6 Código")), [
     'a penúltima seção é "Código", e devia ser "Mão na massa"']);
   assert.match(conferir(certo.replace("## 1.2 ", "## 1.3 ")).join(), /devia ser 1\.2/);
-  assert.match(conferir(certo.replace("<Resumo>", "<Resumo>\n- a mais\n- e mais")).join(), /o resumo tem 8 itens/);
+  assert.match(conferir(certo.replace("<Resumo>", "<Resumo>\n- a mais\n- e mais\n- e mais uma")).join(), /o resumo tem \d+ itens, e o formato pede 5 ou 6/);
   assert.match(conferir(certo.replace("## 1.7 O que ficou de pé", "```py\nx = 1\n```\n\n## 1.7 O que ficou de pé")).join(), /bloco de código/);
   assert.match(conferir(certo.replace("## 1.3 As perguntas", "<Terminal saida={x} />\n\n## 1.3 As perguntas")).join(), /terminal antes da mão na massa/);
 });
