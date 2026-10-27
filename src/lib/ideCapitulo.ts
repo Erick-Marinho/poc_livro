@@ -106,8 +106,8 @@ export function respostaEntregue(saida: [string, string][], nota: string, pergun
 /** O resumo de um arquivo de gravação (livros/<livro>/gravacoes/<id>.json): o dia, o modelo e quantas chamadas. */
 export function resumirGravacao(itens: Record<string, { quando: string; modelo: string }>): GravacaoIde {
   const lista = Object.values(itens);
-  /* o nome do modelo, como a LangChain guarda (a OpenAI usa model_name; outros, model) */
-  /* a LangChain descreve o modelo em JSON (OpenAI) ou como uma lista do Python (Ollama: [('_type', 'chat-ollama'), …]),
+  /* o nome do modelo, como o LangChain guarda (a OpenAI usa model_name; outros, model) */
+  /* o LangChain descreve o modelo em JSON (OpenAI) ou como uma lista do Python (Ollama: [('_type', 'chat-ollama'), …]),
      e nesta o nome do modelo nem sempre vem: aí fica o tipo */
   const nome = (i: { modelo: string }) => {
     if (i.modelo.startsWith("[(")) return i.modelo.match(/\('model', '([^']+)'\)/)?.[1] ?? i.modelo.match(/\('_type', '([^']+)'\)/)?.[1] ?? "modelo desconhecido";

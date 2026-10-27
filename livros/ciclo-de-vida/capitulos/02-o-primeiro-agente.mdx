@@ -4,7 +4,7 @@ numero: 2
 titulo: O primeiro agente
 lide: O modelo entra, mas não manda sozinho. O código desenha os caminhos, o contrato diz o formato da resposta, e a régua do capítulo 1 diz se valeu a pena.
 neste:
-  - monta o agente como um grafo da LangGraph, com estado, nós e setas;
+  - monta o agente como um grafo do LangGraph, com estado, nós e setas;
   - faz o modelo responder no formato do contrato, e não em texto solto;
   - ensaia o grafo com um modelo de mentira, que não chama a OpenAI nem custa nada;
   - corrige a prova do agente com o GPT-6 Luna pelo mesmo gabarito, e compara com a nota de partida.
@@ -40,11 +40,11 @@ import referencia from "../projeto/referencia.jsonl?raw";
 
 ## 2.1 Um agente desenhado
 
-No capítulo 1, a colega saiu de férias e deixou o gabarito. O substituto que começa no lugar dela é montado com a LangGraph, e a LangGraph pensa em **grafo**: caixas ligadas por setas, com um pacote de dados viajando por elas. Antes do modelo e antes do código, as peças, no desenho do próprio agente.
+No capítulo 1, a colega saiu de férias e deixou o gabarito. O substituto que começa no lugar dela é montado com o LangGraph, e o LangGraph pensa em **grafo**: caixas ligadas por setas, com um pacote de dados viajando por elas. Antes do modelo e antes do código, as peças, no desenho do próprio agente.
 
 <RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} agente={agentePy} numero="2.1" legenda="O grafo do agente deste capítulo. Os nós e as arestas são os do grafo real, montado pelo código do projeto; o formato do estado e as frases fixas são os do agente.py. A decisão e o motivo são os do gabarito: o que o modelo decide de verdade você mede no 2.4." />
 
-<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos a LangGraph para montar e executar esse desenho.</Nota>
+<Nota titulo="a definição deste livro">Um **grafo de agente** é o caminho do agente escrito como desenho: nós (os passos), setas (fixas, ou que escolhem pelo estado) e o estado (o que vai passando de um nó para o outro). Usamos o LangGraph para montar e executar esse desenho.</Nota>
 
 <PareEPense pergunta="Se são só quatro caminhos, por que um grafo, e não uma função com quatro if?">
 Com quatro caminhos, a função com `if` funciona. O grafo paga a conta depois. O desenho é um objeto que dá para olhar e testar: um teste deste capítulo pega o grafo que esqueceu um caminho, sem executar modelo nenhum. No capítulo 6, cada nó vira uma etapa que dá para observar, com o tempo e o custo de cada uma. E quando o capítulo 3 trouxer as ferramentas, elas entram como nós novos, sem reescrever os que já existem.
@@ -72,7 +72,7 @@ Para conferir o desenho, cada balcão ligado e cada caminho fazendo o que deve, 
 
 <EnsaioDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} testes={testeAgente} pytest={saidas["r02-pytest"]} numero="2.3" legenda="O ensaio com o modelo de mentira: ele responde o que se combinou, sem chamar a OpenAI e sem custo. O grafo é o real; os dois ensaios são os do test_agente.py, e a saída é a do pytest, gravada." />
 
-O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso da LangChain não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes da LangChain recomenda.
+O modelo falso tem um limite, e você vai tropeçar nele na IDE. A saída estruturada usa ferramentas por baixo, e o falso do LangChain não sabe receber ferramentas. O erro é de verdade, e o conserto é o que a própria documentação de testes do LangChain recomenda.
 
 <PareEPense pergunta="Se o modelo falso responde o que a gente combinou, o que esses testes provam?">
 Provam o encanamento, não a inteligência. Que o grafo tem um caminho para cada decisão, que cada caminho faz o que deve, que o caminho de passar a vez não gasta uma chamada. Se o modelo decide bem, eles não dizem: para isso existe a régua. Os dois juntos dizem onde está o problema quando a nota cai: no desenho (os testes quebram) ou na decisão do modelo (os testes passam e a nota cai).

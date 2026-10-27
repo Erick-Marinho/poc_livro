@@ -411,7 +411,7 @@
       "id": "sc-uv-add-ollama",
       "comando": "uv add langchain-ollama",
       "espera": 0,
-      "nota": "A primeira dependência do projeto: a ponte da LangChain para o Ollama. Ela fala com o modelo que é executado na sua máquina, sem nada sair dela.",
+      "nota": "A primeira dependência do projeto: a ponte do LangChain para o Ollama. Ela fala com o modelo que é executado na sua máquina, sem nada sair dela.",
       "suavez": "Antes, instale o Ollama (ollama.com/download; no Linux, o script de instalação do site) e baixe o modelo com `ollama pull llama3.2:3b`. São uns 2 GB, e é executado sem placa de vídeo, só mais devagar. Depois execute o comando na pasta do projeto."
     },
     {

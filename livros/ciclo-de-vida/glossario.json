@@ -201,7 +201,7 @@
       "texto": "Nenhum campo é obrigatório: o estado começa só com a pergunta, e cada nó acrescenta o que descobriu."
     },
     "estado": {
-      "texto": "O que o grafo carrega de um nó para o outro. Cada nó lê o estado e devolve só o que mudou; a LangGraph junta com o que já estava lá."
+      "texto": "O que o grafo carrega de um nó para o outro. Cada nó lê o estado e devolve só o que mudou; o LangGraph junta com o que já estava lá."
     },
     "with_structured_output": {
       "marca": "with_structured_output",
@@ -222,7 +222,7 @@
     },
     "StateGraph": {
       "marca": "StateGraph",
-      "texto": "O grafo da LangGraph: você diz quais são os nós, por onde se entra e para onde cada um vai, e ele cuida de passar o estado adiante."
+      "texto": "O grafo do LangGraph: você diz quais são os nós, por onde se entra e para onde cada um vai, e ele cuida de passar o estado adiante."
     },
     "add_node": {
       "marca": "add_node",
@@ -233,7 +233,7 @@
       "texto": "Uma seta fixa: depois deste nó, vai sempre para aquele."
     },
     "START / END": {
-      "texto": "Os dois pontos que todo grafo tem: por onde se entra e onde se termina. Não são nós seus; vêm da LangGraph."
+      "texto": "Os dois pontos que todo grafo tem: por onde se entra e onde se termina. Não são nós seus; vêm do LangGraph."
     },
     "add_conditional_edges": {
       "marca": "add_conditional_edges",
@@ -249,7 +249,7 @@
     },
     "GenericFakeChatModel": {
       "marca": "GenericFakeChatModel",
-      "texto": "O modelo falso da LangChain: devolve, na ordem, as respostas que você combinou. Não chama ninguém e não custa nada."
+      "texto": "O modelo falso do LangChain: devolve, na ordem, as respostas que você combinou. Não chama ninguém e não custa nada."
     },
     "AIMessage": {
       "marca": "AIMessage",
@@ -271,7 +271,7 @@
     },
     "ChatOpenAI": {
       "marca": "ChatOpenAI",
-      "texto": "A ponte entre a LangChain e os modelos da OpenAI. Lê a chave da variável de ambiente OPENAI_API_KEY."
+      "texto": "A ponte entre o LangChain e os modelos da OpenAI. Lê a chave da variável de ambiente OPENAI_API_KEY."
     },
     "max_tokens": {
       "marca": "max_tokens",

@@ -1,6 +1,6 @@
 """A gravação do que o modelo respondeu: o livro chama o modelo uma vez (paga, com o ok dos autores) e repete no build.
 
-É o cache de modelos da LangChain (`set_llm_cache`) trocado por um que lê e grava um arquivo. Toda chamada a um
+É o cache de modelos do LangChain (`set_llm_cache`) trocado por um que lê e grava um arquivo. Toda chamada a um
 modelo de chat passa por ele antes de ir para a rede, com uma chave feita das mensagens e dos parâmetros do modelo;
 o código do leitor não muda. O `sitecustomize.py` desta pasta liga a gravação quando LIVRO_GRAVACAO aponta um arquivo:
 

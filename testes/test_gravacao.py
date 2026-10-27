@@ -1,6 +1,6 @@
 """A gravação do modelo (scripts/gravacao): grava uma vez, repete sem chamar, e recusa a chamada que não foi gravada.
 
-Roda com o Python do projeto, que tem a LangChain: npm test chama isto. Nenhum modelo de verdade é chamado: o
+Roda com o Python do projeto, que tem o LangChain: npm test chama isto. Nenhum modelo de verdade é chamado: o
 "modelo de mentira" daqui conta quantas vezes foi chamado, e é isso que os testes conferem.
 """
 import json

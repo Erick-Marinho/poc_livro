@@ -11,19 +11,19 @@
     {
       "id": "langgraph",
       "secao": "2.5a",
-      "titulo": "A LangGraph entra",
+      "titulo": "O LangGraph entra",
       "curta": "uv add langgraph",
       "de": 1,
       "ate": 1,
       "objetivo": "a biblioteca que monta o agente como um grafo, instalada no projeto do capítulo 1.",
-      "temos": "a LangGraph no `pyproject.toml`, com a mesma data de versões do capítulo 1.",
+      "temos": "o LangGraph no `pyproject.toml`, com a mesma data de versões do capítulo 1.",
       "antes": [
         "O projeto é o mesmo do capítulo 1: o contrato, as 20 perguntas e a régua continuam aqui. Agora entra o agente, e ele vai ser um grafo: cada passo é um nó, e as setas dizem qual vem depois."
       ],
       "depois": [
         "O `pyproject.toml` e o `uv.lock` mudaram, mas não nasceram agora: estão marcados como mudados, não como novos."
       ],
-      "pedido": "Bora para o agente. Ele vai ser um grafo da LangGraph: instala no projeto."
+      "pedido": "Bora para o agente. Ele vai ser um grafo do LangGraph: instala no projeto."
     },
     {
       "id": "escolha",
@@ -104,10 +104,10 @@
       "curta": "o modelo falso",
       "de": 7,
       "ate": 8,
-      "objetivo": "um teste do desenho do grafo, com o modelo falso da LangChain.",
+      "objetivo": "um teste do desenho do grafo, com o modelo falso do LangChain.",
       "temos": "um teste que falha, e o porquê.",
       "antes": [
-        "Testar com o modelo de verdade custa e muda a cada execução. A LangChain tem um modelo falso, que devolve o que a gente combinar. E um dos passos dá errado de verdade."
+        "Testar com o modelo de verdade custa e muda a cada execução. O LangChain tem um modelo falso, que devolve o que a gente combinar. E um dos passos dá errado de verdade."
       ],
       "depois": [
         "O erro diz que o modelo falso não sabe fazer saída estruturada. Ela usa ferramentas por baixo, e o falso não sabe receber ferramentas."
@@ -124,7 +124,7 @@
       "objetivo": "um modelo falso que finge saber receber ferramentas.",
       "temos": "`ModeloFalso` e o teste do desenho passando.",
       "antes": [
-        "A própria documentação de testes da LangChain mostra o caminho: herdar o modelo falso e trocar só o `bind_tools`."
+        "A própria documentação de testes do LangChain mostra o caminho: herdar o modelo falso e trocar só o `bind_tools`."
       ],
       "depois": [
         "Um teste passou, sem internet e sem chave. O grafo tem um nó para cada decisão do contrato."
@@ -159,7 +159,7 @@
       "curta": "uv add langchain-openai",
       "de": 14,
       "ate": 14,
-      "objetivo": "a ponte entre a LangChain e o GPT-6 Luna.",
+      "objetivo": "a ponte entre o LangChain e o GPT-6 Luna.",
       "temos": "o `langchain-openai` no projeto.",
       "antes": [
         "Até aqui, modelo nenhum. Para medir de verdade, entra a ponte com a OpenAI. O modelo do livro é o GPT-6 Luna."

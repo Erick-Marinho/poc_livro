@@ -7,7 +7,7 @@ from contrato import Decisao
 
 
 class ModeloFalso(GenericFakeChatModel):
-    """O modelo falso da LangChain não sabe usar ferramentas; a saída estruturada usa uma, então ele finge que sabe."""
+    """O modelo falso do LangChain não sabe usar ferramentas; a saída estruturada usa uma, então ele finge que sabe."""
 
     def bind_tools(self, tools, **kwargs):
         return self

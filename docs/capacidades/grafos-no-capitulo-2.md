@@ -1,6 +1,6 @@
 # O capítulo 2 explica o grafo antes de usá-lo
 
-**Problema.** O capítulo 2 monta o agente na LangGraph, mas não explica nó, aresta nem estado: o 2.1 mostra "o roteiro
+**Problema.** O capítulo 2 monta o agente no LangGraph, mas não explica nó, aresta nem estado: o 2.1 mostra "o roteiro
 do substituto" com balcões e uma ficha, e só numa nota define "grafo de agente". Quem nunca viu um grafo chega à IDE
 sem saber o que é uma aresta condicional, nem o que viaja de um nó para o outro. O Erick propôs uma introdução a
 grafos e arestas, com outros conceitos úteis, deixando a teoria dos grafos e as máquinas de estado (finita e
@@ -9,7 +9,7 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 ## Decisões
 
 - (27/10/2026, Erick) "Ok para ambas": a figura nova do 2.1 e o texto curto das peças, com a listagem de `montar()`.
-- (1) Só o mínimo para ler o código da LangGraph, cada peça ligada a uma linha real do `agente.py`: nó, aresta, aresta
+- (1) Só o mínimo para ler o código do LangGraph, cada peça ligada a uma linha real do `agente.py`: nó, aresta, aresta
   condicional, START e END, estado (cada nó devolve só o que mudou) e compilar e executar. Ficam para o outro livro,
   com uma linha avisando: teoria dos grafos, máquina de estados finita e hierárquica, ciclos, subgrafos e memória. Os
   ciclos aparecem no capítulo 3, com as ferramentas.

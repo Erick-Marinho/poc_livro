@@ -1,13 +1,13 @@
 {
   "capitulo": 2,
-  "sobre": "O caminho do código do capítulo 2, que parte de onde o capítulo 1 terminou, na ordem em que se pensa e com o erro do caminho: o modelo falso da LangChain sem o ajuste que a saída estruturada pede. O medir.py chama o GPT-6 Luna; a resposta é a gravada em gravacoes/r02-medir.json.",
+  "sobre": "O caminho do código do capítulo 2, que parte de onde o capítulo 1 terminou, na ordem em que se pensa e com o erro do caminho: o modelo falso do LangChain sem o ajuste que a saída estruturada pede. O medir.py chama o GPT-6 Luna; a resposta é a gravada em gravacoes/r02-medir.json.",
   "passos": [
     {
       "acao": "rodar",
       "id": "r02-uv-add-langgraph",
       "comando": "uv add langgraph",
       "espera": 0,
-      "nota": "A LangGraph monta o agente como um grafo: cada passo é um nó, e as setas dizem qual vem depois."
+      "nota": "O LangGraph monta o agente como um grafo: cada passo é um nó, e as setas dizem qual vem depois."
     },
     {
       "acao": "escrever",
@@ -70,7 +70,7 @@
           "linhas": "5-9"
         }
       ],
-      "nota": "De volta ao topo: o estado e o grafo vêm da LangGraph, e o tipo do modelo vem da LangChain."
+      "nota": "De volta ao topo: o estado e o grafo vêm do LangGraph, e o tipo do modelo vem do LangChain."
     },
     {
       "acao": "inserir",
@@ -159,7 +159,7 @@
             "opcoes": [
               "porque o modelo não sabe passar a vez",
               "porque ali o modelo não precisa escrever: sai mais barato e ele não improvisa",
-              "porque a LangGraph exige"
+              "porque o LangGraph exige"
             ],
             "certa": 1,
             "porque": "Na hora de entregar o caso a uma pessoa, não há o que inventar. Onde o modelo não precisa escrever, ele não escreve."
@@ -203,12 +203,12 @@
           "linhas": "20-24"
         }
       ],
-      "nota": "Testar o grafo sem chamar modelo de verdade: o modelo falso da LangChain devolve o que a gente combinar.",
+      "nota": "Testar o grafo sem chamar modelo de verdade: o modelo falso do LangChain devolve o que a gente combinar.",
       "blocos": [
         {
           "linhas": "1-6",
           "titulo": "o modelo falso",
-          "texto": "O GenericFakeChatModel vem da própria LangChain: devolve, na ordem, as respostas combinadas. Não chama ninguém e não custa nada.",
+          "texto": "O GenericFakeChatModel vem do próprio LangChain: devolve, na ordem, as respostas combinadas. Não chama ninguém e não custa nada.",
           "termos": [
             "GenericFakeChatModel",
             "AIMessage"
@@ -239,7 +239,7 @@
       "comando": "uv run pytest -q test_agente.py 2>&1 | grep -E \"^E |failed\"",
       "espera": 0,
       "aposta": {
-        "pergunta": "O modelo falso da LangChain dá conta da saída estruturada?",
+        "pergunta": "O modelo falso do LangChain dá conta da saída estruturada?",
         "opcoes": [
           "Dá: ele devolve a escolha combinada",
           "Não dá: falta alguma coisa nele"
@@ -251,7 +251,7 @@
         "opcoes": [
           "Porque um teste que falha não pode avaliar código de grafo.",
           "Porque o falso parou na saída estruturada, antes de o teste inspecionar os nós.",
-          "Porque a LangGraph ignora erros produzidos por modelos falsos."
+          "Porque o LangGraph ignora erros produzidos por modelos falsos."
         ],
         "certa": 1,
         "evidencia": "with_structured_output is not implemented for this model",
@@ -268,7 +268,7 @@
           "linhas": "7-13"
         }
       ],
-      "nota": "A documentação de testes da LangChain manda fazer assim: um modelo falso que finge saber receber ferramentas.",
+      "nota": "A documentação de testes do LangChain manda fazer assim: um modelo falso que finge saber receber ferramentas.",
       "blocos": [
         {
           "linhas": "9-13",
@@ -374,7 +374,7 @@
       "id": "r02-uv-add-openai",
       "comando": "uv add langchain-openai",
       "espera": 0,
-      "nota": "A ponte entre a LangChain e os modelos da OpenAI, como o GPT-6 Luna."
+      "nota": "A ponte entre o LangChain e os modelos da OpenAI, como o GPT-6 Luna."
     },
     {
       "acao": "escrever",

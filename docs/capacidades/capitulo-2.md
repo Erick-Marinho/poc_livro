@@ -28,7 +28,7 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (1) A ponte com o modelo (`langchain-openai`) entra na etapa 3, quando ele é usado: o leitor não instala antes.
 - (3) O modelo do livro é o GPT-6 Luna, da OpenAI (decisão do Erick, 24/10/2026); o prefácio diz isso.
 - (3) Repetindo a gravação, o comando recebe uma chave de mentira: o cliente da OpenAI exige uma ao ser criado.
-- (4b) O erro do caminho do capítulo 2 é o modelo falso da LangChain sem o `bind_tools`: real, e documentado por ela.
+- (4b) O erro do caminho do capítulo 2 é o modelo falso do LangChain sem o `bind_tools`: real, e documentado por ele.
 - (4b) Texto que cita um número gravado (a nota) tem teste: se a gravação mudar, o build avisa.
 - (5a) O texto diz que o agente do capítulo 2 ainda não é um agente inteiro: sem ferramenta e sem ciclo.
 - (5a) Frase do modelo citada no texto é a gravada, palavra por palavra, e um teste confere.
@@ -37,7 +37,7 @@ consultar o pedido, e o erro dele nos casos de pedido é o gancho do capítulo 3
 - (6) O placar pergunta pelo capítulo seguinte ao da página (`proximos`), e não por um "próximo" único.
 - (1) O roteiro 02 nasce com o primeiro código e cresce a cada etapa; capítulo sem `passos/02.json` não ganha tags.
 - (1) Onde o modelo não precisa escrever, ele não escreve: passar a vez e abrir chamado têm texto fixo.
-- (2) A gravação é o cache de modelos da LangChain trocado por um arquivo: o código do leitor não muda.
+- (2) A gravação é o cache de modelos do LangChain trocado por um arquivo: o código do leitor não muda.
 - (2) Todo comando do livro roda com a gravação ligada: o build nunca chama um modelo de verdade.
 
 ## Etapa atual: 6
