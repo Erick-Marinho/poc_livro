@@ -26,7 +26,7 @@ conteúdo.
 | 2 | Os experimentos com o topo, o sumário, a pílula e as configurações do livro | navega entre experimentos, liga o foco e abre a IDE como no livro |
 | 3 | A revisão dos experimentos: storytelling, padrão de caixas e conteúdo | lê experimentos no mesmo padrão dos capítulos |
 
-## Etapa atual: 3c — o storytelling
+## Última etapa: 3c — o storytelling (concluída)
 
 - "A régua passou, a resposta não", nos três: no Temperatura zero, a caixa das 90 respostas (3b); no Segundo cérebro,
   a nota da régua do modelo na IDE lê a resposta da cliente (passou por conter "Clínica Aurora", mas diz que a cliente
@@ -51,6 +51,6 @@ conteúdo.
 | 2 | f88b321 | `testes/controles-experimentos.test.mjs` (2): em cada experimento, o sumário com os três, o atual marcado, o topo com a seção e os comandos, a pílula, as seções do molde; e a pílula que se recolhe ao rolar sem guardar. `npm test` 200/200. Num navegador, no Pausa e fluxo a 1280 e 390 px: o sumário, o topo, a pílula e o recolhimento ao rolar e ao tocar | Erick, 27/10/2026 |
 | 3a | 325c753 | Conferido nas gravações (sc-nota-modelo: 3,7 a 16,1 s, média 10,8), no cofre (dois e-mails com 21/11, um sobre a entrega) e no PyTorch (2.8 responde). `npm test` 200/200; a página do Pausa e fluxo tem a Figura 1 | Erick, 27/10/2026 |
 | 3b | 40dfedf | Testes (+3): os porquês sem as notas da régua nem as datas; o vídeo do caminho termina antes da escolha e da régua; a avaliação cita trechos da coleta e a resposta da água não diz 100 °C; o palpite da IDE no controle. `npm test` 202/202; ritmo dos experimentos sem aviso novo (o do Segundo cérebro caiu de 244 para 210). Captura da caixa da temperatura respondida até o fim | Erick, 27/10/2026 |
-| 3c | b2f3a43 | `npm test` 203/203 (o padrão de caixas nos experimentos; o Pare e pense do ritmo contra a coleta; o vídeo do caminho com as etapas inteiras e só três visíveis). Ritmo: o Segundo cérebro segue com o aviso de 210 que já tinha; os outros, sem aviso. Capturas: a figura do Segundo cérebro rolando a 1280 e 390 px, até as frases que empatam; o exercício do Pausa e fluxo. A figura do Segundo cérebro fica pequena no celular (1280×720), como já ficava | aguardando revisão |
+| 3c | b2f3a43 | `npm test` 203/203 (o padrão de caixas nos experimentos; o Pare e pense do ritmo contra a coleta; o vídeo do caminho com as etapas inteiras e só três visíveis). Ritmo: o Segundo cérebro segue com o aviso de 210 que já tinha; os outros, sem aviso. Capturas: a figura do Segundo cérebro rolando a 1280 e 390 px, até as frases que empatam; o exercício do Pausa e fluxo. A figura do Segundo cérebro fica pequena no celular (1280×720), como já ficava | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
