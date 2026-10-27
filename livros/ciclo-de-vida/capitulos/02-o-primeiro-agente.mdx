@@ -40,10 +40,14 @@ import referencia from "../projeto/referencia.jsonl?raw";
 import escala from "../figuras/escala.json";
 import quemDecide from "../figuras/quem-decide.json";
 import AndarDaTorre from "../../../src/components/livro/AndarDaTorre.astro";
+import Aposta from "../../../src/components/livro/Aposta.astro";
+import caminhoDoR10 from "../figuras/caminho-do-r10.json";
 
 ## 2.1 Um agente desenhado
 
 No capítulo 1, a colega saiu de férias e deixou o gabarito. O substituto que começa no lugar dela é montado com o LangGraph, e o LangGraph pensa em **grafo**: caixas ligadas por setas, com um pacote de dados viajando por elas. Antes do modelo e antes do código, as peças, no desenho do próprio agente.
+
+<Aposta referencia={referencia} dados={caminhoDoR10} pergunta="Antes do desenho: chega esta mensagem. Para qual caixa do grafo ela vai?" />
 
 <RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} agente={agentePy} numero="2.1" legenda="O grafo do agente deste capítulo. Os nós e as arestas são os do grafo real, montado pelo código do projeto; o formato do estado e as frases fixas são os do agente.py. A decisão e o motivo são os do gabarito: o que o modelo decide de verdade você mede no 2.4." />
 

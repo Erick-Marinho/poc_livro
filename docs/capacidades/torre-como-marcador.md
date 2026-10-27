@@ -32,6 +32,6 @@ da nota.
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | a69f518 | `testes/andar-da-torre.test.mjs` (2): os andares são os da Aposta, o aceso é o roteador e o próximo, o agente, acima dele; no 2.1 depois do Pare e pense, no 2.6 antes do ponto de volta; a página tem as duas torres e diz "roteador". `npm test` 192/192; ritmo do capítulo 2 sem aviso nas seções. Capturas a 1280 e 390 px das duas torres | aguardando revisão |
+| 1 | a69f518 | `testes/andar-da-torre.test.mjs` (2): os andares são os da Aposta, o aceso é o roteador e o próximo, o agente, acima dele; no 2.1 depois do Pare e pense, no 2.6 antes do ponto de volta; a página tem as duas torres e diz "roteador". `npm test` 192/192; ritmo do capítulo 2 sem aviso nas seções. Capturas a 1280 e 390 px das duas torres | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
