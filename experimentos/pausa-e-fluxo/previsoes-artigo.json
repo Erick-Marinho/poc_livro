@@ -1,0 +1,18 @@
+{
+  "resultado": "O que a documentação do Ollama indica",
+  "fechos": {
+    "nenhum": "É o detalhe que o laboratório do artigo não mostra.",
+    "alguns": "Você viu o detalhe que o laboratório do artigo não mostra."
+  },
+  "mensagens": [
+    {
+      "texto": "O laboratório do artigo mede a leitura com a mesma frase repetida 10, 60 e 150 vezes, um texto depois do outro. O tempo de leitura que o Ollama informa vai crescer como a nossa pausa cresceu?",
+      "opcoes": [
+        "Sim: 15 vezes mais frase, 15 vezes mais tempo",
+        "Não necessariamente: os três textos começam iguais"
+      ],
+      "fez": 1,
+      "porque": "O Ollama só conta o tempo de ler o que não estava no cache, e os três textos começam com a mesma frase. Não medimos o laboratório do artigo: é o que a documentação do Ollama diz, e o que a nossa primeira coleta mostrou com a mensagem longa repetida."
+    }
+  ]
+}

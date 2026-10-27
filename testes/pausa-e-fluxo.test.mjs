@@ -52,3 +52,30 @@ test("a figura está na página, em \"O que vamos construir\", antes da IDE", ()
   assert.match(html, /data-pausa-e-fluxo/);
   assert.match(html, /data-nivel="novato"/);
 });
+
+/* as ações do texto (docs/RITMO.md): o que cada uma diz bate com as saídas gravadas */
+const pasta = new URL("../experimentos/pausa-e-fluxo/", import.meta.url);
+const json = (nome) => JSON.parse(readFileSync(new URL(nome, pasta), "utf8"));
+const saida = (id) => json("saidas.json")[id].saida.map(([l]) => l);
+const linhaDe = (id, caso) => saida(id).find((l) => l.startsWith(`${caso} `));
+const numero = (linha, nome) => Number(linha.match(new RegExp(`${nome}\\s+([\\d.]+)`))[1]);
+
+test("as ações do texto dizem o que as coletas gravadas mostram", () => {
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  assert.doesNotMatch(mdx, /<Rascunho\b/);
+  // a primeira: a longa demora muito mais para começar, e escreve quase no mesmo ritmo (dentro dos 20% da régua)
+  const [curta, longa] = ["curta", "longa"].map((c) => linhaDe("pf-limpa", c));
+  assert.ok(numero(longa, "pausa") > 10 * numero(curta, "pausa"));
+  assert.ok(Math.abs(numero(longa, "fluxo") - numero(curta, "fluxo")) <= 0.2 * numero(curta, "fluxo"));
+  const p = json("previsoes.json").mensagens[0];
+  assert.match(p.opcoes[p.fez], /^Demora mais para começar, e depois escreve quase no mesmo ritmo$/);
+  assert.doesNotMatch(p.porque, /\d/, "o retorno não adianta os números de \"O que deu\"");
+  // o pare e pense: os tokens que a longa e a curta leem
+  assert.ok(mdx.includes(`Mais: ${numero(longa, "lê")}.`) && mdx.includes(`com 10 palavras, vira ${numero(curta, "lê")}.`));
+  // a do artigo: na primeira coleta, da segunda vez em diante a longa veio quase toda do cache
+  const vezes = saida("pf-vezes").map((l) => l.match(/(\d+) de (\d+) tokens vieram do cache/).slice(1).map(Number));
+  assert.ok(vezes[0][0] < 100 && vezes.slice(1).every(([cache, lidos]) => cache > lidos - 5));
+  const a = json("previsoes-artigo.json").mensagens[0];
+  assert.match(a.opcoes[a.fez], /começam iguais/);
+  assert.match(a.porque, /Não medimos o laboratório do artigo/);
+});

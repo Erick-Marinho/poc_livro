@@ -48,7 +48,7 @@ export function baloes(): Balao[] {
     "Depois, ele escreve um pedaço por vez.",
     "O fluxo: quantos pedaços saem por segundo.",
     "O medidor cronometra os dois, nas três mensagens.",
-    "Você investe na IDE, antes de medir.",
+    "Na IDE, você mede e confere o seu palpite.",
   ];
   return textos.map((texto, k) => ({ de: CENAS[k].de + 0.2, ate: k + 1 < CENAS.length ? CENAS[k + 1].de + 0.2 : SEGUNDOS + 1, texto }));
 }

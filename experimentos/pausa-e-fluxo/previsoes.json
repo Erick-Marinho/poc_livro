@@ -1,0 +1,20 @@
+{
+  "resultado": "Na medida",
+  "fechos": {
+    "nenhum": "Vamos cronometrar os dois trabalhos para ver.",
+    "alguns": "Você acertou {n} de {total}. Agora vamos medir de verdade."
+  },
+  "mensagens": [
+    {
+      "texto": "Você manda ao chat uma mensagem com umas 40 vezes mais palavras. O que acontece?",
+      "opcoes": [
+        "Demora mais para começar, e depois escreve quase no mesmo ritmo",
+        "Começa na mesma hora, e escreve mais devagar",
+        "Demora mais para começar e escreve mais devagar",
+        "Nada muda"
+      ],
+      "fez": 0,
+      "porque": "São dois trabalhos. Antes da primeira palavra, o modelo lê tudo o que recebeu; depois, escreve um pedaço por vez. A leitura cresce com a mensagem; a escrita quase não muda. O medidor vai cronometrar os dois."
+    }
+  ]
+}
