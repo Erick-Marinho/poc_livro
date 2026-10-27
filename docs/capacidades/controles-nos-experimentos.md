@@ -30,5 +30,6 @@ conteúdo.
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | a542a3e | Num navegador, a 1280 e 390 px, no capítulo 1: no topo, a pílula; rolando 500 px, o círculo; tocando nele, a pílula de novo; rolando 400 px, o círculo. `npm test` 198/198 | aguardando revisão |
 
 (redação: Claude Opus 5.5)
