@@ -40,5 +40,6 @@ hierárquica) para outro livro; e a figura do 2.1 com nós de verdade e o estado
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | c44b6f6 | `npm test` 189/189; capturas por rolagem em 1280 e 390 px: as peças acendem uma a uma, o `{ }` para na borda de baixo de cada nó sem cobrir o nome, o estado ganha `decisao` e `motivo` em `decidir` e `resposta` no caminho (no R15, "o modelo escreve") | Erick, 27/10/2026 |
+| 2 | d09c708 | `npm test` 190/190; `npm run ritmo`: o trecho do 2.1 sem ação tem 166 palavras; capturas em 1280 e 390 px da listagem com as sete notas | aguardando revisão |
 
 (redação: Claude Opus 5.5)
