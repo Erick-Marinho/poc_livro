@@ -36,5 +36,6 @@ não tem: pedido, catálogo, política de troca.
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | 19749fb | `testes/pausa-e-fluxo-condominio.test.mjs` (2): a mesma pergunta, 10 → 97 → 462 palavras (cada uma ao menos 4 vezes a anterior), começos diferentes, a regra de sábado só na média e na longa, o aviso de inventado. `npm test` 207/207; o experimento publicado não muda | aguardando revisão |
 
 (redação: Claude Opus 5.5)
