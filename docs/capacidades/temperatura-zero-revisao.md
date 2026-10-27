@@ -12,6 +12,11 @@ nem por que o lote muda a ordem da conta; e o resultado é uma barra só, "90 de
 - (1) As restrições do plano do experimento valem: até seis cenas e 45 segundos por animação, sem áudio; números do
   código (`numeros.py`, `figuras/mapa.py`); o esquema do lote diz que é esquema do mecanismo descrito na fonte; nada
   de GPU medida.
+- (27/10/2026, Erick) No lugar do 2º Invista (o de antes do mapa), uma animação com cenas, "lúdica e intuitiva", que
+  explique o texto de abertura: o token, a pontuação, o sorteio, a temperatura, a temperatura zero, o cálculo antes da
+  escolha e o lote. O leitor lê a parte difícil e encontra a animação que a desembaraça.
+- (1) A animação nova e o mapa ficam colados: a cena "A escolha" do mapa repetiria a animação, e sai; o mapa começa em
+  "Sozinha ou em grupo", com os números do código.
 - (1) As três etapas em sequência, cada uma com o seu commit e o seu registro; o Erick revisa no fim.
 
 ## Etapas
@@ -21,6 +26,7 @@ nem por que o lote muda a ordem da conta; e o resultado é uma barra só, "90 de
 | 1 | O texto em linguagem simples: temperatura, token e lote definidos antes do uso; o primeiro Invista sem "guloso" nem "desempate"; a régua, o título da prova e a instalação reescritos | o leitor entende o que está testando antes de testar |
 | 2 | O mapa na base de tocar ou rolar do livro, claro, com balões, em seis cenas: a escolha, a régua de 16 bits, sozinha ou em lote, as barras, o token que volta, a folga; a previsão num Invista antes | o modo de rolar, e o elo entre o lote e a soma |
 | 3 | O resultado como figura: as 90 respostas, por pergunta e por lote, que o leitor compara lote a lote | o "inesperado" vira algo que o leitor vê e confere |
+| 4 | No lugar do 2º Invista, a animação "como o modelo escolhe", em seis cenas; o mapa perde a cena repetida | o leitor vê o token, o sorteio, a temperatura e o lote antes do mecanismo |
 
 ## Etapa 1 — o texto
 
@@ -51,6 +57,16 @@ nem por que o lote muda a ordem da conta; e o resultado é uma barra só, "90 de
   grupo muda alguma resposta e compara grupo a grupo; no fim, a contagem e a previsão dele.
 - Os quadradinhos saem da coleta real (`coleta-cpu.json`) e têm que bater, linha por linha, com a saída gravada do
   `medir.py`; a resposta que usou os 48 tokens fica marcada como cortada. Sem JS e no modo direto, a grade comparada.
+
+## Etapa 4 — como o modelo escolhe
+
+- Uma animação nova (`temperatura/escolha.ts`), de tocar ou rolar, com balões, em seis cenas: um token por vez ("O
+  pedido chega ..."); a pontuação de cada token possível; o sorteio, com a temperatura em 1, e três execuções que
+  escrevem três respostas; a temperatura zero, em que as três escrevem a mesma; o cálculo antes da escolha; e o lote,
+  em que a pergunta vai sozinha ou num grupo e a ordem das somas pode mudar, sem que a resposta precise mudar.
+- É ilustração: os tokens e as pontuações são do exemplo (`figuras/escolha.json`); as chances saem da conta com a
+  temperatura, e os sorteios usam números fixos, para o vídeo ser sempre o mesmo.
+- Sai o Invista de antes do mapa (`previsoes-mapa.json`); o mapa perde a cena "A escolha".
 
 ## Registro
 

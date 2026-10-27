@@ -1,0 +1,13 @@
+{
+  "sobre": "A animação \"como o modelo escolhe\" (docs/capacidades/temperatura-zero-revisao.md, etapa 4). É ilustração: os tokens e as pontuações foram escritos para o exemplo. As chances saem da conta com a temperatura (src/components/livro/temperatura/escolha.ts), e os sorteios usam números fixos entre 0 e 1, para o vídeo ser sempre o mesmo.",
+  "pergunta": "Quando chega o meu pedido?",
+  "escrito": ["O", "pedido", "chega"],
+  "candidatos": [
+    { "token": "amanhã", "pontuacao": 3.1 },
+    { "token": "hoje", "pontuacao": 2.6 },
+    { "token": "logo", "pontuacao": 1.4 },
+    { "token": "sexta", "pontuacao": 0.9 }
+  ],
+  "temperatura": 1,
+  "sorteios": [0.35, 0.72, 0.93]
+}

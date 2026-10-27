@@ -1,0 +1,22 @@
+---
+/**
+ * Como o modelo escolhe, no experimento da temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 4): a
+ * animação temperatura/FiguraEscolha.tsx, que o leitor toca ou rola. É ilustração (figuras/escolha.json); as chances e
+ * os sorteios saem da conta em temperatura/escolha.ts. Sem JS, os balões em lista.
+ */
+import FiguraEscolha from "./temperatura/FiguraEscolha";
+import { baloes, montarEscolha } from "./temperatura/escolha.ts";
+
+interface Props { dados: any }
+const escolha = montarEscolha(Astro.props.dados);
+---
+<figure class="como-escolhe" data-como-escolhe>
+  <FiguraEscolha client:visible={{ rootMargin: "400px" }} escolha={escolha} />
+  <noscript><ol>{baloes(escolha).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption>Ilustração: os tokens e as pontuações foram escritos para o exemplo. As chances saem da conta com a temperatura, e cada sorteio, de um número fixo, para o vídeo ser sempre o mesmo.</figcaption>
+</figure>
+
+<style is:global>
+  .como-escolhe { margin: 1.8em auto 2em; max-width: 800px }
+  .como-escolhe figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>

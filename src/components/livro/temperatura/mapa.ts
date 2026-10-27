@@ -1,7 +1,7 @@
 /**
  * O mapa da temperatura zero (docs/capacidades/temperatura-zero-revisao.md, etapa 2): o vídeo que o leitor toca ou rola
- * (palco/RolaCena.tsx), em seis cenas: a escolha sem sorteio, a mesma pergunta sozinha ou num grupo (esquema do que a
- * fonte descreve), a régua de 16 bits que arredonda, as pontuações e o vencedor, o token que volta à entrada e o
+ * (palco/RolaCena.tsx), em cinco cenas (a escolha sem sorteio fica para a animação de antes, escolha.ts): a mesma
+ * pergunta sozinha ou num grupo (esquema do que a fonte descreve), a régua de 16 bits que arredonda, as pontuações e o vencedor, o token que volta à entrada e o
  * controle com folga. Todo número sai de figuras/mapa.py (a saída gravada tz-mapa); se a soma, as barras e a escolha
  * não conferem, a figura não monta. Puro de propósito: o teste do experimento chama isto direto.
  */
@@ -15,17 +15,16 @@ export type DadosMapa = { tipo: string; guardaveis: number[]; caminhos: Caminho[
 export const FPS = 30;
 /** as seis cenas, com o começo de cada uma em segundos; a última vai até o fim */
 export const CENAS = [
-  { nome: "A escolha", de: 0 },
-  { nome: "Sozinha ou em grupo", de: 5 },
-  { nome: "A régua de 16 bits", de: 10.5 },
-  { nome: "As pontuações", de: 18.5 },
-  { nome: "O token volta", de: 23.5 },
-  { nome: "Com folga", de: 27.5 },
+  { nome: "Sozinha ou em grupo", de: 0 },
+  { nome: "A régua de 16 bits", de: 5.5 },
+  { nome: "As pontuações", de: 13.5 },
+  { nome: "O token volta", de: 18.5 },
+  { nome: "Com folga", de: 22.5 },
 ];
-export const SEGUNDOS = 33;
+export const SEGUNDOS = 28;
 export const DURACAO = SEGUNDOS * FPS;
 /** na régua: cada soma parcial aparece no valor exato e, depois, escorrega para o que o binary16 guarda */
-export const REGUA = { passo: (ordem: number, k: number) => 11 + ordem * 3.6 + k * 1.7, escorrega: 0.8 };
+export const REGUA = { passo: (ordem: number, k: number) => 6 + ordem * 3.6 + k * 1.7, escorrega: 0.8 };
 
 export const numero = (n: number) => n.toLocaleString("pt-BR", { maximumFractionDigits: 1, useGrouping: false });
 export const muda = (c: Caso) => c.execucoes[0].escolha !== c.execucoes[1].escolha;
@@ -59,7 +58,7 @@ export function montarMapa(bruto: string): DadosMapa {
   return d;
 }
 
-export type Alvo = "escolha" | "grupo" | "regua" | "barras" | "volta";
+export type Alvo = "grupo" | "regua" | "barras" | "volta";
 export type Balao = { de: number; ate: number; alvo: Alvo; texto: string };
 
 /** os balões, um por cena; são também o texto da figura para quem não a vê */
@@ -69,7 +68,6 @@ export function baloes(d: DadosMapa): Balao[] {
   const [esq, dir] = d.caminhos;
   const conta = (p: Passo) => `${numero(p.parcelas[0])} + ${numero(p.parcelas[1])}`;
   const textos: [Alvo, string][] = [
-    ["escolha", `Em temperatura zero, não há sorteio: vence o token de maior pontuação. Aqui, B (${numero(e1.pontuacoes[1])}) passa de A (${numero(e1.pontuacoes[0])}). Com as mesmas pontuações, sai sempre o mesmo token.`],
     ["grupo", "A mesma pergunta pode ir sozinha ou num grupo com outras. Em cada caso, a biblioteca pode repartir a soma de outro jeito, e a ordem das parcelas muda. É um esquema do que o estudo descreve."],
     ["regua", `A partir de ${numero(1024)}, o formato de 16 bits só guarda inteiros: ${numero(esq.passos[0].exato)} escorrega para ${numero(esq.passos[0].guardado)}. Somando ${numero(esq.passos[0].parcelas[1])} de cada vez, a fração some duas vezes; somando ${conta(dir.passos[0])} = ${numero(dir.passos[0].guardado)} antes, o total vira ${numero(dir.passos.at(-1)!.guardado)}.`],
     ["barras", `Neste exemplo, a pontuação de A é a soma menos ${numero(1024)}. Uma diferença de ${numero(e2.soma - e1.soma)} na soma basta: a execução 1 escolhe ${token(e1)}, a 2 escolhe ${token(e2)}, sem sorteio nenhum.`],

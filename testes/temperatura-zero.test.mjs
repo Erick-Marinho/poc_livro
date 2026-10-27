@@ -8,6 +8,7 @@ import { montarIde, perguntaSustentada, respostaEntregue } from "../src/lib/ideC
 import { montarMapa, muda, baloes, DURACAO, CENAS, FPS, SEGUNDOS } from "../src/components/livro/temperatura/mapa.ts";
 import { eAcao } from "../scripts/ritmo.mjs";
 import { montarRespostas } from "../src/components/livro/temperatura/respostas.ts";
+import * as escolhaMod from "../src/components/livro/temperatura/escolha.ts";
 
 const base = new URL("../experimentos/temperatura-zero/", import.meta.url);
 const ler = (nome) => readFileSync(new URL(nome, base), "utf8");
@@ -118,17 +119,18 @@ test("temperatura zero: as somas, as barras e os vencedores saem do código exec
   assert.throws(()=>montarMapa(JSON.stringify(fora)));
 });
 
-test("temperatura zero: o vídeo cabe no limite do experimento, a previsão vem antes, e o esquema do lote diz que é esquema", () => {
+test("temperatura zero: o mapa cabe no limite do experimento, vem depois da animação da escolha, e o esquema do lote diz que é esquema", () => {
   assert.ok(CENAS.length<=6);
   assert.ok(DURACAO/FPS<=45);
   const d=montarMapa(saidas["tz-mapa"].saida[0][0]);
   const bs=baloes(d);
   bs.forEach((b,i)=>{ if(i) assert.equal(b.de,bs[i-1].ate); });
   assert.ok(bs.at(-1).ate>=SEGUNDOS);
-  assert.match(bs[1].texto,/esquema do que o estudo descreve/);
+  assert.match(bs[0].texto,/esquema do que o estudo descreve/);
   assert.equal(eAcao("MapaTemperatura"),false);
   const mdx=ler("experimento.mdx");
-  assert.ok(mdx.indexOf("<Aposta dados={previsoesMapa}")<mdx.indexOf("<MapaTemperatura"),"a previsão vem antes do vídeo");
+  assert.ok(mdx.indexOf("<ComoOModeloEscolhe")<mdx.indexOf("<MapaTemperatura"),"a animação da escolha vem antes do mapa");
+  assert.ok(!CENAS.some(c=>c.nome==="A escolha"),"a cena da escolha ficou só na animação de antes");
 });
 
 test("temperatura zero: a grade das 90 respostas sai da coleta e bate com a saída gravada do medir.py", () => {
@@ -145,4 +147,26 @@ test("temperatura zero: a grade das 90 respostas sai da coleta e bate com a saí
   assert.equal(fig.querySelectorAll(".tzr-q.tzr-igual").length,r.iguais);
   assert.match(fig.text,/cortada no limite de 48 tokens/);
   assert.equal(eAcao("RespostasDaColeta"),true);
+});
+
+test("temperatura zero: a animação da escolha faz a conta das chances, sorteia de verdade e cabe no limite", () => {
+  const { montarEscolha, chances, sortear, baloes: bal, CENAS: C, DURACAO: D, FPS: F, SEGUNDOS: S } = escolhaMod;
+  const e=montarEscolha(json("figuras/escolha.json"));
+  assert.ok(C.length<=6 && D/F<=45);
+  const soma=e.quente.reduce((a,b)=>a+b,0);
+  assert.ok(Math.abs(soma-1)<1e-9,"as chances somam 100%");
+  assert.ok(e.quente[0]>e.quente[1]&&e.quente[1]>e.quente[2],"mais pontuação, mais chance");
+  assert.deepEqual(chances([3,1],0),[1,0]);
+  assert.equal(sortear([0.5,0.5],0.49),0); assert.equal(sortear([0.5,0.5],0.51),1);
+  assert.ok(new Set(e.quentes).size>1,"com a temperatura, as execuções escrevem coisas diferentes");
+  assert.equal(new Set(e.zeros).size,1,"em temperatura zero, todas escrevem o mesmo");
+  const bs=bal(e);
+  bs.forEach((b,i)=>{ if(i) assert.equal(b.de,bs[i-1].ate); });
+  assert.ok(bs.at(-1).ate>=S);
+  assert.match(bs[2].texto,/52,6%/);
+  assert.match(bs[5].texto,/não|só muda/);
+  const fig=html.querySelector("[data-como-escolhe]");
+  assert.ok(fig,"a animação está na página");
+  assert.match(fig.text,/Ilustração/);
+  assert.ok(!ler("experimento.mdx").includes("previsoesMapa"),"o Invista de antes do mapa saiu");
 });

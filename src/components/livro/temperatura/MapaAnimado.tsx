@@ -1,9 +1,9 @@
 /**
- * O vídeo da temperatura zero (Remotion; docs/capacidades/temperatura-zero-revisao.md, etapa 2), que o leitor toca ou
- * rola (palco/RolaCena.tsx). Seis cenas, uma por vez: a escolha sem sorteio; a mesma pergunta sozinha ou num grupo
- * (esquema); a régua de 16 bits, em que a soma parcial escorrega para o valor que o formato guarda; as pontuações e o
- * vencedor de cada execução; o token que volta à entrada; e o controle com folga. Os balões explicam cada cena. O que se
- * desenha sai de mapa.ts, e os números, de figuras/mapa.py.
+ * A animação do mapa da temperatura zero (Remotion; docs/capacidades/temperatura-zero-revisao.md, etapas 2 e 4), que o
+ * leitor toca ou rola (palco/RolaCena.tsx). Cinco cenas, uma por vez (a escolha sem sorteio fica na animação de antes,
+ * EscolhaAnimada.tsx): a mesma pergunta sozinha ou num grupo (esquema); a régua de 16 bits, em que a soma parcial
+ * escorrega para o valor que o formato guarda; as pontuações e o vencedor de cada execução; o token que volta à entrada;
+ * e o controle com folga. Os balões explicam cada cena. O que se desenha sai de mapa.ts, e os números, de figuras/mapa.py.
  */
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
@@ -34,7 +34,7 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
   const lista = baloes(d);
   const balao = lista.find((x) => entre(t, x.de, x.ate)) ?? null;
   const opaBalao = balao ? opacidadeDoBalao(t, balao.de, balao.ate, balao === lista[lista.length - 1]) : 0;
-  const alvos: Record<Alvo, number> = { escolha: 150, grupo: 170, regua: 250, barras: 200, volta: 300 };
+  const alvos: Record<Alvo, number> = { grupo: 170, regua: 250, barras: 200, volta: 300 };
   const alvo = (a: Alvo): Ponto => ({ x: M.x + M.aw, y: alvos[a] });
 
   const titulo = (k: number) => (
@@ -71,25 +71,11 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
     );
   };
 
-  /* cena 1: a escolha sem sorteio */
-  const c1 = () => {
+  /* cena 1: sozinha ou num grupo (esquema do mecanismo descrito na fonte) */
+  const c2 = () => {
     const o = cena(0);
     if (!o) return null;
-    return <div style={{ opacity: o }}>
-      {titulo(0)}
-      {caixa(M.x, 44, M.aw, 54, <div style={{ font: `italic ${M.fonte + 1}px ${ui}`, color: cor.texto }}><span style={{ font: `600 11px ${mono}`, color: cor.fraco, fontStyle: "normal" }}>A PERGUNTA </span>“Como está meu pedido?”</div>)}
-      {barras(M.x + 10, 120, M.aw - 20, disputa, 0, kf(t, [[0.6, 0], [1.6, 1]], suave), t > 2.2, "a pontuação de cada token possível")}
-      <div style={{ position: "absolute", left: M.x, top: 250, width: M.aw, textAlign: "center", font: `700 ${M.fonte}px ${ui}`, color: cor.ok, opacity: kf(t, [[2.4, 0], [2.8, 1]]) }}>
-        temperatura zero: vence a maior, sem sorteio
-      </div>
-    </div>;
-  };
-
-  /* cena 2: sozinha ou num grupo (esquema do mecanismo descrito na fonte) */
-  const c2 = () => {
-    const o = cena(1);
-    if (!o) return null;
-    const meia = (M.aw - 12) / 2, t0 = CENAS[1].de;
+    const meia = (M.aw - 12) / 2, t0 = CENAS[0].de;
     const envelope = (x: number, y: number, destaque: boolean, k: number) => (
       <div key={k} style={{ position: "absolute", left: x, top: y, width: 44, height: 30, borderRadius: 6, border: `2px solid ${destaque ? cor.acento : cor.linha}`,
         background: destaque ? "color-mix(in srgb, var(--acento, #2a4fb5) 12%, transparent)" : cor.papel, display: "flex", alignItems: "center", justifyContent: "center",
@@ -113,7 +99,7 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
       </div>;
     };
     return <div style={{ opacity: o }}>
-      {titulo(1)}
+      {titulo(0)}
       {lado(0)}{lado(1)}
       <div style={{ position: "absolute", left: M.x, top: 304, width: M.aw, font: `italic 12.5px ${ui}`, color: cor.fraco }}>esquema do mecanismo descrito na fonte; os números são do exemplo</div>
     </div>;
@@ -121,7 +107,7 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
 
   /* cena 3: a régua de 16 bits; cada soma parcial aparece no valor exato e escorrega para o que o formato guarda */
   const c3 = () => {
-    const o = cena(2);
+    const o = cena(1);
     if (!o) return null;
     const lo = d.guardaveis[0], hi = d.guardaveis.at(-1)!;
     const px = (v: number) => M.x + 20 + ((v - lo) / (hi - lo)) * (M.aw - 40);
@@ -152,7 +138,7 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
       </div>;
     };
     return <div style={{ opacity: o }}>
-      {titulo(2)}
+      {titulo(1)}
       <div style={{ position: "absolute", left: M.x, top: 44, width: M.aw, font: `${M.fonte - 2}px ${ui}`, color: cor.fraco }}>os valores que o formato de 16 bits consegue guardar</div>
       <div style={{ position: "absolute", left: px(lo), top: eixo, width: px(hi) - px(lo), height: 2, background: cor.linha }} />
       {d.guardaveis.map((g) => <div key={g}>
@@ -183,11 +169,11 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
   };
 
   const c5 = () => {
-    const o = cena(4);
+    const o = cena(3);
     if (!o) return null;
-    const meia = (M.aw - 12) / 2, t0 = CENAS[4].de;
+    const meia = (M.aw - 12) / 2, t0 = CENAS[3].de;
     return <div style={{ opacity: o }}>
-      {titulo(4)}
+      {titulo(3)}
       {disputa.execucoes.map((e, i) => {
         const x = M.x + i * (meia + 12);
         return <div key={i}>
@@ -208,7 +194,7 @@ export const MapaAnimado: React.FC<Props> = ({ dados: d, desenho }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: cor.nota, fontFamily: ui }}>
-      {c1()}{c2()}{c3()}{lados(3, disputa)}{c5()}{lados(5, folga)}
+      {c2()}{c3()}{lados(2, disputa)}{c5()}{lados(4, folga)}
       {balao && M.balao.lado ? <svg width={M.w} height={M.h} style={{ position: "absolute", inset: 0 }}>
         <line x1={M.x + M.aw + 6} y1={alvo(balao.alvo).y} x2={M.balao.x} y2={alvo(balao.alvo).y} stroke={cor.acento} strokeWidth={2} strokeDasharray="5 4" opacity={opaBalao} />
       </svg> : null}
