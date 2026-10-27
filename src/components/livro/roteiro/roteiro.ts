@@ -1,6 +1,6 @@
 /**
- * O roteiro do substituto, no 2.1 (docs/capacidades/capitulo-2-em-cenas.md, etapa 1): o que a animação mostra, montado
- * do projeto real. Os nós e as setas são os do grafo do capítulo 2 (a saída gravada grafo-02 e o figuras/grafo-02.json);
+ * O grafo do agente, no 2.1 (docs/capacidades/capitulo-2-em-cenas.md, etapa 1; docs/capacidades/grafos-no-capitulo-2.md):
+ * o que a animação mostra, montado do projeto real. Os nós e as setas são os do grafo do capítulo 2 (a saída gravada grafo-02 e o figuras/grafo-02.json);
  * as mensagens e o balcão de cada uma são os do referencia.jsonl. Puro de propósito: o teste do livro chama isto direto,
  * e a montagem falha se a figura descrever um nó que o grafo não tem ou mandar uma mensagem a um balcão que não existe.
  */
@@ -16,20 +16,21 @@ export type Entrada = {
   mensagens: string[];
 };
 export type Balcao = { id: string; rotulo: string; modelo: "escreve" | "não"; papel: string };
-export type Mensagem = { id: string; pergunta: string; balcao: string };
+export type Mensagem = { id: string; pergunta: string; balcao: string; motivo: string };
 
 export const FPS = 30;
 /** a animação inteira, em segundos; a rolagem a percorre de ponta a ponta */
-export const SEGUNDOS = 21;
+export const SEGUNDOS = 31;
 export const DURACAO = SEGUNDOS * FPS;
 /**
- * Os momentos da animação, em segundos: a primeira mensagem entra (0 a 2), o substituto decide (2 a 3), ela vai ao
- * balcão e ao fim (3 a 6,5); a segunda entra e faz o mesmo (9,5 a 14); de 15 a 17, o roteiro vira o grafo.
+ * Os momentos da animação, em segundos (docs/capacidades/grafos-no-capitulo-2.md): primeiro as peças, no próprio grafo
+ * (os nós, as arestas, START e END, o estado); depois a primeira mensagem atravessa, e o estado ganha chaves; depois a
+ * segunda, por outro caminho.
  */
 export const T = {
-  a: { entra: [0.4, 2], decide: 3, balcao: [3.2, 5], fim: [5.6, 6.6] },
-  b: { troca: [9.4, 10], entra: [10.2, 11.4], decide: 11.8, balcao: [12, 13.2], fim: [13.6, 14.4] },
-  grafo: [15, 16.6],
+  nos: [0.3, 4], arestas: [4, 8], fixas: 4.4, condicionais: 6, pontas: [8, 11], estado: [11, 14],
+  a: { entra: 14.4, decide: [15.2, 16.4], vai: [16.8, 17.8], escreve: 18.4, fim: [19.2, 20] },
+  b: { troca: 22, entra: 22.6, decide: [23.4, 24.6], vai: [25, 26], escreve: 26.6, fim: [27.4, 28.2] },
 };
 
 export function montarRoteiro({ arestas, nos, referencia, mensagens }: Entrada) {
@@ -50,7 +51,7 @@ export function montarRoteiro({ arestas, nos, referencia, mensagens }: Entrada) 
   for (const b of balcoes) if (!s.some((x) => x.de === b.id && x.para === "__end__")) throw new Error(`roteiro do 2.1: o balcão ${b.id} não termina no fim`);
   const msgs: Mensagem[] = casos(referencia, mensagens, "roteiro do 2.1").map((c) => {
     if (!balcoes.some((b) => b.id === c.decisao)) throw new Error(`roteiro do 2.1: ${c.id} iria ao balcão ${c.decisao}, que o grafo não tem`);
-    return { id: c.id, pergunta: c.pergunta, balcao: c.decisao };
+    return { id: c.id, pergunta: c.pergunta, balcao: c.decisao, motivo: c.motivo };
   });
   if (msgs.length !== 2) throw new Error("roteiro do 2.1: a figura conta duas mensagens, uma por cena");
   return { decide: decide[0], rotuloDecide: nos.nos[decide[0]].rotulo ?? decide[0], papelDecide: nos.nos[decide[0]].papel, balcoes, mensagens: msgs };
@@ -60,24 +61,50 @@ export type Roteiro = ReturnType<typeof montarRoteiro>;
 const curta = (p: string) => p.replace(/\s+\S+@\S+$/, "").replace(/\s+/g, " ").trim();
 const rotulo = (r: Roteiro, id: string) => r.balcoes.find((b) => b.id === id)!.rotulo;
 
-/** O que o balão aponta: o substituto (que vira o nó decidir), o balcão de uma mensagem, a ficha (o estado) ou as setas. */
-export type Alvo = "decidir" | "balcao-a" | "balcao-b" | "ficha" | "setas";
+/** O que o balão aponta: os nós, as arestas, START e END, o estado, e o caminho de cada mensagem. */
+export type Alvo = "nos" | "setas" | "pontas" | "ficha" | "balcao-a" | "balcao-b";
 export type Balao = { de: number; ate: number; alvo: Alvo; texto: string };
 
 /** Os balões, na ordem: um por vez, cada um no seu trecho da animação. São também o texto da figura para quem não a vê. */
 export function baloes(r: Roteiro): Balao[] {
   const [a, b] = r.mensagens;
   const ba = r.balcoes.find((x) => x.id === a.balcao)!, bb = r.balcoes.find((x) => x.id === b.balcao)!;
-  const como = (x: Balcao) => x.modelo === "não" ? "uma frase fixa, e o caso vai para uma pessoa da equipe" : "o modelo escreve a resposta";
+  const como = (x: Balcao) => x.modelo === "não" ? "uma frase fixa, sem chamar o modelo" : "o modelo escreve a resposta";
   return [
-    { de: 1.2, ate: 3.2, alvo: "decidir", texto: `Chega uma mensagem: “${curta(a.pergunta).replace(/\.$/, "")}”. O substituto lê e decide para qual balcão ela vai.` },
-    { de: 3.2, ate: 6.4, alvo: "balcao-a", texto: `Ele decide uma vez e segue um caminho só: ${ba.rotulo}. Neste balcão, ${como(ba)}.` },
-    { de: 6.4, ate: 9.6, alvo: "ficha", texto: "Uma ficha vai junto, e cada passo escreve nela: a pergunta, a decisão, a resposta." },
-    { de: 9.6, ate: 15, alvo: "balcao-b", texto: `Outra mensagem, outro balcão: ${bb.rotulo}. Neste, ${como(bb)}. O roteiro é o mesmo.` },
-    { de: 15, ate: 17, alvo: "decidir", texto: `Escrito como desenho, o roteiro é um grafo. Cada passo é um nó: o substituto é o nó ${r.rotuloDecide}, onde o modelo decide.` },
-    { de: 17, ate: 19, alvo: "setas", texto: "As setas dizem o que vem depois. Estas escolhem: a decisão manda a mensagem por um caminho só." },
-    { de: 19, ate: SEGUNDOS + 1, alvo: "ficha", texto: "E a ficha é o estado: o que passa de nó em nó, do começo ao fim." },
+    { de: T.nos[0], ate: T.nos[1], alvo: "nos", texto: `Cada caixa é um nó: uma função do seu código que recebe o estado e devolve o que mudou. Este grafo tem ${r.balcoes.length + 1}: ${r.decide} e um para cada decisão do contrato.` },
+    { de: T.arestas[0], ate: T.arestas[1], alvo: "setas", texto: `As setas são as arestas. As cheias são fixas: depois deste nó, sempre aquele. As tracejadas escolhem: saem de ${r.decide}, e o estado diz qual seguir.` },
+    { de: T.pontas[0], ate: T.pontas[1], alvo: "pontas", texto: "START é por onde a mensagem entra; END, onde o caminho acaba." },
+    { de: T.estado[0], ate: T.estado[1], alvo: "ficha", texto: "E o estado é o que viaja de nó em nó: um dicionário com o formato da classe Conversa. Começa só com a pergunta." },
+    { de: T.estado[1], ate: T.b.troca, alvo: "balcao-a", texto: `${r.decide} lê a pergunta e acrescenta a decisão e o motivo. A aresta tracejada lê a decisão e leva a ${ba.id}, que acrescenta a resposta: ${como(ba)}.` },
+    { de: T.b.troca, ate: SEGUNDOS + 1, alvo: "balcao-b", texto: `Outra mensagem, outro caminho: ${bb.id}. Aqui, ${como(bb)}. O desenho é o mesmo; o estado conta o que aconteceu.` },
   ];
 }
+
+/** As chaves do estado, na ordem da classe Conversa do agente.py: a figura só mostra chaves que o estado tem de verdade. */
+export function chavesDoEstado(agente: string): string[] {
+  const bloco = agente.match(/class Conversa\(TypedDict[^)]*\):([\s\S]*?)\n\n\n/)?.[1];
+  if (!bloco) throw new Error("roteiro do 2.1: não achei a classe Conversa no agente.py");
+  return [...bloco.matchAll(/^\s+(\w+): /gm)].map((m) => m[1]);
+}
+
+/** A frase fixa de um nó que não chama o modelo, como está no agente.py: as strings do return dele, juntas. */
+export function fraseFixa(agente: string, no: string): string {
+  const corpo = agente.match(new RegExp(`def ${no}\\(c: Conversa\\) -> Conversa:\\n([\\s\\S]*?)\\n\\n`))?.[1];
+  const partes = corpo ? [...corpo.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) => m[1]).filter((x) => x !== "resposta") : [];
+  if (!partes.length) throw new Error(`roteiro do 2.1: não achei a frase fixa do nó ${no} no agente.py`);
+  return partes.join("");
+}
+
+/** O estado de cada mensagem, chave por chave: pergunta (real), decisão e motivo (do gabarito), resposta (a frase fixa, ou
+ *  o aviso de que o modelo escreve). Confere que as chaves são as da classe Conversa. */
+export function estados(r: Roteiro, agente: string) {
+  const chaves = chavesDoEstado(agente);
+  for (const k of ["pergunta", "decisao", "motivo", "resposta"]) if (!chaves.includes(k)) throw new Error(`roteiro do 2.1: o estado não tem a chave ${k}`);
+  return r.mensagens.map((m) => {
+    const b = r.balcoes.find((x) => x.id === m.balcao)!;
+    return { pergunta: m.pergunta, decisao: m.balcao, motivo: m.motivo, resposta: b.modelo === "não" ? fraseFixa(agente, b.id) : null };
+  });
+}
+export type Estado = ReturnType<typeof estados>[number];
 
 export { curta, rotulo };

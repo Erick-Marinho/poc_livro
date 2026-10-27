@@ -1,19 +1,20 @@
 ---
 /**
- * A figura do 2.1 (docs/capacidades/capitulo-2-em-cenas.md, etapa 1): o roteiro do substituto, que vira o grafo do
- * agente (roteiro/FiguraRoteiro.tsx). Os nós e as setas são os do grafo real; as mensagens e os balcões, os do contrato.
+ * A figura do 2.1 (docs/capacidades/grafos-no-capitulo-2.md, etapa 1): o grafo do agente, com as peças e o estado em JSON
+ * (roteiro/FiguraRoteiro.tsx). Os nós e as setas são os do grafo real; o formato do estado e as frases fixas, os do
+ * agente.py; a decisão e o motivo, os do gabarito.
  * A montagem confere tudo no build (roteiro/roteiro.ts). A animação anda com a rolagem (palco/RolaCena.tsx). Sem JS,
  * só um aviso.
  */
 import FiguraRoteiro from "./roteiro/FiguraRoteiro";
-import { montarRoteiro, type Entrada } from "./roteiro/roteiro.ts";
+import { estados, montarRoteiro, type Entrada } from "./roteiro/roteiro.ts";
 
-interface Props extends Entrada { numero: string; legenda: string }
-const { arestas, nos, referencia, mensagens, numero, legenda } = Astro.props;
-montarRoteiro({ arestas, nos, referencia, mensagens });
+interface Props extends Entrada { agente: string; numero: string; legenda: string }
+const { arestas, nos, referencia, mensagens, agente, numero, legenda } = Astro.props;
+estados(montarRoteiro({ arestas, nos, referencia, mensagens }), agente);
 ---
 <figure class="roteiro" data-roteiro>
-  <FiguraRoteiro client:visible={{ rootMargin: "400px" }} arestas={arestas} nos={nos} referencia={referencia} mensagens={mensagens} />
+  <FiguraRoteiro client:visible={{ rootMargin: "400px" }} arestas={arestas} nos={nos} referencia={referencia} mensagens={mensagens} agente={agente} />
   <figcaption><b>Figura {numero}</b> · {legenda}</figcaption>
   <noscript><p class="rt-semjs">Esta figura é animada e precisa de JavaScript.</p></noscript>
 </figure>

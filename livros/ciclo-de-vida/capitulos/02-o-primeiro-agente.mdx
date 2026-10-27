@@ -42,7 +42,7 @@ import referencia from "../projeto/referencia.jsonl?raw";
 
 No capítulo 1, a colega saiu de férias e deixou o gabarito. Agora o substituto vai começar a trabalhar, e a primeira coisa que ele precisa é de um roteiro: ler a mensagem, decidir o que fazer com ela e ir ao balcão certo. Este livro começa o agente por esse roteiro, desenhado, e não pelo modelo.
 
-<RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} numero="2.1" legenda="O roteiro do substituto, que vira o grafo do agente. Os nós e as setas são os do grafo real, montado pelo código do projeto; as mensagens vão ao balcão que o contrato pede. O que o modelo decide de verdade você mede no 2.4." />
+<RoteiroDoAgente arestas={saidas["grafo-02"]} nos={nosDoGrafo} referencia={referencia} mensagens={["R10", "R15"]} agente={agentePy} numero="2.1" legenda="O grafo do agente deste capítulo. Os nós e as arestas são os do grafo real, montado pelo código do projeto; o formato do estado e as frases fixas são os do agente.py. A decisão e o motivo são os do gabarito: o que o modelo decide de verdade você mede no 2.4." />
 
 Esse desenho é o agente deste capítulo. Na escala do capítulo 1, onde ele fica? No roteador. Decide uma vez, qual caminho seguir, e toda seta termina no fim: não tem ferramenta nem laço. As ferramentas, e com elas o laço, chegam no capítulo 3, como nós novos nesse mesmo desenho.
 
