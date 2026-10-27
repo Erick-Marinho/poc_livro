@@ -1,0 +1,26 @@
+/* As perguntas em cartões, uma por vez (src/lib/cartoes.ts): só o de agora aparece, com a altura dele (empilhados, o
+   maior, já com o retorno aberto, deixava um vazio nos outros). */
+.cartoes-trilho > * { margin: 0 !important }
+.cartoes-trilho > :not(.cartao-atual) { display: none !important }
+.cartao-vem-dir { animation: cartao-dir .38s cubic-bezier(.2, .7, .2, 1) }
+.cartao-vem-esq { animation: cartao-esq .38s cubic-bezier(.2, .7, .2, 1) }
+@keyframes cartao-dir { from { opacity: 0; transform: translateX(48px) } }
+@keyframes cartao-esq { from { opacity: 0; transform: translateX(-48px) } }
+
+.cartoes-nav { display: flex; align-items: center; gap: 12px; margin-top: 10px; min-height: 34px; font: 13.5px var(--f-ui); color: var(--ink-2) }
+.cartoes-pontos { display: flex; gap: 6px; flex: 1 }
+.cartoes-ponto { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1.5px solid var(--linha); background: var(--papel); cursor: pointer }
+.cartoes-ponto.visto { background: var(--ink-2); border-color: var(--ink-2) }
+.cartoes-ponto[aria-current="true"] { border-color: var(--acento); box-shadow: 0 0 0 2px color-mix(in srgb, var(--acento) 30%, transparent) }
+.cartoes-ponto:disabled { cursor: default; opacity: .5 }
+.cartoes-proxima { border: 0; background: var(--ink); color: var(--papel); border-radius: 999px; padding: 6px 16px; cursor: pointer; font: 600 14px var(--f-ui);
+  animation: cartao-dir .3s ease-out }
+.cartoes-proxima[hidden] { display: none }
+
+@media (prefers-reduced-motion: reduce) { .cartao-vem-dir, .cartao-vem-esq, .cartoes-proxima { animation: none } }
+
+/* modo direto: a lista inteira, como sem os cartões */
+html[data-direto] .cartoes-trilho { display: grid !important; gap: 10px !important }
+html[data-direto] .cartoes-trilho > :not(.cartao-atual) { display: block !important }
+html[data-direto] .cartoes-trilho > * { animation: none }
+html[data-direto] .cartoes-nav { display: none }

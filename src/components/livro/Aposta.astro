@@ -3,7 +3,7 @@
  * Ação do leitor: apostar no que acontece com cada item, antes de ver (docs/RITMO.md: "parece, mas não é" pede prever
  * antes, mostrar depois). Um item é um caso do referencia.jsonl (pelo id, em `caso`) ou um texto escrito (`texto`).
  * O que aconteceu vem de um JSON do livro; se é ilustração, a figura diz (`ilustracao`). No modo direto, o que
- * aconteceu aparece sem pedir a aposta.
+ * aconteceu aparece sem pedir a aposta. Um item por vez, em cartões (src/lib/cartoes.ts).
  */
 import { casos } from "../../lib/referencia.ts";
 
@@ -38,8 +38,11 @@ const fechos = dados.fechos ?? { nenhum: "Você investiu em outra coisa em todas
 </div>
 
 <script>
+  import { emCartoes } from "../../lib/cartoes";
+
   document.querySelectorAll<HTMLElement>("[data-aposta]").forEach((fig) => {
     const msgs = [...fig.querySelectorAll<HTMLElement>(".apo-msg")];
+    emCartoes(fig, msgs, (m) => m.classList.contains("feita"));
     const placar = fig.querySelector<HTMLElement>("[data-placar]")!;
     let feitas = 0, iguais = 0;
     msgs.forEach((m) => m.querySelectorAll<HTMLButtonElement>(".apo-opcoes button").forEach((b) => b.addEventListener("click", () => {

@@ -4,7 +4,8 @@
  * mensagem, o leitor diz o que faria, em palavras dele, e a colega diz na hora o que ela faz e por quê. O que ela faz é a
  * decisão do contrato (referencia.jsonl); o porquê vem dos dados e da política da loja, escrito no capítulo. O texto de
  * dentro (o slot) aparece quando todas estão feitas: é a ponte para o contrato (docs/capacidades/achados-da-leitura-do-victor.md).
- * No modo direto, as respostas da colega e o fecho aparecem abertos, sem as escolhas.
+ * No modo direto, as respostas da colega e o fecho aparecem abertos, sem as escolhas. Uma mensagem por vez, em cartões
+ * (src/lib/cartoes.ts).
  */
 import { casos, DECISOES } from "../../lib/referencia.ts";
 
@@ -49,8 +50,11 @@ if (exemplo && !ids.includes(exemplo)) throw new Error(`PrimeiroDia: o exemplo $
 </div>
 
 <script>
+  import { emCartoes } from "../../lib/cartoes";
+
   document.querySelectorAll<HTMLElement>("[data-primeiro-dia]").forEach((fig) => {
     const itens = [...fig.querySelectorAll<HTMLLIElement>("li[data-caso]")];
+    emCartoes(fig, itens, (li) => li.classList.contains("feito"));
     itens.forEach((li) => li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((b) => b.addEventListener("click", () => {
       if (li.classList.contains("feito")) return;
       const igual = b.dataset.v === li.dataset.decisao;

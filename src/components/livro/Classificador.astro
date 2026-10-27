@@ -1,7 +1,8 @@
 ---
 /**
  * Figura interativa: o leitor decide o que o agente faria com cada pergunta e compara com o contrato.
- * As perguntas e as decisões vêm do referencia.jsonl real (passado como texto), escolhidas pelo id.
+ * As perguntas e as decisões vêm do referencia.jsonl real (passado como texto), escolhidas pelo id. Uma por vez, em
+ * cartões (src/lib/cartoes.ts).
  */
 interface Props { referencia: string; casos: string[]; numero: string; legenda: string }
 const { referencia, casos, numero, legenda } = Astro.props;
@@ -31,7 +32,10 @@ const DECISOES = [["responder", "responder"], ["abrir_chamado", "abrir chamado"]
 </figure>
 
 <script>
+  import { emCartoes } from "../../lib/cartoes";
+
   document.querySelectorAll<HTMLElement>("[data-classificador]").forEach((fig) => {
+    const cartoes = emCartoes(fig, [...fig.querySelectorAll<HTMLElement>("li[data-caso]")], (li) => li.classList.contains("feito"));
     const placar = () => {
       const feitos = fig.querySelectorAll("li.feito"), certos = fig.querySelectorAll("li.certo");
       fig.querySelector("[data-feitos]")!.textContent = String(feitos.length);
@@ -59,6 +63,7 @@ const DECISOES = [["responder", "responder"], ["abrir_chamado", "abrir chamado"]
         li.querySelectorAll<HTMLButtonElement>("[data-v]").forEach((x) => { x.disabled = false; x.classList.remove("e-o-contrato", "escolhido"); });
       });
       placar();
+      cartoes.ir(0);
     });
   });
 </script>

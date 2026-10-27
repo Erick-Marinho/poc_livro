@@ -24,7 +24,7 @@ test("o primeiro dia do 1.3: o que a colega faz é a decisão do contrato, e as 
 });
 
 test("o primeiro dia do 1.3 fala como quem atende: escolhas em frases, sem o nome do contrato, e a primeira já mostrada", () => {
-  const pd = html.split("data-primeiro-dia")[1];
+  const pd = html.split("data-primeiro-dia")[1].split("</ol>")[0];
   const itens = pd.split("<li ").slice(1);
   for (const li of itens) {
     const botoes = [...li.matchAll(/<button type="button" data-v="(\w+)"[^>]*>([^<]+)<\/button>/g)];
