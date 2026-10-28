@@ -31,11 +31,9 @@ import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import Aposta from "../../src/components/livro/Aposta.astro";
 import Exercicio from "../../src/components/livro/Exercicio.astro";
-import Pilhas from "../../src/components/livro/Pilhas.astro";
 import kv from "./figuras/kv.json";
 import jornada from "./figuras/jornada.json";
 import previsoes from "./previsoes.json";
-import pilhas from "./pilhas.json";
 import prefixo from "./previsoes-prefixo.json";
 import roteiro from "./roteiros/01.json";
 import estados from "./roteiros/01.estados.json";
@@ -51,18 +49,12 @@ Pode, se o sistema guarda respostas prontas e entrega a de uma pergunta parecida
 
 <KvCache dados={jornada} qual="jornada" />
 
-Foi o mural: ele pula o modelo e entrega a resposta de outra pergunta, só porque é parecida. "De manhã" e "à tarde" mudam uma palavra, e mudam a resposta.
-
 Quando alguém fala em "cache" num sistema com modelo de linguagem, pode estar falando de quatro coisas diferentes. O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) separa as quatro, e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) faz a mesma divisão. A diferença está no que cada um guarda e por quanto tempo.
 
 - **KV cache:** dentro de uma resposta. O modelo guarda o que já leu, e apaga quando a resposta acaba.
 - **Cache de prefixo:** entre pedidos, no servidor que executa o modelo. Dois pedidos que começam igual dividem a leitura do começo.
 - **Cache de prompt:** o mesmo, do lado do provedor da API, que cobra menos pelo começo repetido. Na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem o mesmo mecanismo, com regras próprias.
 - **Cache semântico:** antes do modelo. Uma pergunta parecida com outra já respondida recebe a mesma resposta, sem passar pelo modelo.
-
-<Pilhas quem="neste experimento" pergunta={pilhas.pergunta} cartas={pilhas.cartas} grupos={pilhas.grupos}>
-Só a pilha da resposta pronta pode errar. Nas outras duas, o modelo responde o que responderia de qualquer jeito: o cache só poupa uma leitura.
-</Pilhas>
 
 O artigo erra em dois pontos. O primeiro: ele diz que cada bloco do cache de prefixo é identificado pelo conteúdo e pela posição.
 

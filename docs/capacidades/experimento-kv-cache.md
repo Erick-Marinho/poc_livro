@@ -36,6 +36,8 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   cena em que ele age: a Ana faz o caminho inteiro; o KV contra a releitura; o Bruno pula o começo (prefixo); a Dani, o
   mesmo numa API paga, com a conta (prompt); o Eduardo recebe do mural a resposta certa, e a Carla, a errada
   (semântico). A figura técnica dos quatro caches sai: a jornada mostra o que ela mostrava.
+- (8, 28/10/2026, Erick) Sem a separação em pilhas (A, B, C, D): confunde e quebra a fluidez da leitura. Sem
+  dinâmica no lugar; o parágrafo repetido depois da jornada sai, e a abertura fica em 190 palavras sem ação.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 
