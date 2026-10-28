@@ -1,37 +1,10 @@
 {
-  "sobre": "A animação que abre o experimento (docs/capacidades/experimento-kv-cache.md, etapa 7): três perguntas de moradores pelo mesmo caminho, e o que cada ponto guarda. É ilustração: as barras não são medidas. As respostas saem do regulamento do corpus (projeto/dados/), conferidas pelo teste.",
+  "sobre": "A animação que abre o experimento (docs/capacidades/experimento-kv-cache.md, etapa 8; esboço em figuras/esboco-jornada.md): cinco moradores pelo mesmo caminho, um cenário por cache. É ilustração: as barras e a conta não são medidas. As respostas saem do regulamento do corpus (projeto/dados/), conferidas pelo teste.",
   "perguntas": [
-    {
-      "quem": "Ana",
-      "texto": "Posso fazer a minha mudança no sábado à tarde?",
-      "curta": "sábado à tarde?",
-      "resposta": [
-        "Não:",
-        "aos",
-        "sábados,",
-        "só",
-        "de",
-        "manhã."
-      ]
-    },
-    {
-      "quem": "Bruno",
-      "texto": "Posso usar a piscina na segunda?",
-      "curta": "piscina na segunda?",
-      "resposta": [
-        "Não:",
-        "às",
-        "segundas,",
-        "fecha",
-        "para",
-        "manutenção."
-      ]
-    },
-    {
-      "quem": "Carla",
-      "texto": "Posso fazer a minha mudança no sábado de manhã?",
-      "curta": "sábado de manhã?",
-      "certa": "de manhã pode: aos sábados, das 8h às 12h"
-    }
+    { "quem": "Ana", "texto": "Posso fazer a minha mudança no sábado à tarde?", "curta": "sábado à tarde?", "resposta": ["Não:", "aos", "sábados,", "só", "de", "manhã."] },
+    { "quem": "Bruno", "texto": "Posso usar a piscina na segunda?", "curta": "piscina na segunda?", "resposta": ["Não:", "às", "segundas,", "fecha", "para", "manutenção."] },
+    { "quem": "Dani", "texto": "Minha visita pode usar a piscina?", "curta": "visita na piscina?", "resposta": ["Só", "acompanhada", "de", "um", "morador."] },
+    { "quem": "Eduardo", "texto": "Dá para mudar no sábado à tarde?", "curta": "mudar no sábado à tarde?" },
+    { "quem": "Carla", "texto": "Posso fazer a minha mudança no sábado de manhã?", "curta": "sábado de manhã?", "certa": "de manhã pode: aos sábados, das 8h às 12h" }
   ]
 }

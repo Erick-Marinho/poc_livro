@@ -1,21 +1,18 @@
 /**
- * A ilha das figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapas 5 e 7): a jornada de uma pergunta
- * (JornadaAnimada.tsx), os quatro caches (CachesAnimados.tsx) ou a atendente com e sem anotações
- * (AnotacoesAnimadas.tsx), que o leitor toca ou rola (palco/RolaCena.tsx), com balões. Escolhe o desenho pela largura:
+ * A ilha das figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapas 5 a 8): a jornada de uma pergunta
+ * (JornadaAnimada.tsx) ou a atendente com e sem anotações (AnotacoesAnimadas.tsx), que o leitor toca ou rola (palco/RolaCena.tsx), com balões. Escolhe o desenho pela largura:
  * no celular, o estreito. Para quem não vê o vídeo, os balões vão como texto, na ordem.
  */
 import { useEffect, useMemo, useState } from "react";
 import RolaCena from "../palco/RolaCena";
 import { AnotacoesAnimadas } from "./AnotacoesAnimadas";
-import { CachesAnimados } from "./CachesAnimados";
 import { JornadaAnimada, MEDIDAS_JORNADA } from "./JornadaAnimada";
-import { ANOTACOES, baloes, CACHES, duracao, FPS, JORNADA, type Jornada, type Kv } from "./kv.ts";
+import { ANOTACOES, baloes, duracao, FPS, JORNADA, type Jornada, type Kv } from "./kv.ts";
 import { type Desenho, MEDIDAS } from "./pecas";
 
-export type Qual = "jornada" | "caches" | "anotacoes";
+export type Qual = "jornada" | "anotacoes";
 const FIGURAS = {
   jornada: { f: JORNADA, component: JornadaAnimada, medidas: MEDIDAS_JORNADA, chave: "jornada" },
-  caches: { f: CACHES, component: CachesAnimados, medidas: MEDIDAS, chave: "kv" },
   anotacoes: { f: ANOTACOES, component: AnotacoesAnimadas, medidas: MEDIDAS, chave: "kv" },
 };
 

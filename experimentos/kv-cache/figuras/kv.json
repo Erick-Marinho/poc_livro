@@ -1,15 +1,25 @@
 {
-  "sobre": "As duas animações do KV cache (docs/capacidades/experimento-kv-cache.md, etapa 5). É ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medida. O trecho e as palavras de cada mensagem são os do corpus (projeto/casos.jsonl), conferidos pelo teste.",
+  "sobre": "A animação da atendente (docs/capacidades/experimento-kv-cache.md, etapa 5). É ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medida. O trecho e as palavras de cada mensagem são os do corpus (projeto/casos.jsonl), conferidos pelo teste.",
   "pergunta": "Posso fazer a minha mudança no sábado à tarde?",
-  "resposta": ["Não:", "aos", "sábados,", "só", "de", "manhã."],
+  "resposta": [
+    "Não:",
+    "aos",
+    "sábados,",
+    "só",
+    "de",
+    "manhã."
+  ],
   "trecho": "aos sábados, das 8h às 12h. Domingos e feriados, não.",
-  "parecidas": {
-    "guardada": "Posso fazer mudança no sábado?",
-    "nova": "Posso fazer mudança no domingo?",
-    "resposta": "Sim, só de manhã."
-  },
   "mensagens": [
-    { "nome": "curta", "leva": "só a pergunta", "palavras": 10 },
-    { "nome": "longa", "leva": "o regulamento inteiro e a pergunta", "palavras": 462 }
+    {
+      "nome": "curta",
+      "leva": "só a pergunta",
+      "palavras": 10
+    },
+    {
+      "nome": "longa",
+      "leva": "o regulamento inteiro e a pergunta",
+      "palavras": 462
+    }
   ]
 }

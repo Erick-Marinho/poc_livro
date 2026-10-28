@@ -1,79 +1,71 @@
-# Esboço da animação "A jornada de uma pergunta" (etapa 7)
+# Esboço da animação "A jornada de uma pergunta", versão 2 (etapa 8)
 
-**Pergunta que ela responde:** o que acontece entre o Enter e a resposta, e onde cada cache pula trabalho? **O que o
-leitor faz:** aperta o play (ou rola) e acompanha três perguntas de moradores, uma depois da outra. **Sem definição
-antes:** o leitor vê cada cache agir; o nome aparece só quando ele age. Abre o texto, no lugar do caminho parado.
+**O que mudou da versão 1:** cada cache ganha a sua cena, com o cenário em que ele age, o lugar onde ele fica no
+caminho, o que ele faz e como seria sem ele. Na versão 1, o cache de prompt era só uma nota, o semântico só aparecia
+errando, e o KV não mostrava o contraste. O nome de cada cache aparece na cena em que ele age, e não só no fim.
 
-Três moradores do condomínio inventado, três perguntas:
-1. **Ana:** "Posso fazer a minha mudança no sábado à tarde?" (nada guardado ainda: faz o caminho inteiro)
-2. **Bruno:** "Posso usar a churrasqueira no domingo?" (o começo do pedido é o mesmo: o servidor pula a leitura dele)
-3. **Carla:** "Posso fazer a minha mudança no domingo?" (parece a da Ana: o mural entrega a resposta dela, errada)
+**Pergunta que ela responde:** onde fica cada cache, e o que ele poupa? **O que o leitor faz:** antes do play, a
+previsão sobre a Carla (já no texto); depois, toca ou rola. **Regras (docs/RITMO.md):** 6 cenas, até 8 s cada, 42 s.
 
-Sete cenas, uns 4 s cada depois do play, cerca de 30 s. O caminho fica inteiro à vista, sempre no mesmo lugar: a
-pergunta anda por ele, da esquerda para a direita. O que já passou vira uma linha de resumo embaixo.
+O caminho fica fixo na tela, como na versão 1: você → o aplicativo → o servidor (ou o provedor da API) → o modelo,
+com a gaveta de cada ponto embaixo. Em cada cena, só o ponto daquele cache acende; o resto fica cinza.
 
-## O caminho, fixo na tela (a largura do computador)
+## Como fica a cena 2 (o KV, na largura do computador)
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
-│ 5 DE 7 · BRUNO: O COMEÇO JÁ FOI LIDO                                          │
+│ 2 DE 6 · KV CACHE: AS ANOTAÇÕES, DENTRO DO MODELO                             │
 │                                                                               │
-│  ┌────────┐     ┌──────────────┐     ┌──────────────┐     ┌────────────────┐  │
-│  │ você   │ ──▶ │ o aplicativo │ ──▶ │ o servidor   │ ──▶ │ o modelo       │  │
-│  │ Enter  │     │ monta o      │     │ do modelo    │     │ lê e escreve   │  │
-│  └────────┘     │ pedido       │     └──────────────┘     └────────────────┘  │
-│                 └──────┬───────┘            │                     │           │
-│                  ┌─────┴──────┐      ┌──────┴───────┐      ┌──────┴───────┐   │
-│                  │ MURAL      │      │ COMEÇOS JÁ   │      │ ANOTAÇÕES    │   │
-│                  │ Ana: sábado│      │ LIDOS        │      │ ▮▮▮▮▮▯▯▯     │   │
-│                  └────────────┘      │ ✓ instruções │      └──────────────┘   │
-│                                      │ ✓ regulamento│                         │
-│   o pedido do Bruno:                 └──────────────┘                         │
-│   [instruções ✓][regulamento ✓][churrasqueira no domingo?]                    │
-│    └──────── já lido, pulado ───────┘└── lê só isto ──┘                       │
+│  [ você ] ──▶ [ aplicativo ] ──▶ [ servidor ] ──▶ ┏━━━━━━━━━━━━━━━━━━━━━━┓    │
+│                                                   ┃ o modelo escreve     ┃    │
+│                                                   ┃ "Não: aos sábados…"  ┃    │
+│                                                   ┗━━━━━━━━━━━━━━━━━━━━━━┛    │
 │                                                                               │
-│   ✓ Ana: o caminho inteiro                     ╭──────────────────────────╮   │
-│   ✓ Ana: as anotações enquanto escreve         │ O começo do pedido já foi│   │
-│                                                │ lido para a Ana: o modelo│   │
-│                                                │ lê só a pergunta nova.   │   │
-│ ▶ Tocar                                        ╰──────────────────────────╯   │
+│   SEM AS ANOTAÇÕES                         COM AS ANOTAÇÕES (KV CACHE)        │
+│   antes de cada palavra, relê tudo         antes de cada palavra, lê só a     │
+│                                            última e consulta as anotações     │
+│   "Não:"     ████████████████              "Não:"     ████████████████        │
+│   "aos"      █████████████████             "aos"      ▌ + ▮▮▮▮▮▮▮▮            │
+│   "sábados," ██████████████████            "sábados," ▌ + ▮▮▮▮▮▮▮▮▮           │
+│   "só"       ███████████████████           "só"       ▌ + ▮▮▮▮▮▮▮▮▮▮          │
+│                                                                               │
+│   ✓ a pergunta da Ana percorre o caminho                                      │
+│                                          ╭──────────────────────────────────╮ │
+│                                          │ Com as anotações, cada palavra   │ │
+│                                          │ nova lê uma palavra, não o pedido│ │
+│                                          │ inteiro.                         │ │
+│ ▶ Tocar                                  ╰──────────────────────────────────╯ │
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Embaixo de cada ponto do caminho, a "gaveta" do que ele guarda: o **mural** (no aplicativo), os **começos já lidos**
-(no servidor) e as **anotações** (no modelo). As gavetas começam vazias e enchem conforme as perguntas passam.
+## As seis cenas
 
-## As sete cenas
+| # | Cenário | Onde | O que acontece | Sem o cache | O balão (uma frase) |
+|---|---|---|---|---|---|
+| 1 | **Ana**, "Posso fazer a minha mudança no sábado à tarde?": nada guardado | o caminho inteiro | o aplicativo monta o pedido (instruções, regulamento, pergunta); o servidor manda ao modelo; o modelo lê tudo (uma barra longa: a pausa) e começa a escrever | — | A primeira pergunta faz o caminho inteiro: nada foi guardado ainda. |
+| 2 | **Ana**, enquanto o modelo escreve: **KV cache** | dentro do modelo | lado a lado: sem as anotações, uma barra inteira por palavra; com elas, só a palavra nova, mais as anotações, que crescem uma por palavra. No fim da resposta, as anotações somem | relê o pedido inteiro a cada palavra | Com as anotações, cada palavra nova lê uma palavra, não o pedido inteiro. |
+| 3 | **Bruno**, "Posso usar a piscina na segunda?": **cache de prefixo** | no servidor (o seu) | o pedido do Bruno começa igual ao da Ana; os blocos das instruções e do regulamento acendem como já lidos; o modelo lê só a pergunta (uma barra curta) | lê o regulamento inteiro de novo | O começo é igual ao da Ana: o servidor pula a leitura dele. |
+| 4 | **Dani**, a mesma coisa num assistente de API paga: **cache de prompt** | no provedor da API | o mesmo salto da cena 3, agora com uma conta ao lado: a Ana pagou a leitura inteira, um pouco mais cara, para guardar; a Dani paga o começo repetido bem mais barato | paga o começo inteiro, de novo | Na API, o provedor faz o mesmo e cobra menos pelo começo repetido. |
+| 5 | **Eduardo**, "Dá para mudar no sábado à tarde?": **cache semântico**, acertando | no aplicativo, antes do modelo | outras palavras, a mesma pergunta da Ana; o mural reconhece e devolve a resposta dela na hora; o servidor e o modelo nem são chamados; ✓ certa | o caminho inteiro de novo | Outras palavras, mesma pergunta: o mural responde na hora, sem o modelo. |
+| 6 | **Carla**, "Posso fazer a minha mudança no sábado de manhã?": **cache semântico**, errando | no aplicativo | o mural acha parecida com a da Ana e devolve "Não"; ✗ de manhã pode, das 8h às 12h. O quadro final: o caminho com os quatro nomes, cada um no seu ponto, e a linha "três guardam leitura e nunca mudam a resposta; o mural guarda respostas e pode errar" | — | Parecida não é igual: o mural devolveu a resposta da Ana, errada. |
 
-| # | Nome | O que acontece | O balão (uma frase) | O resumo que fica |
-|---|---|---|---|---|
-| 1 | O Enter | a pergunta da Ana sai do "você" e chega ao aplicativo | A Ana aperta Enter. | — |
-| 2 | O pedido | o aplicativo junta três blocos: as instruções, o regulamento e a pergunta; olha o mural, vazio, e manda adiante | O aplicativo junta as instruções, o regulamento e a pergunta num pedido só. | Ana: o pedido montado |
-| 3 | A leitura | o servidor olha os começos já lidos, vazio; o modelo lê os três blocos, devagar (uma barra longa: a pausa) | Nada foi lido antes: o modelo lê o pedido inteiro. | Ana: tudo lido do zero |
-| 4 | As anotações | a resposta sai palavra por palavra; a cada palavra, a gaveta de anotações ganha uma marca; no fim, as anotações somem, o servidor guarda o começo lido e o mural guarda "Ana: sábado → Não, só de manhã" | Enquanto escreve, o modelo anota o que já leu, para não reler a cada palavra. | Ana: as anotações enquanto escreve |
-| 5 | Bruno | o pedido do Bruno: os dois primeiros blocos acendem no servidor como já lidos; o modelo lê só a pergunta (uma barra curta) | O começo do pedido já foi lido para a Ana: o modelo lê só a pergunta nova. | Bruno: o começo pulado |
-| 6 | Carla | a pergunta da Carla chega ao aplicativo; o mural acende: "parece a da Ana"; a resposta da Ana volta direto, sem passar pelo servidor nem pelo modelo; um ✗: aos domingos, não pode | O mural achou a pergunta parecida e devolveu a resposta da Ana. Domingo não é sábado. | Carla: a resposta pronta, errada |
-| 7 | Os nomes | as três gavetas ganham os nomes: mural = cache semântico; começos já lidos = cache de prefixo (numa API paga, cache de prompt, mais barato); anotações = KV cache | Três guardam leitura e não mudam a resposta; o mural guarda respostas e pode errar. | — |
+As respostas saem do regulamento do corpus: sábado à tarde não pode (das 8h às 12h); a piscina fecha às segundas. Os
+preços da cena 4 não têm número: "um pouco mais caro" e "bem mais barato" (os números ficam no texto, com o link).
 
 ## No celular (estreito)
 
-O caminho vira uma coluna: você, o aplicativo, o servidor e o modelo, um embaixo do outro, cada um com a sua gaveta
-ao lado. A pergunta desce pela coluna. O balão fica embaixo.
+O caminho vira uma coluna, como na versão 1, com as gavetas ao lado. Na cena 2, o "sem" e o "com" ficam um embaixo do
+outro. O balão fica embaixo.
 
 ## No modo direto
 
-A cena 7 parada: o caminho com as três gavetas nomeadas e os resumos. Para leitor de tela, a descrição das sete cenas.
+O quadro final da cena 6: o caminho com os quatro nomes, cada um no seu ponto, e a linha dos dois grupos.
 
 ## O que muda na página
 
-- A animação substitui o caminho parado (`CaminhoDaPergunta`) na abertura. O Pare e pense que vem depois fica.
-- Os nomes técnicos aparecem só na cena 7, depois de o leitor ver cada cache agir.
-- A figura técnica dos quatro caches (blocos, preço, semântico) continua depois de "Quando alguém fala em cache…":
-  ela detalha o que a jornada só mostra de passagem (o identificador encadeado dos blocos, o preço).
-
-## Fica de fora, de propósito
-
-- Números de tempo e de preço: as barras são ilustração, e a figura diz isso.
-- K, V, token, prefill, decode, hash: entram no texto técnico, depois.
+- A jornada continua abrindo o texto, com a previsão sobre a Carla antes do play e as duas frases depois.
+- A figura técnica dos quatro caches, depois de "Quando alguém fala em cache…", fica repetida com a jornada nova
+  (as duas mostram o salto do prefixo, o preço e o semântico). Proposta: tirar a figura técnica e manter só a lista
+  e as correções ao artigo, que trazem o que a jornada não mostra (o identificador encadeado, os preços com link).
 
 (redação: Claude Opus 5.5)

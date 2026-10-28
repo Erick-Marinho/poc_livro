@@ -45,7 +45,7 @@ import saidas from "./saidas.json";
 
 Cache é guardar um trabalho já feito para não ter de fazer de novo. Para ver onde isso acontece num sistema com modelo de linguagem, acompanhe três moradores de um condomínio que mandam perguntas a um assistente, do Enter até a resposta.
 
-<PareEPense pergunta="Antes de tocar: a Ana pergunta se pode fazer a mudança no sábado à tarde e, logo depois, a Carla pergunta do sábado de manhã. Com tudo funcionando, a Carla pode receber a resposta errada?">
+<PareEPense pergunta="Antes de tocar: a Ana pergunta se pode fazer a mudança no sábado à tarde e, mais tarde, a Carla pergunta do sábado de manhã. Com tudo funcionando, a Carla pode receber a resposta errada?">
 Pode, se o sistema guarda respostas prontas e entrega a de uma pergunta parecida, sem chamar o modelo. A animação mostra quem faz isso, e onde ele fica no caminho.
 </PareEPense>
 
@@ -54,8 +54,6 @@ Pode, se o sistema guarda respostas prontas e entrega a de uma pergunta parecida
 Foi o mural: ele pula o modelo e entrega a resposta de outra pergunta, só porque é parecida. "De manhã" e "à tarde" mudam uma palavra, e mudam a resposta.
 
 Quando alguém fala em "cache" num sistema com modelo de linguagem, pode estar falando de quatro coisas diferentes. O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) separa as quatro, e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) faz a mesma divisão. A diferença está no que cada um guarda e por quanto tempo.
-
-<KvCache dados={kv} qual="caches" />
 
 - **KV cache:** dentro de uma resposta. O modelo guarda o que já leu, e apaga quando a resposta acaba.
 - **Cache de prefixo:** entre pedidos, no servidor que executa o modelo. Dois pedidos que começam igual dividem a leitura do começo.

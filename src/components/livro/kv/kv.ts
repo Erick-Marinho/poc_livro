@@ -8,35 +8,12 @@
 
 type Mensagem = { nome: string; leva: string; palavras: number };
 export type Kv = {
-  sobre: string; pergunta: string; resposta: string[]; trecho: string;
-  parecidas: { guardada: string; nova: string; resposta: string }; mensagens: Mensagem[];
+  sobre: string; pergunta: string; resposta: string[]; trecho: string; mensagens: Mensagem[];
 };
 
 export const FPS = 30;
 
 export type Figura = { cenas: { nome: string; de: number }[]; segundos: number; textos: string[]; resumos: string[]; fecho?: string };
-
-export const CACHES: Figura = {
-  cenas: [
-    { nome: "Ler e escrever", de: 0 },
-    { nome: "KV", de: 5.5 },
-    { nome: "Prefixo", de: 11 },
-    { nome: "Prompt", de: 17 },
-    { nome: "Semântico", de: 22.5 },
-    { nome: "Dois grupos", de: 28 },
-  ],
-  segundos: 33,
-  textos: [
-    "O modelo lê a mensagem e escreve a resposta.",
-    "O KV guarda a leitura de cada palavra, até a resposta acabar.",
-    "O servidor reaproveita o começo igual, bloco a bloco, até o primeiro diferente.",
-    "Na API, o provedor faz o mesmo e cobra menos pelo começo repetido.",
-    "O semântico devolve uma resposta pronta para perguntas parecidas, e pode errar.",
-    "Três guardam a leitura e não mudam a resposta; o semântico pode errar.",
-  ],
-  resumos: ["lê, depois escreve", "KV: dentro de uma resposta", "prefixo: entre pedidos, no servidor",
-    "prompt: entre pedidos, na API", "semântico: a resposta pronta"],
-};
 
 export const ANOTACOES: Figura = {
   cenas: [
@@ -61,34 +38,34 @@ export const ANOTACOES: Figura = {
   fecho: "Com ou sem as anotações: o medidor cronometra a pausa e cada palavra.",
 };
 
-/** a jornada de uma pergunta, que abre o texto: três moradores pelo mesmo caminho (figuras/jornada.json) */
+/** a jornada de uma pergunta, que abre o texto: cinco moradores, um cenário por cache (figuras/jornada.json) */
 export type Jornada = { sobre: string; perguntas: { quem: string; texto: string; curta: string; resposta?: string[]; certa?: string }[] };
 
 export const JORNADA: Figura = {
   cenas: [
-    { nome: "O pedido", de: 0 },
-    { nome: "A leitura", de: 7.5 },
-    { nome: "As anotações", de: 12 },
-    { nome: "Bruno: o começo já foi lido", de: 18 },
-    { nome: "Carla: parecida não é igual", de: 23.5 },
-    { nome: "Os nomes", de: 28.5 },
+    { nome: "Ana: o caminho inteiro", de: 0 },
+    { nome: "KV cache: as anotações", de: 7 },
+    { nome: "Cache de prefixo: o Bruno", de: 14.5 },
+    { nome: "Cache de prompt: a Dani", de: 21.5 },
+    { nome: "Cache semântico: o Eduardo", de: 28.5 },
+    { nome: "Cache semântico: a Carla", de: 35 },
   ],
-  segundos: 34,
+  segundos: 42,
   textos: [
-    "A Ana aperta Enter; o aplicativo junta instruções, regulamento e pergunta.",
-    "Nada foi lido antes: o modelo lê o pedido inteiro.",
-    "Enquanto escreve, o modelo anota o que já leu, para não reler.",
-    "O começo já foi lido para a Ana: o modelo lê só a pergunta.",
-    "O mural achou a pergunta parecida e devolveu a resposta da Ana.",
-    "As anotações e os começos guardam leitura; o mural guarda respostas, e erra.",
+    "A primeira pergunta faz o caminho inteiro: nada foi guardado ainda.",
+    "Com as anotações, cada palavra nova lê uma palavra, não o pedido inteiro.",
+    "O começo é igual ao da Ana: o servidor pula a leitura dele.",
+    "Na API, o provedor faz o mesmo e cobra menos pelo começo repetido.",
+    "Outras palavras, mesma pergunta: o mural responde na hora, sem o modelo.",
+    "Parecida não é igual: o mural devolveu a resposta da Ana, errada.",
   ],
-  resumos: ["Ana: o pedido montado", "Ana: tudo lido do zero", "Ana: anotações enquanto escreve",
-    "Bruno: o começo pulado", "Carla: a resposta pronta, errada"],
+  resumos: ["Ana: o caminho inteiro", "KV: lê só a palavra nova", "prefixo: pula o começo repetido",
+    "prompt: o começo repetido sai barato", "semântico: responde sem o modelo"],
 };
 
 export function montarJornada(d: Jornada): Jornada {
-  if (d.perguntas?.length !== 3) throw new Error("a jornada: são três perguntas, a da Ana, a do Bruno e a da Carla");
-  if (d.perguntas.slice(0, 2).some((p) => !p.resposta?.length || p.resposta.length > 6)) throw new Error("a jornada: a Ana e o Bruno têm de 1 a 6 palavras de resposta");
+  if (d.perguntas?.map((p) => p.quem).join() !== "Ana,Bruno,Dani,Eduardo,Carla") throw new Error("a jornada: Ana, Bruno, Dani, Eduardo e Carla, nessa ordem");
+  if (d.perguntas.slice(0, 3).some((p) => !p.resposta?.length || p.resposta.length > 6)) throw new Error("a jornada: Ana, Bruno e Dani têm de 1 a 6 palavras de resposta");
   return d;
 }
 

@@ -32,6 +32,10 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   "sábado de manhã", e não "domingo" (a resposta da Ana, "Não", serviria por acaso); o Bruno, a piscina na segunda
   (o regulamento não dá horário à churrasqueira). A checagem do hash vira palpite (`previsoes-prefixo.json`): o molde
   aceita até 3 Pare e pense e 2 palpites.
+- (8, 28/10/2026, Erick) A jornada, versão 2 (esboço em `figuras/esboco-jornada.md`): um cenário por cache, com o nome na
+  cena em que ele age: a Ana faz o caminho inteiro; o KV contra a releitura; o Bruno pula o começo (prefixo); a Dani, o
+  mesmo numa API paga, com a conta (prompt); o Eduardo recebe do mural a resposta certa, e a Carla, a errada
+  (semântico). A figura técnica dos quatro caches sai: a jornada mostra o que ela mostrava.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 

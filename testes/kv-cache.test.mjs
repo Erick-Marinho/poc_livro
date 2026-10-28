@@ -25,11 +25,11 @@ test("o regulamento é o do pausa-e-fluxo, byte a byte, e diz que é inventado",
   assert.match(texto(casos[1]), /\(condomínio inventado\)/);
 });
 
-import { ANOTACOES, baloes, CACHES, duracao, FPS, JORNADA, montarJornada, montarKv, palavraEm } from "../src/components/livro/kv/kv.ts";
+import { ANOTACOES, baloes, duracao, FPS, JORNADA, montarJornada, montarKv, palavraEm } from "../src/components/livro/kv/kv.ts";
 
 const kv = montarKv(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/kv.json", import.meta.url), "utf8")));
 
-for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["dos quatro caches", CACHES, 6], ["da atendente", ANOTACOES, 6]]) {
+for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["da atendente", ANOTACOES, 6]]) {
   test(`a figura ${nome}: ${cenas} cenas em até 45 s, um balão curto por cena, sem número nem nome técnico`, () => {
     assert.equal(f.cenas.length, cenas);
     assert.ok(duracao(f) / FPS <= 45);
@@ -57,32 +57,37 @@ test("a figura da atendente fecha sem pergunta, e as palavras e o trecho são os
   assert.match(kv.sobre, /ilustração/);
 });
 
-test("a jornada abre a página: as respostas são as do regulamento, e a da Carla, que veio do mural, está errada", () => {
+test("a jornada abre a página: um cenário por cache, as respostas do regulamento; a do mural certa para o Eduardo e errada para a Carla", () => {
   const jornada = montarJornada(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/jornada.json", import.meta.url), "utf8")));
   const dados = (n) => readFileSync(new URL(`dados/${n}`, projeto), "utf8");
-  const [ana, bruno, carla] = jornada.perguntas;
+  const [ana, bruno, dani, eduardo, carla] = jornada.perguntas;
   assert.match(dados("mudancas.md"), /aos sábados, das 8h às 12h/, "sábado à tarde não pode; de manhã, pode");
   assert.equal(ana.resposta.join(" "), "Não: aos sábados, só de manhã.");
   assert.match(dados("areas-comuns.md"), /Às segundas, fecha para manutenção/);
   assert.equal(bruno.resposta.join(" "), "Não: às segundas, fecha para manutenção.");
+  assert.match(dados("areas-comuns.md"), /Visitantes usam as áreas comuns só acompanhados de um morador/);
+  assert.equal(dani.resposta.join(" "), "Só acompanhada de um morador.");
+  assert.match(eduardo.texto, /sábado à tarde/, "o Eduardo pergunta o mesmo que a Ana, com outras palavras: a resposta do mural está certa");
+  assert.ok(!eduardo.resposta, "o Eduardo não passa pelo modelo");
   assert.match(carla.texto, /sábado de manhã/, "a Carla pergunta quase o mesmo que a Ana");
   assert.match(carla.certa, /das 8h às 12h/, "e a resposta certa é a outra");
   assert.match(jornada.sobre, /ilustração/);
   const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
   const corpo = mdx.slice(mdx.indexOf("\n---\n", 4));
   const jornadaEm = corpo.indexOf('qual="jornada"'), tecnico = corpo.indexOf('Quando alguém fala em "cache"');
-  assert.ok(jornadaEm >= 0 && jornadaEm < tecnico && tecnico < corpo.indexOf('qual="caches"'));
+  assert.ok(jornadaEm >= 0 && jornadaEm < tecnico);
+  assert.doesNotMatch(corpo, /qual="caches"/, "a jornada mostra os quatro caches: a figura técnica saiu");
   const html = readFileSync(new URL("../dist/experimentos/kv-cache/index.html", import.meta.url), "utf8");
   assert.match(html, /data-kv-cache="jornada"/);
 });
 
-test("as figuras estão na página: os quatro caches na abertura, a atendente em \"O que vamos construir\", antes da IDE", () => {
+test("as figuras estão na página: a jornada na abertura, a atendente em \"O que vamos construir\", antes da IDE", () => {
   const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
-  const caches = mdx.indexOf('qual="caches"'), construir = mdx.indexOf("## O que vamos construir");
+  const jornada = mdx.indexOf('qual="jornada"'), construir = mdx.indexOf("## O que vamos construir");
   const aposta = mdx.indexOf("<Aposta dados={previsoes}"), anotacoes = mdx.indexOf('qual="anotacoes"'), ide = mdx.indexOf("<IdeCapitulo");
-  assert.ok(caches >= 0 && caches < construir && construir < aposta && aposta < anotacoes && anotacoes < ide);
+  assert.ok(jornada >= 0 && jornada < construir && construir < aposta && aposta < anotacoes && anotacoes < ide);
   const html = readFileSync(new URL("../dist/experimentos/kv-cache/index.html", import.meta.url), "utf8");
-  assert.match(html, /data-kv-cache="caches"/);
+  assert.match(html, /data-kv-cache="jornada"/);
   assert.match(html, /data-kv-cache="anotacoes"/);
   assert.match(html, /data-nivel="avancado"/);
 });
@@ -119,7 +124,7 @@ test("as ações da abertura: a previsão antes da jornada, o palpite do hash an
   assert.ok(pilhas.cartas.every((c) => c.pilha in pilhas.grupos));
   assert.deepEqual(Object.keys(pilhas.grupos).map((g) => pilhas.cartas.filter((c) => c.pilha === g).length > 0), [true, true, true], "nenhuma pilha vazia");
   const jornada = JSON.parse(readFileSync(new URL("figuras/jornada.json", pasta), "utf8"));
-  const [ana, , carla] = jornada.perguntas;
+  const [ana, , , , carla] = jornada.perguntas;
   const pronta = pilhas.cartas.filter((c) => c.pilha === "pronta").map((c) => c.texto).join(" ");
   assert.match(pronta, /sábado de manhã/, "a carta da resposta pronta é o caso da Carla");
   assert.match(carla.texto, /sábado de manhã/); assert.match(ana.texto, /sábado à tarde/);
