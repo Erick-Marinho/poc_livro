@@ -68,20 +68,15 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 3 (detalhe)
+## Etapa 4 (detalhe)
 
-- **Arquivos:** `rascunhos/kv-cache/projeto/`: `pyproject.toml` (o extra `modelo`, com o PyTorch só de CPU),
-  `configuracao.json`, `modelo.py` (o `ler` de verdade), `coletar.py`, `medir.py` e o `coleta.json` gravado.
-- **Muda:** o `Qwen3-0.6B` na revisão fixada do `temperatura-zero`, em float32, 4 threads, com a atenção padrão da
-  biblioteca. Com cache, um `DynamicCache` e a `cache_position` de cada token novo, como no laço manual da
-  [documentação](https://huggingface.co/docs/transformers/v4.57.1/en/cache_explanation); sem cache, `use_cache=False`.
-  Cada repetição gera a curta e a longa, com e sem cache; uma geração de aquecimento é descartada. O `coleta.json`
-  guarda a máquina, as versões e o tempo de cada passo.
-- **Decisões:** (3) Mesma revisão, precisão e threads do `temperatura-zero`, para o leitor reaproveitar a instalação.
-  (3) A atenção padrão (`sdpa`), e não a `eager` do `temperatura-zero`: é a que o leitor recebe sem escolher.
-- **Evidência:** antes, uma sondagem cronometrada, para saber quanto a coleta leva; depois, o `coleta.json` com as 5
-  repetições e o `uv run python medir.py` com os quatro itens do placar e a conferência dos bytes do cache contra a conta.
-- **Fica fora:** as figuras e o texto.
+- **Arquivo:** `rascunhos/kv-cache/figuras/esboco.md`: duas figuras em ASCII, seis cenas cada. A primeira, os quatro
+  caches em dois grupos (abre o texto); a segunda, a atendente com e sem anotações, o medidor e a pergunta que vai para
+  a aposta da IDE. O celular, o modo direto e o que fica de fora.
+- **Decisão:** (4) A figura 2 mostra que, com o cache, a atendente olha as anotações, sem dizer quanto isso custa: o
+  item 3 do placar é a aposta.
+- **Evidência:** o esboço lido e aprovado pelo Erick, antes de qualquer código de animação.
+- **Fica fora:** o Remotion (etapa 5) e o texto.
 
 ## Registro
 
@@ -89,5 +84,6 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 |---|---|---|---|
 | 1 | `11bec6d` | `testes/kv-cache.test.mjs` (2): a mesma pergunta, a longa lendo 46 vezes a curta (10 e 462 palavras), o regulamento igual byte a byte ao do `pausa-e-fluxo`; falha com `mudancas.md` alterado. Testes do livro 207/207 (o `gravacao:testar` já quebrava antes, sem `pytest` no ambiente) | Erick, 27/10/2026 |
 | 2 | `149d50b` | `test_laco.py` (9), sem PyTorch: com cache o laço lê `[4, 1, 1, 1, 1]`, sem cache `[4, 5, 6, 7, 8]`, os mesmos tokens; o placar conta no limite e não logo abaixo; os 40 GiB do Daily Dose; falha (`[4, 1, 1, 1, 1] != [4, 5, 6, 7, 8]`) com o laço sem cache lendo só o token novo. Testes do livro 207/207 | Erick, 27/10/2026 |
+| 3 | `5020ded` | `coleta.json`: 5 repetições na CPU (x86_64, torch 2.8.0, transformers 4.57.1, `sdpa`), 1 h 56 min; `medir.py`: passo com cache 74,5 e 131,9 ms, sem cache 934,9 e 8862 ms (curta e longa); placar 5, 5, 1 e 10 de 10 (o item 3 não se confirmou: em 4 de 5, o passo da longa custou 70% a 77% a mais); cache igual à conta (33,7 e 207,6 MiB); o modelo errou o sábado na longa. `test_laco.py` 9/9 | Erick, 28/10/2026 |
 
 (redação: Claude Opus 5.5)
