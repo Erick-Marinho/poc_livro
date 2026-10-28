@@ -29,10 +29,11 @@ import { ANOTACOES, baloes, CACHES, duracao, FPS, JORNADA, montarJornada, montar
 
 const kv = montarKv(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/kv.json", import.meta.url), "utf8")));
 
-for (const [nome, f, cenas] of [["da jornada", JORNADA, 7], ["dos quatro caches", CACHES, 6], ["da atendente", ANOTACOES, 6]]) {
+for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["dos quatro caches", CACHES, 6], ["da atendente", ANOTACOES, 6]]) {
   test(`a figura ${nome}: ${cenas} cenas em até 45 s, um balão curto por cena, sem número nem nome técnico`, () => {
     assert.equal(f.cenas.length, cenas);
     assert.ok(duracao(f) / FPS <= 45);
+    f.cenas.forEach((c, i) => assert.ok((f.cenas[i + 1]?.de ?? f.segundos) - c.de <= 8, `${c.nome}: até 8 s por cena (docs/RITMO.md)`));
     f.cenas.forEach((c, i) => { if (i) assert.ok(c.de > f.cenas[i - 1].de); });
     const bs = baloes(f);
     assert.equal(bs.length, f.cenas.length, "um balão por cena");
@@ -106,4 +107,21 @@ test("os números do texto são os das saídas gravadas", () => {
   assert.ok(mdx.includes("77%"));
   const previsoes = JSON.parse(readFileSync(new URL("previsoes.json", pasta), "utf8"));
   assert.match(previsoes.mensagens[0].texto, /27 para 822 tokens/);
+});
+
+test("as ações da abertura: a previsão antes da jornada, o palpite do hash antes da explicação, e as pilhas", () => {
+  const pasta = new URL("../experimentos/kv-cache/", import.meta.url);
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  assert.doesNotMatch(mdx, /<Rascunho\b/);
+  assert.ok(mdx.indexOf("<PareEPense pergunta=\"Antes de tocar") < mdx.indexOf('qual="jornada"'), "a decisão vem antes do momento-chave");
+  assert.ok(mdx.indexOf("<Aposta dados={prefixo}") < mdx.indexOf("No [vLLM]"), "o palpite vem antes da resposta");
+  const pilhas = JSON.parse(readFileSync(new URL("pilhas.json", pasta), "utf8"));
+  assert.ok(pilhas.cartas.every((c) => c.pilha in pilhas.grupos));
+  assert.deepEqual(Object.keys(pilhas.grupos).map((g) => pilhas.cartas.filter((c) => c.pilha === g).length > 0), [true, true, true], "nenhuma pilha vazia");
+  const jornada = JSON.parse(readFileSync(new URL("figuras/jornada.json", pasta), "utf8"));
+  const [ana, , carla] = jornada.perguntas;
+  const pronta = pilhas.cartas.filter((c) => c.pilha === "pronta").map((c) => c.texto).join(" ");
+  assert.match(pronta, /sábado de manhã/, "a carta da resposta pronta é o caso da Carla");
+  assert.match(carla.texto, /sábado de manhã/); assert.match(ana.texto, /sábado à tarde/);
+  assert.ok(mdx.indexOf('<Nota titulo="o que é inventado">') > mdx.indexOf("</Exercicio>"), "a nota fica no fim");
 });

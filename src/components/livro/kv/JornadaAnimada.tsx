@@ -3,7 +3,8 @@
  * fica fixo na tela (você, o aplicativo, o servidor, o modelo), e cada ponto tem embaixo a sua gaveta: o mural de
  * respostas, os começos já lidos e as anotações. Três moradores passam por ele: a Ana faz o caminho inteiro e enche as
  * gavetas; o Bruno pula a leitura do começo; a Carla recebe do mural a resposta da Ana, errada. Só a última cena dá os
- * nomes. Os textos saem de kv.ts e de figuras/jornada.json; as barras são ilustração.
+ * nomes. Seis cenas (docs/RITMO.md): o Enter e o pedido dividem a primeira. Os textos saem de kv.ts e de
+ * figuras/jornada.json; as barras são ilustração.
  */
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { cor, kf, mono, suave, ui } from "../palco/video";
@@ -25,8 +26,11 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
   const M = MEDIDAS_JORNADA[desenho] as unknown as Medidas;
   const D = MEDIDAS_JORNADA[desenho];
   const t = useCurrentFrame() / useVideoConfig().fps;
-  const k = cenaEm(F, t);
-  const de = (n: number) => F.cenas[n].de;
+  /* a cena da tela (F, seis) e os marcos da história, um a mais: o Enter e o pedido dividem a primeira cena */
+  const kn = cenaEm(F, t);
+  const MARCOS = [0, 2.5, 7.5, 12, 18, 23.5, 28.5];
+  const de = (n: number) => MARCOS[n];
+  const k = MARCOS.reduce((i, m, n) => (t >= m ? n : i), 0);
   const largo = desenho === "largo";
   const [ana, bruno, carla] = j.perguntas;
 
@@ -44,7 +48,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
   /* quem está andando, e onde: o índice do ponto (fracionário, entre dois pontos) */
   const quem = t < de(4) ? ana : t < de(5) ? bruno : carla;
   const onde = t < de(4)
-    ? kf(t, [[1.5, 0], [3, 1], [de(1) + 3.2, 1], [de(1) + 4.2, 2], [de(2) + 0.9, 2], [de(2) + 1.6, 3]], suave)
+    ? kf(t, [[0.6, 0], [1.8, 1], [de(1) + 3.2, 1], [de(1) + 4.2, 2], [de(2) + 0.9, 2], [de(2) + 1.6, 3]], suave)
     : t < de(5)
       ? kf(t, [[de(4) + 0.2, 0], [de(4) + 0.8, 1], [de(4) + 1.6, 1], [de(4) + 2.1, 2], [de(4) + 2.9, 2], [de(4) + 3.3, 3]], suave)
       : kf(t, [[de(5) + 0.2, 0], [de(5) + 0.8, 1], [de(5) + 2.0, 1], [de(5) + 2.8, 0]], suave);
@@ -113,7 +117,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: cor.nota, fontFamily: ui }}>
-      <Cabecalho M={M} f={F} k={k} />
+      <Cabecalho M={M} f={F} k={kn} />
 
       {[0, 1, 2].map(seta)}
       <Caixa i={0} titulo={`VOCÊ · ${quem.quem.toUpperCase()}`} texto={quem.texto} />
@@ -172,7 +176,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
           </> : null}
       </div> : null}
 
-      <Resumos M={M} f={F} k={k} t={t} topo={k === 6 ? (largo ? 316 : 490) : resumosY} />
+      <Resumos M={M} f={F} k={kn} t={t} topo={k === 6 ? (largo ? 316 : 490) : resumosY} />
       {k < 6 ? <div style={{ position: "absolute", left: D.x, top: D.balao.y - 20, font: `italic 11px ${ui}`, color: cor.fraco }}>ilustração: as barras e as anotações não são medidas</div> : null}
       <BalaoDaCena M={M} f={F} t={t} alvoY={k === 6 ? gaveta(1).y : no(Math.min(ativo, 3)).y} alvoX={no(Math.min(ativo, 3)).x + 40} />
     </AbsoluteFill>

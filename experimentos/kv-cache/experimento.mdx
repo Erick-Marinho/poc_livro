@@ -31,10 +31,11 @@ import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import Aposta from "../../src/components/livro/Aposta.astro";
 import Exercicio from "../../src/components/livro/Exercicio.astro";
-import Rascunho from "../../src/components/livro/Rascunho.astro";
+import Pilhas from "../../src/components/livro/Pilhas.astro";
 import kv from "./figuras/kv.json";
 import jornada from "./figuras/jornada.json";
 import previsoes from "./previsoes.json";
+import pilhas from "./pilhas.json";
 import prefixo from "./previsoes-prefixo.json";
 import roteiro from "./roteiros/01.json";
 import estados from "./roteiros/01.estados.json";
@@ -44,30 +45,32 @@ import saidas from "./saidas.json";
 
 Cache é guardar um trabalho já feito para não ter de fazer de novo. Para ver onde isso acontece num sistema com modelo de linguagem, acompanhe três moradores de um condomínio que mandam perguntas a um assistente, do Enter até a resposta.
 
+<PareEPense pergunta="Antes de tocar: a Ana pergunta se pode fazer a mudança no sábado à tarde e, logo depois, a Carla pergunta do sábado de manhã. Com tudo funcionando, a Carla pode receber a resposta errada?">
+Pode, se o sistema guarda respostas prontas e entrega a de uma pergunta parecida, sem chamar o modelo. A animação mostra quem faz isso, e onde ele fica no caminho.
+</PareEPense>
+
 <KvCache dados={jornada} qual="jornada" />
 
-<PareEPense pergunta="Dos quatro caches, só um pode devolver uma resposta diferente da que o modelo daria. Qual, e por quê?">
-O semântico, o mural. As anotações e os começos já lidos pulam uma leitura que o modelo faria de qualquer jeito: com ou sem eles, a resposta sai igual, só muda o tempo. O mural pula o modelo inteiro e entrega a resposta de outra pergunta, só porque ela parece com a nova. Foi o que aconteceu com a Carla: "de manhã" e "à tarde" mudam uma palavra, e mudam a resposta.
-</PareEPense>
+Foi o mural: ele pula o modelo e entrega a resposta de outra pergunta, só porque é parecida. "De manhã" e "à tarde" mudam uma palavra, e mudam a resposta.
 
 Quando alguém fala em "cache" num sistema com modelo de linguagem, pode estar falando de quatro coisas diferentes. O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) separa as quatro, e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) faz a mesma divisão. A diferença está no que cada um guarda e por quanto tempo.
 
 <KvCache dados={kv} qual="caches" />
 
-- **KV cache:** dentro de uma resposta. Enquanto escreve, o modelo guarda o que já leu de cada token, para não ler de novo. Acabou a resposta, acabou o cache.
+- **KV cache:** dentro de uma resposta. O modelo guarda o que já leu, e apaga quando a resposta acaba.
 - **Cache de prefixo:** entre pedidos, no servidor que executa o modelo. Dois pedidos que começam igual dividem a leitura do começo.
 - **Cache de prompt:** o mesmo, do lado do provedor da API, que cobra menos pelo começo repetido. Na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem o mesmo mecanismo, com regras próprias.
 - **Cache semântico:** antes do modelo. Uma pergunta parecida com outra já respondida recebe a mesma resposta, sem passar pelo modelo.
 
-<Rascunho acao="Pilhas" frase="A diferença está no que cada um guarda e por quanto tempo." verbo="separa" dado="ilustração: situações escritas para o exemplo; a pilha certa de cada uma sai da jornada e da documentação citada na lista">
-Antes de ler que três não mudam a resposta, o leitor separa seis situações do dia a dia em três pilhas, pelo que cada uma reaproveita: as anotações de uma resposta (KV), um começo repetido (prefixo ou prompt) e uma resposta pronta (semântico). As cartas: "durante uma resposta, o modelo não relê o pedido inteiro antes de cada palavra" (KV); "a segunda pergunta de uma conversa longa começa a responder mais rápido que a primeira" (começo repetido); "a fatura da API cai quando o mesmo manual vai no começo de todo pedido" (começo repetido); "trocar a data no topo do prompt deixa todo pedido mais lento e mais caro" (começo repetido); "um assistente responde na hora a uma pergunta que alguém já fez com outras palavras" (resposta pronta); "uma pergunta sobre o sábado de manhã recebe a resposta de uma sobre o sábado à tarde" (resposta pronta). Depois da separação, o parágrafo que segue confirma: só a pilha da resposta pronta pode errar. (redação: Claude Opus 5.5)
-</Rascunho>
+<Pilhas quem="neste experimento" pergunta={pilhas.pergunta} cartas={pilhas.cartas} grupos={pilhas.grupos}>
+Só a pilha da resposta pronta pode errar. Nas outras duas, o modelo responde o que responderia de qualquer jeito: o cache só poupa uma leitura.
+</Pilhas>
 
-Os três primeiros nunca mudam a resposta: guardam um trabalho que daria o mesmo resultado se fosse refeito. O semântico pode errar, porque parecida não é igual.
-
-O artigo erra em dois pontos. O primeiro: ele diz que cada bloco do cache de prefixo é identificado pelo conteúdo e pela posição. No [vLLM](https://docs.vllm.ai/en/latest/design/prefix_caching.html), o identificador de um bloco junta o do bloco anterior, os tokens do bloco e algumas chaves extras. Na prática, um bloco igual que vem depois de um bloco diferente não é reaproveitado: a diferença se propaga para tudo o que vem depois.
+O artigo erra em dois pontos. O primeiro: ele diz que cada bloco do cache de prefixo é identificado pelo conteúdo e pela posição.
 
 <Aposta dados={prefixo} pergunta="O artigo ou o vLLM?" />
+
+No [vLLM](https://docs.vllm.ai/en/latest/design/prefix_caching.html), o identificador de um bloco junta o do bloco anterior, os tokens do bloco e algumas chaves extras. Na prática, um bloco igual que vem depois de um bloco diferente não é reaproveitado: a diferença se propaga para tudo o que vem depois.
 
 O segundo: o artigo apresenta o KV cache como ganho sem preço. Ele tem dois: a memória de cada token guardado, e a consulta a todas as anotações a cada palavra nova. É isso que vamos medir.
 
@@ -90,8 +93,6 @@ Os nomes técnicos: as anotações são as **chaves** (K) e os **valores** (V) q
 Você começa numa pasta vazia e monta o laço passo a passo, com testes que usam um modelo de mentira. Aqui na página, o modelo de verdade não é executado: a coleta que você vai ler foi gravada numa máquina identificada no resultado. Na sua máquina, o mesmo código mede de verdade.
 
 <IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O laço", "2": "O modelo", "3": "O placar", "4": "O conserto" }} numero="1" legenda="O laço construído desde a pasta vazia. Os comandos são executados no projeto real; a coleta foi gravada com o modelo de verdade numa máquina identificada. As mensagens do chat são um roteiro, não um modelo ao vivo." />
-
-<Nota titulo="o que é inventado">O condomínio, o seu regulamento e os moradores são inventados; o condomínio e o regulamento são os do experimento A pausa e o fluxo. Nas figuras, a resposta, os blocos e a resposta pronta foram escritos para o exemplo, e os tamanhos não são medidos. As conversas do chat da IDE são um roteiro. A coleta é real: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 
 ## O tropeço: a pausa dentro da média
 
@@ -127,5 +128,7 @@ Você concluiu quando confrontou a sua anotação com o medidor da sua máquina.
 </Exercicio>
 
 A medida é toda no processador. Numa placa de vídeo, os tempos caem muito, e a consulta às anotações pode pesar menos ou mais em relação ao resto; essa medida não está gravada, e fica como pergunta, não como resultado.
+
+<Nota titulo="o que é inventado">O condomínio, o seu regulamento e os moradores são inventados; o condomínio e o regulamento são os do experimento A pausa e o fluxo. Nas figuras, a resposta, os blocos e a resposta pronta foram escritos para o exemplo, e os tamanhos não são medidos. As conversas do chat da IDE são um roteiro. A coleta é real: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 
 <Pendente o="Opinião dos autores: uma vez em que o contexto que vocês mandaram ao modelo pesou no tempo ou na conta, e o que fizeram" parte="fecho do experimento" />
