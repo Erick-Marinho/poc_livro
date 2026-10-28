@@ -133,20 +133,25 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
   const pedido = (
     <div style={{ position: "absolute", left: D.x, top: palcoY, width: W }}>
       {rotulo(`O PEDIDO ${k === 0 ? "DA ANA" : k === 2 ? "DO BRUNO" : "DA DANI"}`)}
-      <div style={{ display: "flex", gap: 4, marginTop: 5 }}>
-        {[{ nome: "instruções", w: 0.24 }, { nome: "regulamento", w: 0.46 }, { nome: respostaDe.curta, w: 0.3 }].map((b, i) => {
+      <div style={{ display: "flex", flexDirection: largo ? "row" : "column", gap: 4, marginTop: 5 }}>
+        {[{ nome: j.pedido.instrucoes.nome!, origem: j.pedido.instrucoes.origem, w: 0.27 },
+          { nome: j.pedido.regulamento.nome!, origem: j.pedido.regulamento.origem, w: 0.43 },
+          { nome: `a pergunta: «${respostaDe.curta}»`, origem: j.pedido.pergunta.origem.replace("{quem}", respostaDe === ana ? "a Ana" : respostaDe === bruno ? "o Bruno" : "a Dani"), w: 0.3 }].map((b, i) => {
           const q = k === 0 ? kf(s, [[1.4 + i * 0.3, 0], [1.7 + i * 0.3, 1]]) : kf(s, [[0.9 + i * 0.12, 0], [1.1 + i * 0.12, 1]]);
           const pulado = pulados && i < 2;
-          return <div key={i} style={{ position: "relative", width: `${b.w * 100}%`, height: 30, borderRadius: 6, boxSizing: "border-box", overflow: "hidden", opacity: q,
+          return <div key={i} style={{ position: "relative", width: largo ? `${b.w * 100}%` : "100%", height: largo ? 50 : 40, borderRadius: 6, boxSizing: "border-box", overflow: "hidden", opacity: q,
             border: `1.5px ${pulado ? "dashed" : "solid"} ${pulado ? cor.ok : cor.fraco}`, background: pulado ? fundoOk : cor.papel }}>
             <div style={{ position: "absolute", inset: 0, width: `${lido(i) * 100}%`, background: preenchido }} />
-            <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", font: `600 ${M.fonte - 1}px ${ui}`,
-              color: pulado ? cor.ok : cor.texto, whiteSpace: "nowrap", padding: "0 4px" }}>{pulado ? `✓ ${b.nome}` : b.nome}</div>
+            <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 8px", overflow: "hidden" }}>
+              <span style={{ font: `700 ${M.fonte - 1}px/1.25 ${ui}`, color: pulado ? cor.ok : cor.texto, whiteSpace: "nowrap" }}>{b.nome}</span>
+              {pulado ? <span style={{ font: `700 ${M.fonte - 2}px/1.25 ${ui}`, color: cor.ok }}>✓ já lido: pulado</span>
+                : <span style={{ font: `italic ${M.fonte - 2}px/1.25 ${ui}`, color: cor.fraco }}>{b.origem}</span>}
+            </div>
           </div>;
         })}
       </div>
       {pulados ? <div style={{ marginTop: 6, maxWidth: largo && k === 3 ? W - 350 : W, font: `${M.fonte - 1}px/1.4 ${ui}`, color: cor.fraco, opacity: kf(s, [[2.6, 0], [2.9, 1]]) }}>
-        sem o cache, as instruções e o regulamento seriam lidos de novo; com ele, o modelo lê só a pergunta</div> : null}
+        o começo é igual ao da Ana porque o aplicativo cola as mesmas instruções e o mesmo regulamento em todo pedido. Sem o cache, seriam lidos de novo; com ele, o modelo lê só a pergunta</div> : null}
       {k === 0 && lendo ? <div style={{ marginTop: 6, font: `${M.fonte - 1}px ${ui}`, color: cor.acento }}>o modelo lê o pedido inteiro: é a pausa antes da primeira palavra</div> : null}
       {escritas > 0 ? <div style={{ marginTop: 6, maxWidth: largo && k === 3 ? W - 350 : W, font: `${M.fonte + 1}px/1.4 ${ui}`, color: cor.texto }}>
         <span style={{ font: `700 11px ${mono}`, letterSpacing: ".05em", color: cor.fraco }}>A RESPOSTA </span>
@@ -182,7 +187,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
 
   /* a conta da API (a Dani): a Ana pagou para guardar; a Dani paga menos pelo começo repetido */
   const conta = k === 3 ? (
-    <div style={{ position: "absolute", left: largo ? D.x + W - 330 : D.x, top: largo ? palcoY + 46 : palcoY + 150, width: largo ? 330 : W, boxSizing: "border-box",
+    <div style={{ position: "absolute", left: largo ? D.x + W - 330 : D.x, top: largo ? palcoY + 74 : palcoY + 236, width: largo ? 330 : W, boxSizing: "border-box",
       padding: "6px 10px", borderRadius: 8, border: `1.5px solid ${cor.fraco}`, background: cor.papel, font: `${M.fonte - 1}px/1.5 ${ui}`, color: cor.texto }}>
       {rotulo("A CONTA DA API")}
       <div style={{ opacity: kf(s, [[1.0, 0], [1.3, 1]]) }}>Ana · o começo, lido e guardado: <b style={{ color: cor.aviso }}>um pouco mais caro</b></div>

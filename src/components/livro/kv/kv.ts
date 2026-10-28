@@ -39,7 +39,12 @@ export const ANOTACOES: Figura = {
 };
 
 /** a jornada de uma pergunta, que abre o texto: cinco moradores, um cenário por cache (figuras/jornada.json) */
-export type Jornada = { sobre: string; perguntas: { quem: string; texto: string; curta: string; resposta?: string[]; certa?: string }[] };
+type Bloco = { nome?: string; origem: string };
+export type Jornada = {
+  sobre: string; perguntas: { quem: string; texto: string; curta: string; resposta?: string[]; certa?: string }[];
+  /** o que vai no pedido, e de onde vem cada parte */
+  pedido: { instrucoes: Bloco; regulamento: Bloco; pergunta: Bloco };
+};
 
 export const JORNADA: Figura = {
   cenas: [
@@ -66,6 +71,7 @@ export const JORNADA: Figura = {
 export function montarJornada(d: Jornada): Jornada {
   if (d.perguntas?.map((p) => p.quem).join() !== "Ana,Bruno,Dani,Eduardo,Carla") throw new Error("a jornada: Ana, Bruno, Dani, Eduardo e Carla, nessa ordem");
   if (d.perguntas.slice(0, 3).some((p) => !p.resposta?.length || p.resposta.length > 6)) throw new Error("a jornada: Ana, Bruno e Dani têm de 1 a 6 palavras de resposta");
+  if (!d.pedido?.instrucoes?.origem || !d.pedido?.regulamento?.origem || !d.pedido?.pergunta?.origem) throw new Error("a jornada: cada parte do pedido diz de onde vem");
   return d;
 }
 

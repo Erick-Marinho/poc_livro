@@ -72,6 +72,9 @@ test("a jornada abre a página: um cenário por cache, as respostas do regulamen
   assert.match(carla.texto, /sábado de manhã/, "a Carla pergunta quase o mesmo que a Ana");
   assert.match(carla.certa, /das 8h às 12h/, "e a resposta certa é a outra");
   assert.match(jornada.sobre, /ilustração/);
+  assert.match(jornada.pedido.regulamento.origem, /cola em todo pedido/, "o leitor sabe de onde vem o regulamento, e por que o começo se repete");
+  assert.match(jornada.pedido.instrucoes.origem, /quem fez o assistente/);
+  assert.match(jornada.pedido.pergunta.origem, /digitou/);
   const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
   const corpo = mdx.slice(mdx.indexOf("\n---\n", 4));
   const jornadaEm = corpo.indexOf('qual="jornada"'), tecnico = corpo.indexOf('Quando alguém fala em "cache"');

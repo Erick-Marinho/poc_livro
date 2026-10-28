@@ -40,7 +40,9 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   dinâmica no lugar; o parágrafo repetido depois da jornada sai, e a abertura fica em 190 palavras sem ação.
 - (depois do fecho, 28/10/2026, Erick) A jornada sem salto, para quem não sabe nada do assunto: a primeira cena mostra a
   resposta inteira da Ana, palavra por palavra; a cena do KV compara, em texto, o que o modelo lê para cada palavra, sem e
-  com as anotações; as anotações só aparecem na cena que as explica.
+  com as anotações; as anotações só aparecem na cena que as explica. Cada bloco do pedido diz o que é e de onde vem (as
+  instruções, escritas por quem fez o assistente; o regulamento, o arquivo que o aplicativo cola em todo pedido; a
+  pergunta, o que o morador digitou): é por isso que o começo se repete.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 
