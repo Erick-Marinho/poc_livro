@@ -16,7 +16,7 @@ export type Props = { jornada: Jornada; desenho: Desenho };
 
 export const MEDIDAS_JORNADA = {
   largo: { w: 780, h: 660, x: 20, aw: 740, fonte: 14, balao: { lado: false, x: 20, w: 740, y: 580, fonte: 17 } },
-  estreito: { w: 420, h: 966, x: 14, aw: 392, fonte: 13, balao: { lado: false, x: 14, w: 392, y: 888, fonte: 16 } },
+  estreito: { w: 420, h: 996, x: 14, aw: 392, fonte: 13, balao: { lado: false, x: 14, w: 392, y: 918, fonte: 16 } },
 } as const;
 
 const preenchido = "color-mix(in srgb, var(--acento, #2a4fb5) 22%, transparent)";
@@ -44,7 +44,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
     ? (i: number) => ({ x: no(i).x, y: 126, w: 160, h: 118 })
     : (i: number) => ({ x: D.x + 160, y: no(i).y, w: D.aw - 160, h: 100 });
   const palcoY = largo ? 258 : 480;
-  const resumosY = largo ? 422 : 750;
+  const resumosY = largo ? 422 : 780;
 
   /* onde está quem pergunta: o índice do ponto, fracionário entre dois pontos */
   const rota: Record<number, [number, number][]> = {
@@ -63,34 +63,34 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
   const ativo = Math.round(onde);
 
   /* o que cada gaveta guarda, e quando ela é consultada */
-  const muralCheio = t >= de(1) + 6.6;
+  const muralCheio = t >= 7.6;   // a resposta da Ana, pronta, vai para o mural
   const muralOlha = (k === 0 && entre(s, 1.8, 2.6)) || ((k === 2 || k === 3) && entre(s, 0.8, 1.4)) || (k >= 4 && s >= 0.9);
   const muralAcha = k >= 4 && s >= 1.3;
-  const comecosCheios = t >= 6;
+  const comecosCheios = t >= 5.6;
   const comecosOlha = (k === 0 && entre(s, 3.2, 3.8)) || ((k === 2 || k === 3) && s >= 2.0);
   const comecosAcha = (k === 2 || k === 3) && s >= 2.0;
   const ignorados = k >= 4 && s >= 1.6;   // o servidor e o modelo nem são chamados
   const nomeVisivel = { kv: t >= de(1) + 0.3, prefixo: t >= de(2) + 2.0, prompt: t >= de(3) + 2.0, semantico: t >= de(4) + 1.2 };
 
   /* o pedido em três blocos, e quanto o modelo já leu de cada um */
-  const lidoAna = kf(t, [[4.3, 0], [6.0, 1]]);
+  const lidoAna = kf(t, [[4.3, 0], [5.6, 1]]);
   const lidoCurto = kf(s, [[3.4, 0], [4.0, 1]]);
   const lido = (i: number) => (k === 0 ? Math.min(1, Math.max(0, (lidoAna - [0, 0.24, 0.7][i]) / [0.24, 0.46, 0.3][i])) : (k === 2 || k === 3) && i === 2 ? lidoCurto : 0);
   const pulados = (k === 2 || k === 3) && s >= 2.4;
-  const lendo = (k === 0 && entre(t, 4.3, 6.0)) || ((k === 2 || k === 3) && entre(s, 3.4, 4.0));
+  const lendo = (k === 0 && entre(t, 4.3, 5.6)) || ((k === 2 || k === 3) && entre(s, 3.4, 4.0));
   const respostaDe = k === 0 ? ana : k === 2 ? bruno : dani;
-  /* na cena da Ana, só a primeira palavra: a escrita é a cena seguinte */
-  const palavraEm = (i: number) => (k === 0 ? (i === 0 ? 6.2 : Infinity) : 4.2 + i * 0.25);
+  /* a resposta sai inteira, palavra por palavra; a cena seguinte mostra como cada palavra foi escrita */
+  const palavraEm = (i: number) => (k === 0 ? 5.8 + i * 0.3 : 4.2 + i * 0.25);
   const escritas = k === 0 || k === 2 || k === 3 ? respostaDe.resposta!.filter((_, i) => s >= palavraEm(i)).length : 0;
 
-  /* a cena do KV: as quatro primeiras palavras, uma linha por palavra */
-  const palavras = ana.resposta!.slice(0, 4);
-  const linhaEm = (i: number) => 0.6 + i * 1.2;
-  const linhas = k === 1 ? palavras.filter((_, i) => s >= linhaEm(i)).length : 0;
+  /* a cena do KV: como a Ana recebeu a segunda, a terceira e a quarta palavra, uma linha por palavra */
+  const linhasKv = [1, 2, 3];
+  const linhaEm = (n: number) => 1.2 + n * 1.6;
+  const linhas = k === 1 ? linhasKv.filter((_, n) => s >= linhaEm(n)).length : 0;
 
-  /* as anotações na gaveta do modelo: crescem enquanto ele lê e escreve, e somem com a resposta pronta */
-  const anotacoes = k === 0 ? Math.round(8 * lidoAna) + escritas : k === 1 ? 8 + linhas : 0;
-  const anotacoesSomem = k === 1 ? kf(s, [[6.4, 1], [6.9, 0.15]]) : 1;
+  /* as anotações na gaveta do modelo: aparecem na cena que as explica, uma por palavra, e somem com a resposta pronta */
+  const anotacoes = k === 1 ? Math.round(8 * kf(s, [[0.3, 0], [1.0, 1]])) + linhas : 0;
+  const anotacoesSomem = k === 1 ? kf(s, [[6.6, 1], [7.1, 0.15]]) : 1;
 
   const Caixa = ({ i, titulo, texto, apagada }: { i: number; titulo: string; texto: React.ReactNode; apagada?: boolean }) => {
     const n = no(i), aceso = ativo === i && !apagada;
@@ -124,7 +124,8 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
       : <div key={i} style={{ position: "absolute", left: a.x + a.w / 2 - 5, top: a.y + a.h - 1, height: b.y - a.y - a.h + 2, font: `700 13px ${ui}`, color: cor.linha, display: "flex", alignItems: "center" }}>↓</div>;
   };
 
-  const estadoModelo = ignorados ? "nem foi chamado" : lendo ? "lendo…" : (k === 0 && s >= 6.2) || k === 1 || escritas > 0 ? "escrevendo…" : "lê, depois escreve";
+  const respondeu = (k === 0 || k === 2 || k === 3) && escritas === respostaDe.resposta!.length;
+  const estadoModelo = ignorados ? "nem foi chamado" : lendo ? "lendo…" : respondeu || (k === 1 && s >= 6.6) ? "respondeu" : k === 1 || escritas > 0 ? "escrevendo…" : "lê, depois escreve";
   const servidor = k === 3 ? "O PROVEDOR DA API" : "O SERVIDOR";
 
   /* o palco, embaixo: o que cada cena mostra de perto */
@@ -149,33 +150,35 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
       {k === 0 && lendo ? <div style={{ marginTop: 6, font: `${M.fonte - 1}px ${ui}`, color: cor.acento }}>o modelo lê o pedido inteiro: é a pausa antes da primeira palavra</div> : null}
       {escritas > 0 ? <div style={{ marginTop: 6, maxWidth: largo && k === 3 ? W - 350 : W, font: `${M.fonte + 1}px/1.4 ${ui}`, color: cor.texto }}>
         <span style={{ font: `700 11px ${mono}`, letterSpacing: ".05em", color: cor.fraco }}>A RESPOSTA </span>
-        <span style={{ fontFamily: mono, fontWeight: 600 }}>{respostaDe.resposta!.slice(0, escritas).join(" ")}{k === 0 ? " …" : ""}</span>
+        <span style={{ fontFamily: mono, fontWeight: 600 }}>{respostaDe.resposta!.slice(0, escritas).join(" ")}</span>
       </div> : null}
     </div>
   );
 
-  /* a cena do KV: sem as anotações, uma releitura inteira por palavra; com elas, a palavra nova e as anotações */
-  const coluna = (com: boolean, x: number, y: number, w: number) => (
-    <div style={{ position: "absolute", left: x, top: y, width: w }}>
-      {rotulo(com ? "COM AS ANOTAÇÕES (KV CACHE)" : "SEM AS ANOTAÇÕES", com ? cor.acento : cor.fraco)}
-      <div style={{ font: `${M.fonte - 1}px ${ui}`, color: cor.fraco, margin: "2px 0 4px" }}>
-        {com ? "lê só a palavra nova e consulta as anotações" : "antes de cada palavra, relê o pedido inteiro"}</div>
-      {palavras.map((p, i) => s >= linhaEm(i) ? <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, height: 19, opacity: kf(s, [[linhaEm(i), 0], [linhaEm(i) + 0.3, 1]]) }}>
-        <span style={{ width: 66, flex: "none", font: `600 ${M.fonte - 1}px ${mono}`, color: cor.texto }}>{p}</span>
-        {com
-          ? <><span style={{ width: 8, height: 12, flex: "none", background: cor.acento, borderRadius: 2 }} />
-            <span style={{ font: `${M.fonte - 2}px ${ui}`, color: cor.fraco }}>+</span>
-            {Array.from({ length: 8 + i }, (_, n) => <span key={n} style={{ width: 6, height: 10, flex: "none", borderRadius: 1, background: preenchido, border: `1px solid ${cor.acento}` }} />)}</>
-          : <span style={{ height: 12, width: (w - 76) * (0.86 + 0.04 * i), borderRadius: 3, background: cor.fraco, opacity: 0.55 }} />}
-      </div> : null)}
+  /* a cena do KV: para cada palavra, o que o modelo lê sem as anotações e com elas, em texto */
+  const resp = ana.resposta!;
+  const linhaKv = (n: number) => {
+    const i = linhasKv[n], escritasAntes = resp.slice(0, i).join(" ");
+    const sem = <div style={{ boxSizing: "border-box", padding: "3px 8px", borderRadius: 6, background: "color-mix(in srgb, var(--ink-2, #6b6357) 16%, transparent)",
+      font: `${M.fonte - 1}px/1.35 ${ui}`, color: cor.texto }}>{largo ? null : <b style={{ color: cor.fraco }}>sem anotações: </b>}relê <b>o pedido inteiro</b> + «{escritasAntes}»</div>;
+    const com = <div style={{ boxSizing: "border-box", padding: "3px 8px", borderRadius: 6, background: preenchido, border: `1.5px solid ${cor.acento}`,
+      font: `${M.fonte - 1}px/1.35 ${ui}`, color: cor.texto }}>{largo ? null : <b style={{ color: cor.acento }}>com anotações: </b>}lê só «{resp[i - 1]}» e consulta as anotações</div>;
+    const q = kf(s, [[linhaEm(n), 0], [linhaEm(n) + 0.3, 1]]);
+    const rot = <span style={{ font: `600 ${M.fonte - 1}px ${ui}`, color: cor.texto }}>para escrever <b style={{ fontFamily: mono }}>«{resp[i]}»</b></span>;
+    return largo
+      ? <div key={n} style={{ display: "grid", gridTemplateColumns: "170px 1fr 1fr", gap: 10, alignItems: "center", marginTop: 6, opacity: q }}>{rot}{sem}{com}</div>
+      : <div key={n} style={{ marginTop: 8, opacity: q, display: "grid", gap: 3 }}>{rot}{sem}{com}</div>;
+  };
+  const kv = (
+    <div style={{ position: "absolute", left: D.x, top: palcoY, width: W }}>
+      {rotulo("PARA ESCOLHER CADA PALAVRA, O MODELO PRECISA DE TUDO O QUE VEIO ANTES")}
+      {largo ? <div style={{ display: "grid", gridTemplateColumns: "170px 1fr 1fr", gap: 10, marginTop: 6 }}>
+        <span />{rotulo("SEM AS ANOTAÇÕES")}{rotulo("COM AS ANOTAÇÕES (KV CACHE)", cor.acento)}</div> : null}
+      {linhasKv.map((_, n) => (s >= linhaEm(n) ? linhaKv(n) : null))}
+      <div style={{ marginTop: 8, font: `italic ${M.fonte - 1}px/1.35 ${ui}`, color: cor.fraco, opacity: kf(s, [[6.6, 0], [6.9, 1]]) }}>
+        a resposta ficou pronta: as anotações vão embora</div>
     </div>
   );
-  const kv = <>
-    {largo ? <>{coluna(false, D.x, palcoY, W / 2 - 12)}{coluna(true, D.x + W / 2 + 12, palcoY, W / 2 - 12)}</>
-      : <>{coluna(false, D.x, palcoY, W)}{coluna(true, D.x, palcoY + 112, W)}</>}
-    <div style={{ position: "absolute", left: D.x, top: palcoY + (largo ? 124 : 224), width: W, font: `italic ${M.fonte - 1}px/1.35 ${ui}`, color: cor.fraco, opacity: kf(s, [[6.4, 0], [6.7, 1]]) }}>
-      a resposta ficou pronta: as anotações vão embora, e o mural guarda a resposta da Ana</div>
-  </>;
 
   /* a conta da API (a Dani): a Ana pagou para guardar; a Dani paga menos pelo começo repetido */
   const conta = k === 3 ? (
@@ -220,7 +223,7 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
         {comecosCheios ? <>✓ instruções · ✓ regulamento</> : vazio}
         {comecosAcha ? aviso("esse começo, já li", cor.ok) : comecosOlha && !comecosCheios ? aviso("nada lido antes", cor.acento) : null}
       </Gaveta>
-      <Gaveta i={3} titulo="ANOTAÇÕES" nomes={nomeVisivel.kv ? <Nome texto="KV cache" /> : null} olha={lendo || k === 1 || (k === 0 && s >= 6.2)} apagada={ignorados}>
+      <Gaveta i={3} titulo="ANOTAÇÕES" nomes={nomeVisivel.kv ? <Nome texto="KV cache" /> : null} olha={k === 1} apagada={ignorados}>
         {anotacoes > 0 ? <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginTop: 2, opacity: anotacoesSomem }}>
           {Array.from({ length: anotacoes }, (_, i) => <span key={i} style={{ width: 9, height: 11, borderRadius: 2, background: preenchido, border: `1.5px solid ${cor.acento}` }} />)}
         </div> : vazio}
