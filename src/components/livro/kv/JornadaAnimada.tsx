@@ -92,12 +92,13 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
   const anotacoes = k === 1 ? Math.round(8 * kf(s, [[0.3, 0], [1.0, 1]])) + linhas : 0;
   const anotacoesSomem = k === 1 ? kf(s, [[6.6, 1], [7.1, 0.15]]) : 1;
 
-  const Caixa = ({ i, titulo, texto, apagada }: { i: number; titulo: string; texto: React.ReactNode; apagada?: boolean }) => {
+  const Caixa = ({ i, titulo, texto, exemplo, apagada }: { i: number; titulo: string; texto: React.ReactNode; exemplo?: string; apagada?: boolean }) => {
     const n = no(i), aceso = ativo === i && !apagada;
     return <div style={{ position: "absolute", left: n.x, top: n.y, width: n.w, height: n.h, boxSizing: "border-box", padding: "6px 9px", borderRadius: 12,
       background: cor.papel, border: `2px solid ${aceso ? cor.acento : cor.linha}`, opacity: apagada ? 0.45 : 1 }}>
       {rotulo(titulo, aceso ? cor.acento : cor.fraco)}
       <div style={{ marginTop: 3, font: `${M.fonte}px/1.3 ${ui}`, color: cor.texto }}>{texto}</div>
+      {exemplo ? <div style={{ marginTop: 2, font: `italic ${M.fonte - 2}px/1.3 ${ui}`, color: cor.fraco }}>{exemplo}</div> : null}
     </div>;
   };
   const Nome = ({ texto, erra }: { texto: string; erra?: boolean }) => (
@@ -214,9 +215,9 @@ export const JornadaAnimada: React.FC<Props> = ({ jornada: j, desenho }) => {
 
       {[0, 1, 2].map(seta)}
       <Caixa i={0} titulo={`VOCÊ · ${quem.quem.toUpperCase()}`} texto={quem.texto} />
-      <Caixa i={1} titulo="O APLICATIVO" texto="monta o pedido" />
-      <Caixa i={2} titulo={servidor} texto="recebe o pedido" apagada={ignorados} />
-      <Caixa i={3} titulo="O MODELO" texto={estadoModelo} apagada={ignorados} />
+      <Caixa i={1} titulo="O APLICATIVO" texto="monta o pedido" exemplo={j.pontos.aplicativo} />
+      <Caixa i={2} titulo={servidor} texto="executa o modelo" exemplo={k === 3 ? j.pontos.provedor : j.pontos.servidor} apagada={ignorados} />
+      <Caixa i={3} titulo="O MODELO" texto={estadoModelo} exemplo={j.pontos.modelo} apagada={ignorados} />
 
       <Gaveta i={1} titulo="MURAL DE RESPOSTAS" nomes={nomeVisivel.semantico ? <Nome texto="cache semântico" erra /> : null} olha={muralOlha} acha={muralAcha} erra={k === 5}>
         {muralCheio ? <>Ana: <i>sábado à tarde?</i> → {ana.resposta!.join(" ")}</> : vazio}

@@ -43,6 +43,9 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   com as anotações; as anotações só aparecem na cena que as explica. Cada bloco do pedido diz o que é e de onde vem (as
   instruções, escritas por quem fez o assistente; o regulamento, o arquivo que o aplicativo cola em todo pedido; a
   pergunta, o que o morador digitou): é por isso que o começo se repete.
+- (depois do fecho, 28/10/2026, Erick) Cada ponto do caminho com um exemplo de verdade (o app do condomínio; vLLM ou
+  Ollama, ou o provedor da API; Qwen3 ou Claude), e o texto diz o que é cada um. O regulamento é um documento fixo,
+  colado em todo pedido; o texto compara com o anexo no chat e com o RAG. A lista dos quatro caches vira um parágrafo.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 

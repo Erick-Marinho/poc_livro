@@ -77,8 +77,11 @@ test("a jornada abre a página: um cenário por cache, as respostas do regulamen
   assert.match(jornada.pedido.pergunta.origem, /digitou/);
   const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
   const corpo = mdx.slice(mdx.indexOf("\n---\n", 4));
-  const jornadaEm = corpo.indexOf('qual="jornada"'), tecnico = corpo.indexOf('Quando alguém fala em "cache"');
+  const jornadaEm = corpo.indexOf('qual="jornada"'), tecnico = corpo.indexOf("O [artigo da Analytics Vidhya]");
   assert.ok(jornadaEm >= 0 && jornadaEm < tecnico);
+  assert.match(corpo, /documento fixo/, "o texto diz o que é o regulamento na jornada");
+  assert.match(corpo, /anexa o arquivo no chat/); assert.match(corpo, /RAG/);
+  assert.ok(Object.values(jornada.pontos).every((e) => e.startsWith("ex.: ")), "cada ponto do caminho tem um exemplo de verdade");
   assert.doesNotMatch(corpo, /qual="caches"/, "a jornada mostra os quatro caches: a figura técnica saiu");
   const html = readFileSync(new URL("../dist/experimentos/kv-cache/index.html", import.meta.url), "utf8");
   assert.match(html, /data-kv-cache="jornada"/);

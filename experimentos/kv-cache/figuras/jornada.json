@@ -63,5 +63,11 @@
     "pergunta": {
       "origem": "o que {quem} digitou"
     }
+  },
+  "pontos": {
+    "aplicativo": "ex.: o app do condomínio",
+    "servidor": "ex.: vLLM, Ollama",
+    "provedor": "ex.: OpenAI, Anthropic",
+    "modelo": "ex.: Qwen3, Claude"
   }
 }

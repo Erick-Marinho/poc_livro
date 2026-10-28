@@ -44,6 +44,8 @@ export type Jornada = {
   sobre: string; perguntas: { quem: string; texto: string; curta: string; resposta?: string[]; certa?: string }[];
   /** o que vai no pedido, e de onde vem cada parte */
   pedido: { instrucoes: Bloco; regulamento: Bloco; pergunta: Bloco };
+  /** um exemplo de verdade para cada ponto do caminho */
+  pontos: { aplicativo: string; servidor: string; provedor: string; modelo: string };
 };
 
 export const JORNADA: Figura = {
