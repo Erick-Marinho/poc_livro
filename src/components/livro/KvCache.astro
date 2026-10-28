@@ -1,0 +1,27 @@
+---
+/**
+ * As figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapa 5): os quatro caches, que abrem o texto, ou a
+ * atendente com e sem anotações, em "O que vamos construir" (kv/FiguraKv.tsx), que o leitor toca ou rola. É ilustração
+ * (figuras/kv.json): sem número medido. Sem JS, os balões em lista.
+ */
+import FiguraKv from "./kv/FiguraKv";
+import { ANOTACOES, baloes, CACHES, montarKv } from "./kv/kv.ts";
+
+interface Props { dados: any; qual: "caches" | "anotacoes" }
+const { qual } = Astro.props;
+const kv = montarKv(Astro.props.dados);
+const f = qual === "caches" ? CACHES : ANOTACOES;
+const legenda = qual === "caches"
+  ? "Ilustração: os blocos, os pedidos e a resposta pronta foram escritos para o exemplo. A pergunta é a do experimento, e o regulamento é o do condomínio inventado."
+  : "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medido. As duas mensagens, com as palavras de cada uma, são as que o medidor vai cronometrar.";
+---
+<figure class="kv-cache" data-kv-cache={qual}>
+  <FiguraKv client:visible={{ rootMargin: "400px" }} kv={kv} qual={qual} />
+  <noscript><ol>{baloes(f).map((b) => <li>{b.texto}</li>)}</ol></noscript>
+  <figcaption>{legenda}</figcaption>
+</figure>
+
+<style is:global>
+  .kv-cache { margin: 1.8em auto 2em; max-width: 800px }
+  .kv-cache figcaption { margin-top: 10px; font: 14px/1.5 var(--f-ui); color: var(--ink-2) }
+</style>

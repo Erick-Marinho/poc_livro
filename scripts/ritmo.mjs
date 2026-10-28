@@ -15,7 +15,7 @@ const CONTA = { IdeCapitulo: true, PareEPense: true, Exercicio: true, Rastro: tr
   Rascunho: true, /* a ação sugerida pela skill: conta como se aceita, para o relógio mostrar o ritmo da proposta */
   GrafoAgente: (tag) => /modo="caminhos"/.test(tag),
   MapaTemperatura: false, /* toca ou rola, sem decisão (docs/capacidades/temperatura-zero-revisao.md) */
-  Nota: false, Autores: false, Terminal: false, QuemDecide: false, DiaSeguinte: false, NotaDoLivro: false, NumerosDaPesquisa: false, AgentesEmProducao: false, ComoOModeloEscolhe: false, PausaEFluxo: false, FluxoOuAgente: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
+  Nota: false, Autores: false, Terminal: false, QuemDecide: false, DiaSeguinte: false, NotaDoLivro: false, NumerosDaPesquisa: false, AgentesEmProducao: false, ComoOModeloEscolhe: false, PausaEFluxo: false, KvCache: false, FluxoOuAgente: false, FiguraAgente: false, FiguraCaminho: false, FiguraCofre: false,
   MapaDoCiclo: false, Termos: false, Pendente: false, Resumo: false, PontoDeVolta: false, Listagem: false, AndarDaTorre: false, DoisBilhetes: false, TemposReais: false, RoteiroDoAgente: false, FormularioDoAgente: false, EnsaioDoAgente: false, ProvaDoAgente: false, ResultadoDoAgente: false };
 /* o texto destes não é lido pelo leitor como texto corrido (ainda não existe, ou é fecho) */
 const SEM_TEXTO = new Set(["Pendente", "PontoDeVolta"]);

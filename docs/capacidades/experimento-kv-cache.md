@@ -68,15 +68,22 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 4 (detalhe)
+## Etapa 5 (detalhe)
 
-- **Arquivo:** `rascunhos/kv-cache/figuras/esboco.md`: duas figuras em ASCII, seis cenas cada. A primeira, os quatro
-  caches em dois grupos (abre o texto); a segunda, a atendente com e sem anotações, o medidor e a pergunta que vai para
-  a aposta da IDE. O celular, o modo direto e o que fica de fora.
-- **Decisão:** (4) A figura 2 mostra que, com o cache, a atendente olha as anotações, sem dizer quanto isso custa: o
-  item 3 do placar é a aposta.
-- **Evidência:** o esboço lido e aprovado pelo Erick, antes de qualquer código de animação.
-- **Fica fora:** o Remotion (etapa 5) e o texto.
+- **Arquivos:** `rascunhos/kv-cache/figuras/kv.json` (a ilustração: a pergunta, a resposta em palavras, o trecho do
+  regulamento, as duas perguntas parecidas, as duas mensagens com as palavras do corpus); em `src/components/livro/kv/`:
+  `kv.ts` (as cenas, os balões e os resumos das duas figuras, puro, para o teste), `pecas.tsx` (o que as duas
+  dividem), `CachesAnimados.tsx` e
+  `AnotacoesAnimadas.tsx` (Remotion) e `FiguraKv.tsx` (com `palco/RolaCena`); `src/components/livro/KvCache.astro`;
+  `src/pages/rascunhos/[rascunho].astro` (de volta, só no `astro dev`); `scripts/ritmo.mjs` (a figura não conta como
+  ação); `testes/kv-cache.test.mjs`.
+- **Decisões:** (5) A figura 2 fecha sem pergunta, como a do `pausa-e-fluxo` depois da revisão
+  (`pausa-e-fluxo-revisao.md`, etapa 2): a aposta fica no palpite logo antes, e a figura não a responde.
+  (5) O semântico erra com sábado e domingo, e não com a negação: o regulamento responde os dois (domingo, não pode).
+- **Evidência:** o teste (seis cenas em até 45 s em cada figura, um balão curto por cena, sem número, sem "token",
+  "prefill" nem "decode", as palavras e o trecho iguais aos do corpus, o build sem a página de rascunho); capturas das
+  cenas a 1280 e 390 px.
+- **Fica fora:** a página do experimento (etapa 7).
 
 ## Registro
 
@@ -85,5 +92,6 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 1 | `11bec6d` | `testes/kv-cache.test.mjs` (2): a mesma pergunta, a longa lendo 46 vezes a curta (10 e 462 palavras), o regulamento igual byte a byte ao do `pausa-e-fluxo`; falha com `mudancas.md` alterado. Testes do livro 207/207 (o `gravacao:testar` já quebrava antes, sem `pytest` no ambiente) | Erick, 27/10/2026 |
 | 2 | `149d50b` | `test_laco.py` (9), sem PyTorch: com cache o laço lê `[4, 1, 1, 1, 1]`, sem cache `[4, 5, 6, 7, 8]`, os mesmos tokens; o placar conta no limite e não logo abaixo; os 40 GiB do Daily Dose; falha (`[4, 1, 1, 1, 1] != [4, 5, 6, 7, 8]`) com o laço sem cache lendo só o token novo. Testes do livro 207/207 | Erick, 27/10/2026 |
 | 3 | `5020ded` | `coleta.json`: 5 repetições na CPU (x86_64, torch 2.8.0, transformers 4.57.1, `sdpa`), 1 h 56 min; `medir.py`: passo com cache 74,5 e 131,9 ms, sem cache 934,9 e 8862 ms (curta e longa); placar 5, 5, 1 e 10 de 10 (o item 3 não se confirmou: em 4 de 5, o passo da longa custou 70% a 77% a mais); cache igual à conta (33,7 e 207,6 MiB); o modelo errou o sábado na longa. `test_laco.py` 9/9 | Erick, 28/10/2026 |
+| 4 | `7af014f` | `figuras/esboco.md`: duas figuras em ASCII, seis cenas cada (os quatro caches em dois grupos; a atendente com e sem anotações, o medidor e a pergunta da aposta), sem números da coleta e sem o resultado do item 3 | Erick, 28/10/2026 |
 
 (redação: Claude Opus 5.5)
