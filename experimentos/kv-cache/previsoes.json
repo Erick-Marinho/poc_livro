@@ -1,0 +1,19 @@
+{
+  "resultado": "O que o artigo dá a entender",
+  "fechos": {
+    "nenhum": "Você pensou diferente do artigo. Vamos cronometrar para ver.",
+    "alguns": "Você concordou com o artigo. Agora vamos cronometrar para ver se ele tem razão."
+  },
+  "mensagens": [
+    {
+      "texto": "Com o cache ligado, a mensagem cresce de 27 para 822 tokens. O que acontece com o custo de cada palavra nova?",
+      "opcoes": [
+        "Fica quase o mesmo",
+        "Cresce, mas bem menos que sem o cache",
+        "Cresce tanto quanto sem o cache"
+      ],
+      "fez": 0,
+      "porque": "O artigo diz que, com o cache, o sistema mantém o estado do que já leu e só acrescenta o do token novo, a cada passo. Lido assim, a palavra nova custaria o mesmo em qualquer mensagem. O medidor vai conferir."
+    }
+  ]
+}

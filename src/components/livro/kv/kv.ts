@@ -61,6 +61,39 @@ export const ANOTACOES: Figura = {
   fecho: "Com ou sem as anotações: o medidor cronometra a pausa e cada palavra.",
 };
 
+/** a jornada de uma pergunta, que abre o texto: três moradores pelo mesmo caminho (figuras/jornada.json) */
+export type Jornada = { sobre: string; perguntas: { quem: string; texto: string; curta: string; resposta?: string[]; certa?: string }[] };
+
+export const JORNADA: Figura = {
+  cenas: [
+    { nome: "O Enter", de: 0 },
+    { nome: "O pedido", de: 4 },
+    { nome: "A leitura", de: 8.5 },
+    { nome: "As anotações", de: 13 },
+    { nome: "Bruno: o começo já foi lido", de: 19 },
+    { nome: "Carla: parecida não é igual", de: 24.5 },
+    { nome: "Os nomes", de: 29.5 },
+  ],
+  segundos: 35,
+  textos: [
+    "A Ana aperta Enter.",
+    "O aplicativo junta as instruções, o regulamento e a pergunta num pedido só.",
+    "Nada foi lido antes: o modelo lê o pedido inteiro.",
+    "Enquanto escreve, o modelo anota o que já leu, para não reler.",
+    "O começo já foi lido para a Ana: o modelo lê só a pergunta.",
+    "O mural achou a pergunta parecida e devolveu a resposta da Ana.",
+    "As anotações e os começos guardam leitura; o mural guarda respostas, e erra.",
+  ],
+  resumos: ["Ana: a pergunta enviada", "Ana: o pedido montado", "Ana: tudo lido do zero",
+    "Ana: anotações enquanto escreve", "Bruno: o começo pulado", "Carla: a resposta pronta, errada"],
+};
+
+export function montarJornada(d: Jornada): Jornada {
+  if (d.perguntas?.length !== 3) throw new Error("a jornada: são três perguntas, a da Ana, a do Bruno e a da Carla");
+  if (d.perguntas.slice(0, 2).some((p) => !p.resposta?.length || p.resposta.length > 6)) throw new Error("a jornada: a Ana e o Bruno têm de 1 a 6 palavras de resposta");
+  return d;
+}
+
 export const duracao = (f: Figura) => f.segundos * FPS;
 
 /** quando cada palavra da resposta aparece, a partir do começo da cena que escreve */

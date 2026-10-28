@@ -1,20 +1,38 @@
 {
-  "kv-placar-final": {
-    "comando": "uv run python medir.py coleta.json | tail -4",
+  "kv-rampa": {
+    "comando": "uv run python medir.py coleta.json | grep 'mais cara no fim'",
     "saiu_com": 0,
     "saida": [
       [
         "sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim: 5 de 5 (100%)",
         ""
-      ],
+      ]
+    ]
+  },
+  "kv-preco": {
+    "comando": "uv run python medir.py coleta.json | grep '10 vezes'",
+    "saiu_com": 0,
+    "saida": [
       [
         "na longa, o passo sem cache custou ao menos 10 vezes o com cache: 5 de 5 (100%)",
         ""
-      ],
+      ]
+    ]
+  },
+  "kv-plano": {
+    "comando": "uv run python medir.py coleta.json | grep 'até 20%'",
+    "saiu_com": 0,
+    "saida": [
       [
         "com cache, o passo da longa ficou a até 20% do da curta: 1 de 5 (20%)",
         ""
-      ],
+      ]
+    ]
+  },
+  "kv-iguais": {
+    "comando": "uv run python medir.py coleta.json | grep 'mesmos tokens'",
+    "saiu_com": 0,
+    "saida": [
       [
         "os mesmos tokens com e sem cache: 10 de 10 (100%)",
         ""

@@ -50,12 +50,12 @@ export const Resumos = ({ M, f, k, t, topo }: { M: Medidas; f: Figura; k: number
 };
 
 /** o balão da cena, ao lado (com a linha tracejada até o que ele explica) ou embaixo, no estreito */
-export const BalaoDaCena = ({ M, f, t, alvoY }: { M: Medidas; f: Figura; t: number; alvoY: number }) => {
+export const BalaoDaCena = ({ M, f, t, alvoY, alvoX }: { M: Medidas; f: Figura; t: number; alvoY: number; alvoX?: number }) => {
   const lista = baloes(f);
   const balao = lista.find((b) => entre(t, b.de, b.ate)) ?? null;
   if (!balao) return null;
   const opacidade = opacidadeDoBalao(t, balao.de, balao.ate, balao === lista[lista.length - 1]);
-  const alvo = { x: M.x + M.aw, y: alvoY };
+  const alvo = { x: alvoX ?? M.x + M.aw, y: alvoY };
   return <>
     {M.balao.lado ? <svg width={M.w} height={M.h} style={{ position: "absolute", inset: 0 }}>
       <line x1={alvo.x + 6} y1={alvo.y} x2={M.balao.x} y2={alvo.y} stroke={cor.acento} strokeWidth={2} strokeDasharray="5 4" opacity={opacidade} />

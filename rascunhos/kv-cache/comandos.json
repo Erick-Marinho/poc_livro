@@ -1,8 +1,0 @@
-{
-  "pasta_do_leitor": "/home/voce/kv-cache",
-  "comandos": {
-    "kv-placar-final": {
-      "comando": "uv run python medir.py coleta.json | tail -4"
-    }
-  }
-}

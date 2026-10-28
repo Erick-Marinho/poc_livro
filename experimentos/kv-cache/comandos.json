@@ -1,0 +1,17 @@
+{
+  "pasta_do_leitor": "/home/voce/kv-cache",
+  "comandos": {
+    "kv-rampa": {
+      "comando": "uv run python medir.py coleta.json | grep 'mais cara no fim'"
+    },
+    "kv-preco": {
+      "comando": "uv run python medir.py coleta.json | grep '10 vezes'"
+    },
+    "kv-plano": {
+      "comando": "uv run python medir.py coleta.json | grep 'até 20%'"
+    },
+    "kv-iguais": {
+      "comando": "uv run python medir.py coleta.json | grep 'mesmos tokens'"
+    }
+  }
+}

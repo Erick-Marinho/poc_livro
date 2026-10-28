@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 
-const projeto = new URL("../rascunhos/kv-cache/projeto/", import.meta.url);
+const projeto = new URL("../experimentos/kv-cache/projeto/", import.meta.url);
 const origem = new URL("../experimentos/pausa-e-fluxo/projeto/dados/", import.meta.url);
 const casos = readFileSync(new URL("casos.jsonl", projeto), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 /* o que o modelo lê: o material do regulamento, nesta ordem, e a pergunta no fim */
@@ -25,13 +25,13 @@ test("o regulamento é o do pausa-e-fluxo, byte a byte, e diz que é inventado",
   assert.match(texto(casos[1]), /\(condomínio inventado\)/);
 });
 
-import { ANOTACOES, baloes, CACHES, duracao, FPS, montarKv, palavraEm } from "../src/components/livro/kv/kv.ts";
+import { ANOTACOES, baloes, CACHES, duracao, FPS, JORNADA, montarJornada, montarKv, palavraEm } from "../src/components/livro/kv/kv.ts";
 
-const kv = montarKv(JSON.parse(readFileSync(new URL("../rascunhos/kv-cache/figuras/kv.json", import.meta.url), "utf8")));
+const kv = montarKv(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/kv.json", import.meta.url), "utf8")));
 
-for (const [nome, f] of [["dos quatro caches", CACHES], ["da atendente", ANOTACOES]]) {
-  test(`a figura ${nome}: seis cenas em até 45 s, um balão curto por cena, sem número nem nome técnico`, () => {
-    assert.equal(f.cenas.length, 6);
+for (const [nome, f, cenas] of [["da jornada", JORNADA, 7], ["dos quatro caches", CACHES, 6], ["da atendente", ANOTACOES, 6]]) {
+  test(`a figura ${nome}: ${cenas} cenas em até 45 s, um balão curto por cena, sem número nem nome técnico`, () => {
+    assert.equal(f.cenas.length, cenas);
     assert.ok(duracao(f) / FPS <= 45);
     f.cenas.forEach((c, i) => { if (i) assert.ok(c.de > f.cenas[i - 1].de); });
     const bs = baloes(f);
@@ -56,7 +56,54 @@ test("a figura da atendente fecha sem pergunta, e as palavras e o trecho são os
   assert.match(kv.sobre, /ilustração/);
 });
 
-test("as figuras só aparecem no astro dev: o build não gera a página de rascunho", () => {
-  assert.ok(existsSync(new URL("../dist/experimentos/index.html", import.meta.url)), "rode depois de astro build");
-  assert.ok(!existsSync(new URL("../dist/rascunhos/", import.meta.url)));
+test("a jornada abre a página: as respostas são as do regulamento, e a da Carla, que veio do mural, está errada", () => {
+  const jornada = montarJornada(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/jornada.json", import.meta.url), "utf8")));
+  const dados = (n) => readFileSync(new URL(`dados/${n}`, projeto), "utf8");
+  const [ana, bruno, carla] = jornada.perguntas;
+  assert.match(dados("mudancas.md"), /aos sábados, das 8h às 12h/, "sábado à tarde não pode; de manhã, pode");
+  assert.equal(ana.resposta.join(" "), "Não: aos sábados, só de manhã.");
+  assert.match(dados("areas-comuns.md"), /Às segundas, fecha para manutenção/);
+  assert.equal(bruno.resposta.join(" "), "Não: às segundas, fecha para manutenção.");
+  assert.match(carla.texto, /sábado de manhã/, "a Carla pergunta quase o mesmo que a Ana");
+  assert.match(carla.certa, /das 8h às 12h/, "e a resposta certa é a outra");
+  assert.match(jornada.sobre, /ilustração/);
+  const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
+  const corpo = mdx.slice(mdx.indexOf("\n---\n", 4));
+  const jornadaEm = corpo.indexOf('qual="jornada"'), tecnico = corpo.indexOf('Quando alguém fala em "cache"');
+  assert.ok(jornadaEm >= 0 && jornadaEm < tecnico && tecnico < corpo.indexOf('qual="caches"'));
+  const html = readFileSync(new URL("../dist/experimentos/kv-cache/index.html", import.meta.url), "utf8");
+  assert.match(html, /data-kv-cache="jornada"/);
+});
+
+test("as figuras estão na página: os quatro caches na abertura, a atendente em \"O que vamos construir\", antes da IDE", () => {
+  const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
+  const caches = mdx.indexOf('qual="caches"'), construir = mdx.indexOf("## O que vamos construir");
+  const aposta = mdx.indexOf("<Aposta dados={previsoes}"), anotacoes = mdx.indexOf('qual="anotacoes"'), ide = mdx.indexOf("<IdeCapitulo");
+  assert.ok(caches >= 0 && caches < construir && construir < aposta && aposta < anotacoes && anotacoes < ide);
+  const html = readFileSync(new URL("../dist/experimentos/kv-cache/index.html", import.meta.url), "utf8");
+  assert.match(html, /data-kv-cache="caches"/);
+  assert.match(html, /data-kv-cache="anotacoes"/);
+  assert.match(html, /data-nivel="avancado"/);
+});
+
+/* os números do texto saem das saídas gravadas (o ponto do texto é a vírgula; o do terminal, o ponto) */
+test("os números do texto são os das saídas gravadas", () => {
+  const pasta = new URL("../experimentos/kv-cache/", import.meta.url);
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  const saidas = JSON.parse(readFileSync(new URL("saidas.json", pasta), "utf8"));
+  const saida = (id) => saidas[id].saida.map(([l]) => l).join("\n");
+  const confere = (texto, id, terminal) => {
+    assert.ok(mdx.includes(texto), `o texto não diz ${texto}`);
+    assert.ok(saida(id).includes(terminal), `${id} não mostra ${terminal}`);
+  };
+  confere("201,1 ms", "kv-ingenua", "cada passo de escrita 201.1 ms");
+  confere("131,9 ms", "kv-placar", "com cache: pausa 9.035 s; cada passo de escrita 131.9 ms");
+  confere("74,5 ms", "kv-placar", "com cache: pausa 0.360 s; cada passo de escrita 74.5 ms");
+  confere("207,6 MiB", "kv-placar", "o cache no fim: 207.6 MiB; a conta: 207.6 MiB (iguais)");
+  confere("822 tokens", "kv-placar", "longa: 822 tokens lidos");
+  confere("27 tokens", "kv-placar", "curta: 27 tokens lidos");
+  assert.equal(Math.round((131.9 / 74.5 - 1) * 100), 77, "os 77% do texto");
+  assert.ok(mdx.includes("77%"));
+  const previsoes = JSON.parse(readFileSync(new URL("previsoes.json", pasta), "utf8"));
+  assert.match(previsoes.mensagens[0].texto, /27 para 822 tokens/);
 });

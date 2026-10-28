@@ -20,7 +20,7 @@ const gravacoes: Record<string, GravacaoIde> = Object.fromEntries(
 const { acoes, passos, versoes, python, iniciais, abreCom, pasta } = await montarIde({ ...entrada, gravacoes, pasta: pastaDoLeitor(Astro.url) });
 ---
 <figure class="ide-capitulo">
-  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} iniciais={iniciais} abreCom={abreCom} pasta={pasta} obra={livroDe(Astro.url).includes("/") ? "experimento" : "livro"} />
+  <IdeCapitulo client:visible acoes={acoes} passos={passos} versoes={versoes} python={python} iniciais={iniciais} abreCom={abreCom} pasta={pasta} obra={livroDe(Astro.url).startsWith("experimentos/") ? "experimento" : "livro"} />
   <figcaption><b>Figura {entrada.numero}</b> · {legenda}</figcaption>
 </figure>
 <style>

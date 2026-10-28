@@ -1,22 +1,25 @@
 ---
 /**
- * As figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapa 5): os quatro caches, que abrem o texto, ou a
- * atendente com e sem anotações, em "O que vamos construir" (kv/FiguraKv.tsx), que o leitor toca ou rola. É ilustração
- * (figuras/kv.json): sem número medido. Sem JS, os balões em lista.
+ * As figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapas 5 e 7): a jornada de uma pergunta, que abre
+ * o texto; os quatro caches, no texto técnico; ou a atendente com e sem anotações, em "O que vamos construir"
+ * (kv/FiguraKv.tsx), que o leitor toca ou rola. É ilustração (figuras/jornada.json e figuras/kv.json): sem número
+ * medido. Sem JS, os balões em lista.
  */
 import FiguraKv from "./kv/FiguraKv";
-import { ANOTACOES, baloes, CACHES, montarKv } from "./kv/kv.ts";
+import { ANOTACOES, baloes, CACHES, JORNADA, montarJornada, montarKv } from "./kv/kv.ts";
 
-interface Props { dados: any; qual: "caches" | "anotacoes" }
+interface Props { dados: any; qual: "jornada" | "caches" | "anotacoes" }
 const { qual } = Astro.props;
-const kv = montarKv(Astro.props.dados);
-const f = qual === "caches" ? CACHES : ANOTACOES;
-const legenda = qual === "caches"
-  ? "Ilustração: os blocos, os pedidos e a resposta pronta foram escritos para o exemplo. A pergunta é a do experimento, e o regulamento é o do condomínio inventado."
-  : "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medido. As duas mensagens, com as palavras de cada uma, são as que o medidor vai cronometrar.";
+const dados = qual === "jornada" ? montarJornada(Astro.props.dados) : montarKv(Astro.props.dados);
+const f = { jornada: JORNADA, caches: CACHES, anotacoes: ANOTACOES }[qual];
+const legenda = {
+  jornada: "Ilustração: três moradores do condomínio inventado, e as respostas que o regulamento dá. As barras e as anotações não são medidas; a ordem dos passos é a de um sistema de verdade.",
+  caches: "Ilustração: os blocos, os pedidos e a resposta pronta foram escritos para o exemplo. A pergunta é a do experimento, e o regulamento é o do condomínio inventado.",
+  anotacoes: "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medido. As duas mensagens, com as palavras de cada uma, são as que o medidor vai cronometrar.",
+}[qual];
 ---
 <figure class="kv-cache" data-kv-cache={qual}>
-  <FiguraKv client:visible={{ rootMargin: "400px" }} kv={kv} qual={qual} />
+  <FiguraKv client:visible={{ rootMargin: "400px" }} dados={dados} qual={qual} />
   <noscript><ol>{baloes(f).map((b) => <li>{b.texto}</li>)}</ol></noscript>
   <figcaption>{legenda}</figcaption>
 </figure>

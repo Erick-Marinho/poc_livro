@@ -1,0 +1,126 @@
+---
+titulo: "O que o modelo anota enquanto escreve"
+lide: "Quatro coisas diferentes atendem pelo nome de cache. Separe as quatro, desligue a mais básica, o KV cache, num modelo de verdade, e meça quanto custa cada palavra com e sem as anotações."
+data: "2026-10-28"
+etiqueta: "Inferência local"
+nivel: "avancado"
+afirmacao:
+  texto: "Sem o KV cache, o modelo recalcula a cada palavra o estado de tudo o que já leu, e o trabalho cresce com a sequência; com ele, cada palavra nova só acrescenta o seu estado ao que já está guardado, sem mudar a resposta."
+  fonte:
+    titulo: "Shaik Hamzah, The Four Caches in LLM Serving (Analytics Vidhya)"
+    url: "https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/"
+regua:
+  arquivo: "projeto/casos.jsonl"
+  conta: "A mesma pergunta sobre o regulamento de um condomínio, em duas mensagens: só a pergunta (27 tokens) e o regulamento inteiro antes dela (822). 128 tokens novos por geração, com e sem cache, no Qwen3-0.6B, no processador, em cinco repetições. Conta em quantas: sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim; na longa, o passo sem cache custou ao menos 10 vezes o com cache; com cache, o passo da longa ficou a até 20% do da curta, o que o artigo dá a entender; e os tokens saíram iguais nos dois modos. O passo 0, a leitura da mensagem, fica fora dos três primeiros itens. A régua foi escrita antes de medir."
+resultado:
+  - rotulo: "sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim"
+    saida: "kv-rampa"
+  - rotulo: "na longa, o passo sem cache custou ao menos 10 vezes o com cache"
+    saida: "kv-preco"
+  - rotulo: "com cache, o passo da longa ficou a até 20% do da curta"
+    saida: "kv-plano"
+  - rotulo: "os mesmos tokens com e sem cache"
+    saida: "kv-iguais"
+achado: "Com o cache, a palavra nova não custa o mesmo em qualquer mensagem: na longa, cada passo de escrita levou 131,9 ms, contra 74,5 ms na curta (medianas), de 70% a 77% a mais em 4 das 5 repetições. Ler só o token novo não basta: ele ainda consulta as chaves e os valores de todos os anteriores, e a documentação do transformers diz que, com o cache, esse custo por passo cresce em linha reta com a sequência. O que o cache tira é a releitura: sem ele, o passo da longa levou 8,9 s. Outra surpresa: o modelo errou a resposta da longa (disse que, no sábado, vale das 8h às 18h; o regulamento diz das 8h às 12h), e errou igual com e sem cache."
+custo: "Num notebook com Intel i7-1355U (10 núcleos e 12 threads; 23 GB de memória), com o Qwen3-0.6B em float32, 4 threads, torch 2.8.0 e transformers 4.57.1, a coleta levou 1 h 56 min. Quase tudo foi a longa sem cache: uns 19 minutos por repetição. O modelo ocupa 1,5 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
+---
+import KvCache from "../../src/components/livro/KvCache.astro";
+import IdeCapitulo from "../../src/components/livro/IdeCapitulo.astro";
+import PareEPense from "../../src/components/livro/PareEPense.astro";
+import Nota from "../../src/components/livro/Nota.astro";
+import Pendente from "../../src/components/livro/Pendente.astro";
+import Aposta from "../../src/components/livro/Aposta.astro";
+import Exercicio from "../../src/components/livro/Exercicio.astro";
+import kv from "./figuras/kv.json";
+import jornada from "./figuras/jornada.json";
+import previsoes from "./previsoes.json";
+import prefixo from "./previsoes-prefixo.json";
+import roteiro from "./roteiros/01.json";
+import estados from "./roteiros/01.estados.json";
+import passos from "./passos/01.json";
+import glossario from "./glossario.json";
+import saidas from "./saidas.json";
+
+Cache é guardar um trabalho já feito para não ter de fazer de novo. Para ver onde isso acontece num sistema com modelo de linguagem, acompanhe três moradores de um condomínio que mandam perguntas a um assistente, do Enter até a resposta.
+
+<KvCache dados={jornada} qual="jornada" />
+
+<PareEPense pergunta="Dos quatro caches, só um pode devolver uma resposta diferente da que o modelo daria. Qual, e por quê?">
+O semântico, o mural. As anotações e os começos já lidos pulam uma leitura que o modelo faria de qualquer jeito: com ou sem eles, a resposta sai igual, só muda o tempo. O mural pula o modelo inteiro e entrega a resposta de outra pergunta, só porque ela parece com a nova. Foi o que aconteceu com a Carla: "de manhã" e "à tarde" mudam uma palavra, e mudam a resposta.
+</PareEPense>
+
+Quando alguém fala em "cache" num sistema com modelo de linguagem, pode estar falando de quatro coisas diferentes. O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) separa as quatro, e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) faz a mesma divisão. A diferença está no que cada um guarda e por quanto tempo.
+
+<KvCache dados={kv} qual="caches" />
+
+- **KV cache:** dentro de uma resposta. Enquanto escreve, o modelo guarda o que já leu de cada token, para não ler de novo. Acabou a resposta, acabou o cache.
+- **Cache de prefixo:** entre pedidos, no servidor que executa o modelo. Dois pedidos que começam igual dividem a leitura do começo.
+- **Cache de prompt:** o mesmo, do lado do provedor da API, que cobra menos pelo começo repetido. Na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem o mesmo mecanismo, com regras próprias.
+- **Cache semântico:** antes do modelo. Uma pergunta parecida com outra já respondida recebe a mesma resposta, sem passar pelo modelo.
+
+Os três primeiros nunca mudam a resposta: guardam um trabalho que daria o mesmo resultado se fosse refeito. O semântico pode errar, porque parecida não é igual.
+
+O artigo erra em dois pontos. O primeiro: ele diz que cada bloco do cache de prefixo é identificado pelo conteúdo e pela posição. No [vLLM](https://docs.vllm.ai/en/latest/design/prefix_caching.html), o identificador de um bloco junta o do bloco anterior, os tokens do bloco e algumas chaves extras. Na prática, um bloco igual que vem depois de um bloco diferente não é reaproveitado: a diferença se propaga para tudo o que vem depois.
+
+<Aposta dados={prefixo} pergunta="O artigo ou o vLLM?" />
+
+O segundo: o artigo apresenta o KV cache como ganho sem preço. Ele tem dois: a memória de cada token guardado, e a consulta a todas as anotações a cada palavra nova. É isso que vamos medir.
+
+## O que vamos construir
+
+Um laço que gera 128 tokens, um por vez, com o KV cache ligado e desligado, e cronometra cada passo. Volte à atendente do experimento [A pausa e o fluxo](/experimentos/pausa-e-fluxo/): ela lê a mensagem e depois escreve, uma palavra de cada vez. Com o cache, ela anota cada palavra que lê; sem ele, relê tudo antes de cada palavra nova.
+
+<Aposta dados={previsoes} pergunta="Antes de medir: com o cache ligado, o que acontece com cada palavra nova quando a mensagem cresce?" />
+
+<KvCache dados={kv} qual="anotacoes" />
+
+Os nomes técnicos: as anotações são as **chaves** (K) e os **valores** (V) que cada camada do modelo calcula para cada **token**, um pedaço de texto. A leitura da mensagem se chama **prefill**, e a escrita, **decode**. A curta, com 10 palavras, vira 27 tokens, e a longa, com 462, vira 822: muitas palavras se partem em mais de um token, e o modelo de conversa do Qwen3 embrulha a mensagem com as marcas de quem fala. O tamanho do cache tem conta fechada: 2 (chave e valor) × camadas × cabeças K/V × números por cabeça × bytes por número × tokens.
+
+<PareEPense pergunta="O Qwen3-0.6B tem 28 camadas e 8 cabeças K/V de 128 números, e aqui cada número ocupa 4 bytes. Quanto ocupa o cache no fim da mensagem longa, com 822 tokens lidos e 127 escritos depois?">
+2 × 28 × 8 × 128 × 4 × 949 = 217.645.056 bytes: 207,6 MiB. O último token escrito não chega a entrar no cache, porque ninguém lê depois dele. O medidor confere a conta contra o tamanho real do cache, byte a byte.
+</PareEPense>
+
+## Mão na massa
+
+Você começa numa pasta vazia e monta o laço passo a passo, com testes que usam um modelo de mentira. Aqui na página, o modelo de verdade não é executado: a coleta que você vai ler foi gravada numa máquina identificada no resultado. Na sua máquina, o mesmo código mede de verdade.
+
+<IdeCapitulo roteiro={roteiro} estados={estados} saidas={saidas} capitulo={passos} glossario={glossario} secoes={{ "1": "O laço", "2": "O modelo", "3": "O placar", "4": "O conserto" }} numero="1" legenda="O laço construído desde a pasta vazia. Os comandos são executados no projeto real; a coleta foi gravada com o modelo de verdade numa máquina identificada. As mensagens do chat são um roteiro, não um modelo ao vivo." />
+
+<Nota titulo="o que é inventado">O condomínio, o seu regulamento e os moradores são inventados; o condomínio e o regulamento são os do experimento A pausa e o fluxo. Nas figuras, a resposta, os blocos e a resposta pronta foram escritos para o exemplo, e os tamanhos não são medidos. As conversas do chat da IDE são um roteiro. A coleta é real: o modelo de verdade, no processador de uma máquina identificada.</Nota>
+
+## O tropeço: a pausa dentro da média
+
+Na primeira leitura, o passo com cache da longa saiu em 201,1 ms. Para quem lê um token só, é muito. O motivo estava no placar: a média do passo incluía o passo 0, que não escreve, lê. Na longa, essa leitura leva uns 9 s, e dividida entre 128 passos ela soma uns 70 ms a cada um.
+
+Separada a pausa, o passo da longa caiu para 131,9 ms. Ainda assim, 77% mais caro que o da curta. Essa parte é do cache, e não do medidor: a cada palavra nova, o modelo consulta as chaves e os valores de todos os tokens anteriores, e, na média dos passos, a longa tem umas 10 vezes mais anotações para consultar. A [documentação do transformers](https://huggingface.co/docs/transformers/v4.57.1/en/cache_explanation) diz isso com todas as letras: com o cache, o custo da atenção em cada passo cresce em linha reta com a sequência. Sem o cache, cresce mais rápido, porque cada passo relê tudo.
+
+## O que isso muda no seu trabalho
+
+<PareEPense pergunta="O seu prompt de sistema começa com a data de hoje e depois traz as instruções e os documentos, que não mudam. O cache de prompt reaproveita quanto dele?">
+Quase nada. O cache reaproveita o começo idêntico, e o começo muda todo dia; tudo o que vem depois da data é lido de novo. Com a data no fim, as instruções e os documentos viram um começo fixo, e só o fim é lido a cada pedido.
+</PareEPense>
+
+Cada consequência sai de uma medida daqui.
+
+- **A pausa e o passo são duas métricas.** O tempo até o primeiro token mede a leitura; o tempo por token de saída mede a escrita. Misturar as duas, como no tropeço, esconde uma atrás da outra. Num painel de latência, olhe as duas separadas.
+- **Contexto longo pesa também na escrita.** Mandar o regulamento inteiro custou 9 s de pausa e deixou cada palavra 77% mais cara. Mandar tudo por garantia tem preço nas duas metades.
+- **O cache de prompt não muda a resposta, mas exige o começo idêntico.** Com e sem cache, os tokens saíram iguais em todas as gerações. O que conta é o começo: o que é fixo (instruções, documentos) vai primeiro, e o que muda (a pergunta, a data) vai no fim.
+- **Quem hospeda o modelo conta memória por conversa.** O cache da longa ocupou 207,6 MiB num modelo de 0,6B. No exemplo do Daily Dose, um Llama 3.3 70B com 131.072 tokens guarda 40 GiB por conversa. A memória do cache, e não só o tamanho do modelo, diz quantas conversas cabem ao mesmo tempo.
+
+## Repetir na sua máquina
+
+<Exercicio titulo="Meça na sua máquina">
+
+1. Instale o uv, que cuida do Python do projeto ([docs.astral.sh/uv](https://docs.astral.sh/uv/)). Na pasta do projeto, `uv sync --extra modelo` instala o PyTorch só de processador e o transformers; o modelo (1,5 GB) é baixado na primeira execução.
+2. Antes de medir, anote: na sua máquina, com cache, o passo da longa vai custar quanto mais que o da curta? Mais ou menos que os 77% daqui?
+3. Faça uma sondagem: `uv run --extra modelo python coletar.py sondagem.json 1 16` (uma repetição, 16 tokens, alguns minutos) e `uv run python medir.py sondagem.json`.
+4. Se quiser a coleta inteira, execute `uv run --extra modelo python coletar.py coleta.json` (aqui levou quase 2 h) e depois `uv run python medir.py coleta.json`.
+5. Compare com o que você anotou. Os seus tempos vão ser outros, porque o processador é outro; o que vale comparar é a forma: o passo com cache cresce com a mensagem? Quanto?
+
+Você concluiu quando confrontou a sua anotação com o medidor da sua máquina.
+
+</Exercicio>
+
+A medida é toda no processador. Numa placa de vídeo, os tempos caem muito, e a consulta às anotações pode pesar menos ou mais em relação ao resto; essa medida não está gravada, e fica como pergunta, não como resultado.
+
+<Pendente o="Opinião dos autores: uma vez em que o contexto que vocês mandaram ao modelo pesou no tempo ou na conta, e o que fizeram" parte="fecho do experimento" />

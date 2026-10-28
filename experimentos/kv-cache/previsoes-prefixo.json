@@ -1,0 +1,19 @@
+{
+  "resultado": "O que o vLLM faz",
+  "fechos": {
+    "nenhum": "O vLLM faz diferente do que você pensou: a troca no meio muda tudo o que vem depois dela.",
+    "alguns": "Você acertou o que o vLLM faz, e não o que o artigo descreve."
+  },
+  "mensagens": [
+    {
+      "texto": "Dois pedidos trazem o regulamento inteiro e a mesma pergunta. No segundo, só o terceiro capítulo, o da garagem, foi trocado. O servidor reaproveita a leitura de quais capítulos?",
+      "opcoes": [
+        "De todos, menos o da garagem",
+        "Só dos dois antes da garagem",
+        "De nenhum"
+      ],
+      "fez": 1,
+      "porque": "O identificador de cada bloco carrega o do anterior. Depois da troca, todo bloco é outro, mesmo com o texto igual: o capítulo de mudanças e a pergunta são lidos de novo. Se o identificador fosse só o conteúdo e a posição, como diz o artigo, a resposta seria a primeira."
+    }
+  ]
+}

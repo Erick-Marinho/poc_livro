@@ -68,19 +68,24 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 6 (detalhe)
+## Etapa 7 (detalhe)
 
-- (6) Como no `pausa-e-fluxo`: o build não roda o modelo. Os comandos da IDE leem o `coleta.json` gravado nesta
-  máquina; na do leitor, `coletar.py` mede de verdade (umas 2 h na CPU; o roteiro sugere uma sondagem curta antes).
-- (6, 28/10/2026, Erick) O tropeço: a média do passo inclui o passo 0, a leitura inteira, e o placar mente; o
-  leitor separa a pausa do passo de escrita. Usa a mesma coleta, e prepara o fecho (pausa e passo, duas métricas).
-- **Arquivos:** em `rascunhos/kv-cache/`: `roteiros/01.json` (da pasta vazia ao `projeto/`), `passos/01.json` (o chat),
-  `comandos.json`, `glossario.json`, `saidas.json` e `roteiros/01.estados.json` (gravados pelo `scripts/saidas.py`).
-- **O caminho do leitor:** o corpus; o laço com e sem cache, testado com o modelo de mentira; o `Leitor` de verdade e
-  a conta dos bytes; a coleta; o placar, com a aposta no item 3 antes de ver; o tropeço e o conserto.
-- **Evidência:** `scripts/saidas.py rascunhos/kv-cache` monta o roteiro da pasta vazia até ser igual ao `projeto/`, e
-  `--conferir` passa; a IDE em `/rascunhos/kv-cache/`, com capturas da aposta, do tropeço e do placar.
-- **Fica fora:** a página no molde (etapa 7).
+- (7) O endereço é `/experimentos/kv-cache/`: a pasta sai de `rascunhos/` inteira; a página de rascunho e o
+  reconhecimento de `/rascunhos/` na IDE saem junto (sem uso), como no `pausa-e-fluxo`.
+- **Arquivos:** `experimentos/kv-cache/experimento.mdx` (o molde, `nivel: avancado`: a afirmação do artigo com a fonte,
+  a régua, os quatro caches com a figura 1 e as contestações com links, "O que vamos construir" com o palpite e a
+  figura 2, a IDE, a nota do inventado, o tropeço da pausa na média, o que isso muda no seu trabalho, repetir na sua
+  máquina e o `Pendente`); `previsoes.json` (o palpite contra o que o artigo dá a entender); `comandos.json` com uma
+  saída por item do placar; `testes/kv-cache.test.mjs` com os caminhos novos.
+- (7, 28/10/2026, Erick) O texto abre com a jornada de uma pergunta, animada (`kv/JornadaAnimada.tsx`,
+  `figuras/jornada.json`, esboço em `figuras/esboco-jornada.md`): três moradores pelo mesmo caminho; a Ana enche as
+  gavetas, o Bruno pula o começo, a Carla leva do mural a resposta errada; os nomes só na última cena. A Carla pergunta
+  "sábado de manhã", e não "domingo" (a resposta da Ana, "Não", serviria por acaso); o Bruno, a piscina na segunda
+  (o regulamento não dá horário à churrasqueira). A checagem do hash vira palpite (`previsoes-prefixo.json`): o molde
+  aceita até 3 Pare e pense e 2 palpites.
+- **Evidência:** `npm test` (o experimento novo na conferência das saídas e no molde); `npm run ritmo`; capturas da
+  página a 1280 e 390 px.
+- **Fica fora:** a revisão do ritmo e os ajustes finais (etapa 8).
 
 ## Registro
 
@@ -91,5 +96,6 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 3 | `5020ded` | `coleta.json`: 5 repetições na CPU (x86_64, torch 2.8.0, transformers 4.57.1, `sdpa`), 1 h 56 min; `medir.py`: passo com cache 74,5 e 131,9 ms, sem cache 934,9 e 8862 ms (curta e longa); placar 5, 5, 1 e 10 de 10 (o item 3 não se confirmou: em 4 de 5, o passo da longa custou 70% a 77% a mais); cache igual à conta (33,7 e 207,6 MiB); o modelo errou o sábado na longa. `test_laco.py` 9/9 | Erick, 28/10/2026 |
 | 4 | `7af014f` | `figuras/esboco.md`: duas figuras em ASCII, seis cenas cada (os quatro caches em dois grupos; a atendente com e sem anotações, o medidor e a pergunta da aposta), sem números da coleta e sem o resultado do item 3 | Erick, 28/10/2026 |
 | 5 | `0422e83` | `testes/kv-cache.test.mjs` (6): seis cenas em até 45 s em cada figura, balões de até 14 palavras, sem número nem "token/prefill/decode", palavras e trecho iguais aos do corpus, a figura 2 sem pergunta, o build sem a página de rascunho; falha com uma pergunta no último balão. Testes do livro 211/211. Capturas das 12 cenas a 1280 e 390 px; ajustes: o trecho cortado, os blocos no celular, o aviso antes da hora | Erick, 28/10/2026 |
+| 6 | `7898870` | `scripts/saidas.py rascunhos/kv-cache`: 22 passos da pasta vazia ao `projeto/`, `--conferir` com 8 saídas iguais; a primeira leitura com a pausa na média (201,1 ms, 0 de 5), a corrigida (131,9 ms, 1 de 5); os 3 testes do placar falham com a `escrita` errada. Testes 211/211. A IDE percorrida no navegador, com capturas da aposta, do tropeço, do porquê e do placar | Erick, 28/10/2026 |
 
 (redação: Claude Opus 5.5)
