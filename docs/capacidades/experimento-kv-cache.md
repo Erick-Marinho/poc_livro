@@ -24,6 +24,14 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   as regras do cache de prompt (o item 4), o contexto longo pesando também na escrita (o item 3), a pausa e o passo
   como duas métricas de latência, e a capacidade de quem hospeda o modelo (a conferência dos bytes). Etapa 6 ou 7.
 - (27/10/2026, Erick) Nível **avançado**: pede PyTorch e a leitura do custo por passo.
+- (7) O endereço é `/experimentos/kv-cache/`: a pasta sai de `rascunhos/` inteira; a página de rascunho e o
+  reconhecimento de `/rascunhos/` na IDE saem junto (sem uso), como no `pausa-e-fluxo`.
+- (7, 28/10/2026, Erick) O texto abre com a jornada de uma pergunta, animada (`kv/JornadaAnimada.tsx`,
+  `figuras/jornada.json`, esboço em `figuras/esboco-jornada.md`): três moradores pelo mesmo caminho; a Ana enche as
+  gavetas, o Bruno pula o começo, a Carla leva do mural a resposta errada; os nomes só na última cena. A Carla pergunta
+  "sábado de manhã", e não "domingo" (a resposta da Ana, "Não", serviria por acaso); o Bruno, a piscina na segunda
+  (o regulamento não dá horário à churrasqueira). A checagem do hash vira palpite (`previsoes-prefixo.json`): o molde
+  aceita até 3 Pare e pense e 2 palpites.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 
@@ -68,24 +76,13 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 7 (detalhe)
+## Etapa 8 (detalhe)
 
-- (7) O endereço é `/experimentos/kv-cache/`: a pasta sai de `rascunhos/` inteira; a página de rascunho e o
-  reconhecimento de `/rascunhos/` na IDE saem junto (sem uso), como no `pausa-e-fluxo`.
-- **Arquivos:** `experimentos/kv-cache/experimento.mdx` (o molde, `nivel: avancado`: a afirmação do artigo com a fonte,
-  a régua, os quatro caches com a figura 1 e as contestações com links, "O que vamos construir" com o palpite e a
-  figura 2, a IDE, a nota do inventado, o tropeço da pausa na média, o que isso muda no seu trabalho, repetir na sua
-  máquina e o `Pendente`); `previsoes.json` (o palpite contra o que o artigo dá a entender); `comandos.json` com uma
-  saída por item do placar; `testes/kv-cache.test.mjs` com os caminhos novos.
-- (7, 28/10/2026, Erick) O texto abre com a jornada de uma pergunta, animada (`kv/JornadaAnimada.tsx`,
-  `figuras/jornada.json`, esboço em `figuras/esboco-jornada.md`): três moradores pelo mesmo caminho; a Ana enche as
-  gavetas, o Bruno pula o começo, a Carla leva do mural a resposta errada; os nomes só na última cena. A Carla pergunta
-  "sábado de manhã", e não "domingo" (a resposta da Ana, "Não", serviria por acaso); o Bruno, a piscina na segunda
-  (o regulamento não dá horário à churrasqueira). A checagem do hash vira palpite (`previsoes-prefixo.json`): o molde
-  aceita até 3 Pare e pense e 2 palpites.
-- **Evidência:** `npm test` (o experimento novo na conferência das saídas e no molde); `npm run ritmo`; capturas da
-  página a 1280 e 390 px.
-- **Fica fora:** a revisão do ritmo e os ajustes finais (etapa 8).
+- **Primeiro, os rascunhos** (skill `revisar-ritmo`, pelo `docs/RITMO.md`): `Rascunho` no texto, só acrescentando
+  linhas, onde o relógio passa de 200 palavras sem ação (hoje: 273 antes do palpite do hash e 231 na "Mão na massa").
+  O Erick ajusta no arquivo ou pede "preenche".
+- **Depois, os ajustes finais:** preencher (ou tirar) os rascunhos, com teste do dado contra a fonte.
+- **Evidência:** `npm run ritmo` sem aviso no experimento; `npm test`; capturas do que mudou a 1280 e 390 px.
 
 ## Registro
 
@@ -97,5 +94,6 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 4 | `7af014f` | `figuras/esboco.md`: duas figuras em ASCII, seis cenas cada (os quatro caches em dois grupos; a atendente com e sem anotações, o medidor e a pergunta da aposta), sem números da coleta e sem o resultado do item 3 | Erick, 28/10/2026 |
 | 5 | `0422e83` | `testes/kv-cache.test.mjs` (6): seis cenas em até 45 s em cada figura, balões de até 14 palavras, sem número nem "token/prefill/decode", palavras e trecho iguais aos do corpus, a figura 2 sem pergunta, o build sem a página de rascunho; falha com uma pergunta no último balão. Testes do livro 211/211. Capturas das 12 cenas a 1280 e 390 px; ajustes: o trecho cortado, os blocos no celular, o aviso antes da hora | Erick, 28/10/2026 |
 | 6 | `7898870` | `scripts/saidas.py rascunhos/kv-cache`: 22 passos da pasta vazia ao `projeto/`, `--conferir` com 8 saídas iguais; a primeira leitura com a pausa na média (201,1 ms, 0 de 5), a corrigida (131,9 ms, 1 de 5); os 3 testes do placar falham com a `escrita` errada. Testes 211/211. A IDE percorrida no navegador, com capturas da aposta, do tropeço, do porquê e do placar | Erick, 28/10/2026 |
+| 7 | `3a2e7b2` | A página em `/experimentos/kv-cache/`, nível avançado, no molde: a jornada animada (7 cenas) na abertura, as correções ao artigo com fonte, o palpite do hash, a IDE, o tropeço, o que muda no trabalho; "O que deu" 5, 5, 1 de 5 e 10 de 10. `testes/kv-cache.test.mjs` (9): os números do texto contra as saídas, as respostas da jornada contra o regulamento. Testes 214/214; ritmo com dois avisos (273 e 231). Capturas a 1280 e 390 px | Erick, 28/10/2026 |
 
 (redação: Claude Opus 5.5)

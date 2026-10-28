@@ -31,6 +31,7 @@ import Nota from "../../src/components/livro/Nota.astro";
 import Pendente from "../../src/components/livro/Pendente.astro";
 import Aposta from "../../src/components/livro/Aposta.astro";
 import Exercicio from "../../src/components/livro/Exercicio.astro";
+import Rascunho from "../../src/components/livro/Rascunho.astro";
 import kv from "./figuras/kv.json";
 import jornada from "./figuras/jornada.json";
 import previsoes from "./previsoes.json";
@@ -57,6 +58,10 @@ Quando alguém fala em "cache" num sistema com modelo de linguagem, pode estar f
 - **Cache de prefixo:** entre pedidos, no servidor que executa o modelo. Dois pedidos que começam igual dividem a leitura do começo.
 - **Cache de prompt:** o mesmo, do lado do provedor da API, que cobra menos pelo começo repetido. Na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem o mesmo mecanismo, com regras próprias.
 - **Cache semântico:** antes do modelo. Uma pergunta parecida com outra já respondida recebe a mesma resposta, sem passar pelo modelo.
+
+<Rascunho acao="Pilhas" frase="A diferença está no que cada um guarda e por quanto tempo." verbo="separa" dado="ilustração: situações escritas para o exemplo; a pilha certa de cada uma sai da jornada e da documentação citada na lista">
+Antes de ler que três não mudam a resposta, o leitor separa seis situações do dia a dia em três pilhas, pelo que cada uma reaproveita: as anotações de uma resposta (KV), um começo repetido (prefixo ou prompt) e uma resposta pronta (semântico). As cartas: "durante uma resposta, o modelo não relê o pedido inteiro antes de cada palavra" (KV); "a segunda pergunta de uma conversa longa começa a responder mais rápido que a primeira" (começo repetido); "a fatura da API cai quando o mesmo manual vai no começo de todo pedido" (começo repetido); "trocar a data no topo do prompt deixa todo pedido mais lento e mais caro" (começo repetido); "um assistente responde na hora a uma pergunta que alguém já fez com outras palavras" (resposta pronta); "uma pergunta sobre o sábado de manhã recebe a resposta de uma sobre o sábado à tarde" (resposta pronta). Depois da separação, o parágrafo que segue confirma: só a pilha da resposta pronta pode errar. (redação: Claude Opus 5.5)
+</Rascunho>
 
 Os três primeiros nunca mudam a resposta: guardam um trabalho que daria o mesmo resultado se fosse refeito. O semântico pode errar, porque parecida não é igual.
 
