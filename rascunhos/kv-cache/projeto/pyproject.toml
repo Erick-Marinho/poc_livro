@@ -4,3 +4,14 @@ version = "0.1.0"
 description = "Gera com e sem o KV cache e cronometra cada passo, num modelo executado no PyTorch"
 requires-python = ">=3.11"
 dependencies = []
+
+[project.optional-dependencies]
+modelo = ["torch==2.8.0", "transformers==4.57.1"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }

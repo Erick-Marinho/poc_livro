@@ -20,6 +20,9 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
   relê tudo antes de cada palavra nova.
 - (1) O corpus é o regulamento do `pausa-e-fluxo` (condomínio inventado), copiado e conferido igual ao de lá.
 - (1) Até a etapa 7, o experimento mora em `rascunhos/kv-cache/`.
+- (27/10/2026, Erick) O fecho traz o que o KV cache muda no trabalho de quem lê, cada consequência presa a uma medida:
+  as regras do cache de prompt (o item 4), o contexto longo pesando também na escrita (o item 3), a pausa e o passo
+  como duas métricas de latência, e a capacidade de quem hospeda o modelo (a conferência dos bytes). Etapa 6 ou 7.
 - (27/10/2026, Erick) Nível **avançado**: pede PyTorch e a leitura do custo por passo.
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
@@ -65,29 +68,26 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 2 (detalhe)
+## Etapa 3 (detalhe)
 
-- **Arquivos:** `rascunhos/kv-cache/projeto/`: `pyproject.toml`, `laco.py` (o laço), `placar.py` (os quatro itens),
-  `test_laco.py`.
-- **Muda:** o laço recebe um modelo com um método `ler(ids, cache)`, que devolve o próximo token e o cache. Com cache,
-  o primeiro passo lê a mensagem inteira e cada passo seguinte, só o token novo; sem cache, cada passo lê a sequência
-  inteira e o modelo nunca recebe cache. O relógio é cronometrado em volta de cada leitura. O modelo de verdade, com
-  PyTorch, fica para a etapa 3.
-- **Decisões:** (2) O laço não para no fim da resposta: gera sempre 128 tokens, para os dois modos medirem o mesmo
-  número de passos; onde a resposta acabou fica registrado. (2) O passo 0 lê a mensagem (a pausa) e fica fora dos
-  itens 1 a 3, que contam só os 127 passos de escrita. (2) O item 4 compara os dois modos em cada repetição dos dois
-  casos: X de 10.
-- **Evidência:** `uv run python -m unittest -q`, sem PyTorch: com um modelo de mentira, o laço lê `[n, 1, 1, …]` com
-  cache e `[n, n+1, n+2, …]` sem, e os tokens saem iguais; o placar respeita os limites (2,0 vezes conta e 1,99 não;
-  10 vezes conta; 20% conta e 21% não); a conta dos bytes dá os 40 GiB do Daily Dose para o Llama 3.3 70B a 128 mil
-  tokens ([config](https://huggingface.co/unsloth/Llama-3.3-70B-Instruct/raw/main/config.json)). Falha se o laço
-  sem cache ler só o token novo.
-- **Fica fora:** o modelo real, a coleta e as figuras.
+- **Arquivos:** `rascunhos/kv-cache/projeto/`: `pyproject.toml` (o extra `modelo`, com o PyTorch só de CPU),
+  `configuracao.json`, `modelo.py` (o `ler` de verdade), `coletar.py`, `medir.py` e o `coleta.json` gravado.
+- **Muda:** o `Qwen3-0.6B` na revisão fixada do `temperatura-zero`, em float32, 4 threads, com a atenção padrão da
+  biblioteca. Com cache, um `DynamicCache` e a `cache_position` de cada token novo, como no laço manual da
+  [documentação](https://huggingface.co/docs/transformers/v4.57.1/en/cache_explanation); sem cache, `use_cache=False`.
+  Cada repetição gera a curta e a longa, com e sem cache; uma geração de aquecimento é descartada. O `coleta.json`
+  guarda a máquina, as versões e o tempo de cada passo.
+- **Decisões:** (3) Mesma revisão, precisão e threads do `temperatura-zero`, para o leitor reaproveitar a instalação.
+  (3) A atenção padrão (`sdpa`), e não a `eager` do `temperatura-zero`: é a que o leitor recebe sem escolher.
+- **Evidência:** antes, uma sondagem cronometrada, para saber quanto a coleta leva; depois, o `coleta.json` com as 5
+  repetições e o `uv run python medir.py` com os quatro itens do placar e a conferência dos bytes do cache contra a conta.
+- **Fica fora:** as figuras e o texto.
 
 ## Registro
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
 | 1 | `11bec6d` | `testes/kv-cache.test.mjs` (2): a mesma pergunta, a longa lendo 46 vezes a curta (10 e 462 palavras), o regulamento igual byte a byte ao do `pausa-e-fluxo`; falha com `mudancas.md` alterado. Testes do livro 207/207 (o `gravacao:testar` já quebrava antes, sem `pytest` no ambiente) | Erick, 27/10/2026 |
+| 2 | `149d50b` | `test_laco.py` (9), sem PyTorch: com cache o laço lê `[4, 1, 1, 1, 1]`, sem cache `[4, 5, 6, 7, 8]`, os mesmos tokens; o placar conta no limite e não logo abaixo; os 40 GiB do Daily Dose; falha (`[4, 1, 1, 1, 1] != [4, 5, 6, 7, 8]`) com o laço sem cache lendo só o token novo. Testes do livro 207/207 | Erick, 27/10/2026 |
 
 (redação: Claude Opus 5.5)
