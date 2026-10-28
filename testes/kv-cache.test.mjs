@@ -25,11 +25,11 @@ test("o regulamento é o do pausa-e-fluxo, byte a byte, e diz que é inventado",
   assert.match(texto(casos[1]), /\(condomínio inventado\)/);
 });
 
-import { ANOTACOES, baloes, duracao, FPS, JORNADA, montarJornada, montarKv, palavraEm } from "../src/components/livro/kv/kv.ts";
+import { ANOTACOES, baloes, duracao, ESCREVE, FPS, JORNADA, montarJornada, montarKv, passoEm } from "../src/components/livro/kv/kv.ts";
 
 const kv = montarKv(JSON.parse(readFileSync(new URL("../experimentos/kv-cache/figuras/kv.json", import.meta.url), "utf8")));
 
-for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["da atendente", ANOTACOES, 6]]) {
+for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["das anotações", ANOTACOES, 6]]) {
   test(`a figura ${nome}: ${cenas} cenas em até 45 s, um balão curto por cena, sem número nem nome técnico`, () => {
     assert.equal(f.cenas.length, cenas);
     assert.ok(duracao(f) / FPS <= 45);
@@ -40,7 +40,7 @@ for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["da atendente", ANO
     bs.forEach((b, i) => { if (i) assert.equal(b.de, bs[i - 1].ate); });
     assert.ok(bs.at(-1).ate >= f.segundos, "o último balão fica até o fim");
     assert.equal(f.resumos.length, f.cenas.length - 1, "um resumo por cena, menos a última");
-    for (const s of [...bs.map((b) => b.texto), ...f.resumos, ...(f.fecho ? [f.fecho] : [])]) {
+    for (const s of [...bs.map((b) => b.texto), ...f.resumos]) {
       assert.ok(s.split(/\s+/).length <= 14, `curto demais para ler de uma vez? "${s}"`);
       assert.doesNotMatch(s, /\d/, `sem número: "${s}"`);
       assert.doesNotMatch(s, /token|prefill|decode/i, `a figura fala em ler, escrever e anotar: "${s}"`);
@@ -48,12 +48,17 @@ for (const [nome, f, cenas] of [["da jornada", JORNADA, 6], ["da atendente", ANO
   });
 }
 
-test("a figura da atendente fecha sem pergunta, e as palavras e o trecho são os do corpus", () => {
-  assert.doesNotMatch(ANOTACOES.fecho + ANOTACOES.textos.at(-1), /\?/, "a aposta fica no palpite antes da figura");
+test("a figura das anotações fecha sem pergunta, e as palavras são as da mensagem longa do corpus", () => {
+  assert.doesNotMatch(ANOTACOES.textos.at(-1), /\?/, "a aposta fica no palpite antes da figura");
   assert.deepEqual(kv.mensagens.map((m) => m.palavras), casos.map((c) => palavras(texto(c))));
-  assert.ok(texto(casos[1]).includes(kv.trecho), "o trecho é do regulamento");
+  const longa = texto(casos[1]).replace(/\s+/g, " ");
+  const trechos = kv.lidas.join(" ").split("…").map((x) => x.trim());
+  for (const x of trechos) assert.ok(longa.includes(x), `"${x}" está na mensagem longa`);
+  assert.ok(longa.endsWith(trechos.at(-1)), "a mensagem termina na pergunta");
+  assert.ok(longa.replace(/^# /, "").startsWith(trechos[0]), "e começa no regulamento");
   assert.equal(kv.pergunta, casos[0].pergunta);
-  for (const k of [1, 2]) assert.ok(palavraEm(ANOTACOES.cenas[k].de, kv.resposta.length - 1) < ANOTACOES.cenas[k + 1].de, "as palavras saem dentro da cena");
+  for (const k of [1, 2]) assert.ok(passoEm(ANOTACOES.cenas[k].de, kv.resposta.length - 1) + ESCREVE < ANOTACOES.cenas[k + 1].de, "as palavras saem dentro da cena");
+  assert.doesNotMatch(ANOTACOES.textos.join(" "), /atendente/, "o modelo, como na jornada");
   assert.match(kv.sobre, /ilustração/);
 });
 
@@ -89,7 +94,7 @@ test("a jornada abre a página: um cenário por cache, as respostas do regulamen
   assert.match(html, /data-kv-cache="jornada"/);
 });
 
-test("as figuras estão na página: a jornada na abertura, a atendente em \"O que vamos construir\", antes da IDE", () => {
+test("as figuras estão na página: a jornada na abertura, as anotações em \"O que vamos construir\", antes da IDE", () => {
   const mdx = readFileSync(new URL("../experimentos/kv-cache/experimento.mdx", import.meta.url), "utf8");
   const jornada = mdx.indexOf('qual="jornada"'), construir = mdx.indexOf("## O que vamos construir");
   const aposta = mdx.indexOf("<Aposta dados={previsoes}"), anotacoes = mdx.indexOf('qual="anotacoes"'), ide = mdx.indexOf("<IdeCapitulo");

@@ -1,7 +1,7 @@
 ---
 /**
  * As figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapas 5 a 8): a jornada de uma pergunta, que abre
- * o texto, ou a atendente com e sem anotações, em "O que vamos construir"
+ * o texto, ou o modelo com e sem as anotações, em "O que vamos construir"
  * (kv/FiguraKv.tsx), que o leitor toca ou rola. É ilustração (figuras/jornada.json e figuras/kv.json): sem número
  * medido. Sem JS, os balões em lista.
  */
@@ -14,7 +14,7 @@ const dados = qual === "jornada" ? montarJornada(Astro.props.dados) : montarKv(A
 const f = { jornada: JORNADA, anotacoes: ANOTACOES }[qual];
 const legenda = {
   jornada: "Ilustração: cinco moradores do condomínio inventado, um cenário por cache, e as respostas que o regulamento dá. As barras, as anotações e a conta não são medidas; a ordem dos passos é a de um sistema de verdade.",
-  anotacoes: "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medido. As duas mensagens, com as palavras de cada uma, são as que o medidor vai cronometrar.",
+  anotacoes: "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das barras e da memória não é medido. As palavras são as da mensagem longa, e as duas mensagens são as que o medidor vai cronometrar.",
 }[qual];
 ---
 <figure class="kv-cache" data-kv-cache={qual}>

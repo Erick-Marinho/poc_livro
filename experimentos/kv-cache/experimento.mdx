@@ -65,7 +65,7 @@ O segundo: o artigo apresenta o KV cache como ganho sem preço. Ele tem dois: a 
 
 ## O que vamos construir
 
-Um laço que gera 128 tokens, um por vez, com o KV cache ligado e desligado, e cronometra cada passo. Volte à atendente do experimento [A pausa e o fluxo](/experimentos/pausa-e-fluxo/): ela lê a mensagem e depois escreve, uma palavra de cada vez. Com o cache, ela anota cada palavra que lê; sem ele, relê tudo antes de cada palavra nova.
+Um laço que gera 128 tokens, um por vez, com o KV cache ligado e desligado, e cronometra cada passo. O modelo da jornada lê a mensagem inteira e depois escreve, uma palavra de cada vez, como no experimento [A pausa e o fluxo](/experimentos/pausa-e-fluxo/). Com o cache, ele anota cada palavra que lê; sem ele, relê tudo antes de cada palavra nova.
 
 <Aposta dados={previsoes} pergunta="Antes de medir: com o cache ligado, o que acontece com cada palavra nova quando a mensagem cresce?" />
 

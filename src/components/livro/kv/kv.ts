@@ -1,41 +1,43 @@
 /**
- * O KV cache (docs/capacidades/experimento-kv-cache.md, etapa 5): as duas animações, em seis cenas cada, que o leitor
- * toca ou rola (palco/RolaCena.tsx). A primeira abre o texto: os quatro caches, em dois grupos. A segunda é "O que vamos
- * construir": a atendente com e sem anotações, o que elas ocupam e o medidor. Sem pergunta dentro da figura: a aposta
- * fica no palpite logo antes (docs/capacidades/pausa-e-fluxo-revisao.md). É ilustração (figuras/kv.json): sem número
- * medido, para não adiantar o resultado. Puro de propósito: o teste chama isto direto.
+ * O KV cache (docs/capacidades/experimento-kv-cache.md): as duas animações, em seis cenas cada, que o leitor toca ou
+ * rola (palco/RolaCena.tsx). A jornada abre o texto: um cenário por cache. A das anotações é "O que vamos construir"
+ * (esboço em figuras/esboco-anotacoes.md): o modelo lê a mensagem e anota cada palavra, escreve com e sem as
+ * anotações, o que elas ocupam e o que o medidor cronometra. Sem pergunta dentro da figura: a aposta fica no palpite
+ * logo antes (docs/capacidades/pausa-e-fluxo-revisao.md). É ilustração (figuras/kv.json): sem número medido, para não
+ * adiantar o resultado. Puro de propósito: o teste chama isto direto.
  */
 
 type Mensagem = { nome: string; leva: string; palavras: number };
 export type Kv = {
-  sobre: string; pergunta: string; resposta: string[]; trecho: string; mensagens: Mensagem[];
+  sobre: string; pergunta: string; resposta: string[];
+  /** as palavras da mensagem longa que a figura mostra, com "…" no lugar do que fica de fora */
+  lidas: string[]; mensagens: Mensagem[];
 };
 
 export const FPS = 30;
 
-export type Figura = { cenas: { nome: string; de: number }[]; segundos: number; textos: string[]; resumos: string[]; fecho?: string };
+export type Figura = { cenas: { nome: string; de: number }[]; segundos: number; textos: string[]; resumos: string[] };
 
 export const ANOTACOES: Figura = {
   cenas: [
     { nome: "Ler e anotar", de: 0 },
-    { nome: "Com as anotações", de: 5 },
-    { nome: "Sem as anotações", de: 10.5 },
-    { nome: "O que elas ocupam", de: 16 },
-    { nome: "O medidor", de: 21 },
-    { nome: "Dois jeitos", de: 26.5 },
+    { nome: "Escrever com as anotações", de: 7 },
+    { nome: "Escrever sem as anotações", de: 14 },
+    { nome: "O que as anotações ocupam", de: 21 },
+    { nome: "O que o medidor cronometra", de: 28 },
+    { nome: "Quatro medições", de: 35 },
   ],
-  segundos: 32,
+  segundos: 42,
   textos: [
-    "Com o cache, ela lê tudo uma vez e anota cada palavra.",
-    "Para a palavra nova, ela lê só a última e olha as anotações.",
-    "Sem o cache, ela relê tudo antes de cada palavra nova.",
-    "As anotações ocupam memória, e crescem com cada palavra.",
-    "O medidor cronometra a pausa e cada palavra, nos quatro jeitos.",
-    "Na IDE, você mede e confere o seu palpite.",
+    "O modelo lê a mensagem uma vez e anota cada palavra.",
+    "Para escrever, lê só a última palavra e consulta as anotações.",
+    "Sem as anotações, relê a mensagem inteira antes de cada palavra.",
+    "Cada camada guarda as suas anotações: a memória cresce a cada palavra.",
+    "O medidor cronometra a pausa e o tempo de cada palavra.",
+    "Quatro medições: na IDE, você confere o seu palpite.",
   ],
-  resumos: ["lê tudo uma vez e anota", "com cache: lê só a última", "sem cache: relê tudo",
-    "as anotações ocupam memória", "o medidor mede quatro jeitos"],
-  fecho: "Com ou sem as anotações: o medidor cronometra a pausa e cada palavra.",
+  resumos: ["lê a mensagem uma vez e anota", "com as anotações: lê só a última", "sem as anotações: relê tudo",
+    "as anotações ocupam memória", "o medidor: a pausa e cada palavra"],
 };
 
 /** a jornada de uma pergunta, que abre o texto: cinco moradores, um cenário por cache (figuras/jornada.json) */
@@ -79,15 +81,20 @@ export function montarJornada(d: Jornada): Jornada {
 
 export const duracao = (f: Figura) => f.segundos * FPS;
 
-/** quando cada palavra da resposta aparece, a partir do começo da cena que escreve */
-export const COMPASSO = 0.8;
-export const palavraEm = (de: number, i: number) => de + 0.4 + i * COMPASSO;
+/** na cena 1, a leitura da mensagem, do primeiro ao último segundo; a primeira palavra sai logo depois */
+export const LEITURA = { de: 0.8, ate: 5 };
+/** nas cenas 2 e 3, o passo que escreve a palavra j da resposta (a 0 sai da leitura), a partir do começo da cena */
+export const PASSO = 1.2;
+export const passoEm = (de: number, j: number) => de + 0.5 + (j - 1) * PASSO;
+/** dentro do passo: quando a palavra nova aparece */
+export const ESCREVE = 0.8;
 
 export function montarKv(d: Kv): Kv {
   if (!d.resposta?.length || d.resposta.length > 6) throw new Error("o KV cache: a resposta tem de 1 a 6 palavras");
-  for (const [k, prox] of [[1, 2], [2, 3]]) {
-    if (palavraEm(ANOTACOES.cenas[k].de, d.resposta.length - 1) > ANOTACOES.cenas[prox].de - 0.5) throw new Error("o KV cache: as palavras não cabem na cena");
+  for (const k of [1, 2]) {
+    if (passoEm(ANOTACOES.cenas[k].de, d.resposta.length - 1) + ESCREVE > ANOTACOES.cenas[k + 1].de - 0.4) throw new Error("o KV cache: as palavras não cabem na cena");
   }
+  if (!d.lidas?.length || d.lidas.at(-1) !== d.pergunta.split(/\s+/).at(-1)) throw new Error("o KV cache: a mensagem termina na pergunta");
   if (d.mensagens?.length !== 2) throw new Error("o KV cache: são duas mensagens, a curta e a longa");
   return d;
 }

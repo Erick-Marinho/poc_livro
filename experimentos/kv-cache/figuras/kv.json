@@ -1,5 +1,5 @@
 {
-  "sobre": "A animação da atendente (docs/capacidades/experimento-kv-cache.md, etapa 5). É ilustração: a resposta foi escrita para o exemplo, e o tamanho das fileiras e das barras não é medida. O trecho e as palavras de cada mensagem são os do corpus (projeto/casos.jsonl), conferidos pelo teste.",
+  "sobre": "A animação das anotações, em \"O que vamos construir\" (docs/capacidades/experimento-kv-cache.md; esboço em figuras/esboco-anotacoes.md). É ilustração: a resposta foi escrita para o exemplo, e o tamanho das barras e da memória não é medida. As palavras da mensagem são as da longa do corpus (projeto/casos.jsonl), com \"…\" no lugar do que fica de fora, e as palavras de cada mensagem são as do corpus, conferidas pelo teste.",
   "pergunta": "Posso fazer a minha mudança no sábado à tarde?",
   "resposta": [
     "Não:",
@@ -9,7 +9,30 @@
     "de",
     "manhã."
   ],
-  "trecho": "aos sábados, das 8h às 12h. Domingos e feriados, não.",
+  "lidas": [
+    "Regulamento",
+    "interno",
+    "do",
+    "Condomínio",
+    "…",
+    "aos",
+    "sábados,",
+    "das",
+    "8h",
+    "às",
+    "12h.",
+    "…",
+    "Pergunta:",
+    "Posso",
+    "fazer",
+    "a",
+    "minha",
+    "mudança",
+    "no",
+    "sábado",
+    "à",
+    "tarde?"
+  ],
   "mensagens": [
     {
       "nome": "curta",

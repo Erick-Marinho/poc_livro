@@ -1,6 +1,6 @@
 /**
  * A ilha das figuras do KV cache (docs/capacidades/experimento-kv-cache.md, etapas 5 a 8): a jornada de uma pergunta
- * (JornadaAnimada.tsx) ou a atendente com e sem anotações (AnotacoesAnimadas.tsx), que o leitor toca ou rola (palco/RolaCena.tsx), com balões. Escolhe o desenho pela largura:
+ * (JornadaAnimada.tsx) ou o modelo com e sem as anotações (AnotacoesAnimadas.tsx), que o leitor toca ou rola (palco/RolaCena.tsx), com balões. Escolhe o desenho pela largura:
  * no celular, o estreito. Para quem não vê o vídeo, os balões vão como texto, na ordem.
  */
 import { useEffect, useMemo, useState } from "react";
