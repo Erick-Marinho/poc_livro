@@ -46,6 +46,8 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 - (depois do fecho, 28/10/2026, Erick) Cada ponto do caminho com um exemplo de verdade (o app do condomínio; vLLM ou
   Ollama, ou o provedor da API; Qwen3 ou Claude), e o texto diz o que é cada um. O regulamento é um documento fixo,
   colado em todo pedido; o texto compara com o anexo no chat e com o RAG. A lista dos quatro caches vira um parágrafo.
+- (depois do fecho, 28/10/2026, Erick) As instruções têm o nome que o leitor vê no código: o system prompt, na figura e
+  no texto, com o `system_prompt` do `create_agent` do LangGraph (link para a documentação do LangChain).
 - (27/10/2026, Erick) O modelo é o `Qwen/Qwen3-0.6B`, com `torch==2.8.0` e `transformers==4.57.1`: a pilha fixada do
   `temperatura-zero` (o leitor pode já tê-la instalado).
 

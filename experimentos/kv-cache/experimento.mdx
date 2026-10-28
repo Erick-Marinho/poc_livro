@@ -49,11 +49,11 @@ Pode, se o sistema guarda respostas prontas e entrega a de uma pergunta parecida
 
 <KvCache dados={jornada} qual="jornada" />
 
-O **aplicativo** é o programa que o morador usa; o **servidor** é a máquina que executa o modelo, sua ou de um provedor de API; o **modelo** é a rede neural que lê e escreve.
+O **aplicativo** é o programa que o morador usa; o **servidor**, a máquina que executa o modelo, sua ou de um provedor de API; o **modelo**, a rede neural que lê e escreve. As **instruções** são o *system prompt*: no LangGraph, o parâmetro `system_prompt` do [`create_agent`](https://docs.langchain.com/oss/python/langchain/agents#system-prompt).
 
 Na jornada, o regulamento é um documento fixo: o aplicativo cola o texto inteiro em todo pedido, e por isso o começo se repete. Se o morador anexa o arquivo no chat, ele se repete só dentro daquela conversa. Num RAG, o aplicativo cola só os trechos ligados à pergunta, que mudam a cada vez: só a parte fixa, antes deles, é reaproveitada.
 
-O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) separa esses quatro caches, e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) faz a mesma divisão. O preço do cache de prompt muda de provedor para provedor: na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem regras próprias.
+O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/09/four-caches-in-llm-serving/) e o [Daily Dose of DS](https://www.dailydoseofds.com/p/kv-vs-prefix-vs-prompt-vs-semantic-caching/) separam esses quatro caches. O preço do cache de prompt muda por provedor: na [Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), gravar o começo custa 1,25 vez o preço normal, e cada leitura dele, um décimo; a [OpenAI](https://developers.openai.com/api/docs/guides/prompt-caching) tem regras próprias.
 
 O artigo erra em dois pontos. O primeiro: ele diz que cada bloco do cache de prefixo é identificado pelo conteúdo e pela posição.
 

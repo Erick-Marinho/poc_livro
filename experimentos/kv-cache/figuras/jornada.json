@@ -54,7 +54,7 @@
   "pedido": {
     "instrucoes": {
       "nome": "instruções do assistente",
-      "origem": "escritas uma vez por quem fez o assistente"
+      "origem": "o system prompt, escrito uma vez por quem fez o assistente"
     },
     "regulamento": {
       "nome": "regulamento do condomínio",
