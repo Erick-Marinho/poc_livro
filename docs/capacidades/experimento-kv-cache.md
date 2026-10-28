@@ -68,22 +68,19 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 7 | A página no molde, movida para `experimentos/`, conferida pelo `npm test` |
 | 8 | O ritmo (`npm run ritmo`, revisar-ritmo) e os ajustes finais |
 
-## Etapa 5 (detalhe)
+## Etapa 6 (detalhe)
 
-- **Arquivos:** `rascunhos/kv-cache/figuras/kv.json` (a ilustração: a pergunta, a resposta em palavras, o trecho do
-  regulamento, as duas perguntas parecidas, as duas mensagens com as palavras do corpus); em `src/components/livro/kv/`:
-  `kv.ts` (as cenas, os balões e os resumos das duas figuras, puro, para o teste), `pecas.tsx` (o que as duas
-  dividem), `CachesAnimados.tsx` e
-  `AnotacoesAnimadas.tsx` (Remotion) e `FiguraKv.tsx` (com `palco/RolaCena`); `src/components/livro/KvCache.astro`;
-  `src/pages/rascunhos/[rascunho].astro` (de volta, só no `astro dev`); `scripts/ritmo.mjs` (a figura não conta como
-  ação); `testes/kv-cache.test.mjs`.
-- **Decisões:** (5) A figura 2 fecha sem pergunta, como a do `pausa-e-fluxo` depois da revisão
-  (`pausa-e-fluxo-revisao.md`, etapa 2): a aposta fica no palpite logo antes, e a figura não a responde.
-  (5) O semântico erra com sábado e domingo, e não com a negação: o regulamento responde os dois (domingo, não pode).
-- **Evidência:** o teste (seis cenas em até 45 s em cada figura, um balão curto por cena, sem número, sem "token",
-  "prefill" nem "decode", as palavras e o trecho iguais aos do corpus, o build sem a página de rascunho); capturas das
-  cenas a 1280 e 390 px.
-- **Fica fora:** a página do experimento (etapa 7).
+- (6) Como no `pausa-e-fluxo`: o build não roda o modelo. Os comandos da IDE leem o `coleta.json` gravado nesta
+  máquina; na do leitor, `coletar.py` mede de verdade (umas 2 h na CPU; o roteiro sugere uma sondagem curta antes).
+- (6, 28/10/2026, Erick) O tropeço: a média do passo inclui o passo 0, a leitura inteira, e o placar mente; o
+  leitor separa a pausa do passo de escrita. Usa a mesma coleta, e prepara o fecho (pausa e passo, duas métricas).
+- **Arquivos:** em `rascunhos/kv-cache/`: `roteiros/01.json` (da pasta vazia ao `projeto/`), `passos/01.json` (o chat),
+  `comandos.json`, `glossario.json`, `saidas.json` e `roteiros/01.estados.json` (gravados pelo `scripts/saidas.py`).
+- **O caminho do leitor:** o corpus; o laço com e sem cache, testado com o modelo de mentira; o `Leitor` de verdade e
+  a conta dos bytes; a coleta; o placar, com a aposta no item 3 antes de ver; o tropeço e o conserto.
+- **Evidência:** `scripts/saidas.py rascunhos/kv-cache` monta o roteiro da pasta vazia até ser igual ao `projeto/`, e
+  `--conferir` passa; a IDE em `/rascunhos/kv-cache/`, com capturas da aposta, do tropeço e do placar.
+- **Fica fora:** a página no molde (etapa 7).
 
 ## Registro
 
@@ -93,5 +90,6 @@ ago/2026) é a segunda referência. O leitor liga e desliga o KV cache num model
 | 2 | `149d50b` | `test_laco.py` (9), sem PyTorch: com cache o laço lê `[4, 1, 1, 1, 1]`, sem cache `[4, 5, 6, 7, 8]`, os mesmos tokens; o placar conta no limite e não logo abaixo; os 40 GiB do Daily Dose; falha (`[4, 1, 1, 1, 1] != [4, 5, 6, 7, 8]`) com o laço sem cache lendo só o token novo. Testes do livro 207/207 | Erick, 27/10/2026 |
 | 3 | `5020ded` | `coleta.json`: 5 repetições na CPU (x86_64, torch 2.8.0, transformers 4.57.1, `sdpa`), 1 h 56 min; `medir.py`: passo com cache 74,5 e 131,9 ms, sem cache 934,9 e 8862 ms (curta e longa); placar 5, 5, 1 e 10 de 10 (o item 3 não se confirmou: em 4 de 5, o passo da longa custou 70% a 77% a mais); cache igual à conta (33,7 e 207,6 MiB); o modelo errou o sábado na longa. `test_laco.py` 9/9 | Erick, 28/10/2026 |
 | 4 | `7af014f` | `figuras/esboco.md`: duas figuras em ASCII, seis cenas cada (os quatro caches em dois grupos; a atendente com e sem anotações, o medidor e a pergunta da aposta), sem números da coleta e sem o resultado do item 3 | Erick, 28/10/2026 |
+| 5 | `0422e83` | `testes/kv-cache.test.mjs` (6): seis cenas em até 45 s em cada figura, balões de até 14 palavras, sem número nem "token/prefill/decode", palavras e trecho iguais aos do corpus, a figura 2 sem pergunta, o build sem a página de rascunho; falha com uma pergunta no último balão. Testes do livro 211/211. Capturas das 12 cenas a 1280 e 390 px; ajustes: o trecho cortado, os blocos no celular, o aviso antes da hora | Erick, 28/10/2026 |
 
 (redação: Claude Opus 5.5)

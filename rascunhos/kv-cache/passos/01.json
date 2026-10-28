@@ -1,0 +1,118 @@
+{
+  "autores": [
+    "Erick Marinho",
+    "Victor Fontela"
+  ],
+  "passos": [
+    {
+      "id": "pasta",
+      "secao": "1",
+      "titulo": "O projeto nasce",
+      "curta": "o projeto nasce",
+      "de": 1,
+      "ate": 2,
+      "pedido": "Quero medir o que o KV cache economiza. Cria o projeto com as duas mensagens sobre o regulamento do condomínio.",
+      "objetivo": "uma pasta com a curta, a longa e o regulamento do condomínio.",
+      "temos": "uma pasta com a curta, a longa e o regulamento do condomínio.",
+      "depois": []
+    },
+    {
+      "id": "laco",
+      "secao": "1",
+      "titulo": "O laço",
+      "curta": "o laço",
+      "de": 3,
+      "ate": 5,
+      "pedido": "Escreve um laço que gera um token por vez, com e sem cache, e cronometra cada passo. Testa sem o modelo.",
+      "objetivo": "gerar, testado com um modelo de mentira: com cache, o laço lê a mensagem e depois só o token novo.",
+      "temos": "gerar, testado com um modelo de mentira: com cache, o laço lê a mensagem e depois só o token novo.",
+      "depois": []
+    },
+    {
+      "id": "bytes",
+      "secao": "1",
+      "titulo": "O tamanho do cache",
+      "curta": "o tamanho do cache",
+      "de": 6,
+      "ate": 9,
+      "pedido": "Quanto de memória o cache ocupa? Põe a conta no código.",
+      "objetivo": "bytes_esperados, conferido com os 40 GiB do Daily Dose of DS.",
+      "temos": "bytes_esperados, conferido com os 40 GiB do Daily Dose of DS.",
+      "depois": []
+    },
+    {
+      "id": "modelo",
+      "secao": "2",
+      "titulo": "O modelo de verdade",
+      "curta": "o modelo de verdade",
+      "de": 10,
+      "ate": 11,
+      "pedido": "Liga o laço no Qwen3, no PyTorch.",
+      "objetivo": "o Leitor, com e sem DynamicCache, só no processador.",
+      "temos": "o Leitor, com e sem DynamicCache, só no processador.",
+      "depois": []
+    },
+    {
+      "id": "coletar",
+      "secao": "2",
+      "titulo": "Cinco repetições",
+      "curta": "cinco repetições",
+      "de": 12,
+      "ate": 12,
+      "pedido": "Repete as duas mensagens, com e sem cache, cinco vezes, e anota a máquina.",
+      "objetivo": "coletar, que grava a coleta a cada repetição.",
+      "temos": "coletar, que grava a coleta a cada repetição.",
+      "depois": []
+    },
+    {
+      "id": "placar",
+      "secao": "3",
+      "titulo": "O placar",
+      "curta": "o placar",
+      "de": 13,
+      "ate": 14,
+      "pedido": "Conta em quantas repetições cada item da régua se confirma, e mostra os tempos.",
+      "objetivo": "o placar e o medir, que lê a coleta.",
+      "temos": "o placar e o medir, que lê a coleta.",
+      "depois": []
+    },
+    {
+      "id": "primeira",
+      "secao": "3",
+      "titulo": "A primeira leitura",
+      "curta": "a primeira leitura",
+      "de": 15,
+      "ate": 17,
+      "pedido": "Lê a coleta e me diz quanto custa cada palavra com cache.",
+      "objetivo": "um passo com cache de uns 200 ms na longa, e o motivo: a pausa entrou na média.",
+      "temos": "um passo com cache de uns 200 ms na longa, e o motivo: a pausa entrou na média.",
+      "depois": []
+    },
+    {
+      "id": "conserto",
+      "secao": "4",
+      "titulo": "A pausa fora da média",
+      "curta": "a pausa fora da média",
+      "de": 18,
+      "ate": 21,
+      "pedido": "Tira a pausa da média do passo e testa isso.",
+      "objetivo": "escrita sem o passo 0, e o teste que falharia com ele.",
+      "temos": "escrita sem o passo 0, e o teste que falharia com ele.",
+      "depois": []
+    },
+    {
+      "id": "corrigida",
+      "secao": "4",
+      "titulo": "O placar de verdade",
+      "curta": "o placar de verdade",
+      "de": 22,
+      "ate": 22,
+      "pedido": "Lê a coleta de novo.",
+      "objetivo": "o placar da régua, com a pausa e o passo medidos à parte.",
+      "temos": "o placar da régua, com a pausa e o passo medidos à parte.",
+      "depois": [
+        "Bom lugar para parar: você tem o laço, o modelo e uma coleta. Na sua máquina, execute uv run --extra modelo python coletar.py coleta.json e compare com a nossa."
+      ]
+    }
+  ]
+}

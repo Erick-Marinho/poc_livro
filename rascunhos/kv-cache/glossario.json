@@ -1,0 +1,21 @@
+{
+  "sobre": "As palavras do código do experimento que o leitor pode perguntar no chat.",
+  "termos": {
+    "token": {
+      "texto": "Um pedaço de texto: uma palavra ou parte dela. O modelo lê e escreve em tokens; as 462 palavras da longa viram 822 tokens."
+    },
+    "DynamicCache": {
+      "texto": "O cache padrão do transformers: guarda as chaves e os valores de cada camada e cresce a cada token lido ou escrito."
+    },
+    "cache_position": {
+      "texto": "A posição de cada token novo na sequência. Com cache, ela continua de onde o cache parou: o modelo recebe um token, mas sabe que ele é o 823º."
+    },
+    "use_cache": {
+      "texto": "Liga ou desliga o cache. Com use_cache=False, o modelo lê tudo e não guarda nada para o passo seguinte."
+    },
+    "past_key_values": {
+      "rotulo": "past_key_values",
+      "texto": "O cache que o modelo devolve depois de ler: as chaves e os valores de tudo o que já leu, para o próximo passo."
+    }
+  }
+}

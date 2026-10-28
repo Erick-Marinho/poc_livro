@@ -1,0 +1,309 @@
+{
+  "experimento": "kv-cache",
+  "sobre": "Construção do laço com e sem o KV cache. O modelo não é executado no build: os comandos leem a coleta real gravada numa máquina identificada; na máquina do leitor, coletar.py mede de verdade.",
+  "passos": [
+    {
+      "acao": "rodar",
+      "id": "kv-init",
+      "comando": "uv init --bare kv-cache",
+      "onde": "acima",
+      "nota": "O projeto nasce vazio, sem exemplo pronto."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "pyproject.toml",
+        "uv.lock",
+        "casos.jsonl",
+        "dados/convivencia.md",
+        "dados/areas-comuns.md",
+        "dados/garagem.md",
+        "dados/mudancas.md"
+      ],
+      "nota": "As duas mensagens (casos.jsonl) e o regulamento do condomínio inventado (dados/), o mesmo do experimento da pausa e do fluxo. A pergunta é a mesma nas duas: a curta leva só a pergunta; a longa, o regulamento inteiro antes dela. O pyproject.toml traz o PyTorch como extra (modelo): os testes não precisam dele."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "laco.py",
+      "partes": [
+        {
+          "linhas": "1-29"
+        }
+      ],
+      "nota": "gerar escreve um token por vez e cronometra cada passo. O modelo é qualquer objeto com ler(ids, cache): assim dá para testar o laço sem o modelo de verdade.",
+      "blocos": [
+        {
+          "linhas": "17-23",
+          "titulo": "um passo",
+          "texto": "O relógio marca só a chamada ao modelo. O passo 0 lê a mensagem inteira; os outros escrevem."
+        },
+        {
+          "linhas": "27-28",
+          "titulo": "com e sem cache",
+          "texto": "Com cache, o que já foi lido está guardado, e o modelo recebe só o token novo. Sem cache, recebe tudo de novo, a cada passo."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "test_laco.py",
+      "partes": [
+        {
+          "linhas": "1-6"
+        },
+        {
+          "texto": "from laco import gerar\n"
+        },
+        {
+          "linhas": "9-66"
+        }
+      ],
+      "nota": "Os testes usam um modelo de mentira: o próximo token depende de tudo o que ele tem em mente, o cache e o que acabou de ler. Se o cache faltar uma parte, o token muda."
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-teste-laco",
+      "comando": "uv run python -m unittest -q test_laco.LacoTest",
+      "nota": "Execute os testes do laço.",
+      "aposta": {
+        "pergunta": "A mensagem de mentira tem 4 tokens. Com cache, quantos tokens o laço manda ao modelo no segundo passo?",
+        "opcoes": [
+          "1, só o token novo",
+          "5, a mensagem e o token novo"
+        ],
+        "certa": 0
+      }
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "laco.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "30-34"
+        }
+      ],
+      "nota": "A conta do tamanho do cache: uma chave e um valor por token, em cada cabeça K/V de cada camada.",
+      "duvidas": [
+        {
+          "pergunta": "Por que cabeças K/V, e não todas as cabeças?",
+          "resposta": "Muitos modelos dividem a mesma chave e o mesmo valor entre várias cabeças de atenção (GQA). O cache guarda só as cabeças K/V: no Llama 3.3 70B, 8 de 64."
+        }
+      ]
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "test_laco.py",
+      "de": "from laco import gerar\n",
+      "para": [
+        {
+          "linhas": "7-7"
+        }
+      ],
+      "nota": "O teste passa a usar a conta."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_laco.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "67-72"
+        }
+      ],
+      "nota": "O teste da conta com os números do Daily Dose of DS: o Llama 3.3 70B, com 131.072 tokens, guarda 40 GiB."
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-bytes",
+      "comando": "uv run python -m unittest -q test_laco.BytesTest",
+      "nota": "Execute o teste da conta."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "configuracao.json"
+      ],
+      "nota": "O modelo (Qwen3-0.6B), a revisão fixada, quantos tokens escrever, quantas repetições e quantas threads. Vem pronto."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "modelo.py",
+      "partes": [
+        {
+          "linhas": "1-28"
+        }
+      ],
+      "nota": "O Leitor é o ler(ids, cache) de verdade, no PyTorch. Ele precisa do extra modelo; aqui no experimento ele não é executado.",
+      "blocos": [
+        {
+          "linhas": "17-19",
+          "titulo": "sem cache",
+          "texto": "use_cache=False: o modelo lê a sequência inteira e não guarda nada."
+        },
+        {
+          "linhas": "20-25",
+          "titulo": "com cache",
+          "texto": "Um DynamicCache guarda as chaves e os valores. cache_position diz onde cada token novo entra: continua de onde o cache parou."
+        },
+        {
+          "linhas": "27-28",
+          "titulo": "os bytes",
+          "texto": "O tamanho de verdade: os números de cada camada, chaves e valores."
+        }
+      ],
+      "duvidas": [
+        {
+          "pergunta": "O que é o DynamicCache?",
+          "resposta": "O cache padrão do transformers: cresce a cada token, camada por camada. A documentação mostra o mesmo laço manual, com cache_position."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "coletar.py",
+      "partes": [
+        {
+          "linhas": "1-76"
+        }
+      ],
+      "nota": "coletar gera as duas mensagens, com e sem cache, cinco vezes, e grava tudo em coleta.json, com a máquina e as versões. Grava a cada repetição: se parar no meio, o que já foi medido fica.",
+      "blocos": [
+        {
+          "linhas": "32-35",
+          "titulo": "o modelo na CPU",
+          "texto": "Quatro threads, float32, a revisão fixada: o mesmo modelo, do mesmo jeito, em toda máquina."
+        },
+        {
+          "linhas": "40-42",
+          "titulo": "sem pensar em voz alta",
+          "texto": "enable_thinking=False: o Qwen3 responde direto, sem o trecho de raciocínio."
+        },
+        {
+          "linhas": "46-46",
+          "titulo": "o aquecimento",
+          "texto": "A primeira geração carrega coisas na memória e é mais lenta. Ela não entra na conta."
+        }
+      ]
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "placar.py",
+      "partes": [
+        {
+          "linhas": "1-16"
+        },
+        {
+          "texto": "    return registro[\"tempos\"]\n"
+        },
+        {
+          "linhas": "18-34"
+        }
+      ],
+      "nota": "O placar conta, das cinco repetições, em quantas cada item da régua se confirmou. escrita separa os tempos de escrever."
+    },
+    {
+      "acao": "escrever",
+      "arquivo": "medir.py",
+      "partes": [
+        {
+          "linhas": "1-36"
+        }
+      ],
+      "nota": "medir lê uma coleta gravada e mostra, para cada mensagem, a pausa e o passo de escrita, com e sem cache, o tamanho do cache contra a conta e o placar."
+    },
+    {
+      "acao": "copiar",
+      "arquivos": [
+        "coleta.json"
+      ],
+      "nota": "Aqui no experimento, a coleta que gravamos com este código, num processador x86_64, em 1 h 56 min. Na sua máquina: uv run --extra modelo python coletar.py coleta.json (para uma sondagem rápida, uma repetição de 16 tokens: coletar.py sondagem.json 1 16)."
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-ingenua",
+      "comando": "uv run python medir.py coleta.json",
+      "nota": "Leia a coleta gravada.",
+      "aposta": {
+        "pergunta": "Com cache, cada passo lê um token só, na curta ou na longa. Em quantas das 5 repetições o passo da longa ficou a até 20% do da curta?",
+        "opcoes": [
+          "Em quase todas",
+          "Em algumas",
+          "Em nenhuma"
+        ],
+        "certa": 2
+      },
+      "pergunta_saida": {
+        "texto": "Na longa, com cache, cada passo de escrita saiu em uns 200 ms. Se ele lê um token só, por que tanto?",
+        "opcoes": [
+          "O modelo fica lento com a mensagem longa",
+          "A média inclui o passo 0, a leitura da mensagem inteira",
+          "O cache não foi usado"
+        ],
+        "certa": 1,
+        "evidencia": "cada passo de escrita 201.1 ms",
+        "porque": "escrita devolve todos os tempos, e o primeiro é a pausa: uns 9 s lendo a mensagem, na mediana. Dividida entre 128 passos, ela soma uns 70 ms a cada um."
+      }
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-passos",
+      "comando": "uv run python -c \"import json; t = json.load(open('coleta.json'))['repeticoes'][0]['longa']['com']['tempos']; print('longa, com cache, os 4 primeiros passos (s):', [round(x, 3) for x in t[:4]])\"",
+      "nota": "Olhe os primeiros passos da longa, com cache, na primeira repetição."
+    },
+    {
+      "acao": "trocar",
+      "arquivo": "placar.py",
+      "de": "    return registro[\"tempos\"]\n",
+      "para": [
+        {
+          "linhas": "17-17"
+        }
+      ],
+      "nota": "escrita deixa o passo 0 de fora: a pausa é uma medida, o passo de escrita é outra."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_laco.py",
+      "depois": "from laco import bytes_esperados, gerar\n",
+      "partes": [
+        {
+          "linhas": "8-8"
+        }
+      ],
+      "nota": "Os testes do placar, com repetições de mentira."
+    },
+    {
+      "acao": "inserir",
+      "arquivo": "test_laco.py",
+      "no_fim": true,
+      "partes": [
+        {
+          "linhas": "73-105"
+        }
+      ],
+      "nota": "O último teste põe um passo 0 de 10.000 s na longa: se ele entrasse na média, o item 2 não contaria."
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-testes",
+      "comando": "uv run python -m unittest -q",
+      "nota": "Execute todos os testes."
+    },
+    {
+      "acao": "rodar",
+      "id": "kv-placar",
+      "comando": "uv run python medir.py coleta.json",
+      "nota": "Leia a coleta de novo, agora sem a pausa na média.",
+      "aposta": {
+        "pergunta": "Sem a pausa na média, com cache, o passo da longa fica quanto mais caro que o da curta?",
+        "opcoes": [
+          "Quase o mesmo: até 20% a mais",
+          "Uns 70% a mais",
+          "Umas 10 vezes"
+        ],
+        "certa": 1
+      }
+    }
+  ]
+}

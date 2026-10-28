@@ -1,0 +1,282 @@
+{
+  "kv-placar-final": {
+    "comando": "uv run python medir.py coleta.json | tail -4",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "na longa, o passo sem cache custou ao menos 10 vezes o com cache: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "com cache, o passo da longa ficou a até 20% do da curta: 1 de 5 (20%)",
+        ""
+      ],
+      [
+        "os mesmos tokens com e sem cache: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  },
+  "kv-init": {
+    "comando": "uv init --bare kv-cache",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Initialized project `kv-cache` at `/home/voce/kv-cache`",
+        ""
+      ]
+    ]
+  },
+  "kv-teste-laco": {
+    "comando": "uv run python -m unittest -q test_laco.LacoTest",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Using CPython 3.13.13",
+        ""
+      ],
+      [
+        "Creating virtual environment at: .venv",
+        ""
+      ],
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 5 tests in 0.000s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "kv-bytes": {
+    "comando": "uv run python -m unittest -q test_laco.BytesTest",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 1 test in 0.000s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "kv-ingenua": {
+    "comando": "uv run python medir.py coleta.json",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Qwen/Qwen3-0.6B em float32, 4 threads, atenção sdpa",
+        ""
+      ],
+      [
+        "torch 2.8.0+cpu, transformers 4.57.1, x86_64",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "curta: 27 tokens lidos antes de escrever",
+        ""
+      ],
+      [
+        "  com cache: pausa 0.360 s; cada passo de escrita 76.5 ms",
+        ""
+      ],
+      [
+        "  sem cache: pausa 0.359 s; cada passo de escrita 930.4 ms",
+        ""
+      ],
+      [
+        "  o cache no fim: 33.7 MiB; a conta: 33.7 MiB (iguais)",
+        ""
+      ],
+      [
+        "  a resposta acabou no passo 53 de 128",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "longa: 822 tokens lidos antes de escrever",
+        ""
+      ],
+      [
+        "  com cache: pausa 9.035 s; cada passo de escrita 201.1 ms",
+        ""
+      ],
+      [
+        "  sem cache: pausa 8.299 s; cada passo de escrita 8857.2 ms",
+        ""
+      ],
+      [
+        "  o cache no fim: 207.6 MiB; a conta: 207.6 MiB (iguais)",
+        ""
+      ],
+      [
+        "  a resposta acabou no passo 112 de 128",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "na longa, o passo sem cache custou ao menos 10 vezes o com cache: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "com cache, o passo da longa ficou a até 20% do da curta: 0 de 5 (0%)",
+        ""
+      ],
+      [
+        "os mesmos tokens com e sem cache: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  },
+  "kv-passos": {
+    "comando": "uv run python -c \"import json; t = json.load(open('coleta.json'))['repeticoes'][0]['longa']['com']['tempos']; print('longa, com cache, os 4 primeiros passos (s):', [round(x, 3) for x in t[:4]])\"",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "longa, com cache, os 4 primeiros passos (s): [12.056, 0.14, 0.131, 0.158]",
+        ""
+      ]
+    ]
+  },
+  "kv-testes": {
+    "comando": "uv run python -m unittest -q",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "----------------------------------------------------------------------",
+        ""
+      ],
+      [
+        "Ran 9 tests in 0.001s",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "OK",
+        ""
+      ]
+    ]
+  },
+  "kv-placar": {
+    "comando": "uv run python medir.py coleta.json",
+    "saiu_com": 0,
+    "saida": [
+      [
+        "Qwen/Qwen3-0.6B em float32, 4 threads, atenção sdpa",
+        ""
+      ],
+      [
+        "torch 2.8.0+cpu, transformers 4.57.1, x86_64",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "curta: 27 tokens lidos antes de escrever",
+        ""
+      ],
+      [
+        "  com cache: pausa 0.360 s; cada passo de escrita 74.5 ms",
+        ""
+      ],
+      [
+        "  sem cache: pausa 0.359 s; cada passo de escrita 934.9 ms",
+        ""
+      ],
+      [
+        "  o cache no fim: 33.7 MiB; a conta: 33.7 MiB (iguais)",
+        ""
+      ],
+      [
+        "  a resposta acabou no passo 53 de 128",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "longa: 822 tokens lidos antes de escrever",
+        ""
+      ],
+      [
+        "  com cache: pausa 9.035 s; cada passo de escrita 131.9 ms",
+        ""
+      ],
+      [
+        "  sem cache: pausa 8.299 s; cada passo de escrita 8862.1 ms",
+        ""
+      ],
+      [
+        "  o cache no fim: 207.6 MiB; a conta: 207.6 MiB (iguais)",
+        ""
+      ],
+      [
+        "  a resposta acabou no passo 112 de 128",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "sem cache, a escrita da curta ficou ao menos 2 vezes mais cara no fim: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "na longa, o passo sem cache custou ao menos 10 vezes o com cache: 5 de 5 (100%)",
+        ""
+      ],
+      [
+        "com cache, o passo da longa ficou a até 20% do da curta: 1 de 5 (20%)",
+        ""
+      ],
+      [
+        "os mesmos tokens com e sem cache: 10 de 10 (100%)",
+        ""
+      ]
+    ]
+  }
+}
