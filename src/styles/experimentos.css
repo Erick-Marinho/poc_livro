@@ -17,6 +17,11 @@
 .abertura-experimento { margin-bottom: 2.4em }
 .abertura-experimento .linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
 .para-quem { margin: 10px 0 0; font: 14.5px/1.5 var(--f-ui); color: var(--ink-2) } .para-quem b { color: var(--ink) }
+.baixar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 14px 0 0; font: 13px/1.5 var(--f-ui); color: var(--ink-2) }
+.baixar a { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 1px solid var(--acento); border-radius: 999px;
+  color: var(--acento); font-weight: 600; text-decoration: none }
+.baixar a:hover { background: color-mix(in srgb, var(--acento) 8%, transparent) }
+.baixar a:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
 .experimentos-lista .linha { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
 .abertura-experimento h1 { font: 700 42px/1.12 var(--f-texto); letter-spacing: -.02em; margin: 14px 0 14px; text-wrap: balance }
 .abertura-experimento .lide { font-size: calc(20px * var(--escala)); line-height: 1.55; color: var(--ink-2); margin: 0 }

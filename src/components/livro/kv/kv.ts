@@ -105,3 +105,9 @@ export type Balao = { de: number; ate: number; texto: string };
 export function baloes(f: Figura): Balao[] {
   return f.textos.map((texto, k) => ({ de: f.cenas[k].de + 0.2, ate: k + 1 < f.cenas.length ? f.cenas[k + 1].de + 0.2 : f.segundos + 1, texto }));
 }
+
+/** A legenda de cada figura: na página e no Markdown do experimento (src/lib/markdownExperimento.ts). */
+export const LEGENDAS = {
+  jornada: "Ilustração: cinco moradores do condomínio inventado, um cenário por cache, e as respostas que o regulamento dá. As barras, as anotações e a conta não são medidas; a ordem dos passos é a de um sistema de verdade.",
+  anotacoes: "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das barras e da memória não é medido. As palavras são as da mensagem longa, e as duas mensagens são as que o medidor vai cronometrar.",
+};

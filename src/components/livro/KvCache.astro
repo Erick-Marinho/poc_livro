@@ -6,16 +6,13 @@
  * medido. Sem JS, os balões em lista.
  */
 import FiguraKv from "./kv/FiguraKv";
-import { ANOTACOES, baloes, JORNADA, montarJornada, montarKv } from "./kv/kv.ts";
+import { ANOTACOES, baloes, JORNADA, LEGENDAS, montarJornada, montarKv } from "./kv/kv.ts";
 
 interface Props { dados: any; qual: "jornada" | "anotacoes" }
 const { qual } = Astro.props;
 const dados = qual === "jornada" ? montarJornada(Astro.props.dados) : montarKv(Astro.props.dados);
 const f = { jornada: JORNADA, anotacoes: ANOTACOES }[qual];
-const legenda = {
-  jornada: "Ilustração: cinco moradores do condomínio inventado, um cenário por cache, e as respostas que o regulamento dá. As barras, as anotações e a conta não são medidas; a ordem dos passos é a de um sistema de verdade.",
-  anotacoes: "Ilustração: a resposta foi escrita para o exemplo, e o tamanho das barras e da memória não é medido. As palavras são as da mensagem longa, e as duas mensagens são as que o medidor vai cronometrar.",
-}[qual];
+const legenda = LEGENDAS[qual];
 ---
 <figure class="kv-cache" data-kv-cache={qual}>
   <FiguraKv client:visible={{ rootMargin: "400px" }} dados={dados} qual={qual} />
