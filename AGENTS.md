@@ -16,8 +16,9 @@ Livros técnicos em que o código se monta e o terminal roda no meio do texto. L
 - O livro não pode mentir: código, saída e erro vêm do projeto real (`livros/<livro>/projeto`, `saidas.json`,
   `roteiros/`), e o build falha se divergirem. Simulação e ilustração dizem o que são.
 - É um livro, não um tutorial: o texto defende uma ideia; comando e código são prova, não roteiro.
-- Sem áudio nem narração: o livro não é curso. A opinião dos autores ("eu faria assim", "eu errei isso"), em texto,
-  só os autores escrevem. Marque o lugar com `Pendente` ("Opinião dos autores: …"); o modelo não inventa experiência.
+- Áudio só como complemento de um experimento (`audio` no topo do `.mdx`, o arquivo em `public/audios/`): opcional,
+  o texto continua completo sem ele, e o player diz o que o áudio é. O livro não é curso: nada se aprende só ouvindo.
+  A opinião dos autores ("eu faria assim", "eu errei isso"), em texto, só os autores escrevem. Marque o lugar com `Pendente` ("Opinião dos autores: …"); o modelo não inventa experiência.
 - Texto redigido por modelo é sinalizado no relatório com `(redação: <modelo>)`, para revisão.
 - Sem push, sem `.env`, sem chave, sem dado real de pessoa, sem decisão escrita do responsável.
 - Commits em português, no estilo do `git log`, com o e-mail configurado no repositório.

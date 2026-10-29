@@ -1,0 +1,71 @@
+---
+/**
+ * O áudio de um experimento, na abertura (docs/capacidades/audio-nos-experimentos.md): complemento, nunca o único lugar
+ * de uma ideia. Baixa só a duração antes do play (preload="metadata"), troca a velocidade sem mudar o tom da voz
+ * (playbackRate) e retoma de onde o leitor parou, neste navegador.
+ */
+interface Props { arquivo: string; sobre: string }
+const { arquivo, sobre } = Astro.props;
+const VELOCIDADES = [1, 1.25, 1.5, 2];
+---
+<section class="ouvir" data-ouvir={arquivo} aria-label="Ouvir este experimento">
+  <p class="ouvir-sobre"><b>Ouça este experimento.</b> {sobre}</p>
+  <audio controls preload="metadata" src={arquivo}>
+    <a href={arquivo} download>Baixar o áudio</a>
+  </audio>
+  <div class="ouvir-linha">
+    <span class="ouvir-vel" role="group" aria-label="Velocidade">
+      {VELOCIDADES.map((v) => <button type="button" data-vel={v} aria-pressed={v === 1 ? "true" : "false"}>{String(v).replace(".", ",")}×</button>)}
+    </span>
+    <span class="ouvir-retomar" hidden>Retomando de <span data-onde></span>. <button type="button" data-comeco>Ouvir do começo</button></span>
+  </div>
+</section>
+
+<script>
+  const guardar = (k: string, v: string | null) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sem armazenamento */ } };
+  const ler = (k: string) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const VEL = "fontmar:audio:velocidade";
+
+  document.querySelectorAll<HTMLElement>("[data-ouvir]").forEach((caixa) => {
+    const audio = caixa.querySelector("audio")!;
+    const botoes = [...caixa.querySelectorAll<HTMLButtonElement>("[data-vel]")];
+    const retomar = caixa.querySelector<HTMLElement>(".ouvir-retomar")!;
+    const POS = `fontmar:audio:pos:${caixa.dataset.ouvir}`;
+
+    const velocidade = (v: number) => {
+      audio.defaultPlaybackRate = audio.playbackRate = v;
+      botoes.forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.vel) === v)));
+    };
+    const salva = Number(ler(VEL));
+    if (botoes.some((b) => Number(b.dataset.vel) === salva)) velocidade(salva);
+    botoes.forEach((b) => b.addEventListener("click", () => { velocidade(Number(b.dataset.vel)); guardar(VEL, b.dataset.vel!); }));
+
+    // retoma de onde parou, se não foi quase no começo nem quase no fim
+    audio.addEventListener("loadedmetadata", () => {
+      const pos = Number(ler(POS));
+      if (pos > 10 && pos < audio.duration - 10) {
+        audio.currentTime = pos;
+        retomar.querySelector("[data-onde]")!.textContent = mmss(pos);
+        retomar.hidden = false;
+      }
+    }, { once: true });
+    retomar.querySelector("[data-comeco]")!.addEventListener("click", () => { audio.currentTime = 0; guardar(POS, null); retomar.hidden = true; });
+
+    let ultima = 0;
+    audio.addEventListener("timeupdate", () => { if (Math.abs(audio.currentTime - ultima) >= 5) { ultima = audio.currentTime; guardar(POS, String(Math.floor(ultima))); } });
+    audio.addEventListener("pause", () => guardar(POS, String(Math.floor(audio.currentTime))));
+    audio.addEventListener("ended", () => { guardar(POS, null); retomar.hidden = true; });
+  });
+</script>
+
+<style is:global>
+  .ouvir { margin: 18px 0 0; padding: 12px 14px; border: 1px solid var(--linha); border-radius: 10px; background: var(--papel-2) }
+  .ouvir-sobre { margin: 0 0 8px; font: 14.5px/1.5 var(--f-ui); color: var(--ink-2) } .ouvir-sobre b { color: var(--ink) }
+  .ouvir audio { display: block; width: 100%; accent-color: var(--acento) }
+  .ouvir-linha { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 8px; font: 13px var(--f-ui); color: var(--ink-2) }
+  .ouvir-vel { display: inline-flex; gap: 4px }
+  .ouvir button { font: 500 12.5px var(--f-ui); color: var(--ink-2); background: none; border: 1px solid var(--linha); border-radius: 999px; padding: 2px 9px; cursor: pointer }
+  .ouvir-vel button[aria-pressed="true"] { color: var(--acento); border-color: var(--acento) }
+  .ouvir button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px }
+</style>

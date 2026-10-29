@@ -47,6 +47,8 @@ const experimentos = defineCollection({
     etiqueta: z.string(),
     nivel: z.enum(IDS_DOS_NIVEIS, { message: "nivel: novato, intermediario ou avancado" }),
     afirmacao: z.object({ texto: z.string().min(20), fonte: z.object({ titulo: z.string(), url: z.string().url() }) }),
+    /* opcional: um complemento para ouvir, que diz o que é (docs/capacidades/audio-nos-experimentos.md) */
+    audio: z.object({ arquivo: z.string().regex(/^\/audios\/[a-z0-9-]+\.mp3$/, "audio.arquivo: /audios/<nome>.mp3, em public/audios/"), sobre: z.string().min(20) }).optional(),
     regua: z.object({ arquivo: z.string(), conta: z.string().min(20) }),
     resultado: z.array(z.object({ rotulo: z.string(), saida: z.string() })).min(1, "o resultado precisa de ao menos uma medição gravada"),
     achado: z.string().min(20),

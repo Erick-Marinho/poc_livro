@@ -1,5 +1,6 @@
 ---
 import NivelExperimento from "../components/NivelExperimento.astro";
+import OuvirExperimento from "../components/OuvirExperimento.astro";
 import { NIVEIS, type Nivel } from "../lib/niveis";
 import "../styles/livro.css";
 import "../styles/experimentos.css";
@@ -17,12 +18,13 @@ interface Resultado { rotulo: string; acertos: number; total: number; nota: stri
 interface Props {
   titulo: string; lide: string; data: string; etiqueta: string; nivel: Nivel;
   afirmacao: { texto: string; fonte: { titulo: string; url: string } };
+  audio?: { arquivo: string; sobre: string };
   regua: { arquivo: string; conta: string };
   resultados: Resultado[]; achado: string; custo: string;
   secoes: MarkdownHeading[]; itens: ItemSumario[]; anterior?: Vizinho; proximo?: Vizinho;
 }
 type Vizinho = { href: string; rotulo: string };
-const { titulo, lide, data, etiqueta, nivel, afirmacao, regua, resultados, achado, custo, secoes, itens, anterior, proximo } = Astro.props;
+const { titulo, lide, data, etiqueta, nivel, afirmacao, audio, regua, resultados, achado, custo, secoes, itens, anterior, proximo } = Astro.props;
 /* as seções da página: o que se testa (do molde), as do texto, e o que deu (do molde) */
 const titulos = [{ id: "o-que-se-testa", texto: "O que se testa" }, ...secoes.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, texto: h.text })), { id: "o-que-deu", texto: "O que deu" }];
 ---
@@ -48,6 +50,7 @@ const titulos = [{ id: "o-que-se-testa", texto: "O que se testa" }, ...secoes.fi
         <h1>{titulo}</h1>
         <p class="lide">{lide}</p>
         <p class="para-quem"><b>Para quem é:</b> {NIVEIS[nivel].nome.toLowerCase()}. Pede {NIVEIS[nivel].pede}.</p>
+        {audio && <OuvirExperimento {...audio} />}
       </section>
       <section class="molde teste" aria-labelledby="o-que-se-testa">
         <h2 id="o-que-se-testa">O que se testa</h2>
