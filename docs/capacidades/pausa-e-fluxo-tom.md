@@ -41,6 +41,6 @@ nível novato, faltavam imagens do dia a dia para tokens, cache e o ritmo que ca
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
-| 1 | | `testes/pausa-e-fluxo.test.mjs`: o corpo e os palpites sem "artigo" nem "Analytics"; a certa do palpite do cache é o número no começo; os números do dia a dia são os da `pf-limpa` e da `pf-ingenua`. `npm test` 215/215; ritmo do experimento sem aviso (maior trecho, 184). A página em `astro dev` sem o artigo, fora da fonte da afirmação | |
+| 1 | ce60482 | `testes/pausa-e-fluxo.test.mjs`: o corpo e os palpites sem "artigo" nem "Analytics"; a certa do palpite do cache é o número no começo; os números do dia a dia são os da `pf-limpa` e da `pf-ingenua`. `npm test` 215/215; ritmo do experimento sem aviso (maior trecho, 184). A página em `astro dev` sem o artigo, fora da fonte da afirmação | Erick, 29/10/2026 (publicado em fontemar-ai.web.app) |
 
 (redação: Claude Opus 5.5)
