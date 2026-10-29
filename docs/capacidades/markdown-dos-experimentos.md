@@ -30,7 +30,7 @@ assistente de IA como contexto. O `.mdx` cru não serve: tem imports e component
 |---|---|---|
 | 1 | O Markdown do KV cache | baixa o experimento num arquivo só, com o código e as saídas |
 
-## Última etapa: 1 — o Markdown do KV cache
+## Última etapa: 1 — o Markdown do KV cache (concluída)
 
 - Cada componente vira texto: Pare e pense e palpite com a resposta recolhida; as figuras pelos balões e pela legenda;
   a IDE aponta para "O projeto" e "As saídas gravadas"; o exercício e a nota em texto; o `Pendente` sai.
@@ -43,5 +43,6 @@ assistente de IA como contexto. O `.mdx` cru não serve: tem imports e component
 
 | Etapa | Commit | Evidência | Ok |
 |---|---|---|---|
+| 1 | d1dd3b4 | `testes/markdown.test.mjs` (5): seções na ordem, sem componente cru nem link relativo, respostas recolhidas, o resultado da página, o projeto e as saídas; o botão só no kv-cache; componente desconhecido falha. `npm test` 223/223. No Chrome, o clique baixou o `kv-cache.md` (36 KB), igual ao servido. Capturas a 1280 e 390 px | Erick, 29/10/2026 |
 
 (redação: Claude Opus 5.5)
