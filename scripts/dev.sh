@@ -17,6 +17,9 @@ trap 'npx astro dev stop >/dev/null 2>&1; kill 0' EXIT
 (cd "$LANDING" && npx vite build --logLevel warn)
 (cd "$LANDING" && npx vite build --watch --logLevel warn) &
 (cd "$LANDING" && npx vite preview --port "$PORTA_LANDING" --strictPort --host 127.0.0.1 --logLevel warn) &
+# o --force não limpa o registro de conteúdo do dev: com o esquema e um .mdx mudados juntos, o astro dev relê o .mdx com
+# o esquema antigo e guarda o resultado (um campo novo some no dev e aparece no build). Ele se refaz ao iniciar.
+rm -f .astro/data-store.json
 # --force: o conteúdo é remontado do zero; um astro dev antigo pode ter gravado o cache com um esquema que já mudou
 URL_LANDING="http://localhost:$PORTA_LANDING" PUBLIC_URL_INICIO=/ npx astro dev --force "$@"
 wait
