@@ -1,0 +1,19 @@
+{
+  "resultado": "O que funciona",
+  "fechos": {
+    "nenhum": "O cache só reaproveita um começo igual. É por isso que o número vai no topo.",
+    "alguns": "Você viu o truque: mudar o começo obriga o modelo a ler tudo de novo."
+  },
+  "mensagens": [
+    {
+      "texto": "Para medir a leitura de verdade, cada repetição tem que ser lida do zero. Mantendo a mesma pergunta e o mesmo regulamento, o que você muda na mensagem?",
+      "opcoes": [
+        "Ponho um número diferente no começo",
+        "Ponho um número diferente no fim",
+        "Mando a mesma mensagem, só que mais devagar"
+      ],
+      "fez": 0,
+      "porque": "O Ollama só reaproveita a parte do começo que é igual a algo que ele já leu. Com o número no fim, quase tudo continua igual, e ele leria só o finalzinho. Com o número no começo, quase nada bate, e ele lê tudo de novo."
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
-  "resultado": "O que o artigo diz",
+  "resultado": "A ideia que vamos testar",
   "fechos": {
-    "nenhum": "Você pensou diferente do artigo. Vamos cronometrar para ver.",
-    "alguns": "Você concordou com o artigo. Agora vamos cronometrar para ver se ele tem razão."
+    "nenhum": "Seu palpite foi diferente da ideia que vamos testar. Vamos cronometrar para ver quem tem razão.",
+    "alguns": "Seu palpite foi o mesmo da ideia que vamos testar. Agora vamos cronometrar para ver se ela se sustenta."
   },
   "mensagens": [
     {
@@ -14,7 +14,7 @@
         "Nada muda"
       ],
       "fez": 0,
-      "porque": "São dois trabalhos. Antes da primeira palavra, o modelo lê tudo o que recebeu; depois, escreve um pedaço por vez. O artigo diz que a leitura cresce com a mensagem e a escrita muda pouco. O medidor vai conferir as duas metades."
+      "porque": "São dois trabalhos. Antes da primeira palavra, o modelo lê tudo o que recebeu; depois, escreve um pedaço por vez. A ideia é que a leitura cresce com a mensagem e a escrita muda pouco. O medidor vai conferir as duas metades."
     }
   ]
 }

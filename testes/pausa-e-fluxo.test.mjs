@@ -84,13 +84,16 @@ test("as ações do texto dizem o que as coletas gravadas mostram", () => {
   // o pare e pense: os tokens das mesmas mensagens de 10 e 430 palavras, sem o número do atendimento (a coleta ingênua)
   const [curtaSem, longaSem] = ["curta", "longa"].map((c) => linhaDe("pf-ingenua", c));
   assert.ok(mdx.includes(`Mais: ${numero(longaSem, "lê")}.`) && mdx.includes(`com 10 palavras, vira ${numero(curtaSem, "lê")}.`));
-  // a do artigo: na primeira coleta, da segunda vez em diante a longa veio quase toda do cache
+  // o tropeço: na primeira coleta, da segunda vez em diante a longa veio quase toda do cache
   const vezes = saida("pf-vezes").map((l) => l.match(/(\d+) de (\d+) tokens vieram do cache/).slice(1).map(Number));
   assert.ok(vezes[0][0] < 100 && vezes.slice(1).every(([cache, lidos]) => cache > lidos - 5));
-  const a = json("previsoes-artigo.json").mensagens[0];
-  assert.match(a.opcoes[a.fez], /^Pode crescer menos/);
-  assert.ok(a.opcoes.every((o) => !/começam iguais|cache/.test(o)), "as opções não trazem o porquê");
-  assert.match(a.porque, /Não medimos o laboratório do artigo/);
+  // a aposta do cache: o número no começo, que é o que o coletar.py faz
+  const a = json("previsoes-cache.json").mensagens[0];
+  assert.match(a.opcoes[a.fez], /no começo$/);
+  assert.ok(a.opcoes.every((o) => !/cache/.test(o)), "as opções não trazem o porquê");
+  // o texto não cita o artigo-fonte: ele fica só na afirmação, no topo da página
+  const corpo = mdx.slice(mdx.indexOf("\n---", 4) + 4);
+  assert.doesNotMatch(corpo + JSON.stringify([p, a]), /artigo|Analytics/i);
 });
 
 test("os tempos de verdade: a linha do tempo usa as medianas gravadas, e a aposta de escala da IDE acerta a conta", async () => {
@@ -117,7 +120,7 @@ test("os tempos de verdade: a linha do tempo usa as medianas gravadas, e a apost
 
 test("a metade que a medida refutou está no corpo: o Pare e pense do ritmo usa os números da coleta corrigida", () => {
   const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
-  const pep = mdx.match(/<PareEPense pergunta="O artigo diz que, depois da primeira palavra, o ritmo quase não muda\.[^"]*">([\s\S]*?)<\/PareEPense>/);
+  const pep = mdx.match(/<PareEPense pergunta="A ideia era que, depois da primeira palavra, o ritmo quase não mudasse\.[^"]*">([\s\S]*?)<\/PareEPense>/);
   assert.ok(pep, "o Pare e pense do ritmo");
   const [curta, longa] = ["curta", "longa"].map((c) => numero(linhaDe("pf-limpa", c), "fluxo"));
   const virg = (n) => n.toFixed(1).replace(".", ",");
@@ -125,4 +128,16 @@ test("a metade que a medida refutou está no corpo: o Pare e pense do ritmo usa 
   assert.ok(pep[1].includes(`caiu ${Math.round(100 * (1 - longa / curta))}%`));
   const dentro = saida("pf-fluxo")[0].match(/(\d+) de (\d+)/);
   assert.ok(pep[1].includes(`${dentro[1]} das ${dentro[2]} repetições`));
+});
+
+test("o dia a dia: cada item usa um número gravado, e a seção fica antes do exercício", () => {
+  const mdx = readFileSync(new URL("experimento.mdx", pasta), "utf8");
+  const secao = mdx.slice(mdx.indexOf("## Onde isso aparece no seu dia a dia"), mdx.indexOf("## Repetir na sua máquina"));
+  assert.ok(secao.startsWith("## Onde"), "a seção vem antes de Repetir na sua máquina");
+  const virg = (n, c = 2) => n.toFixed(c).replace(".", ",");
+  const p = (c) => numero(linhaDe("pf-limpa", c), "pausa");
+  for (const c of ["curta", "media", "longa", "de_novo"]) assert.ok(secao.includes(`${virg(p(c))} s`), `a pausa da ${c}`);
+  const [curta, longa] = ["curta", "longa"].map((c) => numero(linhaDe("pf-limpa", c), "fluxo"));
+  assert.ok(secao.includes(`a escrita caiu ${Math.round(100 * (1 - longa / curta))}%`));
+  assert.ok(secao.includes(`viraram ${numero(linhaDe("pf-ingenua", "longa"), "lê")}.`));
 });

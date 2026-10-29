@@ -19,7 +19,7 @@ resultado:
     saida: "pf-fluxo"
   - rotulo: "a longa pedida de novo começou mais rápido, lendo do cache"
     saida: "pf-cache"
-achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez (38,85 s), porque o Ollama guarda o que já leu. Com cada consulta começando diferente, a pausa cresceu em todas as repetições: 0,95 s na curta, 5,70 s na média e 27,24 s na longa; pedida de novo, a longa começa em 0,13 s. O ritmo não ficou parecido: caiu de 10,6 para 7,9 tokens por segundo, 25%, e só ficou dentro dos 20% em 4 das 10 repetições. Nesta máquina, a afirmação vale para a pausa, e não para o fluxo. O artigo explica a queda: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar."
+achado: "A surpresa veio antes de medir de verdade: na primeira coleta, a longa só demorou mais na primeira vez (38,85 s), porque o Ollama guarda o que já leu. Com cada consulta começando diferente, a pausa cresceu em todas as repetições: 0,95 s na curta, 5,70 s na média e 27,24 s na longa; pedida de novo, a longa começa em 0,13 s. O ritmo não ficou parecido: caiu de 10,6 para 7,9 tokens por segundo, 25%, e só ficou dentro dos 20% em 4 das 10 repetições. Nesta máquina, a afirmação vale para a pausa, e não para o fluxo. A queda tem explicação: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar."
 custo: "Num notebook com Intel i7-1355U (10 núcleos e 12 threads; 23 GB de memória), com o llama3.2:3b no Ollama 0.40.11, a primeira coleta levou uns 3 minutos de medição, e a corrigida, uns 10; foram duas, uma com cada código. O modelo ocupa 2 GB no disco. Nenhuma chamada paga: tudo é executado na máquina."
 ---
 import PausaEFluxo from "../../src/components/livro/PausaEFluxo.astro";
@@ -30,7 +30,7 @@ import Pendente from "../../src/components/livro/Pendente.astro";
 import Aposta from "../../src/components/livro/Aposta.astro";
 import pausa from "./figuras/pausa.json";
 import previsoes from "./previsoes.json";
-import artigo from "./previsoes-artigo.json";
+import cache from "./previsoes-cache.json";
 import roteiro from "./roteiros/01.json";
 import estados from "./roteiros/01.estados.json";
 import passos from "./passos/01.json";
@@ -42,19 +42,19 @@ import Exercicio from "../../src/components/livro/Exercicio.astro";
 
 Você pergunta algo a um chat de IA. Por um instante, nada acontece. Depois, a resposta aparece, palavra por palavra. Parece um trabalho só, mas são dois.
 
-Pense numa atendente que responde mensagens por escrito. Antes de responder, ela **lê** a mensagem inteira. Depois, **escreve** a resposta, uma palavra de cada vez.
+Pense numa atendente que responde mensagens por escrito. Antes de responder, ela **lê** a mensagem inteira. Depois, **escreve** a resposta, uma palavra de cada vez. Um bilhete de duas linhas ela lê num instante; uma carta de três páginas faz você esperar antes de ver qualquer resposta.
 
-O [artigo da Analytics Vidhya](https://www.analyticsvidhya.com/blog/2026/10/llm-inference-explained-optimization-techniques/) diz que um modelo de linguagem funciona assim, e propõe um laboratório no Ollama para medir. Vamos medir. No caminho, você vai tropeçar num detalhe que o laboratório do artigo não mostra.
+Um modelo de linguagem trabalha parecido. Vamos cronometrar os dois trabalhos num modelo de verdade, executado no computador. No caminho, você vai tropeçar num detalhe que muda a medida.
 
 ## O que vamos construir
 
-Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a primeira palavra. O segundo mede o **fluxo**: quantos pedaços saem por segundo depois dela. Vamos usar os dois em três mensagens sobre o regulamento de um condomínio, com a mesma pergunta e cada vez mais coisa para ler.
+Um medidor com dois cronômetros. O primeiro marca a **pausa**: o tempo até a primeira palavra, como o tempo em que a atendente fica lendo. O segundo mede o **fluxo**: quantos pedaços saem por segundo depois dela, como a velocidade com que ela digita. Vamos usar os dois em três mensagens sobre o regulamento de um condomínio, com a mesma pergunta e cada vez mais coisa para ler.
 
 <Aposta dados={previsoes} pergunta="Antes de medir: o que muda quando a mensagem cresce?" />
 
 <PausaEFluxo dados={pausa} />
 
-O artigo dá nomes técnicos aos dois trabalhos: a leitura se chama **prefill**, e a escrita, **decode**. E o modelo não lê palavras, e sim **tokens**: pedaços de texto, que podem ser uma palavra ou parte dela.
+Os dois trabalhos têm nomes técnicos: a leitura se chama **prefill**, e a escrita, **decode**. E o modelo não lê palavras, e sim **tokens**: pedaços de texto, como peças de um quebra-cabeça. Uma palavra comum costuma ser uma peça só; uma palavra rara ou comprida se quebra em várias.
 
 <PareEPense pergunta="A mensagem longa tem 462 palavras. O modelo lê mais ou menos tokens do que isso?">
 Mais: 830. Muitas palavras viram mais de um token, e o Ollama ainda acrescenta a todo pedido um cabeçalho fixo, de uns 20 tokens. É por isso que a curta, com 10 palavras, vira 41.
@@ -68,27 +68,37 @@ Você começa numa pasta vazia e monta o medidor passo a passo, com testes que f
 
 <TemposReais saida={saidas["pf-limpa"].saida} mensagens={pausa.mensagens} coleta={coleta} legenda="A coleta corrigida no relógio de verdade: as medianas de dez repetições, gravadas pelo medir.py, e quantos tokens cada resposta escreveu (a mediana: 64, e 9 na média, que respondeu curto). Tocando, a figura corre em tempo real; só o desenho é ilustração." />
 
-<PareEPense pergunta="O artigo diz que, depois da primeira palavra, o ritmo quase não muda. Aqui, a longa escreveu a 7,9 tokens por segundo, e a curta, a 10,6. O artigo errou?">
-Nesta máquina, nessa metade, sim: o ritmo caiu 25%, e ficou dentro dos 20% da régua em só 4 das 10 repetições. O próprio artigo dá a razão: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar. Num processador de notebook, essa consulta pesa. Numa placa de vídeo, pode pesar menos, mas isso não medimos.
+<PareEPense pergunta="A ideia era que, depois da primeira palavra, o ritmo quase não mudasse. Aqui, a longa escreveu a 7,9 tokens por segundo, e a curta, a 10,6. Por que a longa escreveu mais devagar?">
+Nesta máquina, o ritmo caiu 25%, e ficou dentro dos 20% da régua em só 4 das 10 repetições. A razão: a cada palavra nova, o modelo consulta o que já leu, e quanto mais leu, mais tem a consultar. Pense que a atendente, enquanto lê, faz uma anotação sobre cada trecho e, antes de digitar cada palavra, confere as anotações: de um bilhete, são poucas; de um regulamento, são muitas, e cada conferida demora mais. Num processador de notebook, essa consulta pesa. Numa placa de vídeo, pode pesar menos, mas isso não medimos.
 </PareEPense>
 
 <Nota titulo="o que é inventado">O Condomínio Edifício Ipê Amarelo e o seu regulamento são inventados. Na figura, a resposta foi escrita para o exemplo, e a linha do tempo não é medida. As conversas do chat da IDE são um roteiro. As coletas são reais: o modelo de verdade, no processador de uma máquina identificada.</Nota>
 
 ## O tropeço: o modelo lembra
 
-Na primeira coleta, a mensagem longa só demorou mais na primeira vez. Da segunda em diante, quase tudo o que o modelo leu veio do **cache**: uma memória do que ele já leu. Quando uma mensagem começa igual a uma que ele já leu, o Ollama reaproveita essa leitura e só lê o que mudou. Ele não lembra só a última mensagem: lembra várias.
+Na primeira coleta, a mensagem longa só demorou mais na primeira vez. Da segunda em diante, quase tudo o que o modelo leu veio do **cache**: uma memória do que ele já leu. Pense num marcador de livro: se você já leu até a página 40, não começa do zero; abre no marcador e segue dali. Quando uma mensagem começa igual a uma que ele já leu, o Ollama faz o mesmo: reaproveita essa leitura e só lê o que mudou. E ele não guarda um marcador só: guarda vários.
 
-Por isso, cada consulta passou a começar com o seu número. Um começo diferente obriga o modelo a ler tudo de novo, e a pausa volta a ser a de quem lê do zero.
+Ótimo para quem usa, ruim para quem mede: a pausa da longa sumia, e a medida não mostrava mais a leitura.
 
-Aqui a comparação com a atendente quebra. Ela reconheceria a mesma mensagem com outro número no topo, e não leria tudo de novo. O modelo não reconhece: se o começo muda, ele relê do zero.
+<Aposta dados={cache} pergunta="Como obrigar o modelo a ler tudo de novo?" />
 
-<Aposta dados={artigo} pergunta="E o laboratório do artigo?" />
+Por isso, cada consulta passou a começar com o seu número. Aqui a comparação com a atendente quebra. Ela reconheceria a mesma mensagem com outro número no topo, e não leria tudo de novo. O modelo não reconhece: ele confere a mensagem como duas listas de cima para baixo, aproveita até a primeira linha diferente e, dali em diante, lê tudo. Um número diferente logo no topo, e quase nada do que ele guardou serve.
 
-O nosso medidor marca a pausa no relógio; o do artigo usa o tempo de leitura que o Ollama informa, e esse tempo conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Assim, a leitura medida pode sair bem menor do que a de verdade. O artigo avisa, numa frase, que o cache pode influenciar a medida; não mostra quanto.
+O tempo de leitura que o próprio Ollama informa também conta só a parte que não estava no cache, como diz a [documentação dele](https://docs.ollama.com/api/generate). Por isso o nosso medidor marca a pausa no relógio, do pedido à primeira palavra.
 
 <PareEPense pergunta="Num chat, a conversa inteira vai de novo para o modelo a cada mensagem que você manda. O cache ajuda ou atrapalha?">
-Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o modelo pode reaproveitar essa leitura e ler só a mensagem nova. É por isso que a segunda pergunta de uma conversa longa costuma começar mais rápido do que você esperaria.
+Ajuda. A conversa começa sempre igual (as mensagens anteriores), então o modelo abre no marcador e lê só a mensagem nova. É por isso que a segunda pergunta de uma conversa longa costuma começar mais rápido do que você esperaria.
 </PareEPense>
+
+## Onde isso aparece no seu dia a dia
+
+Cada item sai de uma medida daqui.
+
+- **Colou um texto longo e nada aconteceu?** O modelo está lendo, não travou. Aqui, a pausa foi de 0,95 s com só a pergunta a 27,24 s com o regulamento inteiro.
+- **Mande o trecho que importa, não o arquivo todo.** Para a mesma pergunta, o capítulo de mudanças fez o modelo começar em 5,70 s. Mandar tudo "por garantia" é entregar a carta de três páginas quando um bilhete bastava.
+- **Mantenha o começo igual.** Numa conversa, o que veio antes é sempre o mesmo começo, e o modelo abre no marcador: a longa, pedida de novo, começou em 0,13 s. Mudou o começo, ele lê do zero.
+- **"Está lento" são duas perguntas.** Demorou para começar? Olhe o tamanho do que você mandou. Escreve devagar? Pesa a máquina e também o quanto ele leu: com o regulamento, a escrita caiu 25%.
+- **Nas fichas de modelos e serviços**, "tempo até o primeiro token" é a pausa, e "tokens por segundo", o fluxo. E o tamanho de uma mensagem se conta em tokens, não em palavras: 462 palavras viraram 830.
 
 ## Repetir na sua máquina
 
@@ -103,8 +113,10 @@ Você concluiu quando confrontou as duas anotações com o placar da sua máquin
 
 </Exercicio>
 
-O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura deve ficar tão rápida que a pausa quase some, e o experimento perderia o que tem para mostrar. Essa medida não está gravada: fica como expectativa, não como resultado.
+O medidor usa só o processador, mesmo que você tenha uma placa de vídeo. Numa placa de vídeo, a leitura é dividida em muitos pedaços feitos ao mesmo tempo, como uma carta repartida entre vinte leitores. A leitura deve ficar tão rápida que a pausa quase some, e o experimento perderia o que tem para mostrar. Essa medida não está gravada: fica como expectativa, não como resultado.
 
-O artigo também sugere mandar várias perguntas ao mesmo tempo, e avisa que o resultado depende de como o Ollama está configurado. Por padrão, ele atende [uma pergunta de cada vez](https://docs.ollama.com/faq) (`OLLAMA_NUM_PARALLEL` vale 1), e as outras esperam na fila: assim, não acelera nada. Fica para outro experimento.
+E mandar várias perguntas ao mesmo tempo? Por padrão, o Ollama atende [uma pergunta de cada vez](https://docs.ollama.com/faq) (`OLLAMA_NUM_PARALLEL` vale 1), como um guichê só: quem chega depois espera na fila. Assim, não acelera nada. Fica para outro experimento.
+
+Quer ver as anotações da atendente de perto? O experimento [O que o modelo anota enquanto escreve](/experimentos/kv-cache/), de nível avançado, desliga essas anotações num modelo de verdade e mede quanto custa cada palavra sem elas. Lá você também descobre que o marcador de livro daqui é só uma de quatro coisas que atendem pelo nome de cache.
 
 <Pendente o="Opinião dos autores: uma vez em que vocês acharam que o modelo estava lento, e o que estava demorando de verdade" parte="fecho do experimento" />
